@@ -1,4 +1,4 @@
 minim
 =====
 
-A tiny contatenative programming language
+A tiny concatenative programming language

@@ -4,7 +4,7 @@ import interpreter, primitives
 
 const version* = "0.1.0"
 
-let usage* = "  MiNiM v" & version & " - a minimalist concatenative programming language" & """
+let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
   (c) 2014 Fabio Cevasco
   
