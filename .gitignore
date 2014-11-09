@@ -1,0 +1,6 @@
+nimcache/
+build/
+minim.exe
+minim
+nakefile
+*.zip
