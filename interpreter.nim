@@ -125,7 +125,7 @@ proc getFilename*(my: TMinParser): string {.inline.} =
   
 proc errorMsg*(my: TMinParser, msg: string): string = 
   assert(my.kind == eMinError)
-  result = "$1 [$2, $3] ERROR - $4" % [
+  result = "$1 [l:$2, c:$3] ERROR - $4" % [
     my.filename, $getLine(my), $getColumn(my), msg]
 
 proc errorMsg*(my: TMinParser): string = 
