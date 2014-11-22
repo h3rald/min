@@ -1,37 +1,37 @@
 import tables, strutils
-import interpreter, utils
+import parser, interpreter, utils
 
-minsym "dup", ["any"]:
-  STACK.add STACK.peek
+minsym "dup":
+  i.push i.peek
 
-minsym "pop", ["any"]:
-  discard STACK.pop
+minsym "pop":
+  discard i.pop
 
-minsym "swap", ["any", "any"]:
-  let a = STACK.pop
-  let b = STACK.pop
-  STACK.add a
-  STACK.add b
+minsym "swap":
+  let a = i.pop
+  let b = i.pop
+  i.push a
+  i.push b
 
-minsym "quote", ["any"]:
-  let a = STACK.pop
-  STACK.add TMinValue(kind: minQuotation, qVal: @[a])
+minsym "quote":
+  let a = i.pop
+  i.push TMinValue(kind: minQuotation, qVal: @[a])
 
-minsym "i", []:
+minsym "i":
   discard
 
-minsym "print", ["any"]:
-  let a = STACK.peek
-  printMinValue a
+minsym "print":
+  let a = i.peek
+  a.print
   echo ""
 
-minsym "def", ["quotation", "any"]:
-  var q = STACK.pop
-  var v = STACK.pop
+minsym "def":
+  var q = i.pop
+  var v = i.pop
   if q.qVal.len != 1 or q.qVal[0].kind != minSymbol:
-    q.valueError("def: Definition quotation not found on the stack.")
+    i.error(errNoQuotation, "Definition quotation not found on the stack.")
   if v.qVal.len != 1 or q.qVal[0].kind != minSymbol:
-    v.valueError("def: Value quotation not found on the stack.")
+    i.error(errNoQuotation, "Value quotation not found on the stack.")
   let defname = q.qVal[0].symVal
   let value = v.qVal[0]
   case value.kind:
@@ -39,9 +39,9 @@ minsym "def", ["quotation", "any"]:
       if SYMBOLS.hasKey value.symVal:
         SYMBOLS[defname] = SYMBOLS[value.symVal] 
       else:
-        value.valueError("Undefined symbol: '"&value.symVal&"'")
+        i.error(errUndefined, "Undefined symbol: '"&value.symVal&"'")
     else:
-      SYMBOLS[defname] = proc(v: TMinValue) = STACK.add value
+      SYMBOLS[defname] = proc(i: var TMinInterpreter) = i.push value
 
 minalias ":", "def"
 minalias "bind", "def"
