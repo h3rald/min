@@ -130,9 +130,9 @@ proc raiseParseError*(p: TMinParser, msg: string) {.noinline, noreturn.} =
 proc raiseUndefinedError*(p:TMinParser, msg: string) {.noinline, noreturn.} =
   raise EMinUndefinedError(msg: errorMsg(p, msg))
 
-proc error(p: TMinParser, msg: string) = 
-  writeln(stderr, p.errorMsg(msg))
-  flushFile(stderr)
+#proc error(p: TMinParser, msg: string) = 
+#  writeln(stderr, p.errorMsg(msg))
+#  flushFile(stderr)
 
 proc parseNumber(my: var TMinParser) = 
   var pos = my.bufpos
@@ -411,20 +411,23 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
   else:
     raiseUndefinedError(p, "Undefined value: '"&p.a&"'")
 
-proc print*(a: TMinValue) =
+proc `$`*(a: TMinValue): string =
   case a.kind:
     of minSymbol:
-      stdout.write a.symVal
+      return a.symVal
     of minString:
-      stdout.write "\""&a.strVal&"\""
+      return "\""&a.strVal&"\""
     of minInt:
-      stdout.write a.intVal
+      return $a.intVal
     of minFloat:
-      stdout.write a.floatVal
+      return $a.floatVal
     of minQuotation:
-      stdout.write "[ "
+      var q = "[ "
       for i in a.qVal:
-        i.print
-        stdout.write " "
-      stdout.write "]"
+        q = q & $i & " "
+      q = q & "]"
+      return q
+
+proc print*(a: TMinValue) =
+  stdout.write($a)
 

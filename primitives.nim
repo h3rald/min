@@ -56,7 +56,7 @@ minsym "cons":
 # Operations on the whole stack
 
 minsym "dump":
-  i.dump
+  echo i.dump
 
 # Operations on quotations or strings
 
@@ -166,7 +166,21 @@ minsym "/":
     else:
       i.error(errTwoNumbersRequired)
 
+# Language constructs
 
+minsym "def":
+  let q1 = i.pop
+  let q2 = i.pop
+  if q1.isQuotation and q2.isQuotation:
+    if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
+      minsym q1.qVal[0].symVal:
+        for item in q2.qVal:
+          i.push item
+    else:
+      i.error(errIncorrect, "The top quotation must contain only one symbol value")
+  else:
+    i.error(errIncorrect, "Two quotations or two strings is required on the stack")
 
 minalias "&", "concat"
 minalias "%", "print"
+minalias ":", "def"

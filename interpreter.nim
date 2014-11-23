@@ -7,8 +7,10 @@ type
     parser*: TMinParser
     currSym: TMinValue
     filename: string
+    debugging: bool
   TMinOperator* = proc (i: var TMinInterpreter)
   TMinError* = enum
+    errSystem,
     errParser,
     errGeneric,
     errEmptyStack,
@@ -20,6 +22,7 @@ type
 
 
 const ERRORS: array [TMinError, string] = [
+  "A system error occurred",
   "A parsing error occurred",
   "A generic error occurred",
   "The stack is empty", 
@@ -32,10 +35,10 @@ const ERRORS: array [TMinError, string] = [
 
 var SYMBOLS* = initTable[string, TMinOperator]()
 
-proc newMinInterpreter*(): TMinInterpreter =
+proc newMinInterpreter*(debugging = false): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
   var p:TMinParser
-  var i:TMinInterpreter = TMinInterpreter(filename: "input", parser: p, stack: s, currSym: TMinValue(first: 0, last: 0, line: 0, kind: minSymbol, symVal: ""))
+  var i:TMinInterpreter = TMinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: TMinValue(first: 0, last: 0, line: 0, kind: minSymbol, symVal: ""))
   return i
 
 proc error*(i: TMinInterpreter, status: TMinError, message = "") =
@@ -50,11 +53,25 @@ proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =
 proc close*(i: var TMinInterpreter) = 
   i.parser.close();
 
+proc dump*(i: TMinInterpreter): string =
+  var s = ""
+  for item in i.stack:
+    s = s & $item & " "
+  return s.strip
+
+proc debug(i: var TMinInterpreter, value: string = "") =
+  if i.debugging: 
+    stderr.writeln("DEBUG: " &i.dump & value)
+
 proc push*(i: var TMinInterpreter, val: TMinValue) = 
   if val.kind == minSymbol:
     i.currSym = val
-    if SYMBOLS.hasKey val.symVal:
-      SYMBOLS[val.symVal](i) 
+    i.debug " "&val.symVal
+    if SYMBOLS.hasKey(val.symVal):
+      try:
+        SYMBOLS[val.symVal](i) 
+      except:
+        i.error(errSystem, getCurrentExceptionMsg())
     else:
       i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
   else:
@@ -71,12 +88,6 @@ proc peek*(i: TMinInterpreter): TMinValue =
     return i.stack[i.stack.len-1]
   else:
     i.error(errEmptyStack)
-
-proc dump*(i: TMinInterpreter) =
-  for item in i.stack:
-    item.print
-    stdout.write " "
-  stdout.writeln ""
 
 proc interpret*(i: var TMinInterpreter) = 
   var val: TMinValue

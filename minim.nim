@@ -3,6 +3,8 @@ import parser, interpreter, primitives
 
 
 const version* = "0.1.0"
+var debugging = false
+var repl = false
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -20,7 +22,7 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     -i, --interactive Starts MiNiM's Read Evel Print Loop"""
 
 proc minimStream(s: PStream, filename: string) =
-  var i = newMinInterpreter()
+  var i = newMinInterpreter(debugging)
   i.open(s, filename)
   discard i.parser.getToken() 
   i.interpret()
@@ -49,7 +51,7 @@ proc minimFile*(file: TFile, filename="stdin") =
   minimStream(stream, filename)
 
 proc minimRepl*() = 
-  var i = newMinInterpreter()
+  var i = newMinInterpreter(debugging)
   var s = newStringStream("")
   i.open(s, "repl")
   setControlCHook(handleReplCtrlC)
@@ -66,7 +68,7 @@ proc minimRepl*() =
     discard i.parser.getToken() 
     i.interpret()
     stdout.write "-> "
-    i.dump
+    echo i.dump
     
 ###
 
@@ -78,6 +80,8 @@ for kind, key, val in getopt():
       file = key
     of cmdLongOption, cmdShortOption:
       case key:
+        of "debug", "d":
+          debugging = true
         of "evaluate", "e":
           str = val
         of "help", "h":
@@ -85,8 +89,7 @@ for kind, key, val in getopt():
         of "version", "v":
           echo version
         of "interactive", "i":
-          minimRepl()
-          quit(0)
+          repl = true
     else:
       discard
 
@@ -94,5 +97,9 @@ if str != "":
   minimString(str)
 elif file != "":
   minimFile file
+elif repl:
+  minimRepl()
+  quit(0)
 else:
   minimFile stdin
+
