@@ -26,7 +26,7 @@ const ERRORS: array [TMinError, string] = [
   "A system error occurred",
   "A parsing error occurred",
   "A generic error occurred",
-  "The stack is empty", 
+  "Insufficient items on the stack", 
   "Quotation not found on the stack",
   "Symbol undefined",
   "Incorrect items on the stack",
@@ -44,7 +44,6 @@ proc newMinInterpreter*(debugging = false): TMinInterpreter =
 
 proc error*(i: TMinInterpreter, status: TMinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
-  var start = ""
   if i.filename != "":
     stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
   else:

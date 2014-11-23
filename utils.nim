@@ -23,14 +23,23 @@ proc isFloat*(s: TMinValue): bool =
 proc isInt*(s: TMinValue): bool =
   return s.kind == minInt
 
-proc newString*(s: string): TMinValue =
+proc isNumber*(s: TMinValue): bool =
+  return s.kind == minInt or s.kind == minFloat
+
+proc isBool*(s: TMinValue): bool =
+  return s.kind == minBool
+
+proc newVal*(s: string): TMinValue =
   return TMinValue(kind: minString, strVal: s)
 
-proc newQuotation*(q: seq[TMinValue]): TMinValue =
+proc newVal*(q: seq[TMinValue]): TMinValue =
   return TMinValue(kind: minQuotation, qVal: q)
 
-proc newInt*(s: int): TMinValue =
+proc newVal*(s: int): TMinValue =
   return TMinValue(kind: minInt, intVal: s)
 
-proc newFloat*(s: float): TMinValue =
+proc newVal*(s: float): TMinValue =
   return TMinValue(kind: minFloat, floatVal: s)
+
+proc newVal*(s: bool): TMinValue =
+  return TMinValue(kind: minBool, boolVal: s)

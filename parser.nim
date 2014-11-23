@@ -334,11 +334,13 @@ proc getToken*(my: var TMinParser): TMinTokenKind =
     result = tkBracketRi
   of '\0':
     result = tkEof
-  else: 
+  else:
+    result = parseSymbol(my)
     case my.a 
     of "true": result = tkTrue
     of "false": result = tkFalse
-    else: result = parseSymbol(my)
+    else: 
+      discard
   my.token = result
 
 
@@ -354,7 +356,7 @@ proc next*(my: var TMinParser) =
       my.err = errEofExpected
   of stateStart: 
     case tk
-    of tkString, tkInt, tkFloat:
+    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.state[i] = stateEof # expect EOF next!
       my.kind = TMinEventKind(ord(tk))
     of tkBracketLe: 
@@ -367,7 +369,7 @@ proc next*(my: var TMinParser) =
       my.err = errEofExpected
   of stateQuotation:
     case tk
-    of tkString, tkInt, tkFloat:
+    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.kind = TMinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
@@ -380,7 +382,7 @@ proc next*(my: var TMinParser) =
       my.err = errBracketRiExpected
   of stateExpectValue:
     case tk
-    of tkString, tkInt, tkFloat:
+    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.kind = TMinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
@@ -447,4 +449,34 @@ proc `$`*(a: TMinValue): string =
 
 proc print*(a: TMinValue) =
   stdout.write($a)
+
+proc `==`*(a: TMinValue, b: TMinValue): bool =
+  if a.kind == minInt and b.kind == minInt:
+    return a.intVal == b.intVal
+  elif a.kind == minInt and b.kind == minFloat:
+    return a.intVal.float == b.intVal.float
+  elif a.kind == minFloat and b.kind == minFloat:
+    return a.floatVal == b.floatVal
+  elif a.kind == minFloat and b.kind == minInt:
+    return a.floatVal == b.intVal.float
+  elif a.kind == b.kind:
+    if a.kind == minString:
+      return a.strVal == b.strVal
+    elif a.kind == minBool:
+      return a.boolVal == b.boolVal
+    elif a.kind == minQuotation:
+      if a.qVal.len == b.qVal.len:
+        var c = 0
+        for item in a.qVal:
+          if item == b.qVal[c]:
+            c.inc
+          else:
+            return false
+        return true
+      else:
+        return false
+  else:
+    return false
+            
+
 
