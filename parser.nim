@@ -10,13 +10,16 @@ type
     tkFloat,
     tkBracketLe,
     tkBracketRi,
-    tkSymbol
+    tkSymbol,
+    tkTrue,
+    tkFalse
   TMinKind* = enum
     minInt,
     minFloat,
     minQuotation,
     minString,
-    minSymbol
+    minSymbol,
+    minBool
   TMinValue* = object
     first*: int
     last*: int
@@ -27,6 +30,7 @@ type
       of minQuotation: qVal*: seq[TMinValue]
       of minString: strVal*: string
       of minSymbol: symVal*: string
+      of minBool: boolVal*: bool
   TMinEventKind* = enum    ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
     eMinEof,               ## end of file reached
@@ -79,7 +83,9 @@ const
     "float literal",
     "[", 
     "]",
-    "symbol"
+    "symbol",
+    "true",
+    "false"
   ]
 
 proc open*(my: var TMinParser, input: PStream, filename: string) =
@@ -329,7 +335,10 @@ proc getToken*(my: var TMinParser): TMinTokenKind =
   of '\0':
     result = tkEof
   else: 
-    result = parseSymbol(my)
+    case my.a 
+    of "true": result = tkTrue
+    of "false": result = tkFalse
+    else: result = parseSymbol(my)
   my.token = result
 
 
@@ -387,6 +396,12 @@ proc eat(p: var TMinParser, token: TMinTokenKind) =
 proc parseMinValue*(p: var TMinParser): TMinValue =
   #echo p.a, " (", p.token, ")"
   case p.token
+  of tkTrue:
+    result = TMinValue(kind: minBool, boolVal: true, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    discard getToken(p)
+  of tkFalse:
+    result = TMinValue(kind: minBool, boolVal: false, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    discard getToken(p)
   of tkString:
     result = TMinValue(kind: minString, strVal: p.a, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
     p.a = ""
@@ -413,6 +428,8 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
 
 proc `$`*(a: TMinValue): string =
   case a.kind:
+    of minBool:
+      return $a.boolVal
     of minSymbol:
       return a.symVal
     of minString:
