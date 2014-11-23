@@ -102,3 +102,6 @@ proc interpret*(i: var TMinInterpreter) =
     except:
       i.error errParser, getCurrentExceptionMsg()
     i.push val
+
+proc apply*(i: var TMinInterpreter, symbol: string) =
+  SYMBOLS[symbol](i)

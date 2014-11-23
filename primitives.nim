@@ -56,6 +56,20 @@ minsym "cons":
   q.qVal.add v
   i.push q
 
+minsym "map":
+  let prog = i.pop
+  let list = i.pop
+  if prog.isQuotation and list.isQuotation:
+    i.push newVal(newSeq[TMinValue](0))
+    for litem in list.qVal:
+      i.push litem
+      for pitem in prog.qVal:
+        i.push pitem
+      i.apply("swap") 
+      i.apply("cons") 
+  else:
+    i.error(errIncorrect, "Two quotations are required on the stack")
+
 # Operations on the whole stack
 
 minsym "dump":
@@ -73,7 +87,7 @@ minsym "concat":
     let q = q2.qVal & q1.qVal
     i.push newVal(q)
   else:
-    i.error(errIncorrect, "Two quotations or two strings is required on the stack")
+    i.error(errIncorrect, "Two quotations or two strings are required on the stack")
 
 minsym "first":
   var q = i.pop
@@ -272,12 +286,38 @@ minsym "!=":
   else:
     i.error(errIncorrect, "Two non-symbol values of similar type are required")
 
+# Boolean Logic
+
 minsym "not":
   let b = i.pop
   if b.isBool:
     i.push newVal(not b.boolVal)
   else:
     i.error(errIncorrect, "A bool value is required on the stack")
+
+minsym "and":
+  let a = i.pop
+  let b = i.pop
+  if a.isBool and b.isBool:
+    i.push newVal(a.boolVal and b.boolVal)
+  else:
+    i.error(errIncorrect, "Two bool values are required on the stack")
+
+minsym "or":
+  let a = i.pop
+  let b = i.pop
+  if a.isBool and b.isBool:
+    i.push newVal(a.boolVal or b.boolVal)
+  else:
+    i.error(errIncorrect, "Two bool values are required on the stack")
+
+minsym "xor":
+  let a = i.pop
+  let b = i.pop
+  if a.isBool and b.isBool:
+    i.push newVal(a.boolVal xor b.boolVal)
+  else:
+    i.error(errIncorrect, "Two bool values are required on the stack")
 
 minalias "quit", "exit"
 minalias "&", "concat"
