@@ -7,7 +7,8 @@ type
     parser*: TMinParser
     currSym: TMinValue
     filename: string
-    debugging: bool
+    debugging: bool 
+    evaluating*: bool 
   TMinOperator* = proc (i: var TMinInterpreter)
   TMinError* = enum
     errSystem,
@@ -43,7 +44,11 @@ proc newMinInterpreter*(debugging = false): TMinInterpreter =
 
 proc error*(i: TMinInterpreter, status: TMinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
-  stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
+  var start = ""
+  if i.filename != "":
+    stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
+  else:
+    stderr.writeln("`$1`: Error - $2" %[i.currSym.symVal, msg])
   quit(int(status))
 
 proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =
@@ -57,16 +62,17 @@ proc dump*(i: TMinInterpreter): string =
   var s = ""
   for item in i.stack:
     s = s & $item & " "
-  return s.strip
+  return s
 
-proc debug(i: var TMinInterpreter, value: string = "") =
+proc debug(i: var TMinInterpreter, value: TMinValue) =
   if i.debugging: 
-    stderr.writeln("DEBUG: " &i.dump & value)
+    stderr.writeln("-- " &i.dump & $value)
 
 proc push*(i: var TMinInterpreter, val: TMinValue) = 
+  i.debug val
   if val.kind == minSymbol:
-    i.currSym = val
-    i.debug " "&val.symVal
+    if not i.evaluating:
+      i.currSym = val
     if SYMBOLS.hasKey(val.symVal):
       try:
         SYMBOLS[val.symVal](i) 

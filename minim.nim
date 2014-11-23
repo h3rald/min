@@ -53,7 +53,7 @@ proc minimFile*(file: TFile, filename="stdin") =
 proc minimRepl*() = 
   var i = newMinInterpreter(debugging)
   var s = newStringStream("")
-  i.open(s, "repl")
+  i.open(s, "")
   setControlCHook(handleReplCtrlC)
   echo "MiNiM v"&version&" - REPL initialized."
   echo "-> Press Ctrl+C to exit."

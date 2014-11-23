@@ -174,8 +174,10 @@ minsym "def":
   if q1.isQuotation and q2.isQuotation:
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
       minsym q1.qVal[0].symVal:
+        i.evaluating = true
         for item in q2.qVal:
           i.push item
+        i.evaluating = false
     else:
       i.error(errIncorrect, "The top quotation must contain only one symbol value")
   else:
