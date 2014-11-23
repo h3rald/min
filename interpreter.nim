@@ -73,11 +73,10 @@ proc peek*(i: TMinInterpreter): TMinValue =
     i.error(errEmptyStack)
 
 proc dump*(i: TMinInterpreter) =
-  stdout.write "[ "
   for item in i.stack:
     item.print
     stdout.write " "
-  stdout.writeln "]"
+  stdout.writeln ""
 
 proc interpret*(i: var TMinInterpreter) = 
   var val: TMinValue
