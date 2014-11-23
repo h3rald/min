@@ -12,18 +12,24 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     minim [options] [filename]
 
   Arguments:
-    filename  A minim file to interpret.
+    filename  A minim file to interpret (default: STDIN).
   Options:
     -e, --evaluate    Evaluate a minim program inline
     -h, --help        Print this help
-    -v, --version     Print the program version"""
+    -v, --version     Print the program version
+    -i, --interactive Starts MiNiM's Read Evel Print Loop"""
 
-proc minimStream*(s: PStream, filename: string) =
+proc minimStream(s: PStream, filename: string) =
   var i = newMinInterpreter()
   i.open(s, filename)
   discard i.parser.getToken() 
   i.interpret()
   i.close()
+
+
+proc handleReplCtrlC() {.noconv.}=
+  echo "\n-> Exiting..."
+  quit(0)
 
 proc minimString*(buffer: string) =
     minimStream(newStringStream(buffer), "input")
@@ -31,10 +37,37 @@ proc minimString*(buffer: string) =
 proc minimFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
-    writeln(stderr, "Error - Cannot read from file: "& filename)
-    flushFile(stderr)
+    stderr.writeln("Error - Cannot read from file: "& filename)
+    stderr.flushFile()
   minimStream(stream, filename)
 
+proc minimFile*(file: TFile, filename="stdin") =
+  var stream = newFileStream(stdin)
+  if stream == nil:
+    stderr.writeln("Error - Cannot read from "& filename)
+    stderr.flushFile()
+  minimStream(stream, filename)
+
+proc minimRepl*() = 
+  var i = newMinInterpreter()
+  var s = newStringStream("")
+  i.open(s, "repl")
+  setControlCHook(handleReplCtrlC)
+  echo "MiNiM v"&version&" - REPL initialized."
+  echo "-> Press Ctrl+C to exit."
+  var pos = 0
+  var line: string
+  while true:
+    stdout.write(": ")
+    line = stdin.readLine()
+    s.writeln(line)
+    i.parser.buf = $i.parser.buf & line
+    i.parser.bufLen = i.parser.buf.len
+    discard i.parser.getToken() 
+    i.interpret()
+    stdout.write "-> "
+    i.dump
+    
 ###
 
 var file, str: string = ""
@@ -51,12 +84,15 @@ for kind, key, val in getopt():
           echo usage
         of "version", "v":
           echo version
+        of "interactive", "i":
+          minimRepl()
+          quit(0)
     else:
       discard
 
 if str != "":
   minimString(str)
 elif file != "":
-  minimFile(file)
+  minimFile file
 else:
-  echo usage
+  minimFile stdin

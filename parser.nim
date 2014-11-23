@@ -22,8 +22,8 @@ type
     last*: int
     line*: int 
     case kind*: TMinKind
-      of minInt: intVal*: BiggestInt
-      of minFloat: floatVal*: BiggestFloat
+      of minInt: intVal*: int
+      of minFloat: floatVal*: float
       of minQuotation: qVal*: seq[TMinValue]
       of minString: strVal*: string
       of minSymbol: symVal*: string
@@ -92,9 +92,9 @@ proc open*(my: var TMinParser, input: PStream, filename: string) =
 proc close*(my: var TMinParser) {.inline.} = 
   lexbase.close(my)
 
-proc getInt*(my: TMinParser): BiggestInt {.inline.} = 
+proc getInt*(my: TMinParser): int {.inline.} = 
   assert(my.kind == eMinInt)
-  return parseBiggestInt(my.a)
+  return parseint(my.a)
 
 proc getFloat*(my: TMinParser): float {.inline.} = 
   assert(my.kind == eMinFloat)
@@ -303,7 +303,16 @@ proc getToken*(my: var TMinParser): TMinTokenKind =
   setLen(my.a, 0)
   skip(my) 
   case my.buf[my.bufpos]
-  of '-', '.', '0'..'9': 
+  of '-', '.':
+    if my.bufpos+1 <= my.buf.len and my.buf[my.bufpos+1] in '0'..'9':
+      parseNumber(my)
+      if {'.', 'e', 'E'} in my.a:
+        result = tkFloat
+      else:
+        result = tkInt
+    else:
+      result = parseSymbol(my)
+  of '0'..'9': 
     parseNumber(my)
     if {'.', 'e', 'E'} in my.a:
       result = tkFloat
@@ -383,7 +392,7 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = TMinValue(kind: minInt, intVal: parseBiggestInt(p.a), first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minInt, intVal: parseint(p.a), first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
     discard getToken(p)
   of tkFloat:
     result = TMinValue(kind: minFloat, floatVal: parseFloat(p.a), first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
@@ -401,4 +410,21 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
     discard getToken(p)
   else:
     raiseUndefinedError(p, "Undefined value: '"&p.a&"'")
+
+proc print*(a: TMinValue) =
+  case a.kind:
+    of minSymbol:
+      stdout.write a.symVal
+    of minString:
+      stdout.write "\""&a.strVal&"\""
+    of minInt:
+      stdout.write a.intVal
+    of minFloat:
+      stdout.write a.floatVal
+    of minQuotation:
+      stdout.write "[ "
+      for i in a.qVal:
+        i.print
+        stdout.write " "
+      stdout.write "]"
 

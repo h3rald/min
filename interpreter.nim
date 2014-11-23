@@ -13,25 +13,24 @@ type
     errGeneric,
     errEmptyStack,
     errNoQuotation,
-    errUndefined
+    errUndefined,
+    errIncorrect,
+    errTwoNumbersRequired,
+    errDivisionByZero
+
 
 const ERRORS: array [TMinError, string] = [
   "A parsing error occurred",
   "A generic error occurred",
   "The stack is empty", 
   "Quotation not found on the stack",
-  "Symbol undefined"
+  "Symbol undefined",
+  "Incorrect items on the stack",
+  "Two numbers are required on the stack",
+  "Division by zero"
 ]
 
 var SYMBOLS* = initTable[string, TMinOperator]()
-var TYPES* = initTable[string, TMinKind]()
-
-TYPES["int"] = minInt
-TYPES["float"] = minFloat
-TYPES["string"] = minString
-TYPES["symbol"] = minSymbol
-TYPES["quotation"] = minQuotation
-
 
 proc newMinInterpreter*(): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
@@ -45,13 +44,21 @@ proc error*(i: TMinInterpreter, status: TMinError, message = "") =
   quit(int(status))
 
 proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =
+  i.filename = filename
   i.parser.open(stream, filename)
 
 proc close*(i: var TMinInterpreter) = 
   i.parser.close();
 
 proc push*(i: var TMinInterpreter, val: TMinValue) = 
-  i.stack.add(val)
+  if val.kind == minSymbol:
+    i.currSym = val
+    if SYMBOLS.hasKey val.symVal:
+      SYMBOLS[val.symVal](i) 
+    else:
+      i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
+  else:
+    i.stack.add(val)
 
 proc pop*(i: var TMinInterpreter): TMinValue =
   if i.stack.len > 0:
@@ -65,6 +72,13 @@ proc peek*(i: TMinInterpreter): TMinValue =
   else:
     i.error(errEmptyStack)
 
+proc dump*(i: TMinInterpreter) =
+  stdout.write "[ "
+  for item in i.stack:
+    item.print
+    stdout.write " "
+  stdout.writeln "]"
+
 proc interpret*(i: var TMinInterpreter) = 
   var val: TMinValue
   while i.parser.token != tkEof: 
@@ -72,12 +86,4 @@ proc interpret*(i: var TMinInterpreter) =
       val = i.parser.parseMinValue
     except:
       i.error errParser, getCurrentExceptionMsg()
-    if val.kind == minSymbol:
-      i.currSym = val
-      if SYMBOLS.hasKey val.symVal:
-        SYMBOLS[val.symVal](i) 
-      else:
-        i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
-    else:
-      i.push val
-
+    i.push val
