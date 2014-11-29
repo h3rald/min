@@ -43,3 +43,6 @@ proc newVal*(s: float): TMinValue =
 
 proc newVal*(s: bool): TMinValue =
   return TMinValue(kind: minBool, boolVal: s)
+
+proc warn*(s: string) =
+  stderr.writeln s

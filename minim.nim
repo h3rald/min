@@ -1,5 +1,5 @@
 import streams, tables, parseopt2
-import parser, interpreter, primitives
+import parser, interpreter, primitives, utils
 
 
 const version* = "0.1.0"
@@ -66,9 +66,13 @@ proc minimRepl*() =
     i.parser.buf = $i.parser.buf & line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
-    i.interpret()
-    stdout.write "-> "
-    echo i.dump
+    try:
+      i.interpret()
+    except:
+      warn getCurrentExceptionMsg()
+    finally:
+      stdout.write "-> "
+      echo i.dump
     
 ###
 

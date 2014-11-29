@@ -1,4 +1,4 @@
-import tables, strutils
+import tables, strutils, os
 import parser, interpreter, utils
 
 minsym "exit":
@@ -29,11 +29,6 @@ minsym "swap":
   let b = i.pop
   i.push a
   i.push b
-
-minsym "print":
-  let a = i.peek
-  a.print
-  echo ""
 
 # Operations on quotations
 
@@ -319,6 +314,64 @@ minsym "xor":
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
 
+# I/O 
+
+minsym "puts":
+  let a = i.peek
+  echo a
+
+minsym "gets":
+  i.push newVal(stdin.readLine())
+
+minsym "print":
+  let a = i.peek
+  a.print
+
+minsym "read":
+  let a = i.pop
+  if a.isString:
+    if a.strVal.fileExists:
+      try:
+        i.push newVal(a.strVal.readFile)
+      except:
+        warn getCurrentExceptionMsg()
+    else:
+      warn "File '$1' not found" % [a.strVal]
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+minsym "write":
+  let a = i.pop
+  let b = i.pop
+  if a.isString and b.isString:
+    try:
+      a.strVal.writeFile(b.strVal)
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error(errIncorrect, "Two strings are required on the stack")
+
+# OS 
+
+minsym "pwd":
+  i.push newVal(getCurrentDir())
+
+minsym "ls":
+  let a = i.pop
+  var list = newSeq[TMinValue](0)
+  if a.isString:
+    if a.strVal.existsDir:
+      for i in walkdir(a.strVal):
+        list.add newVal(i.path)
+      i.push list.newVal
+    else:
+      warn "Directory '$1' not found" % [a.strVal]
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+
+# Aliases
+
 minalias "quit", "exit"
 minalias "&", "concat"
 minalias "%", "print"
@@ -329,3 +382,4 @@ minalias "gt", ">"
 minalias "lt", "<"
 minalias "gte", ">="
 minalias "lte", "<="
+minalias "echi", "puts"
