@@ -159,6 +159,19 @@ minsym "rest":
   else:
     i.error(errIncorrect, "A quotation or a string is required on the stack")
 
+# Operations on strings
+
+
+minsym "split":
+  let sep = i.pop
+  let s = i.pop
+  if s.isString and sep.isString:
+    for e in s.strVal.split(sep.strVal):
+      i.push e.newVal
+  else:
+    i.error errIncorrect, "Two strings are required on the stack"
+
+
 # Arithmetic
 
 minsym "+":
@@ -427,6 +440,16 @@ minsym "write":
 minsym "pwd":
   i.push newVal(getCurrentDir())
 
+minsym "cd":
+  let f = i.pop
+  if f.isString:
+    try:
+      f.strVal.setCurrentDir
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "A string is required on the stack"
+
 minsym "ls":
   let a = i.pop
   var list = newSeq[TMinValue](0)
@@ -472,6 +495,49 @@ minsym "os":
 minsym "cpu":
   i.push hostCPU.newVal
 
+minsym "file?":
+  let f = i.pop
+  if f.isString:
+    i.push f.strVal.fileExists.newVal
+  else:
+    i.error errIncorrect, "A string is required on the stack"
+
+minsym "dir?":
+  let f = i.pop
+  if f.isString:
+    i.push f.strVal.dirExists.newVal
+  else:
+    i.error errIncorrect, "A string is required on the stack"
+
+minsym "rm":
+  let f = i.pop
+  if f.isString:
+    try:
+      f.strVal.removeFile
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "A string is required on the stack"
+
+minsym "rmdir":
+  let f = i.pop
+  if f.isString:
+    try:
+      f.strVal.removeDir
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "A string is required on the stack"
+
+minsym "mkdir":
+  let f = i.pop
+  if f.isString:
+    try:
+      f.strVal.createDir
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "A string is required on the stack"
 # Aliases
 
 minalias "quit", "exit"

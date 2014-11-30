@@ -15,6 +15,9 @@ ifte
 [$USER]     [$USERNAME] :
 
 
-// Other
+// Mathematical
+
+[1 +] [succ] :
+[1 -] [pred] :
 
 [[ dup 0 == ] [ 1 + ] [ dup 1 - ] [ * ] linrec] [factorial] :
