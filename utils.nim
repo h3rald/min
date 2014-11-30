@@ -7,6 +7,7 @@ template minsym*(name: string, body: stmt): stmt {.immediate.} =
 
 proc minalias*(newname: string, oldname: string) =
   SYMBOLS[newname] = SYMBOLS[oldname]
+  ALIASES.add newname
 
 proc isSymbol*(s: TMinValue): bool =
   return s.kind == minSymbol
@@ -46,3 +47,13 @@ proc newVal*(s: bool): TMinValue =
 
 proc warn*(s: string) =
   stderr.writeln s
+
+proc linrec*(i: var TMinInterpreter, p, t, r1, r2: TMinValue) =
+  i.push p.qVal
+  var check = i.pop
+  if check.isBool and check.boolVal == true:
+    i.push t.qVal
+  else:
+    i.push r1.qVal
+    i.linrec(p, t, r1, r2)
+    i.push r2.qVal

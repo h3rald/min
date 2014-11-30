@@ -3,11 +3,11 @@ import parser
 
 type 
   TMinInterpreter* = object
-    stack: TMinStack
+    stack*: TMinStack
     parser*: TMinParser
     currSym: TMinValue
-    filename: string
-    debugging: bool 
+    filename*: string
+    debugging*: bool 
     evaluating*: bool 
   TMinOperator* = proc (i: var TMinInterpreter)
   TMinError* = enum
@@ -35,6 +35,7 @@ const ERRORS: array [TMinError, string] = [
 ]
 
 var SYMBOLS* = initTable[string, TMinOperator]()
+var ALIASES* = newSeq[string](0)
 
 proc newMinInterpreter*(debugging = false): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
@@ -44,11 +45,11 @@ proc newMinInterpreter*(debugging = false): TMinInterpreter =
 
 proc error*(i: TMinInterpreter, status: TMinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
-  if i.filename != "":
-    stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
-  else:
+  if i.filename == "":
     stderr.writeln("`$1`: Error - $2" %[i.currSym.symVal, msg])
-  quit(int(status))
+  else:
+    stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
+    quit(int(status))
 
 proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =
   i.filename = filename
@@ -82,6 +83,10 @@ proc push*(i: var TMinInterpreter, val: TMinValue) =
   else:
     i.stack.add(val)
 
+proc push*(i: var TMinInterpreter, q: seq[TMinValue]) =
+  for e in q:
+    i.push e
+
 proc pop*(i: var TMinInterpreter): TMinValue =
   if i.stack.len > 0:
     return i.stack.pop
@@ -102,6 +107,28 @@ proc interpret*(i: var TMinInterpreter) =
     except:
       i.error errParser, getCurrentExceptionMsg()
     i.push val
+
+proc eval*(i: var TMinInterpreter, s: string) =
+  let fn = i.filename
+  try:
+    i.open(newStringStream(s), "eval")
+    discard i.parser.getToken() 
+    i.interpret()
+  except:
+    stderr.writeln getCurrentExceptionMsg()
+  finally:
+    i.filename = fn
+
+proc load*(i: var TMinInterpreter, s: string) =
+  let fn = i.filename
+  try:
+    i.open(newStringStream(s.readFile), s)
+    discard i.parser.getToken() 
+    i.interpret()
+  except:
+    stderr.writeln getCurrentExceptionMsg()
+  finally:
+    i.filename = fn
 
 proc apply*(i: var TMinInterpreter, symbol: string) =
   SYMBOLS[symbol](i)

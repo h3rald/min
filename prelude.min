@@ -1,0 +1,20 @@
+// Common Environment Variables
+[os "windows" ==] 
+  [
+    ["HOMEPATH" $] [$HOME] :
+    ["USERNAME" $] [$USER] :
+  ] 
+  [
+    ["HOME" $] [$HOME] :
+    ["USER" $] [$USER] :   
+  ] 
+ifte
+
+["PATH" $]  [$PATH]     : 
+[$HOME]     [$HOMEPATH] :
+[$USER]     [$USERNAME] :
+
+
+// Other
+
+[[ dup 0 == ] [ 1 + ] [ dup 1 - ] [ * ] linrec] [factorial] :

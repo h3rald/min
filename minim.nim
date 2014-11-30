@@ -1,10 +1,11 @@
-import streams, tables, parseopt2
+import streams, tables, parseopt2, strutils
 import parser, interpreter, primitives, utils
 
 
 const version* = "0.1.0"
 var debugging = false
 var repl = false
+const prelude = "prelude.min".slurp.strip
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -56,6 +57,8 @@ proc minimRepl*() =
   i.open(s, "")
   setControlCHook(handleReplCtrlC)
   echo "MiNiM v"&version&" - REPL initialized."
+  i.eval prelude
+  echo "Prelude loaded."
   echo "-> Press Ctrl+C to exit."
   var pos = 0
   var line: string
@@ -90,6 +93,7 @@ for kind, key, val in getopt():
           str = val
         of "help", "h":
           echo usage
+          quit(0)
         of "version", "v":
           echo version
         of "interactive", "i":

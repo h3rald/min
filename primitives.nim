@@ -1,8 +1,24 @@
-import tables, strutils, os
+import tables, strutils, os, osproc
 import parser, interpreter, utils
 
 minsym "exit":
   quit(0)
+
+minsym "symbols":
+  var q = newSeq[TMinValue](0)
+  for s in SYMBOLS.keys:
+    q.add s.newVal
+  i.push q.newVal
+
+minsym "aliases":
+  var q = newSeq[TMinValue](0)
+  for s in ALIASES:
+    q.add s.newVal
+  i.push q.newVal
+
+minsym "debug":
+  i.debugging = not i.debugging 
+  echo "Debugging: $1" % [$i.debugging]
 
 # Common stack operations
 
@@ -65,10 +81,51 @@ minsym "map":
   else:
     i.error(errIncorrect, "Two quotations are required on the stack")
 
+minsym "ifte":
+  let fpath = i.pop
+  let tpath = i.pop
+  let check = i.pop
+  if check.isQuotation and tpath.isQuotation and fpath.isQuotation:
+    i.push check.qVal
+    let res = i.pop
+    if res.isBool and res.boolVal == true:
+      i.push tpath.qVal
+    else:
+      i.push fpath.qVal
+  else:
+    i.error(errIncorrect, "Three quotations are required on the stack")
+
+minsym "while":
+  let d = i.pop
+  let b = i.pop
+  if b.isQuotation and d.isQuotation:
+    i.push b.qVal
+    var check = i.pop
+    while check.isBool and check.boolVal == true:
+      i.push d.qVal
+      i.push b.qVal
+      check = i.pop
+  else:
+    i.error(errIncorrect, "Two quotations are required on the stack")
+
+minsym "linrec":
+  var r2 = i.pop
+  var r1 = i.pop
+  var t = i.pop
+  var p = i.pop
+  if p.isQuotation and t.isQuotation and r1.isQuotation and r2.isQuotation:
+    i.linrec(p, t, r1, r2)
+  else:
+    i.error(errIncorrect, "Four quotations are required on the stack")
+
 # Operations on the whole stack
 
 minsym "dump":
   echo i.dump
+
+minsym "stack":
+  var s = i.stack
+  i.push s
 
 # Operations on quotations or strings
 
@@ -194,6 +251,20 @@ minsym "def":
       i.error(errIncorrect, "The top quotation must contain only one symbol value")
   else:
     i.error(errIncorrect, "Two quotations or two strings is required on the stack")
+
+minsym "eval":
+  let s = i.pop
+  if s.isString:
+    i.eval s.strVal
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+minsym "load":
+  let s = i.pop
+  if s.isString:
+    i.load s.strVal
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
 
 # Comparison operators
 
@@ -369,6 +440,37 @@ minsym "ls":
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
+minsym "system":
+  let a = i.pop
+  if a.isString:
+    i.push execShellCmd(a.strVal).newVal
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+minsym "run":
+  let a = i.pop
+  if a.isString:
+    let words = a.strVal.split(" ")
+    let cmd = words[0]
+    var args = newSeq[string](0)
+    if words.len > 1:
+      args = words[1..words.len-1]
+    i.push execProcess(cmd, args, nil, {poUsePath}).newVal
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+minsym "env":
+  let a = i.pop
+  if a.isString:
+    i.push a.strVal.getEnv.newVal
+  else:
+    i.error(errIncorrect, "A string is required on the stack")
+
+minsym "os":
+  i.push hostOS.newVal
+
+minsym "cpu":
+  i.push hostCPU.newVal
 
 # Aliases
 
@@ -382,4 +484,9 @@ minalias "gt", ">"
 minalias "lt", "<"
 minalias "gte", ">="
 minalias "lte", "<="
-minalias "echi", "puts"
+minalias "echo", "puts"
+minalias "shell", "system"
+minalias "sh", "system"
+minalias "!", "system"
+minalias "!&", "run"
+minalias "$", "env"
