@@ -23,6 +23,10 @@ minsym "debug":
   i.debugging = not i.debugging 
   echo "Debugging: $1" % [$i.debugging]
 
+minsym "clear":
+  while i.stack.len > 0:
+    discard i.pop
+
 # Common stack operations
 
 minsym "id":
@@ -571,6 +575,28 @@ minsym "rm":
   else:
     i.error errIncorrect, "A string is required on the stack"
 
+minsym "cp":
+  let b = i.pop
+  let a = i.pop
+  if a.isString and b.isString:
+    try:
+      copyFile a.strVal, b.strVal
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "Two strings are required on the stack"
+
+minsym "mv":
+  let b = i.pop
+  let a = i.pop
+  if a.isString and b.isString:
+    try:
+      moveFile a.strVal, b.strVal
+    except:
+      warn getCurrentExceptionMsg()
+  else:
+    i.error errIncorrect, "Two strings are required on the stack"
+
 minsym "rmdir":
   let f = i.pop
   if f.isString:
@@ -610,8 +636,10 @@ minalias "sh", "system"
 minalias "!", "system"
 minalias "!&", "run"
 minalias "$", "getenv"
+minalias "$=", "putenv"
 minalias "zap", "pop"
 minalias "unit", "quote"
 minalias "i", "unquote"
 minalias "i", "apply"
 minalias "select", "filter"
+minalias "empty", "clear"
