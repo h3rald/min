@@ -16,13 +16,16 @@ minsym "aliases":
     q.add s.newVal
   i.push q.newVal
 
+minsym "debug?":
+  i.push i.debugging.newVal
+
 minsym "debug":
   i.debugging = not i.debugging 
   echo "Debugging: $1" % [$i.debugging]
 
 # Common stack operations
 
-minsym "i":
+minsym "id":
   discard
 
 minsym "pop":
@@ -45,6 +48,16 @@ minsym "swap":
   let b = i.pop
   i.push a
   i.push b
+
+minsym "sip":
+  let a = i.pop
+  let b = i.pop
+  if a.isQuotation and b.isQuotation:
+    i.push b
+    i.push a.qVal
+    i.push b
+  else:
+    i.error(errIncorrect, "Two quotations are required on the stack")
 
 # Operations on quotations
 
@@ -105,6 +118,21 @@ minsym "while":
       i.push d.qVal
       i.push b.qVal
       check = i.pop
+  else:
+    i.error(errIncorrect, "Two quotations are required on the stack")
+
+minsym "filter":
+  let filter = i.pop
+  let list = i.pop
+  var res = newSeq[TMinValue](0)
+  if filter.isQuotation and list.isQuotation:
+    for e in list.qVal:
+      i.push e
+      i.push filter.qVal
+      var check = i.pop
+      if check.isBool and check.boolVal == true:
+        res.add e
+    i.push res.newVal
   else:
     i.error(errIncorrect, "Two quotations are required on the stack")
 
@@ -247,6 +275,22 @@ minsym "/":
       i.push newVal(b.intVal.float / a.floatVal) 
     else:
       i.error(errTwoNumbersRequired)
+
+minsym "div":
+  let b = i.pop
+  let a = i.pop
+  if a.isInt and b.isInt:
+    i.push(newVal(a.intVal div b.intVal))
+  else:
+    i.error errIncorrect, "Two integers are required on the stack"
+
+minsym "mod":
+  let b = i.pop
+  let a = i.pop
+  if a.isInt and b.isInt:
+    i.push(newVal(a.intVal mod b.intVal))
+  else:
+    i.error errIncorrect, "Two integers are required on the stack"
 
 # Language constructs
 
@@ -482,12 +526,20 @@ minsym "run":
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "env":
+minsym "getenv":
   let a = i.pop
   if a.isString:
     i.push a.strVal.getEnv.newVal
   else:
     i.error(errIncorrect, "A string is required on the stack")
+
+minsym "putenv":
+  let value = i.pop
+  let key = i.pop
+  if value.isString and key.isString:
+    key.strVal.putEnv value.strVal
+  else:
+    i.error(errIncorrect, "Two strings are required on the stack")
 
 minsym "os":
   i.push hostOS.newVal
@@ -538,10 +590,12 @@ minsym "mkdir":
       warn getCurrentExceptionMsg()
   else:
     i.error errIncorrect, "A string is required on the stack"
+
 # Aliases
 
 minalias "quit", "exit"
 minalias "&", "concat"
+minalias "cat", "concat"
 minalias "%", "print"
 minalias ":", "def"
 minalias "eq", "=="
@@ -555,4 +609,9 @@ minalias "shell", "system"
 minalias "sh", "system"
 minalias "!", "system"
 minalias "!&", "run"
-minalias "$", "env"
+minalias "$", "getenv"
+minalias "zap", "pop"
+minalias "unit", "quote"
+minalias "i", "unquote"
+minalias "i", "apply"
+minalias "select", "filter"
