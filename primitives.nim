@@ -305,13 +305,13 @@ minsym "def":
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
       minsym q1.qVal[0].symVal:
         i.evaluating = true
-        for item in q2.qVal:
-          i.push item
+        echo q2
+        i.push q2.qVal
         i.evaluating = false
     else:
-      i.error(errIncorrect, "The top quotation must contain only one symbol value")
+      i.error errIncorrect, "The top quotation must contain only one symbol value"
   else:
-    i.error(errIncorrect, "Two quotations or two strings is required on the stack")
+    i.error errIncorrect, "Two quotations are required on the stack"
 
 minsym "eval":
   let s = i.pop

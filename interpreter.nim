@@ -40,7 +40,7 @@ var ALIASES* = newSeq[string](0)
 proc newMinInterpreter*(debugging = false): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
   var p:TMinParser
-  var i:TMinInterpreter = TMinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: TMinValue(first: 0, last: 0, line: 0, kind: minSymbol, symVal: ""))
+  var i:TMinInterpreter = TMinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: TMinValue(column: 1, line: 1, kind: minSymbol, symVal: ""))
   return i
 
 proc error*(i: TMinInterpreter, status: TMinError, message = "") =
@@ -48,7 +48,7 @@ proc error*(i: TMinInterpreter, status: TMinError, message = "") =
   if i.filename == "":
     stderr.writeln("`$1`: Error - $2" %[i.currSym.symVal, msg])
   else:
-    stderr.writeln("$1[$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.last, i.currSym.symVal, msg])
+    stderr.writeln("$1 [$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
 proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =

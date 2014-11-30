@@ -7,7 +7,7 @@ var debugging = false
 var repl = false
 const prelude = "prelude.min".slurp.strip
 
-let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
+let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
 
   (c) 2014 Fabio Cevasco
   
@@ -24,11 +24,11 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
 
 proc minimStream(s: PStream, filename: string) =
   var i = newMinInterpreter(debugging)
+  i.eval prelude
   i.open(s, filename)
   discard i.parser.getToken() 
   i.interpret()
   i.close()
-
 
 proc handleReplCtrlC() {.noconv.}=
   echo "\n-> Exiting..."

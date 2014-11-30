@@ -21,9 +21,8 @@ type
     minSymbol,
     minBool
   TMinValue* = object
-    first*: int
-    last*: int
-    line*: int 
+    line*: int
+    column*: int
     case kind*: TMinKind
       of minInt: intVal*: int
       of minFloat: floatVal*: float
@@ -399,20 +398,20 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
-    result = TMinValue(kind: minBool, boolVal: true, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minBool, boolVal: true, column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkFalse:
-    result = TMinValue(kind: minBool, boolVal: false, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minBool, boolVal: false, column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkString:
-    result = TMinValue(kind: minString, strVal: p.a, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minString, strVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = TMinValue(kind: minInt, intVal: parseint(p.a), first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minInt, intVal: parseint(p.a), column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkFloat:
-    result = TMinValue(kind: minFloat, floatVal: parseFloat(p.a), first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minFloat, floatVal: parseFloat(p.a), column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[TMinValue](0)
@@ -420,9 +419,9 @@ proc parseMinValue*(p: var TMinParser): TMinValue =
     while p.token != tkBracketRi: 
       q.add parseMinValue(p)
     eat(p, tkBracketRi)
-    result = TMinValue(kind: minQuotation, qVal: q, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber)
   of tkSymbol:
-    result = TMinValue(kind: minSymbol, symVal: p.a, first: p.bufpos-p.a.len, last: p.bufpos, line: p.lineNumber)
+    result = TMinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""
     discard getToken(p)
   else:
