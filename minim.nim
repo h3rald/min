@@ -60,7 +60,6 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Press Ctrl+C to exit."
-  var pos = 0
   var line: string
   while true:
     stdout.write(": ")

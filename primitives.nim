@@ -1,4 +1,4 @@
-import tables, strutils, os, osproc
+import tables, strutils, os, osproc, times
 import parser, interpreter, utils
 
 minsym "exit":
@@ -445,6 +445,14 @@ minsym "xor":
     i.push newVal(a.boolVal xor b.boolVal)
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
+
+# Time
+
+minsym "timestamp":
+  i.push getTime().int.newVal
+
+minsym "now":
+  i.push epochTime().newVal
 
 # I/O 
 
