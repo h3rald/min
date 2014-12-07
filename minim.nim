@@ -1,5 +1,5 @@
 import streams, tables, parseopt2, strutils
-import parser, interpreter, primitives, utils
+import parser, interpreter, primitives, utils, linenoise
 
 
 const version* = "0.1.0"
