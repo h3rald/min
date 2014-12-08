@@ -37,7 +37,6 @@ when not(defined(TREX_H)):
   ##define trex_printf wprintf
   ##else
   type
-    TRexChar* = char
     TRex* = object
   const 
     MAX_CHAR* = 0x000000FF
@@ -49,16 +48,21 @@ when not(defined(TREX_H)):
   type 
     TRexBool* = cuint
     TRexMatch* = object 
-      begin*: ptr TRexChar
+      begin*: cstring
       len*: cint
 
-  proc compile*(pattern: ptr TRexChar; error: ptr ptr TRexChar): ptr TRex
+  proc compile*(pattern: cstring; error: ptr cstring): ptr TRex
   proc free*(exp: ptr TRex)
-  proc match*(exp: ptr TRex; text: ptr TRexChar): TRexBool
-  proc search*(exp: ptr TRex; text: ptr TRexChar; 
-                    out_begin: ptr ptr TRexChar; out_end: ptr ptr TRexChar): TRexBool
-  proc searchrange*(exp: ptr TRex; text_begin: ptr TRexChar; 
-                         text_end: ptr TRexChar; out_begin: ptr ptr TRexChar; 
-                         out_end: ptr ptr TRexChar): TRexBool
+  proc match*(exp: ptr TRex; text: cstring): TRexBool
+  proc search*(exp: ptr TRex; text: cstring; 
+                    out_begin: ptr cstring; out_end: ptr cstring): TRexBool
+  proc searchrange*(exp: ptr TRex; text_begin: cstring; 
+                         text_end: cstring; out_begin: ptr cstring; 
+                         out_end: ptr cstring): TRexBool
   proc getsubexpcount*(exp: ptr TRex): cint
   proc getsubexp*(exp: ptr TRex; n: cint; subexp: ptr TRexMatch): TRexBool
+
+  # High level API
+  proc regex(expr: string): ptr TRex =
+    var error = "INVALID_REGEX"
+    return compile(expre, error)
