@@ -48,9 +48,14 @@ proc minimFile*(file: TFile, filename="stdin") =
   minimStream(stream, filename)
 
 proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) = 
+  var words = ($str).split(" ")
+  var w = words.pop
+  var sep = ""
+  if words.len > 0:
+    sep = " "
   for s in SYMBOLS.keys:
-      if startsWith(s, $str):
-        linenoiseAddCompletion completions, s
+      if startsWith(s, w):
+        linenoiseAddCompletion completions, words.join(" ") & sep & s
 
 proc minimRepl*() = 
   var i = newMinInterpreter(debugging)
