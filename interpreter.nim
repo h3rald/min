@@ -34,7 +34,7 @@ const ERRORS: array [TMinError, string] = [
   "Division by zero"
 ]
 
-var SYMBOLS* = initTable[string, TMinOperator]()
+var SYMBOLS* = initOrderedTable[string, TMinOperator]()
 var ALIASES* = newSeq[string](0)
 
 proc newMinInterpreter*(debugging = false): TMinInterpreter =

@@ -30,10 +30,6 @@ proc minimStream(s: PStream, filename: string) =
   i.interpret()
   i.close()
 
-proc handleReplCtrlC() {.noconv.}=
-  echo "\n-> Exiting..."
-  quit(0)
-
 proc minimString*(buffer: string) =
     minimStream(newStringStream(buffer), "input")
 
@@ -60,11 +56,10 @@ proc minimRepl*() =
   var i = newMinInterpreter(debugging)
   var s = newStringStream("")
   i.open(s, "")
-  setControlCHook(handleReplCtrlC)
   echo "MiNiM v"&version&" - REPL initialized."
   i.eval prelude
   echo "Prelude loaded."
-  echo "-> Press Ctrl+C to exit."
+  echo "-> Type 'exit' or 'quit' to exit."
   discard linenoiseSetCompletionCallback completionCallback
   var line: cstring
   while true:

@@ -1,13 +1,18 @@
 import tables, strutils
 import parser, interpreter
 
+proc sortSymbols() = 
+  SYMBOLS.sort(proc (a, b):int = return a.key.cmpIgnoreCase(b.key))
+
 template minsym*(name: string, body: stmt): stmt {.immediate.} =
   SYMBOLS[name] = proc (i: var TMinInterpreter) =
     body
+    sortSymbols()
 
 proc minalias*(newname: string, oldname: string) =
   SYMBOLS[newname] = SYMBOLS[oldname]
   ALIASES.add newname
+  sortSymbols()
 
 proc isSymbol*(s: TMinValue): bool =
   return s.kind == minSymbol
