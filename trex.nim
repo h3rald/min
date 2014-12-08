@@ -63,6 +63,29 @@ when not(defined(TREX_H)):
   proc getsubexp*(exp: ptr TRex; n: cint; subexp: ptr TRexMatch): TRexBool
 
   # High level API
-  proc regex(expr: string): ptr TRex =
+  proc match(exp: string, str: string): bool =
     var error = "INVALID_REGEX"
-    return compile(expre, error)
+    var regex = compile(expre, error)
+    # TODO raise error if regex invalid
+    let res = regex.match(str)
+    regex.free
+    if res == 1: return true else: return false
+
+  proc submatch(exp: string, n: int): string =
+    var error = "INVALID_REGEX"
+    var regex = compile(expre, error)
+    # TODO raise error if regex invalid
+    var sub = TRexMatch()
+    let res = regex.getsubexp(n, sub)
+    regex.free
+    # TODO raise error if no submatch
+    return sub
+
+  proc submatches(exp: string): int =
+    var error = "INVALID_REGEX"
+    var regex = compile(expre, error)
+    # TODO raise error if regex invalid
+    let res = regex.getsubexpcount()
+    regex.free
+    # TODO raise error if no submatch
+    return res
