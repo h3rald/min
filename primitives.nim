@@ -1,5 +1,5 @@
 import tables, strutils, os, osproc, times
-import parser, interpreter, utils
+import parser, interpreter, utils, trex
 
 minsym "exit":
   quit(0)
