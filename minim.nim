@@ -51,6 +51,11 @@ proc minimFile*(file: TFile, filename="stdin") =
     stderr.flushFile()
   minimStream(stream, filename)
 
+proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) = 
+  for s in SYMBOLS.keys:
+      if startsWith(s, $str):
+        linenoiseAddCompletion completions, s
+
 proc minimRepl*() = 
   var i = newMinInterpreter(debugging)
   var s = newStringStream("")
@@ -60,12 +65,13 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Press Ctrl+C to exit."
-  var line: string
+  discard linenoiseSetCompletionCallback completionCallback
+  var line: cstring
   while true:
-    stdout.write(": ")
-    line = stdin.readLine()
+    line = linenoise(": ")
+    discard linenoiseHistoryAdd line
     s.writeln(line)
-    i.parser.buf = $i.parser.buf & line
+    i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
     try:

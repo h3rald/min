@@ -1,5 +1,5 @@
 import streams, strutils, tables
-import parser
+import parser, linenoise
 
 type 
   TMinInterpreter* = object

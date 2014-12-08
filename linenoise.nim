@@ -54,7 +54,7 @@ when not(defined(LINENOISE_H)):
     #  Sets the current tab completion handler and returns the previous one, or NULL
     #  if no prior one has been set.
     # 
-    proc linenoiseSetCompletionCallback(a: linenoiseCompletionCallback): linenoiseCompletions;
+    proc linenoiseSetCompletionCallback*(a: linenoiseCompletionCallback): linenoiseCompletions;
     #
     #  Adds a copy of the given string to the given completion list. The copy is owned
     #  by the linenoiseCompletions object.
