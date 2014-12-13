@@ -34,7 +34,7 @@
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # 
 
-{.compile: "linenoise/liblinenoise.c".}
+{.compile: "vendor/linenoise/liblinenoise.c".}
 {.push importc.}
 when not(defined(LINENOISE_H)): 
   const 

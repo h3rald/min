@@ -1,4 +1,4 @@
-{.compile: "T-Rex/libtrex.c".}
+{.compile: "vendor/T-Rex/libtrex.c".}
 {.push importc.}
 when not(defined(TREX_H)): 
   const 

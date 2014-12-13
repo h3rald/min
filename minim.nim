@@ -1,11 +1,25 @@
 import streams, tables, parseopt2, strutils
-import parser, interpreter, primitives, utils, linenoise
-
+import 
+  core/parser, 
+  core/interpreter, 
+  core/utils
+import 
+  lib/lang, 
+  lib/stack, 
+  lib/numbers,
+  lib/logic,
+  lib/time, 
+  lib/io,
+  lib/sys
 
 const version* = "0.1.0"
 var debugging = false
 var repl = false
-const prelude = "prelude.min".slurp.strip
+const prelude = "lib/prelude.min".slurp.strip
+
+const
+  USE_LINENOISE = (defined(i386) or defined(amd64)) and not defined(windows)
+
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
 
@@ -21,6 +35,26 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming
     -h, --help        Print this help
     -v, --version     Print the program version
     -i, --interactive Starts MiNiM's Read Evel Print Loop"""
+
+when USE_LINENOISE:
+  import vendor/linenoise
+  proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) = 
+    var words = ($str).split(" ")
+    var w = if words.len > 0: words.pop else: ""
+    var sep = ""
+    if words.len > 0:
+      sep = " "
+    for s in SYMBOLS.keys:
+      if startsWith(s, w):
+        linenoiseAddCompletion completions, words.join(" ") & sep & s
+  proc prompt(s: string): string = 
+    var res = linenoise(s)
+    discard $linenoiseHistoryAdd(res)
+    return $res
+else:
+  proc prompt(s: string): string = 
+    stdout.print(s)
+    return stdin.readLine
 
 proc minimStream(s: PStream, filename: string) =
   var i = newMinInterpreter(debugging)
@@ -47,16 +81,6 @@ proc minimFile*(file: TFile, filename="stdin") =
     stderr.flushFile()
   minimStream(stream, filename)
 
-proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) = 
-  var words = ($str).split(" ")
-  var w = words.pop
-  var sep = ""
-  if words.len > 0:
-    sep = " "
-  for s in SYMBOLS.keys:
-      if startsWith(s, w):
-        linenoiseAddCompletion completions, words.join(" ") & sep & s
-
 proc minimRepl*() = 
   var i = newMinInterpreter(debugging)
   var s = newStringStream("")
@@ -65,12 +89,11 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Type 'exit' or 'quit' to exit."
-  discard linenoiseSetCompletionCallback completionCallback
-  var line: cstring
+  if USE_LINENOISE:
+    discard linenoiseSetCompletionCallback completionCallback
+  var line: string
   while true:
-    line = linenoise(": ")
-    discard linenoiseHistoryAdd line
-    s.writeln(line)
+    line = prompt(": ")
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 

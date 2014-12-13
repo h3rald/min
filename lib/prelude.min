@@ -1,3 +1,26 @@
+// Aliases
+[def]         [:]           def
+[exit]        [quit]        :
+[concat]      [,]           : 
+[print]       [%]           :
+[==]          [eq]          :
+[!=]          [noteq]       :
+[>]           [gt]          :
+[<]           [lt]          :
+[>=]          [gte]         :
+[<=]          [lte]         :
+[puts]        [echo]        :
+[system]      [!]           :
+[run]         [&]           :
+[getenv]      [$]           :
+[setenv]      [$=]          :
+[pop]         [zap]         :
+[quote]       [unit]        :
+[unquote]     [i]           :
+[unquote]     [apply]       :
+[filter]      [select]      :
+[clear]       [empty]       :  
+
 // Common Environment Variables
 [os "windows" ==] 
   [
