@@ -8,11 +8,11 @@ import
   lib/stack, 
   lib/quotations,
   lib/numbers,
+  lib/strings,
   lib/logic,
   lib/time, 
   lib/io,
-  lib/sys,
-  lib/regex
+  lib/sys
 
 const version* = "0.1.0"
 var debugging = false

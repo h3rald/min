@@ -35,8 +35,8 @@ const ERRORS: array [TMinError, string] = [
   "Division by zero"
 ]
 
-var SYMBOLS* = initOrderedTable[string, TMinOperator]()
-var SIGILS* = initOrderedTable[string, TMinOperator]()
+var SYMBOLS* = initTable[string, TMinOperator]()
+var SIGILS* = initTable[string, TMinOperator]()
 
 proc newMinInterpreter*(debugging = false): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
@@ -143,3 +143,11 @@ proc load*(i: var TMinInterpreter, s: string) =
 
 proc apply*(i: var TMinInterpreter, symbol: string) =
   SYMBOLS[symbol](i)
+
+proc copystack*(i: var TMinInterpreter): TMinStack =
+  var s = newSeq[TMinValue](0)
+  for i in i.stack:
+    s.add i
+  return s
+
+

@@ -10,6 +10,12 @@ minsym "symbols":
     q.add s.newVal
   i.push q.newVal
 
+minsym "sigils":
+  var q = newSeq[TMinValue](0)
+  for s in SIGILS.keys:
+    q.add s.newVal
+  i.push q.newVal
+
 minsym "debug?":
   i.push i.debugging.newVal
 
@@ -19,23 +25,35 @@ minsym "debug":
 
 # Language constructs
 
-minsym "symbol":
-  var q1 = i.pop
-  var q2 = i.pop
+minsym "bind":
+  var q2 = i.pop # new (can be a quoted symbol or a string)
+  var q1 = i.pop # existing (auto-quoted)
+  var symbol: string
   if not q1.isQuotation:
     q1 = @[q1].newVal
-  if not q2.isQuotation:
-    q2 = @[q2].newVal
-  if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-    var symbol = q1.qVal[0].symVal
-    if SYMBOLS.hasKey(symbol):
-      i.error errSystem, "Symbol '$1' already exists" % [symbol]
-    minsym symbol:
-      i.evaluating = true
-      i.push q2.qVal
-      i.evaluating = false
+  if q2.isString:
+    symbol = q2.strVal
+  elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
+    symbol = q2.qVal[0].symVal
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
+  if SYMBOLS.hasKey(symbol):
+    i.error errSystem, "Symbol '$1' already exists" % [symbol]
+  minsym symbol:
+    i.evaluating = true
+    i.push q1.qVal
+    i.evaluating = false
+
+minsym "unbind":
+  var q1 = i.pop
+  if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
+    var symbol = q1.qVal[0].symVal
+    SYMBOLS.del symbol
+  else:
+    i.error errIncorrect, "The top quotation must contain only one symbol value"
+
+minsigil "'":
+  i.push(@[TMinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
 minsym "sigil":
   var q1 = i.pop
@@ -118,15 +136,3 @@ minsym "rest":
     i.push newVal(q.strVal[1..q.strVal.len-1])
   else:
     i.error(errIncorrect, "A quotation or a string is required on the stack")
-
-# Operations on strings
-
-
-minsym "split":
-  let sep = i.pop
-  let s = i.pop
-  if s.isString and sep.isString:
-    for e in s.strVal.split(sep.strVal):
-      i.push e.newVal
-  else:
-    i.error errIncorrect, "Two strings are required on the stack"

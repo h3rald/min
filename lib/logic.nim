@@ -120,3 +120,38 @@ minsym "xor":
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
 
+minsym "string?":
+  if i.peek.kind == minString:
+    i.push true.newVal
+  else:
+    i.push false.newVal
+
+minsym "int?":
+  if i.peek.kind == minInt:
+    i.push true.newVal
+  else:
+    i.push false.newVal
+
+minsym "float?":
+  if i.peek.kind == minFloat:
+    i.push true.newVal
+  else:
+    i.push false.newVal
+
+minsym "number?":
+  if i.peek.kind == minFloat or i.peek.kind == minInt:
+    i.push true.newVal
+  else:
+    i.push false.newVal
+
+minsym "bool?":
+  if i.peek.kind == minBool:
+    i.push true.newVal
+  else:
+    i.push false.newVal
+
+minsym "quotation?":
+  if i.peek.kind == minQuotation:
+    i.push true.newVal
+  else:
+    i.push false.newVal

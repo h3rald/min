@@ -1,6 +1,15 @@
-import tables
+import tables, strutils
 import ../core/parser, ../core/interpreter, ../core/utils
 import ../vendor/slre
+
+minsym "split":
+  let sep = i.pop
+  let s = i.pop
+  if s.isString and sep.isString:
+    for e in s.strVal.split(sep.strVal):
+      i.push e.newVal
+  else:
+    i.error errIncorrect, "Two strings are required on the stack"
 
 minsym "match":
   let reg = i.pop
@@ -26,7 +35,7 @@ minsym "match?":
   else:
     i.error(errIncorrect, "Two strings are required on the stack")
 
-minsym "gsub":
+minsym "replace":
   let s_replace = i.pop
   let reg = i.pop
   let s_find = i.pop

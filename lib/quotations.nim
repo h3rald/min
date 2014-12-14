@@ -58,9 +58,11 @@ minsym "ifte":
   let fpath = i.pop
   let tpath = i.pop
   let check = i.pop
+  var stack = i.copystack
   if check.isQuotation and tpath.isQuotation and fpath.isQuotation:
     i.push check.qVal
     let res = i.pop
+    i.stack = stack
     if res.isBool and res.boolVal == true:
       i.push tpath.qVal
     else:
