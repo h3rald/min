@@ -10,12 +10,6 @@ minsym "symbols":
     q.add s.newVal
   i.push q.newVal
 
-minsym "aliases":
-  var q = newSeq[TMinValue](0)
-  for s in ALIASES:
-    q.add s.newVal
-  i.push q.newVal
-
 minsym "debug?":
   i.push i.debugging.newVal
 
@@ -25,15 +19,41 @@ minsym "debug":
 
 # Language constructs
 
-minsym "def":
-  let q1 = i.pop
+minsym "symbol":
+  var q1 = i.pop
+  var q2 = i.pop
+  if not q1.isQuotation:
+    q1 = @[q1].newVal
+  if not q2.isQuotation:
+    q2 = @[q2].newVal
+  if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
+    var symbol = q1.qVal[0].symVal
+    if SYMBOLS.hasKey(symbol):
+      i.error errSystem, "Symbol '$1' already exists" % [symbol]
+    minsym symbol:
+      i.evaluating = true
+      i.push q2.qVal
+      i.evaluating = false
+  else:
+    i.error errIncorrect, "The top quotation must contain only one symbol value"
+
+minsym "sigil":
+  var q1 = i.pop
   let q2 = i.pop
+  if q1.isString:
+    q1 = @[q1].newVal
   if q1.isQuotation and q2.isQuotation:
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-      minsym q1.qVal[0].symVal:
-        i.evaluating = true
-        i.push q2.qVal
-        i.evaluating = false
+      var symbol = q1.qVal[0].symVal
+      if symbol.len == 1:
+        if SIGILS.hasKey(symbol):
+          i.error errSystem, "Sigil '$1' already exists" % [symbol]
+        minsigil symbol:
+          i.evaluating = true
+          i.push q2.qVal
+          i.evaluating = false
+      else:
+        i.error errIncorrect, "A sigil can only have one character"
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
   else:
@@ -66,93 +86,6 @@ minsym "dump":
 minsym "stack":
   var s = i.stack
   i.push s
-
-# Operations on quotations
-
-minsym "quote":
-  let a = i.pop
-  i.push TMinValue(kind: minQuotation, qVal: @[a])
-
-minsym "unquote":
-  let q = i.pop
-  if not q.isQuotation:
-    i.error errNoQuotation
-  for item in q.qVal:
-   i.push item 
-
-minsym "cons":
-  var q = i.pop
-  let v = i.pop
-  if not q.isQuotation:
-    i.error errNoQuotation
-  q.qVal.add v
-  i.push q
-
-minsym "map":
-  let prog = i.pop
-  let list = i.pop
-  if prog.isQuotation and list.isQuotation:
-    i.push newVal(newSeq[TMinValue](0))
-    for litem in list.qVal:
-      i.push litem
-      for pitem in prog.qVal:
-        i.push pitem
-      i.apply("swap") 
-      i.apply("cons") 
-  else:
-    i.error(errIncorrect, "Two quotations are required on the stack")
-
-minsym "ifte":
-  let fpath = i.pop
-  let tpath = i.pop
-  let check = i.pop
-  if check.isQuotation and tpath.isQuotation and fpath.isQuotation:
-    i.push check.qVal
-    let res = i.pop
-    if res.isBool and res.boolVal == true:
-      i.push tpath.qVal
-    else:
-      i.push fpath.qVal
-  else:
-    i.error(errIncorrect, "Three quotations are required on the stack")
-
-minsym "while":
-  let d = i.pop
-  let b = i.pop
-  if b.isQuotation and d.isQuotation:
-    i.push b.qVal
-    var check = i.pop
-    while check.isBool and check.boolVal == true:
-      i.push d.qVal
-      i.push b.qVal
-      check = i.pop
-  else:
-    i.error(errIncorrect, "Two quotations are required on the stack")
-
-minsym "filter":
-  let filter = i.pop
-  let list = i.pop
-  var res = newSeq[TMinValue](0)
-  if filter.isQuotation and list.isQuotation:
-    for e in list.qVal:
-      i.push e
-      i.push filter.qVal
-      var check = i.pop
-      if check.isBool and check.boolVal == true:
-        res.add e
-    i.push res.newVal
-  else:
-    i.error(errIncorrect, "Two quotations are required on the stack")
-
-minsym "linrec":
-  var r2 = i.pop
-  var r1 = i.pop
-  var t = i.pop
-  var p = i.pop
-  if p.isQuotation and t.isQuotation and r1.isQuotation and r2.isQuotation:
-    i.linrec(p, t, r1, r2)
-  else:
-    i.error(errIncorrect, "Four quotations are required on the stack")
 
 # Operations on quotations or strings
 

@@ -4,15 +4,18 @@ import parser, interpreter
 proc sortSymbols() = 
   SYMBOLS.sort(proc (a, b):int = return a.key.cmpIgnoreCase(b.key))
 
+proc sortSigils() = 
+  SIGILS.sort(proc (a, b):int = return a.key.cmpIgnoreCase(b.key))
+
 template minsym*(name: string, body: stmt): stmt {.immediate.} =
   SYMBOLS[name] = proc (i: var TMinInterpreter) =
     body
     sortSymbols()
 
-proc minalias*(newname: string, oldname: string) =
-  SYMBOLS[newname] = SYMBOLS[oldname]
-  ALIASES.add newname
-  sortSymbols()
+template minsigil*(name: char, body: stmt): stmt {.immediate.} =
+  SIGILS[name] = proc (i: var TMinInterpreter) =
+    body
+    sortSigils()
 
 proc isSymbol*(s: TMinValue): bool =
   return s.kind == minSymbol

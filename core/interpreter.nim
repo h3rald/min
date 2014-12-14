@@ -10,6 +10,7 @@ type
     debugging*: bool 
     evaluating*: bool 
   TMinOperator* = proc (i: var TMinInterpreter)
+  TMinSigil* = proc (i: var TMinInterpreter, sym: string)
   TMinError* = enum
     errSystem,
     errParser,
@@ -35,7 +36,7 @@ const ERRORS: array [TMinError, string] = [
 ]
 
 var SYMBOLS* = initOrderedTable[string, TMinOperator]()
-var ALIASES* = newSeq[string](0)
+var SIGILS* = initOrderedTable[string, TMinOperator]()
 
 proc newMinInterpreter*(debugging = false): TMinInterpreter =
   var s:TMinStack = newSeq[TMinValue](0)
@@ -73,13 +74,23 @@ proc push*(i: var TMinInterpreter, val: TMinValue) =
   if val.kind == minSymbol:
     if not i.evaluating:
       i.currSym = val
+    let symbol = val.symVal
+    let sigil = "" & symbol[0]
     if SYMBOLS.hasKey(val.symVal):
       try:
         SYMBOLS[val.symVal](i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
     else:
-      i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
+      if SIGILS.hasKey(sigil) and symbol.len > 1:
+        let sym = symbol[1..symbol.len-1]
+        try:
+          i.stack.add(TMinValue(kind: minString, strVal: sym))
+          SIGILS[sigil](i) 
+        except:
+          i.error(errSystem, getCurrentExceptionMsg())
+      else:
+        i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
   else:
     i.stack.add(val)
 
