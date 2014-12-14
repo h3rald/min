@@ -20,6 +20,7 @@
 [unquote]     [apply]       :
 [filter]      [select]      :
 [clear]       [empty]       :  
+[match]       [~]           :
 
 // Common Environment Variables
 [os "windows" ==] 

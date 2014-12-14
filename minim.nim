@@ -10,7 +10,8 @@ import
   lib/logic,
   lib/time, 
   lib/io,
-  lib/sys
+  lib/sys,
+  lib/regex
 
 const version* = "0.1.0"
 var debugging = false
