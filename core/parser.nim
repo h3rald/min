@@ -36,13 +36,13 @@ type
     eMinString,            ## a string literal
     eMinInt,               ## an integer literal
     eMinFloat,             ## a float literal
-    eMinQuotationStart,    ## start of an array: the ``[`` token
-    eMinQuotationEnd       ## start of an array: the ``]`` token
+    eMinQuotationStart,    ## start of an array: the ``(`` token
+    eMinQuotationEnd       ## start of an array: the ``)`` token
   TMinParserError* = enum        ## enumeration that lists all errors that can occur
     errNone,               ## no error
     errInvalidToken,       ## invalid token
     errStringExpected,     ## string expected
-    errBracketRiExpected,  ## ``]`` expected
+    errBracketRiExpected,  ## ``)`` expected
     errQuoteExpected,      ## ``"`` or ``'`` expected
     errEOC_Expected,       ## ``*/`` expected
     errEofExpected,        ## EOF expected
@@ -68,7 +68,7 @@ const
     "no error",
     "invalid token",
     "string expected",
-    "']' expected",
+    "')' expected",
     "'\"' or \"'\" expected",
     "'*/' expected",
     "EOF expected",
@@ -80,8 +80,8 @@ const
     "string literal",
     "int literal",
     "float literal",
-    "[", 
-    "]",
+    "(", 
+    ")",
     "symbol",
     "true",
     "false"
@@ -241,7 +241,7 @@ proc parseSymbol(my: var TMinParser): TMinTokenKind =
   var pos = my.bufpos
   var buf = my.buf
   if not(buf[pos] in Whitespace):
-    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ']', '[']):
+    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(']):
         add(my.a, buf[pos])
         inc(pos)
   my.bufpos = pos
@@ -325,10 +325,10 @@ proc getToken*(my: var TMinParser): TMinTokenKind =
       result = tkInt
   of '"':
     result = parseString(my)
-  of '[':
+  of '(':
     inc(my.bufpos)
     result = tkBracketLe
-  of ']':
+  of ')':
     inc(my.bufpos)
     result = tkBracketRi
   of '\0':
@@ -440,10 +440,10 @@ proc `$`*(a: TMinValue): string =
     of minFloat:
       return $a.floatVal
     of minQuotation:
-      var q = "[ "
+      var q = "( "
       for i in a.qVal:
         q = q & $i & " "
-      q = q & "]"
+      q = q & ")"
       return q
 
 proc print*(a: TMinValue) =
@@ -476,6 +476,3 @@ proc `==`*(a: TMinValue, b: TMinValue): bool =
         return false
   else:
     return false
-            
-
-

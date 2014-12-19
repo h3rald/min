@@ -1,8 +1,8 @@
 // Common sigils
-[bind]    [:]     sigil 
-[getenv]  [$]     sigil 
-[system]  [!]     sigil 
-[run]     [&]     sigil
+(bind)    (:)     sigil 
+(getenv)  ($)     sigil 
+(system)  (!)     sigil 
+(run)     (&)     sigil
 
 // Aliases
 'bind        ::
@@ -26,33 +26,33 @@
 'filter      :select
 'clear       :empty
 'match       :~
-["."]        :.
-[".."]       :..
+(".")        :.
+("..")       :..
 
 // Mathematical Operators
-[1 +]           :succ
-[1 -]           :pred
-[2 mod 0 ==]    :even?
-[even? not]     :odd?
+(1 +)           :succ
+(1 -)           :pred
+(2 mod 0 ==)    :even?
+(even? not)     :odd?
 
-[[dup 0 ==] [1 +] [dup 1 -] [ * ] linrec] :factorial
+((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
 
 // Stack Operators
-[swap cons]                       :swons
-[[pop] dip]                       :popd
-[[dup] dip]                       :dupd
-[[swap] dip]                      :swapd
-[[dup] dip i]                     :q
-[[zap] dip i]                     :k
-[[cons] dip i]                    :b
-[[swap] dip i]                    :c
-[[dip] cons cons]                 :take
-[[] cons dip]                     :dig1
-[[] cons cons dip]                :dig2
-[[] cons cons cons dip]           :dig3
-[[[] cons] dip swap i]            :bury1
-[[[] cons cons] dip swap i]       :bury2
-[[[] cons cons cons] dip swap i]  :bury3
+(swap cons)                       :swons
+((pop) dip)                       :popd
+((dup) dip)                       :dupd
+((swap) dip)                      :swapd
+((dup) dip i)                     :q
+((zap) dip i)                     :k
+((cons) dip i)                    :b
+((swap) dip i)                    :c
+((dip) cons cons)                 :take
+(() cons dip)                     :dig1
+(() cons cons dip)                :dig2
+(() cons cons cons dip)           :dig3
+((() cons) dip swap i)            :bury1
+((() cons cons) dip swap i)       :bury2
+((() cons cons cons) dip swap i)  :bury3
 
 // Other
-[dup unbind bind]                 :rebind
+(dup unbind bind)                 :rebind
