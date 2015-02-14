@@ -18,7 +18,7 @@ minsym "cd":
 
 minsym "ls":
   let a = i.pop
-  var list = newSeq[TMinValue](0)
+  var list = newSeq[MinValue](0)
   if a.isString:
     if a.strVal.existsDir:
       for i in walkdir(a.strVal):

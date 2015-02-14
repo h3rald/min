@@ -2,7 +2,7 @@
 import lexbase, strutils, streams, unicode, tables
 
 type 
-  TMinTokenKind* = enum
+  MinTokenKind* = enum
     tkError,
     tkEof,
     tkString,
@@ -13,24 +13,24 @@ type
     tkSymbol,
     tkTrue,
     tkFalse
-  TMinKind* = enum
+  MinKind* = enum
     minInt,
     minFloat,
     minQuotation,
     minString,
     minSymbol,
     minBool
-  TMinValue* = object
+  MinValue* = object
     line*: int
     column*: int
-    case kind*: TMinKind
+    case kind*: MinKind
       of minInt: intVal*: int
       of minFloat: floatVal*: float
-      of minQuotation: qVal*: seq[TMinValue]
+      of minQuotation: qVal*: seq[MinValue]
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool
-  TMinEventKind* = enum    ## enumeration of all events that may occur when parsing
+  MinEventKind* = enum    ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
     eMinEof,               ## end of file reached
     eMinString,            ## a string literal
@@ -38,7 +38,7 @@ type
     eMinFloat,             ## a float literal
     eMinQuotationStart,    ## start of an array: the ``(`` token
     eMinQuotationEnd       ## start of an array: the ``)`` token
-  TMinParserError* = enum        ## enumeration that lists all errors that can occur
+  MinParserError* = enum        ## enumeration that lists all errors that can occur
     errNone,               ## no error
     errInvalidToken,       ## invalid token
     errStringExpected,     ## string expected
@@ -47,24 +47,24 @@ type
     errEOC_Expected,       ## ``*/`` expected
     errEofExpected,        ## EOF expected
     errExprExpected
-  TMinParserState = enum 
+  MinParserState = enum 
     stateEof, 
     stateStart, 
     stateQuotation, 
     stateExpectValue
-  TMinParser* = object of TBaseLexer
+  MinParser* = object of BaseLexer
     a*: string
-    token*: TMinTokenKind
-    state*: seq[TMinParserState]
-    kind*: TMinEventKind
-    err*: TMinParserError
+    token*: MinTokenKind
+    state*: seq[MinParserState]
+    kind*: MinEventKind
+    err*: MinParserError
     filename*: string
-  TMinStack* = seq[TMinValue]
-  EMinParsingError* = ref object of EInvalidValue 
-  EMinUndefinedError* = ref object of EInvalidValue
+  MinStack* = seq[MinValue]
+  EMinParsingError* = ref object of ValueError 
+  EMinUndefinedError* = ref object of ValueError
 
 const
-  errorMessages: array [TMinParserError, string] = [
+  errorMessages: array [MinParserError, string] = [
     "no error",
     "invalid token",
     "string expected",
@@ -74,7 +74,7 @@ const
     "EOF expected",
     "expression expected"
   ]
-  tokToStr: array [TMinTokenKind, string] = [
+  tokToStr: array [MinTokenKind, string] = [
     "invalid token",
     "EOF",
     "string literal",
@@ -87,59 +87,59 @@ const
     "false"
   ]
 
-proc open*(my: var TMinParser, input: PStream, filename: string) =
+proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
   my.filename = filename
   my.state = @[stateStart]
   my.kind = eMinError
   my.a = ""
 
-proc close*(my: var TMinParser) {.inline.} = 
+proc close*(my: var MinParser) {.inline.} = 
   lexbase.close(my)
 
-proc getInt*(my: TMinParser): int {.inline.} = 
+proc getInt*(my: MinParser): int {.inline.} = 
   assert(my.kind == eMinInt)
   return parseint(my.a)
 
-proc getFloat*(my: TMinParser): float {.inline.} = 
+proc getFloat*(my: MinParser): float {.inline.} = 
   assert(my.kind == eMinFloat)
   return parseFloat(my.a)
 
-proc kind*(my: TMinParser): TMinEventKind {.inline.} = 
+proc kind*(my: MinParser): MinEventKind {.inline.} = 
   return my.kind
 
-proc getColumn*(my: TMinParser): int {.inline.} = 
+proc getColumn*(my: MinParser): int {.inline.} = 
   result = getColNumber(my, my.bufpos)
 
-proc getLine*(my: TMinParser): int {.inline.} = 
+proc getLine*(my: MinParser): int {.inline.} = 
   result = my.lineNumber
 
-proc getFilename*(my: TMinParser): string {.inline.} = 
+proc getFilename*(my: MinParser): string {.inline.} = 
   result = my.filename
   
-proc errorMsg*(my: TMinParser, msg: string): string = 
+proc errorMsg*(my: MinParser, msg: string): string = 
   assert(my.kind == eMinError)
   result = "$1 [l:$2, c:$3] ERROR - $4" % [
     my.filename, $getLine(my), $getColumn(my), msg]
 
-proc errorMsg*(my: TMinParser): string = 
+proc errorMsg*(my: MinParser): string = 
   assert(my.kind == eMinError)
   result = errorMsg(my, errorMessages[my.err])
   
-proc errorMsgExpected*(my: TMinParser, e: string): string = 
+proc errorMsgExpected*(my: MinParser, e: string): string = 
   result = errorMsg(my, e & " expected")
 
-proc raiseParseError*(p: TMinParser, msg: string) {.noinline, noreturn.} =
+proc raiseParseError*(p: MinParser, msg: string) {.noinline, noreturn.} =
   raise EMinParsingError(msg: errorMsgExpected(p, msg))
 
-proc raiseUndefinedError*(p:TMinParser, msg: string) {.noinline, noreturn.} =
+proc raiseUndefinedError*(p:MinParser, msg: string) {.noinline, noreturn.} =
   raise EMinUndefinedError(msg: errorMsg(p, msg))
 
-#proc error(p: TMinParser, msg: string) = 
+#proc error(p: MinParser, msg: string) = 
 #  writeln(stderr, p.errorMsg(msg))
 #  flushFile(stderr)
 
-proc parseNumber(my: var TMinParser) = 
+proc parseNumber(my: var MinParser) = 
   var pos = my.bufpos
   var buf = my.buf
   if buf[pos] == '-': 
@@ -178,7 +178,7 @@ proc handleHexChar(c: char, x: var int): bool =
   of 'A'..'F': x = (x shl 4) or (ord(c) - ord('A') + 10)
   else: result = false # error
 
-proc parseString(my: var TMinParser): TMinTokenKind =
+proc parseString(my: var MinParser): MinTokenKind =
   result = tkString
   var pos = my.bufpos + 1
   var buf = my.buf
@@ -218,7 +218,7 @@ proc parseString(my: var TMinParser): TMinTokenKind =
         if handleHexChar(buf[pos], r): inc(pos)
         if handleHexChar(buf[pos], r): inc(pos)
         if handleHexChar(buf[pos], r): inc(pos)
-        add(my.a, toUTF8(TRune(r)))
+        add(my.a, toUTF8(Rune(r)))
       else: 
         # don't bother with the error
         add(my.a, buf[pos])
@@ -236,7 +236,7 @@ proc parseString(my: var TMinParser): TMinTokenKind =
       inc(pos)
   my.bufpos = pos # store back
 
-proc parseSymbol(my: var TMinParser): TMinTokenKind = 
+proc parseSymbol(my: var MinParser): MinTokenKind = 
   result = tkSymbol
   var pos = my.bufpos
   var buf = my.buf
@@ -246,7 +246,7 @@ proc parseSymbol(my: var TMinParser): TMinTokenKind =
         inc(pos)
   my.bufpos = pos
 
-proc skip(my: var TMinParser) = 
+proc skip(my: var MinParser) = 
   var pos = my.bufpos
   var buf = my.buf
   while true: 
@@ -304,7 +304,7 @@ proc skip(my: var TMinParser) =
       break
   my.bufpos = pos
 
-proc getToken*(my: var TMinParser): TMinTokenKind =
+proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
   skip(my) 
   case my.buf[my.bufpos]
@@ -343,7 +343,7 @@ proc getToken*(my: var TMinParser): TMinTokenKind =
   my.token = result
 
 
-proc next*(my: var TMinParser) = 
+proc next*(my: var MinParser) = 
   var tk = getToken(my)
   var i = my.state.len-1
   case my.state[i]
@@ -357,7 +357,7 @@ proc next*(my: var TMinParser) =
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.state[i] = stateEof # expect EOF next!
-      my.kind = TMinEventKind(ord(tk))
+      my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation) # we expect any
       my.kind = eMinQuotationStart
@@ -369,7 +369,7 @@ proc next*(my: var TMinParser) =
   of stateQuotation:
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.kind = TMinEventKind(ord(tk))
+      my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
@@ -382,7 +382,7 @@ proc next*(my: var TMinParser) =
   of stateExpectValue:
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.kind = TMinEventKind(ord(tk))
+      my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
@@ -390,44 +390,44 @@ proc next*(my: var TMinParser) =
       my.kind = eMinError
       my.err = errExprExpected
 
-proc eat(p: var TMinParser, token: TMinTokenKind) = 
+proc eat(p: var MinParser, token: MinTokenKind) = 
   if p.token == token: discard getToken(p)
   else: raiseParseError(p, tokToStr[token])
 
-proc parseMinValue*(p: var TMinParser): TMinValue =
+proc parseMinValue*(p: var MinParser): MinValue =
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
-    result = TMinValue(kind: minBool, boolVal: true, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minBool, boolVal: true, column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkFalse:
-    result = TMinValue(kind: minBool, boolVal: false, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minBool, boolVal: false, column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkString:
-    result = TMinValue(kind: minString, strVal: p.a, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minString, strVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = TMinValue(kind: minInt, intVal: parseint(p.a), column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minInt, intVal: parseint(p.a), column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkFloat:
-    result = TMinValue(kind: minFloat, floatVal: parseFloat(p.a), column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minFloat, floatVal: parseFloat(p.a), column: p.getColumn, line: p.lineNumber)
     discard getToken(p)
   of tkBracketLe:
-    var q = newSeq[TMinValue](0)
+    var q = newSeq[MinValue](0)
     discard getToken(p)
     while p.token != tkBracketRi: 
       q.add parseMinValue(p)
     eat(p, tkBracketRi)
-    result = TMinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber)
   of tkSymbol:
-    result = TMinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""
     discard getToken(p)
   else:
     raiseUndefinedError(p, "Undefined value: '"&p.a&"'")
 
-proc `$`*(a: TMinValue): string =
+proc `$`*(a: MinValue): string =
   case a.kind:
     of minBool:
       return $a.boolVal
@@ -446,10 +446,10 @@ proc `$`*(a: TMinValue): string =
       q = q & ")"
       return q
 
-proc print*(a: TMinValue) =
+proc print*(a: MinValue) =
   stdout.write($a)
 
-proc `==`*(a: TMinValue, b: TMinValue): bool =
+proc `==`*(a: MinValue, b: MinValue): bool =
   if a.kind == minInt and b.kind == minInt:
     return a.intVal == b.intVal
   elif a.kind == minInt and b.kind == minFloat:

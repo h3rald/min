@@ -5,13 +5,13 @@ minsym "exit":
   quit(0)
 
 minsym "symbols":
-  var q = newSeq[TMinValue](0)
+  var q = newSeq[MinValue](0)
   for s in SYMBOLS.keys:
     q.add s.newVal
   i.push q.newVal
 
 minsym "sigils":
-  var q = newSeq[TMinValue](0)
+  var q = newSeq[MinValue](0)
   for s in SIGILS.keys:
     q.add s.newVal
   i.push q.newVal
@@ -53,7 +53,7 @@ minsym "unbind":
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 
 minsigil "'":
-  i.push(@[TMinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
+  i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
 minsym "sigil":
   var q1 = i.pop

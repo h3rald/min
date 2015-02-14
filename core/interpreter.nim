@@ -2,16 +2,16 @@ import streams, strutils, tables
 import parser, ../vendor/linenoise
 
 type 
-  TMinInterpreter* = object
-    stack*: TMinStack
-    parser*: TMinParser
-    currSym: TMinValue
+  MinInterpreter* = object
+    stack*: MinStack
+    parser*: MinParser
+    currSym: MinValue
     filename*: string
     debugging*: bool 
     evaluating*: bool 
-  TMinOperator* = proc (i: var TMinInterpreter)
-  TMinSigil* = proc (i: var TMinInterpreter, sym: string)
-  TMinError* = enum
+  MinOperator* = proc (i: var MinInterpreter)
+  MinSigil* = proc (i: var MinInterpreter, sym: string)
+  MinError* = enum
     errSystem,
     errParser,
     errGeneric,
@@ -23,7 +23,7 @@ type
     errDivisionByZero
 
 
-const ERRORS: array [TMinError, string] = [
+const ERRORS: array [MinError, string] = [
   "A system error occurred",
   "A parsing error occurred",
   "A generic error occurred",
@@ -35,16 +35,16 @@ const ERRORS: array [TMinError, string] = [
   "Division by zero"
 ]
 
-var SYMBOLS* = initTable[string, TMinOperator]()
-var SIGILS* = initTable[string, TMinOperator]()
+var SYMBOLS* = initTable[string, MinOperator]()
+var SIGILS* = initTable[string, MinOperator]()
 
-proc newMinInterpreter*(debugging = false): TMinInterpreter =
-  var s:TMinStack = newSeq[TMinValue](0)
-  var p:TMinParser
-  var i:TMinInterpreter = TMinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: TMinValue(column: 1, line: 1, kind: minSymbol, symVal: ""))
+proc newMinInterpreter*(debugging = false): MinInterpreter =
+  var s:MinStack = newSeq[MinValue](0)
+  var p:MinParser
+  var i:MinInterpreter = MinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: ""))
   return i
 
-proc error*(i: TMinInterpreter, status: TMinError, message = "") =
+proc error*(i: MinInterpreter, status: MinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
   if i.filename == "":
     stderr.writeln("`$1`: Error - $2" %[i.currSym.symVal, msg])
@@ -52,24 +52,24 @@ proc error*(i: TMinInterpreter, status: TMinError, message = "") =
     stderr.writeln("$1 [$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
-proc open*(i: var TMinInterpreter, stream:PStream, filename: string) =
+proc open*(i: var MinInterpreter, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
 
-proc close*(i: var TMinInterpreter) = 
+proc close*(i: var MinInterpreter) = 
   i.parser.close();
 
-proc dump*(i: TMinInterpreter): string =
+proc dump*(i: MinInterpreter): string =
   var s = ""
   for item in i.stack:
     s = s & $item & " "
   return s
 
-proc debug(i: var TMinInterpreter, value: TMinValue) =
+proc debug(i: var MinInterpreter, value: MinValue) =
   if i.debugging: 
     stderr.writeln("-- " &i.dump & $value)
 
-proc push*(i: var TMinInterpreter, val: TMinValue) = 
+proc push*(i: var MinInterpreter, val: MinValue) = 
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
@@ -85,7 +85,7 @@ proc push*(i: var TMinInterpreter, val: TMinValue) =
       if SIGILS.hasKey(sigil) and symbol.len > 1:
         let sym = symbol[1..symbol.len-1]
         try:
-          i.stack.add(TMinValue(kind: minString, strVal: sym))
+          i.stack.add(MinValue(kind: minString, strVal: sym))
           SIGILS[sigil](i) 
         except:
           i.error(errSystem, getCurrentExceptionMsg())
@@ -94,24 +94,24 @@ proc push*(i: var TMinInterpreter, val: TMinValue) =
   else:
     i.stack.add(val)
 
-proc push*(i: var TMinInterpreter, q: seq[TMinValue]) =
+proc push*(i: var MinInterpreter, q: seq[MinValue]) =
   for e in q:
     i.push e
 
-proc pop*(i: var TMinInterpreter): TMinValue =
+proc pop*(i: var MinInterpreter): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
     i.error(errEmptyStack)
 
-proc peek*(i: TMinInterpreter): TMinValue = 
+proc peek*(i: MinInterpreter): MinValue = 
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
     i.error(errEmptyStack)
 
-proc interpret*(i: var TMinInterpreter) = 
-  var val: TMinValue
+proc interpret*(i: var MinInterpreter) = 
+  var val: MinValue
   while i.parser.token != tkEof: 
     try:
       val = i.parser.parseMinValue
@@ -119,7 +119,7 @@ proc interpret*(i: var TMinInterpreter) =
       i.error errParser, getCurrentExceptionMsg()
     i.push val
 
-proc eval*(i: var TMinInterpreter, s: string) =
+proc eval*(i: var MinInterpreter, s: string) =
   let fn = i.filename
   try:
     i.open(newStringStream(s), "eval")
@@ -130,7 +130,7 @@ proc eval*(i: var TMinInterpreter, s: string) =
   finally:
     i.filename = fn
 
-proc load*(i: var TMinInterpreter, s: string) =
+proc load*(i: var MinInterpreter, s: string) =
   let fn = i.filename
   try:
     i.open(newStringStream(s.readFile), s)
@@ -141,11 +141,11 @@ proc load*(i: var TMinInterpreter, s: string) =
   finally:
     i.filename = fn
 
-proc apply*(i: var TMinInterpreter, symbol: string) =
+proc apply*(i: var MinInterpreter, symbol: string) =
   SYMBOLS[symbol](i)
 
-proc copystack*(i: var TMinInterpreter): TMinStack =
-  var s = newSeq[TMinValue](0)
+proc copystack*(i: var MinInterpreter): MinStack =
+  var s = newSeq[MinValue](0)
   for i in i.stack:
     s.add i
   return s

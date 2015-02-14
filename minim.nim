@@ -58,7 +58,7 @@ else:
     stdout.print(s)
     return stdin.readLine
 
-proc minimStream(s: PStream, filename: string) =
+proc minimStream(s: Stream, filename: string) =
   var i = newMinInterpreter(debugging)
   i.eval prelude
   i.open(s, filename)
@@ -76,7 +76,7 @@ proc minimFile*(filename: string) =
     stderr.flushFile()
   minimStream(stream, filename)
 
-proc minimFile*(file: TFile, filename="stdin") =
+proc minimFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
     stderr.writeln("Error - Cannot read from "& filename)
@@ -128,6 +128,8 @@ for kind, key, val in getopt():
           echo version
         of "interactive", "i":
           repl = true
+        else:
+          discard
     else:
       discard
 

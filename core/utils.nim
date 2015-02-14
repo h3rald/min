@@ -2,53 +2,53 @@ import tables, strutils
 import parser, interpreter
 
 template minsym*(name: string, body: stmt): stmt {.immediate.} =
-  SYMBOLS[name] = proc (i: var TMinInterpreter) =
+  SYMBOLS[name] = proc (i: var MinInterpreter) =
     body
 
 template minsigil*(name: char, body: stmt): stmt {.immediate.} =
-  SIGILS[name] = proc (i: var TMinInterpreter) =
+  SIGILS[name] = proc (i: var MinInterpreter) =
     body
 
-proc isSymbol*(s: TMinValue): bool =
+proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
 
-proc isQuotation*(s: TMinValue): bool = 
+proc isQuotation*(s: MinValue): bool = 
   return s.kind == minQuotation
 
-proc isString*(s: TMinValue): bool = 
+proc isString*(s: MinValue): bool = 
   return s.kind == minString
 
-proc isFloat*(s: TMinValue): bool =
+proc isFloat*(s: MinValue): bool =
   return s.kind == minFloat
 
-proc isInt*(s: TMinValue): bool =
+proc isInt*(s: MinValue): bool =
   return s.kind == minInt
 
-proc isNumber*(s: TMinValue): bool =
+proc isNumber*(s: MinValue): bool =
   return s.kind == minInt or s.kind == minFloat
 
-proc isBool*(s: TMinValue): bool =
+proc isBool*(s: MinValue): bool =
   return s.kind == minBool
 
-proc newVal*(s: string): TMinValue =
-  return TMinValue(kind: minString, strVal: s)
+proc newVal*(s: string): MinValue =
+  return MinValue(kind: minString, strVal: s)
 
-proc newVal*(q: seq[TMinValue]): TMinValue =
-  return TMinValue(kind: minQuotation, qVal: q)
+proc newVal*(q: seq[MinValue]): MinValue =
+  return MinValue(kind: minQuotation, qVal: q)
 
-proc newVal*(s: int): TMinValue =
-  return TMinValue(kind: minInt, intVal: s)
+proc newVal*(s: int): MinValue =
+  return MinValue(kind: minInt, intVal: s)
 
-proc newVal*(s: float): TMinValue =
-  return TMinValue(kind: minFloat, floatVal: s)
+proc newVal*(s: float): MinValue =
+  return MinValue(kind: minFloat, floatVal: s)
 
-proc newVal*(s: bool): TMinValue =
-  return TMinValue(kind: minBool, boolVal: s)
+proc newVal*(s: bool): MinValue =
+  return MinValue(kind: minBool, boolVal: s)
 
 proc warn*(s: string) =
   stderr.writeln s
 
-proc linrec*(i: var TMinInterpreter, p, t, r1, r2: TMinValue) =
+proc linrec*(i: var MinInterpreter, p, t, r1, r2: MinValue) =
   i.push p.qVal
   var check = i.pop
   if check.isBool and check.boolVal == true:

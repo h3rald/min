@@ -5,7 +5,7 @@ import ../core/parser, ../core/interpreter, ../core/utils
 
 minsym "quote":
   let a = i.pop
-  i.push TMinValue(kind: minQuotation, qVal: @[a])
+  i.push MinValue(kind: minQuotation, qVal: @[a])
 
 minsym "unquote":
   let q = i.pop
@@ -34,7 +34,7 @@ minsym "map":
   let prog = i.pop
   let list = i.pop
   if prog.isQuotation and list.isQuotation:
-    i.push newVal(newSeq[TMinValue](0))
+    i.push newVal(newSeq[MinValue](0))
     for litem in list.qVal:
       i.push litem
       for pitem in prog.qVal:
@@ -86,7 +86,7 @@ minsym "while":
 minsym "filter":
   let filter = i.pop
   let list = i.pop
-  var res = newSeq[TMinValue](0)
+  var res = newSeq[MinValue](0)
   if filter.isQuotation and list.isQuotation:
     for e in list.qVal:
       i.push e

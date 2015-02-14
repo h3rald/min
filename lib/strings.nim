@@ -16,7 +16,7 @@ minsym "match":
   let str = i.pop
   if str.isString and reg.isString:
     var matches = str.strVal.match(reg.strVal)
-    var res = newSeq[TMinValue](0)
+    var res = newSeq[MinValue](0)
     for s in matches:
       res.add s.newVal
     i.push res.newVal

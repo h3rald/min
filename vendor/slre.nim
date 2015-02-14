@@ -103,7 +103,7 @@ proc match*(s: string, re: string): seq[string] =
     else:
       return newSeq[string](0)
   else:
-    raise newException(EInvalidValue, $(rawre.err_str))
+    raise newException(ValueError, $(rawre.err_str))
 
 proc gsub*(s_find: string, re: string, s_replace): string =
   var matches = s_find.match(re)
