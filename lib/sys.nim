@@ -3,10 +3,10 @@ import ../core/parser, ../core/interpreter, ../core/utils
 
 # OS 
 
-minsym "pwd":
+minsym "pwd", i:
   i.push newVal(getCurrentDir())
 
-minsym "cd":
+minsym "cd", i:
   let f = i.pop
   if f.isString:
     try:
@@ -16,7 +16,7 @@ minsym "cd":
   else:
     i.error errIncorrect, "A string is required on the stack"
 
-minsym "ls":
+minsym "ls", i:
   let a = i.pop
   var list = newSeq[MinValue](0)
   if a.isString:
@@ -29,14 +29,14 @@ minsym "ls":
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "system":
+minsym "system", i:
   let a = i.pop
   if a.isString:
     i.push execShellCmd(a.strVal).newVal
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "run":
+minsym "run", i:
   let a = i.pop
   if a.isString:
     let words = a.strVal.split(" ")
@@ -48,14 +48,14 @@ minsym "run":
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "getenv":
+minsym "getenv", i:
   let a = i.pop
   if a.isString:
     i.push a.strVal.getEnv.newVal
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "putenv":
+minsym "putenv", i:
   let value = i.pop
   let key = i.pop
   if value.isString and key.isString:
@@ -63,27 +63,27 @@ minsym "putenv":
   else:
     i.error(errIncorrect, "Two strings are required on the stack")
 
-minsym "os":
+minsym "os", i:
   i.push hostOS.newVal
 
-minsym "cpu":
+minsym "cpu", i:
   i.push hostCPU.newVal
 
-minsym "file?":
+minsym "file?", i:
   let f = i.pop
   if f.isString:
     i.push f.strVal.fileExists.newVal
   else:
     i.error errIncorrect, "A string is required on the stack"
 
-minsym "dir?":
+minsym "dir?", i:
   let f = i.pop
   if f.isString:
     i.push f.strVal.dirExists.newVal
   else:
     i.error errIncorrect, "A string is required on the stack"
 
-minsym "rm":
+minsym "rm", i:
   let f = i.pop
   if f.isString:
     try:
@@ -93,7 +93,7 @@ minsym "rm":
   else:
     i.error errIncorrect, "A string is required on the stack"
 
-minsym "cp":
+minsym "cp", i:
   let b = i.pop
   let a = i.pop
   if a.isString and b.isString:
@@ -104,7 +104,7 @@ minsym "cp":
   else:
     i.error errIncorrect, "Two strings are required on the stack"
 
-minsym "mv":
+minsym "mv", i:
   let b = i.pop
   let a = i.pop
   if a.isString and b.isString:
@@ -115,7 +115,7 @@ minsym "mv":
   else:
     i.error errIncorrect, "Two strings are required on the stack"
 
-minsym "rmdir":
+minsym "rmdir", i:
   let f = i.pop
   if f.isString:
     try:
@@ -125,7 +125,7 @@ minsym "rmdir":
   else:
     i.error errIncorrect, "A string is required on the stack"
 
-minsym "mkdir":
+minsym "mkdir", i:
   let f = i.pop
   if f.isString:
     try:

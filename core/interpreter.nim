@@ -47,9 +47,9 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
 proc error*(i: MinInterpreter, status: MinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
   if i.filename == "":
-    stderr.writeln("`$1`: Error - $2" %[i.currSym.symVal, msg])
+    stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, msg])
   else:
-    stderr.writeln("$1 [$2,$3] `$4`: Error - $5" %[i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
+    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
 proc open*(i: var MinInterpreter, stream:Stream, filename: string) =
@@ -67,7 +67,7 @@ proc dump*(i: MinInterpreter): string =
 
 proc debug(i: var MinInterpreter, value: MinValue) =
   if i.debugging: 
-    stderr.writeln("-- " &i.dump & $value)
+    stderr.writeLine("-- " & i.dump & $value)
 
 proc push*(i: var MinInterpreter, val: MinValue) = 
   i.debug val
@@ -126,7 +126,7 @@ proc eval*(i: var MinInterpreter, s: string) =
     discard i.parser.getToken() 
     i.interpret()
   except:
-    stderr.writeln getCurrentExceptionMsg()
+    stderr.writeLine getCurrentExceptionMsg()
   finally:
     i.filename = fn
 
@@ -137,7 +137,7 @@ proc load*(i: var MinInterpreter, s: string) =
     discard i.parser.getToken() 
     i.interpret()
   except:
-    stderr.writeln getCurrentExceptionMsg()
+    stderr.writeLine getCurrentExceptionMsg()
   finally:
     i.filename = fn
 

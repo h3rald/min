@@ -3,18 +3,18 @@ import ../core/parser, ../core/interpreter, ../core/utils
 
 # I/O 
 
-minsym "puts":
+minsym "puts", i:
   let a = i.peek
   echo a
 
-minsym "gets":
+minsym "gets", i:
   i.push newVal(stdin.readLine())
 
-minsym "print":
+minsym "print", i:
   let a = i.peek
   a.print
 
-minsym "read":
+minsym "read", i:
   let a = i.pop
   if a.isString:
     if a.strVal.fileExists:
@@ -27,7 +27,7 @@ minsym "read":
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "write":
+minsym "write", i:
   let a = i.pop
   let b = i.pop
   if a.isString and b.isString:

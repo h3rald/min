@@ -20,7 +20,7 @@ var repl = false
 const prelude = "lib/prelude.min".slurp.strip
 
 const
-  USE_LINENOISE = (defined(i386) or defined(amd64)) and not defined(windows)
+  USE_LINENOISE = false #(defined(i386) or defined(amd64))# and not defined(windows)
 
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
@@ -36,7 +36,7 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming
     -e, --evaluate    Evaluate a minim program inline
     -h, --help        Print this help
     -v, --version     Print the program version
-    -i, --interactive Starts MiNiM's Read Evel Print Loop"""
+    -i, --interactive Starts MiNiM's Read Eval Print Loop"""
 
 when USE_LINENOISE:
   import vendor/linenoise
@@ -55,7 +55,7 @@ when USE_LINENOISE:
     return $res
 else:
   proc prompt(s: string): string = 
-    stdout.print(s)
+    stdout.write(s)
     return stdin.readLine
 
 proc minimStream(s: Stream, filename: string) =
@@ -72,14 +72,14 @@ proc minimString*(buffer: string) =
 proc minimFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
-    stderr.writeln("Error - Cannot read from file: "& filename)
+    stderr.writeLine("Error - Cannot read from file: "& filename)
     stderr.flushFile()
   minimStream(stream, filename)
 
 proc minimFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
-    stderr.writeln("Error - Cannot read from "& filename)
+    stderr.writeLine("Error - Cannot read from "& filename)
     stderr.flushFile()
   minimStream(stream, filename)
 
@@ -91,8 +91,8 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Type 'exit' or 'quit' to exit."
-  if USE_LINENOISE:
-    discard linenoiseSetCompletionCallback completionCallback
+  #if USE_LINENOISE:
+  #  discard linenoiseSetCompletionCallback completionCallback
   var line: string
   while true:
     line = prompt(": ")

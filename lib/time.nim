@@ -3,9 +3,9 @@ import ../core/interpreter, ../core/utils
 
 # Time
 
-minsym "timestamp":
+minsym "timestamp", i:
   i.push getTime().int.newVal
 
-minsym "now":
+minsym "now", i:
   i.push epochTime().newVal
 

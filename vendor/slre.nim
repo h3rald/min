@@ -105,7 +105,7 @@ proc match*(s: string, re: string): seq[string] =
   else:
     raise newException(ValueError, $(rawre.err_str))
 
-proc gsub*(s_find: string, re: string, s_replace): string =
+proc gsub*(s_find: string, re: string, s_replace: string): string =
   var matches = s_find.match(re)
   if matches.len > 0:
     var res = s_find.replace(matches[0], s_replace)

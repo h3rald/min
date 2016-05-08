@@ -3,7 +3,7 @@ import ../core/parser, ../core/interpreter, ../core/utils
 
 # Comparison operators
 
-minsym ">":
+minsym ">", i:
   let n2 = i.pop
   let n1 = i.pop
   if n1.isNumber and n2.isNumber:
@@ -20,7 +20,7 @@ minsym ">":
   else:
     i.error(errIncorrect, "Two numbers or two strings are required on the stack")
 
-minsym ">=":
+minsym ">=", i:
   let n2 = i.pop
   let n1 = i.pop
   if n1.isNumber and n2.isNumber:
@@ -37,7 +37,7 @@ minsym ">=":
   else:
     i.error(errIncorrect, "Two numbers or two strings are required on the stack")
 
-minsym "<":
+minsym "<", i:
   let n1 = i.pop
   let n2 = i.pop
   if n1.isNumber and n2.isNumber:
@@ -54,7 +54,7 @@ minsym "<":
   else:
     i.error(errIncorrect, "Two numbers or two strings are required on the stack")
 
-minsym "<=":
+minsym "<=", i:
   let n1 = i.pop
   let n2 = i.pop
   if n1.isNumber and n2.isNumber:
@@ -71,7 +71,7 @@ minsym "<=":
   else:
     i.error(errIncorrect, "Two numbers or two strings are required on the stack")
 
-minsym "==":
+minsym "==", i:
   let n2 = i.pop
   let n1 = i.pop
   if (n1.kind == n2.kind or (n1.isNumber and n2.isNumber)) and not n1.isSymbol:
@@ -79,7 +79,7 @@ minsym "==":
   else:
     i.error(errIncorrect, "Two non-symbol values of similar type are required")
 
-minsym "!=":
+minsym "!=", i:
   let n2 = i.pop
   let n1 = i.pop
   if (n1.kind == n2.kind or (n1.isNumber and n2.isNumber)) and not n1.isSymbol:
@@ -89,14 +89,14 @@ minsym "!=":
 
 # Boolean Logic
 
-minsym "not":
+minsym "not", i:
   let b = i.pop
   if b.isBool:
     i.push newVal(not b.boolVal)
   else:
     i.error(errIncorrect, "A bool value is required on the stack")
 
-minsym "and":
+minsym "and", i:
   let a = i.pop
   let b = i.pop
   if a.isBool and b.isBool:
@@ -104,7 +104,7 @@ minsym "and":
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
 
-minsym "or":
+minsym "or", i:
   let a = i.pop
   let b = i.pop
   if a.isBool and b.isBool:
@@ -112,7 +112,7 @@ minsym "or":
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
 
-minsym "xor":
+minsym "xor", i:
   let a = i.pop
   let b = i.pop
   if a.isBool and b.isBool:
@@ -120,37 +120,37 @@ minsym "xor":
   else:
     i.error(errIncorrect, "Two bool values are required on the stack")
 
-minsym "string?":
+minsym "string?", i:
   if i.peek.kind == minString:
     i.push true.newVal
   else:
     i.push false.newVal
 
-minsym "int?":
+minsym "int?", i:
   if i.peek.kind == minInt:
     i.push true.newVal
   else:
     i.push false.newVal
 
-minsym "float?":
+minsym "float?", i:
   if i.peek.kind == minFloat:
     i.push true.newVal
   else:
     i.push false.newVal
 
-minsym "number?":
+minsym "number?", i:
   if i.peek.kind == minFloat or i.peek.kind == minInt:
     i.push true.newVal
   else:
     i.push false.newVal
 
-minsym "bool?":
+minsym "bool?", i:
   if i.peek.kind == minBool:
     i.push true.newVal
   else:
     i.push false.newVal
 
-minsym "quotation?":
+minsym "quotation?", i:
   if i.peek.kind == minQuotation:
     i.push true.newVal
   else:

@@ -2,7 +2,7 @@ import tables, strutils
 import ../core/parser, ../core/interpreter, ../core/utils
 import ../vendor/slre
 
-minsym "split":
+minsym "split", i:
   let sep = i.pop
   let s = i.pop
   if s.isString and sep.isString:
@@ -11,7 +11,7 @@ minsym "split":
   else:
     i.error errIncorrect, "Two strings are required on the stack"
 
-minsym "match":
+minsym "match", i:
   let reg = i.pop
   let str = i.pop
   if str.isString and reg.isString:
@@ -23,7 +23,7 @@ minsym "match":
   else:
     i.error(errIncorrect, "Two strings are required on the stack")
 
-minsym "match?":
+minsym "match?", i:
   let reg = i.pop
   let str = i.pop
   if str.isString and reg.isString:
@@ -35,7 +35,7 @@ minsym "match?":
   else:
     i.error(errIncorrect, "Two strings are required on the stack")
 
-minsym "replace":
+minsym "replace", i:
   let s_replace = i.pop
   let reg = i.pop
   let s_find = i.pop

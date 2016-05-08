@@ -1,11 +1,13 @@
 import tables, strutils
 import parser, interpreter
 
-template minsym*(name: string, body: stmt): stmt {.immediate.} =
-  SYMBOLS[name] = proc (i: var MinInterpreter) =
+
+template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =
+  bind SYMBOLS
+  SYMBOLS[name] = proc (i: var MinInterpreter) {.closure.} =
     body
 
-template minsigil*(name: char, body: stmt): stmt {.immediate.} =
+template minsigil*(name: char, i: expr, body: stmt): stmt {.immediate.} =
   SIGILS[name] = proc (i: var MinInterpreter) =
     body
 
@@ -46,7 +48,7 @@ proc newVal*(s: bool): MinValue =
   return MinValue(kind: minBool, boolVal: s)
 
 proc warn*(s: string) =
-  stderr.writeln s
+  stderr.writeLine s
 
 proc linrec*(i: var MinInterpreter, p, t, r1, r2: MinValue) =
   i.push p.qVal

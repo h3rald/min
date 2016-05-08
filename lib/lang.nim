@@ -1,31 +1,31 @@
 import tables, strutils
 import ../core/parser, ../core/interpreter, ../core/utils
 
-minsym "exit":
+minsym "exit", i:
   quit(0)
 
-minsym "symbols":
+minsym "symbols", i:
   var q = newSeq[MinValue](0)
   for s in SYMBOLS.keys:
     q.add s.newVal
   i.push q.newVal
 
-minsym "sigils":
+minsym "sigils", i:
   var q = newSeq[MinValue](0)
   for s in SIGILS.keys:
     q.add s.newVal
   i.push q.newVal
 
-minsym "debug?":
+minsym "debug?", i:
   i.push i.debugging.newVal
 
-minsym "debug":
+minsym "debug", i:
   i.debugging = not i.debugging 
   echo "Debugging: $1" % [$i.debugging]
 
 # Language constructs
 
-minsym "bind":
+minsym "bind", i:
   var q2 = i.pop # new (can be a quoted symbol or a string)
   var q1 = i.pop # existing (auto-quoted)
   var symbol: string
@@ -39,12 +39,12 @@ minsym "bind":
     i.error errIncorrect, "The top quotation must contain only one symbol value"
   if SYMBOLS.hasKey(symbol):
     i.error errSystem, "Symbol '$1' already exists" % [symbol]
-  minsym symbol:
+  minsym symbol, i:
     i.evaluating = true
     i.push q1.qVal
     i.evaluating = false
 
-minsym "unbind":
+minsym "unbind", i:
   var q1 = i.pop
   if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
     var symbol = q1.qVal[0].symVal
@@ -52,10 +52,10 @@ minsym "unbind":
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 
-minsigil "'":
+minsigil "'", i:
   i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
-minsym "sigil":
+minsym "sigil", i:
   var q1 = i.pop
   let q2 = i.pop
   if q1.isString:
@@ -66,7 +66,7 @@ minsym "sigil":
       if symbol.len == 1:
         if SIGILS.hasKey(symbol):
           i.error errSystem, "Sigil '$1' already exists" % [symbol]
-        minsigil symbol:
+        minsigil symbol, i:
           i.evaluating = true
           i.push q2.qVal
           i.evaluating = false
@@ -77,14 +77,14 @@ minsym "sigil":
   else:
     i.error errIncorrect, "Two quotations are required on the stack"
 
-minsym "eval":
+minsym "eval", i:
   let s = i.pop
   if s.isString:
     i.eval s.strVal
   else:
     i.error(errIncorrect, "A string is required on the stack")
 
-minsym "load":
+minsym "load", i:
   let s = i.pop
   if s.isString:
     i.load s.strVal
@@ -94,20 +94,20 @@ minsym "load":
 
 # Operations on the whole stack
 
-minsym "clear":
+minsym "clear", i:
   while i.stack.len > 0:
     discard i.pop
 
-minsym "dump":
+minsym "dump", i:
   echo i.dump
 
-minsym "stack":
+minsym "stack", i:
   var s = i.stack
   i.push s
 
 # Operations on quotations or strings
 
-minsym "concat":
+minsym "concat", i:
   var q1 = i.pop
   var q2 = i.pop
   if q1.isString and q2.isString:
@@ -119,7 +119,7 @@ minsym "concat":
   else:
     i.error(errIncorrect, "Two quotations or two strings are required on the stack")
 
-minsym "first":
+minsym "first", i:
   var q = i.pop
   if q.isQuotation:
     i.push q.qVal[0]
@@ -128,7 +128,7 @@ minsym "first":
   else:
     i.error(errIncorrect, "A quotation or a string is required on the stack")
 
-minsym "rest":
+minsym "rest", i:
   var q = i.pop
   if q.isQuotation:
     i.push newVal(q.qVal[1..q.qVal.len-1])

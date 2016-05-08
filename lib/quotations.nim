@@ -3,18 +3,18 @@ import ../core/parser, ../core/interpreter, ../core/utils
 
 # Operations on quotations
 
-minsym "quote":
+minsym "quote", i:
   let a = i.pop
   i.push MinValue(kind: minQuotation, qVal: @[a])
 
-minsym "unquote":
+minsym "unquote", i:
   let q = i.pop
   if not q.isQuotation:
     i.error errNoQuotation
   for item in q.qVal:
    i.push item 
 
-minsym "cons":
+minsym "cons", i:
   var q = i.pop
   let v = i.pop
   if not q.isQuotation:
@@ -22,7 +22,7 @@ minsym "cons":
   q.qVal.add v
   i.push q
 
-minsym "at":
+minsym "at", i:
   var index = i.pop
   var q = i.pop
   if index.isInt and q.isQuotation:
@@ -30,7 +30,7 @@ minsym "at":
   else:
     i.error errIncorrect, "An integer and a quotation are required on the stack"
 
-minsym "map":
+minsym "map", i:
   let prog = i.pop
   let list = i.pop
   if prog.isQuotation and list.isQuotation:
@@ -44,7 +44,7 @@ minsym "map":
   else:
     i.error(errIncorrect, "Two quotations are required on the stack")
 
-minsym "times":
+minsym "times", i:
   let t = i.pop
   let prog = i.pop
   if t.isInt and prog.isQuotation:
@@ -54,7 +54,7 @@ minsym "times":
   else:
     i.error errIncorrect, "An integer and a quotation are required on the stack"
 
-minsym "ifte":
+minsym "ifte", i:
   let fpath = i.pop
   let tpath = i.pop
   let check = i.pop
@@ -70,7 +70,7 @@ minsym "ifte":
   else:
     i.error(errIncorrect, "Three quotations are required on the stack")
 
-minsym "while":
+minsym "while", i:
   let d = i.pop
   let b = i.pop
   if b.isQuotation and d.isQuotation:
@@ -83,7 +83,7 @@ minsym "while":
   else:
     i.error(errIncorrect, "Two quotations are required on the stack")
 
-minsym "filter":
+minsym "filter", i:
   let filter = i.pop
   let list = i.pop
   var res = newSeq[MinValue](0)
@@ -98,7 +98,7 @@ minsym "filter":
   else:
     i.error(errIncorrect, "Two quotations are required on the stack")
 
-minsym "linrec":
+minsym "linrec", i:
   var r2 = i.pop
   var r1 = i.pop
   var t = i.pop

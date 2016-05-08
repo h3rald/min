@@ -3,7 +3,7 @@ import ../core/interpreter, ../core/utils
 
 # Arithmetic
 
-minsym "+":
+minsym "+", i:
   let a = i.pop
   let b = i.pop
   if a.isInt:
@@ -21,7 +21,7 @@ minsym "+":
     else:
       i.error(errTwoNumbersRequired)
 
-minsym "-":
+minsym "-", i:
   let a = i.pop
   let b = i.pop
   if a.isInt:
@@ -39,7 +39,7 @@ minsym "-":
     else:
       i.error(errTwoNumbersRequired)
 
-minsym "*":
+minsym "*", i:
   let a = i.pop
   let b = i.pop
   if a.isInt:
@@ -57,7 +57,7 @@ minsym "*":
     else:
       i.error(errTwoNumbersRequired)
 
-minsym "/":
+minsym "/", i:
   let a = i.pop
   let b = i.pop
   if b.isInt and b.intVal == 0:
@@ -77,7 +77,7 @@ minsym "/":
     else:
       i.error(errTwoNumbersRequired)
 
-minsym "div":
+minsym "div", i:
   let b = i.pop
   let a = i.pop
   if a.isInt and b.isInt:
@@ -85,7 +85,7 @@ minsym "div":
   else:
     i.error errIncorrect, "Two integers are required on the stack"
 
-minsym "mod":
+minsym "mod", i:
   let b = i.pop
   let a = i.pop
   if a.isInt and b.isInt:

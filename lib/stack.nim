@@ -3,16 +3,16 @@ import ../core/interpreter, ../core/utils
 
 # Common stack operations
 
-minsym "id":
+minsym "id", i:
   discard
 
-minsym "pop":
+minsym "pop", i:
   discard i.pop
 
-minsym "dup":
+minsym "dup", i:
   i.push i.peek
 
-minsym "dip":
+minsym "dip", i:
   let q = i.pop
   if not q.isQuotation:
     i.error errNoQuotation
@@ -21,13 +21,13 @@ minsym "dip":
     i.push item
   i.push v
 
-minsym "swap":
+minsym "swap", i:
   let a = i.pop
   let b = i.pop
   i.push a
   i.push b
 
-minsym "sip":
+minsym "sip", i:
   let a = i.pop
   let b = i.pop
   if a.isQuotation and b.isQuotation:
