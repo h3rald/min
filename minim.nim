@@ -20,7 +20,7 @@ var repl = false
 const prelude = "lib/prelude.min".slurp.strip
 
 const
-  USE_LINENOISE = false #(defined(i386) or defined(amd64))# and not defined(windows)
+  USE_LINENOISE = (defined(i386) or defined(amd64))# and not defined(windows)
 
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
@@ -91,8 +91,8 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Type 'exit' or 'quit' to exit."
-  #if USE_LINENOISE:
-  #  discard linenoiseSetCompletionCallback completionCallback
+  if USE_LINENOISE:
+    discard linenoiseSetCompletionCallback completionCallback
   var line: string
   while true:
     line = prompt(": ")
