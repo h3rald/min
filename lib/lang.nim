@@ -10,13 +10,13 @@ minsym "exit", i:
 
 minsym "symbols", i:
   var q = newSeq[MinValue](0)
-  for s in SYMBOLS.keys:
+  for s in ROOT.symbols.keys:
     q.add s.newVal
   i.push q.newVal
 
 minsym "sigils", i:
   var q = newSeq[MinValue](0)
-  for s in SIGILS.keys:
+  for s in ROOT.sigils.keys:
     q.add s.newVal
   i.push q.newVal
 
@@ -41,7 +41,7 @@ minsym "bind", i:
     symbol = q2.qVal[0].symVal
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
-  if SYMBOLS.hasKey(symbol):
+  if ROOT.symbols.hasKey(symbol):
     i.error errSystem, "Symbol '$1' already exists" % [symbol]
   minsym symbol, i:
     i.evaluating = true
@@ -52,7 +52,7 @@ minsym "unbind", i:
   var q1 = i.pop
   if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
     var symbol = q1.qVal[0].symVal
-    SYMBOLS.excl symbol
+    ROOT.symbols.excl symbol
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 
@@ -68,7 +68,7 @@ minsym "sigil", i:
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
       var symbol = q1.qVal[0].symVal
       if symbol.len == 1:
-        if SIGILS.hasKey(symbol):
+        if ROOT.sigils.hasKey(symbol):
           i.error errSystem, "Sigil '$1' already exists" % [symbol]
         minsigil symbol, i:
           i.evaluating = true

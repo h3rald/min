@@ -13,8 +13,7 @@ const ERRORS: array [MinError, string] = [
   "Division by zero"
 ]
 
-var SYMBOLS*: CritBitTree[MinOperator]
-var SIGILS*: CritBitTree[MinOperator]
+var ROOT*: MinScope
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var s:MinStack = newSeq[MinValue](0)
@@ -54,17 +53,17 @@ proc push*(i: var MinInterpreter, val: MinValue) =
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
-    if SYMBOLS.hasKey(val.symVal):
+    if ROOT.symbols.hasKey(val.symVal):
       try:
-        SYMBOLS[val.symVal](i) 
+        ROOT.symbols[val.symVal](i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
     else:
-      if SIGILS.hasKey(sigil) and symbol.len > 1:
+      if ROOT.sigils.hasKey(sigil) and symbol.len > 1:
         let sym = symbol[1..symbol.len-1]
         try:
           i.stack.add(MinValue(kind: minString, strVal: sym))
-          SIGILS[sigil](i) 
+          ROOT.sigils[sigil](i) 
         except:
           i.error(errSystem, getCurrentExceptionMsg())
       else:
@@ -120,7 +119,7 @@ proc load*(i: var MinInterpreter, s: string) =
     i.filename = fn
 
 proc apply*(i: var MinInterpreter, symbol: string) =
-  SYMBOLS[symbol](i)
+  ROOT.symbols[symbol](i)
 
 proc copystack*(i: var MinInterpreter): MinStack =
   var s = newSeq[MinValue](0)

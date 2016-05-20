@@ -3,12 +3,11 @@ import types, parser, interpreter
 
 
 template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =
-  bind SYMBOLS
-  SYMBOLS[name] = proc (i: var MinInterpreter) {.closure.} =
+  ROOT.symbols[name] = proc (i: var MinInterpreter) {.closure.} =
     body
 
 template minsigil*(name: char, i: expr, body: stmt): stmt {.immediate.} =
-  SIGILS[name] = proc (i: var MinInterpreter) =
+  ROOT.sigils[name] = proc (i: var MinInterpreter) =
     body
 
 proc isSymbol*(s: MinValue): bool =

@@ -46,7 +46,7 @@ when USE_LINENOISE:
     var sep = ""
     if words.len > 0:
       sep = " "
-    for s in SYMBOLS.keys:
+    for s in ROOT.symbols.keys:
       if startsWith(s, w):
         linenoiseAddCompletion completions, words.join(" ") & sep & s
   proc prompt(s: string): string = 

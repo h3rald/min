@@ -19,12 +19,12 @@ type
     minString,
     minSymbol,
     minBool
-  MinScope = object
-    locals: CritBitTree[MinValue]
-    symbols: CritBitTree[MinValue]
-    sigils: CritBitTree[MinValue]
-    parent: ref MinScope
-    stack: MinStack
+  MinScope* = object
+    locals*: CritBitTree[MinValue]
+    symbols*: CritBitTree[MinOperator]
+    sigils*: CritBitTree[MinOperator]
+    parent*: ref MinScope
+    stack*: MinStack
   MinValue* = object
     line*: int
     column*: int
