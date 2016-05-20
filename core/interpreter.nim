@@ -1,5 +1,9 @@
 import streams, strutils, critbits
-import types, parser, ../vendor/linenoise
+import 
+  types, 
+  parser,
+  scope,
+  ../vendor/linenoise
 
 const ERRORS: array [MinError, string] = [
   "A system error occurred",
