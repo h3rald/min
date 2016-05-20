@@ -1,5 +1,9 @@
-import tables, strutils
-import ../core/parser, ../core/interpreter, ../core/utils
+import critbits, strutils
+import 
+  ../core/types,
+  ../core/parser, 
+  ../core/interpreter, 
+  ../core/utils
 
 minsym "exit", i:
   quit(0)
@@ -48,7 +52,7 @@ minsym "unbind", i:
   var q1 = i.pop
   if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
     var symbol = q1.qVal[0].symVal
-    SYMBOLS.del symbol
+    SYMBOLS.excl symbol
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 

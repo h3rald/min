@@ -1,6 +1,10 @@
 import tables, strutils
-import ../core/parser, ../core/interpreter, ../core/utils
 import ../vendor/slre
+import 
+  ../core/types,
+  ../core/parser, 
+  ../core/interpreter, 
+  ../core/utils
 
 minsym "split", i:
   let sep = i.pop

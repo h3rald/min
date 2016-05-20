@@ -1,27 +1,5 @@
-import streams, strutils, tables
-import parser, ../vendor/linenoise
-
-type 
-  MinInterpreter* = object
-    stack*: MinStack
-    parser*: MinParser
-    currSym: MinValue
-    filename*: string
-    debugging*: bool 
-    evaluating*: bool 
-  MinOperator* = proc (i: var MinInterpreter)
-  MinSigil* = proc (i: var MinInterpreter, sym: string)
-  MinError* = enum
-    errSystem,
-    errParser,
-    errGeneric,
-    errEmptyStack,
-    errNoQuotation,
-    errUndefined,
-    errIncorrect,
-    errTwoNumbersRequired,
-    errDivisionByZero
-
+import streams, strutils, critbits
+import types, parser, ../vendor/linenoise
 
 const ERRORS: array [MinError, string] = [
   "A system error occurred",
@@ -35,8 +13,8 @@ const ERRORS: array [MinError, string] = [
   "Division by zero"
 ]
 
-var SYMBOLS* = initTable[string, MinOperator]()
-var SIGILS* = initTable[string, MinOperator]()
+var SYMBOLS*: CritBitTree[MinOperator]
+var SIGILS*: CritBitTree[MinOperator]
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var s:MinStack = newSeq[MinValue](0)

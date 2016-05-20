@@ -1,4 +1,4 @@
-import streams, tables, parseopt2, strutils
+import streams, critbits, parseopt2, strutils
 import 
   core/parser, 
   core/interpreter, 

@@ -1,5 +1,5 @@
-import tables, strutils
-import parser, interpreter
+import tables, strutils, macros, critbits
+import types, parser, interpreter
 
 
 template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =

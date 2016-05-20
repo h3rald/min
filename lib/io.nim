@@ -1,5 +1,9 @@
 import tables, os, strutils
-import ../core/parser, ../core/interpreter, ../core/utils
+import 
+  ../core/types,
+  ../core/parser, 
+  ../core/interpreter, 
+  ../core/utils
 
 # I/O 
 

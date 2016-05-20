@@ -1,5 +1,9 @@
 import times, tables
-import ../core/interpreter, ../core/utils
+import 
+  ../core/types,
+  ../core/parser, 
+  ../core/interpreter, 
+  ../core/utils
 
 # Time
 
