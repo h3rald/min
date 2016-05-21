@@ -10,13 +10,13 @@ minsym "exit", i:
 
 minsym "symbols", i:
   var q = newSeq[MinValue](0)
-  for s in ROOT.symbols.keys:
+  for s in i.scope.symbols.keys:
     q.add s.newVal
   i.push q.newVal
 
 minsym "sigils", i:
   var q = newSeq[MinValue](0)
-  for s in ROOT.sigils.keys:
+  for s in i.scope.sigils.keys:
     q.add s.newVal
   i.push q.newVal
 
@@ -41,9 +41,9 @@ minsym "bind", i:
     symbol = q2.qVal[0].symVal
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
-  if ROOT.symbols.hasKey(symbol):
+  if not i.scope.getSymbol(symbol).isNil:
     i.error errSystem, "Symbol '$1' already exists" % [symbol]
-  minsym symbol, i:
+  i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
     i.evaluating = true
     i.push q1.qVal
     i.evaluating = false
@@ -52,7 +52,7 @@ minsym "unbind", i:
   var q1 = i.pop
   if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
     var symbol = q1.qVal[0].symVal
-    ROOT.symbols.excl symbol
+    i.scope.symbols.excl symbol
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 
@@ -68,9 +68,9 @@ minsym "sigil", i:
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
       var symbol = q1.qVal[0].symVal
       if symbol.len == 1:
-        if ROOT.sigils.hasKey(symbol):
+        if not i.scope.getSigil(symbol).isNil:
           i.error errSystem, "Sigil '$1' already exists" % [symbol]
-        minsigil symbol, i:
+        i.scope.sigils[symbol] = proc(i: var MinInterpreter) =
           i.evaluating = true
           i.push q2.qVal
           i.evaluating = false

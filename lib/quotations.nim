@@ -15,8 +15,12 @@ minsym "unquote", i:
   let q = i.pop
   if not q.isQuotation:
     i.error errNoQuotation
+  let scope = i.scope
+  i.scope = new MinScope
+  i.scope.parent = scope
   for item in q.qVal:
-   i.push item 
+    i.push item 
+  i.scope = scope
 
 minsym "cons", i:
   var q = i.pop

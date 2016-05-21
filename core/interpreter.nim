@@ -2,7 +2,6 @@ import streams, strutils, critbits
 import 
   types, 
   parser,
-  scope,
   ../vendor/linenoise
 
 const ERRORS: array [MinError, string] = [
@@ -17,12 +16,31 @@ const ERRORS: array [MinError, string] = [
   "Division by zero"
 ]
 
-var ROOT*: MinScope
+var ROOT*: ref MinScope = new MinScope
+
+proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
+  if scope.symbols.hasKey(key):
+    return scope.symbols[key]
+  elif not scope.parent.isNil:
+    return scope.parent.getSymbol(key)
+
+proc getSigil*(scope: ref MinScope, key: string): MinOperator =
+  if scope.sigils.hasKey(key):
+    return scope.sigils[key]
+  elif not scope.parent.isNil:
+    return scope.parent.getSigil(key)
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
-  var s:MinStack = newSeq[MinValue](0)
-  var p:MinParser
-  var i:MinInterpreter = MinInterpreter(filename: "input", parser: p, stack: s, debugging: debugging, currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: ""))
+  var st:MinStack = newSeq[MinValue](0)
+  var pr:MinParser
+  var i:MinInterpreter = MinInterpreter(
+    filename: "input", 
+    parser: pr, 
+    stack: st,
+    scope: ROOT,
+    debugging: debugging, 
+    currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
+  )
   return i
 
 proc error*(i: MinInterpreter, status: MinError, message = "") =
@@ -57,17 +75,19 @@ proc push*(i: var MinInterpreter, val: MinValue) =
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
-    if ROOT.symbols.hasKey(val.symVal):
+    let symbolProc = i.scope.getSymbol(symbol)
+    if not symbolProc.isNil:
       try:
-        ROOT.symbols[val.symVal](i) 
+        symbolProc(i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
     else:
-      if ROOT.sigils.hasKey(sigil) and symbol.len > 1:
+      let sigilProc = i.scope.getSigil(sigil)
+      if symbol.len > 1 and not sigilProc.isNil:
         let sym = symbol[1..symbol.len-1]
         try:
           i.stack.add(MinValue(kind: minString, strVal: sym))
-          ROOT.sigils[sigil](i) 
+          sigilProc(i) 
         except:
           i.error(errSystem, getCurrentExceptionMsg())
       else:
@@ -123,7 +143,7 @@ proc load*(i: var MinInterpreter, s: string) =
     i.filename = fn
 
 proc apply*(i: var MinInterpreter, symbol: string) =
-  ROOT.symbols[symbol](i)
+  i.scope.symbols[symbol](i)
 
 proc copystack*(i: var MinInterpreter): MinStack =
   var s = newSeq[MinValue](0)

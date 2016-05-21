@@ -20,7 +20,6 @@ type
     minSymbol,
     minBool
   MinScope* = object
-    locals*: CritBitTree[MinValue]
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
@@ -71,6 +70,7 @@ type
   EMinUndefinedError* = ref object of ValueError
   MinInterpreter* = object
     stack*: MinStack
+    scope*: ref MinScope
     parser*: MinParser
     currSym*: MinValue
     filename*: string
