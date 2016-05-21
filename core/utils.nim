@@ -64,7 +64,8 @@ proc define*(name: string): ref MinScope =
 
 proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   scope.symbols[sym] = p
-  scope.previous.symbols[scope.name & ":" & sym] = p
+  if not scope.parent.isNil:
+    scope.parent.symbols[scope.name & ":" & sym] = p
   return scope
 
 proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
@@ -78,12 +79,3 @@ proc finalize*(scope: ref MinScope) =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
-
-template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =
-  ROOT.symbols[name] = proc (i: var MinInterpreter) {.closure.} =
-    body
-
-template minsigil*(name: char, i: expr, body: stmt): stmt {.immediate.} =
-  ROOT.sigils[name] = proc (i: var MinInterpreter) =
-    body
-

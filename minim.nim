@@ -6,7 +6,6 @@ import
 import 
   lib/lang, 
   lib/stack, 
-  lib/q,
   lib/num,
   lib/str,
   lib/logic,

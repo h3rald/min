@@ -2,6 +2,12 @@
 
 // Imports
 #str
+#io
+#logic
+#num
+#stack
+#sys
+#time
 
 // Common sigils
 (set)    (:)     sigil 

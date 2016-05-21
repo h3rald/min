@@ -7,9 +7,13 @@ import
 
 # Time
 
-minsym "timestamp", i:
-  i.push getTime().int.newVal
+define("time")
 
-minsym "now", i:
-  i.push epochTime().newVal
+  .symbol("timestamp") do (i: In):
+    i.push getTime().int.newVal
+  
+  .symbol("now") do (i: In):
+    i.push epochTime().newVal
+
+  .finalize()
 

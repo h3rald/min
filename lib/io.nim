@@ -7,37 +7,42 @@ import
 
 # I/O 
 
-minsym "puts", i:
-  let a = i.peek
-  echo a
 
-minsym "gets", i:
-  i.push newVal(stdin.readLine())
+define("io")
+  
+  .symbol("puts") do (i: In):
+    let a = i.peek
+    echo a
 
-minsym "print", i:
-  let a = i.peek
-  a.print
+  .symbol("puts") do (i: In):
+    i.push newVal(stdin.readLine())
 
-minsym "read", i:
-  let a = i.pop
-  if a.isString:
-    if a.strVal.fileExists:
+  .symbol("print") do (i: In):
+    let a = i.peek
+    a.print
+
+  .symbol("read") do (i: In):
+    let a = i.pop
+    if a.isString:
+      if a.strVal.fileExists:
+        try:
+          i.push newVal(a.strVal.readFile)
+        except:
+          warn getCurrentExceptionMsg()
+      else:
+        warn "File '$1' not found" % [a.strVal]
+    else:
+      i.error(errIncorrect, "A string is required on the stack")
+
+  .symbol("write") do (i: In):
+    let a = i.pop
+    let b = i.pop
+    if a.isString and b.isString:
       try:
-        i.push newVal(a.strVal.readFile)
+        a.strVal.writeFile(b.strVal)
       except:
         warn getCurrentExceptionMsg()
     else:
-      warn "File '$1' not found" % [a.strVal]
-  else:
-    i.error(errIncorrect, "A string is required on the stack")
+      i.error(errIncorrect, "Two strings are required on the stack")
 
-minsym "write", i:
-  let a = i.pop
-  let b = i.pop
-  if a.isString and b.isString:
-    try:
-      a.strVal.writeFile(b.strVal)
-    except:
-      warn getCurrentExceptionMsg()
-  else:
-    i.error(errIncorrect, "Two strings are required on the stack")
+  .finalize()
