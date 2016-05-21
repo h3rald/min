@@ -56,6 +56,44 @@ minsym "unbind", i:
   else:
     i.error errIncorrect, "The top quotation must contain only one symbol value"
 
+minsym "define", i:
+  let name = i.pop
+  var code = i.pop
+  if not name.isString or not code.isQuotation:
+    i.error(errIncorrect, "A string and a quotation are require on the stack")
+  let id = name.strVal
+  let scope = i.scope
+  let stack = i.copystack
+  i.scope = new MinScope
+  code.scope = i.scope
+  i.scope.parent = scope
+  for item in code.qVal:
+    i.push item 
+  let p = proc(i: var MinInterpreter) = 
+    i.evaluating = true
+    i.push code
+    i.evaluating = false
+  let symbols = i.scope.symbols
+  i.scope = scope
+  i.scope.symbols[id] = p
+  # Define symbols in parent scope as well
+  for sym, val in symbols.pairs:
+    i.scope.symbols[id & ":" & sym] = val
+  i.stack = stack
+
+minsym "import", i:
+  var mdl: MinValue
+  try:
+    i.scope.getSymbol(i.pop.strVal)(i)
+    mdl = i.pop
+  except:
+    discard
+  if not mdl.isQuotation:
+    i.error errNoQuotation
+  if not mdl.scope.isNil:
+    for sym, val in mdl.scope.symbols.pairs:
+      i.scope.symbols[sym] = val
+  
 minsigil "'", i:
   i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 

@@ -32,7 +32,7 @@ type
       of minFloat: floatVal*: float
       of minQuotation: 
         qVal*: seq[MinValue]
-        scope: MinScope
+        scope*: ref MinScope
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool

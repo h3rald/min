@@ -3,9 +3,14 @@
 (getenv)  ($)     sigil 
 (system)  (!)     sigil 
 (run)     (&)     sigil
+(import)  (#)     sigil
+(define)  (=)     sigil
+(load)    (@)     sigil
 
 // Aliases
 'bind        ::
+'define      :=
+'import      :#
 'exit        :quit
 'concat      :,
 'print       :%

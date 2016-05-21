@@ -32,11 +32,14 @@ proc getSigil*(scope: ref MinScope, key: string): MinOperator =
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
+  #var scope: ref MinScope = new MinScope
+  #scope.parent = ROOT
   var pr:MinParser
   var i:MinInterpreter = MinInterpreter(
     filename: "input", 
     parser: pr, 
     stack: st,
+    #scope: scope,
     scope: ROOT,
     debugging: debugging, 
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
