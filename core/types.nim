@@ -23,6 +23,7 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
+    name*: string
     stack*: MinStack
   MinValue* = object
     line*: int
@@ -76,6 +77,7 @@ type
     filename*: string
     debugging*: bool 
     evaluating*: bool 
+  In* = var MinInterpreter
   MinOperator* = proc (i: var MinInterpreter)
   MinSigil* = proc (i: var MinInterpreter, sym: string)
   MinError* = enum

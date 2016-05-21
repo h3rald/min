@@ -1,14 +1,18 @@
+(import)  (#)     sigil
+
+// Imports
+#str
+
 // Common sigils
-(bind)    (:)     sigil 
+(set)    (:)     sigil 
 (getenv)  ($)     sigil 
 (system)  (!)     sigil 
 (run)     (&)     sigil
-(import)  (#)     sigil
 (define)  (=)     sigil
 (load)    (@)     sigil
 
 // Aliases
-'bind        ::
+'set        ::
 'define      :=
 'import      :#
 'exit        :quit
@@ -60,4 +64,4 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 // Other
-(dup unbind bind)                 :rebind
+(dup unset set)                 :reset

@@ -1,15 +1,6 @@
 import tables, strutils, macros, critbits
 import types, parser, interpreter
 
-
-template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =
-  ROOT.symbols[name] = proc (i: var MinInterpreter) {.closure.} =
-    body
-
-template minsigil*(name: char, i: expr, body: stmt): stmt {.immediate.} =
-  ROOT.sigils[name] = proc (i: var MinInterpreter) =
-    body
-
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
 
@@ -58,3 +49,41 @@ proc linrec*(i: var MinInterpreter, p, t, r1, r2: MinValue) =
     i.push r1.qVal
     i.linrec(p, t, r1, r2)
     i.push r2.qVal
+
+proc previous*(scope: ref MinScope): ref MinScope =
+  if scope.parent.isNil:
+    return ROOT
+  else:
+    return scope.parent
+
+proc define*(name: string): ref MinScope =
+  var scope = new MinScope
+  scope.name = name
+  scope.parent = INTERPRETER.scope
+  return scope
+
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
+  scope.symbols[sym] = p
+  scope.previous.symbols[scope.name & ":" & sym] = p
+  return scope
+
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
+  scope.previous.sigils[sym] = p
+  return scope
+
+proc finalize*(scope: ref MinScope) =
+  var mdl = newSeq[MinValue](0).newVal
+  mdl.scope = scope
+  mdl.scope.previous.symbols[scope.name] = proc(i: var MinInterpreter) =
+    i.evaluating = true
+    i.push mdl
+    i.evaluating = false
+
+template minsym*(name: string, i: expr, body: stmt): stmt {.immediate.} =
+  ROOT.symbols[name] = proc (i: var MinInterpreter) {.closure.} =
+    body
+
+template minsigil*(name: char, i: expr, body: stmt): stmt {.immediate.} =
+  ROOT.sigils[name] = proc (i: var MinInterpreter) =
+    body
+

@@ -6,16 +6,15 @@ import
 import 
   lib/lang, 
   lib/stack, 
-  lib/quotations,
-  lib/numbers,
-  lib/strings,
+  lib/q,
+  lib/num,
+  lib/str,
   lib/logic,
   lib/time, 
   lib/io,
   lib/sys
 
 const version* = "0.1.0"
-var debugging = false
 var repl = false
 const prelude = "lib/prelude.min".slurp.strip
 
@@ -59,7 +58,7 @@ else:
     return stdin.readLine
 
 proc minimStream(s: Stream, filename: string) =
-  var i = newMinInterpreter(debugging)
+  var i = INTERPRETER
   i.eval prelude
   i.open(s, filename)
   discard i.parser.getToken() 
@@ -84,7 +83,7 @@ proc minimFile*(file: File, filename="stdin") =
   minimStream(stream, filename)
 
 proc minimRepl*() = 
-  var i = newMinInterpreter(debugging)
+  var i = INTERPRETER
   var s = newStringStream("")
   i.open(s, "")
   echo "MiNiM v"&version&" - REPL initialized."
@@ -109,7 +108,7 @@ proc minimRepl*() =
     
 ###
 
-var file, str: string = ""
+var file, s: string = ""
 
 for kind, key, val in getopt():
   case kind:
@@ -118,9 +117,9 @@ for kind, key, val in getopt():
     of cmdLongOption, cmdShortOption:
       case key:
         of "debug", "d":
-          debugging = true
+          INTERPRETER.debugging = true
         of "evaluate", "e":
-          str = val
+          s = val
         of "help", "h":
           echo usage
           quit(0)
@@ -133,8 +132,8 @@ for kind, key, val in getopt():
     else:
       discard
 
-if str != "":
-  minimString(str)
+if s != "":
+  minimString(s)
 elif file != "":
   minimFile file
 elif repl:

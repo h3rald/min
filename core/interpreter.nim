@@ -18,6 +18,8 @@ const ERRORS: array [MinError, string] = [
 
 var ROOT*: ref MinScope = new MinScope
 
+ROOT.name = "ROOT"
+
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
@@ -39,7 +41,6 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     filename: "input", 
     parser: pr, 
     stack: st,
-    #scope: scope,
     scope: ROOT,
     debugging: debugging, 
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
@@ -154,4 +155,4 @@ proc copystack*(i: var MinInterpreter): MinStack =
     s.add i
   return s
 
-
+var INTERPRETER* = newMinInterpreter()
