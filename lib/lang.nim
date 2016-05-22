@@ -263,7 +263,7 @@ ROOT
     else:
       i.error(errIncorrect, "Three quotations are required on the stack")
   
-  # TODO test (add new scope?)
+  # TODO test 
   .symbol("while") do (i: In):
     let d = i.pop
     let b = i.pop
@@ -277,7 +277,7 @@ ROOT
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
   
-  # TODO test (add new scope?)
+  # TODO test 
   .symbol("filter") do (i: In):
     let filter = i.pop
     let list = i.pop
@@ -293,6 +293,7 @@ ROOT
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
   
+  # TODO test
   .symbol("linrec") do (i: In):
     var r2 = i.pop
     var r1 = i.pop
