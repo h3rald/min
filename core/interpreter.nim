@@ -20,11 +20,33 @@ var ROOT*: ref MinScope = new MinScope
 
 ROOT.name = "ROOT"
 
+proc fullname*(scope: ref MinScope): string =
+  result = scope.name
+  if not scope.parent.isNil:
+    result = scope.parent.fullname & ":" & result
+
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif not scope.parent.isNil:
     return scope.parent.getSymbol(key)
+
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.discardable.}=
+  result = false
+  # check if a symbol already exists in parent scope
+  if not scope.parent.isNil and scope.parent.symbols.hasKey(key):
+    scope.parent.symbols[key] = value
+    #echo "($1) SET EXISTING SYMBOL: $2" % [scope.parent.fullname, key]
+    return true
+  else:
+    # Go up the scope chain and attempt to find the symbol
+    if not scope.parent.isNil:
+      result = scope.parent.setSymbol(key, value)
+  if not result:
+    # Define local variable
+    #echo "($1) SET LOCAL SYMBOL: $2" % [scope.fullname, key]
+    scope.symbols[key] = value
+    return true
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
@@ -32,10 +54,45 @@ proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   elif not scope.parent.isNil:
     return scope.parent.getSigil(key)
 
+proc dump*(i: MinInterpreter): string =
+  var s = ""
+  for item in i.stack:
+    s = s & $item & " "
+  return s
+
+proc debug*(i: var MinInterpreter, value: MinValue) =
+  if i.debugging: 
+    stderr.writeLine("-- " & i.dump & $value)
+
+proc debug*(i: var MinInterpreter, value: string) =
+  if i.debugging: 
+    stderr.writeLine("-- " & value)
+
+template newScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.}=
+  q.scope = new MinScope
+  q.scope.name = id
+  q.scope.parent = i.scope
+  #i.debug "[scope] " & q.scope.fullname
+  let scope = i.scope
+  i.scope = q.scope
+  body
+  #i.debug "[scope] " & scope.fullname
+  i.scope = scope
+
+template newDisposableScope*(i: In, id: string, body: stmt): stmt {.immediate.}=
+  var q = MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
+  q.scope = new MinScope
+  q.scope.name = id
+  q.scope.parent = i.scope
+  #i.debug "[scope] " & q.scope.fullname
+  let scope = i.scope
+  i.scope = q.scope
+  body
+  #i.debug "[scope] " & scope.fullname
+  i.scope = scope
+
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
-  #var scope: ref MinScope = new MinScope
-  #scope.parent = ROOT
   var pr:MinParser
   var i:MinInterpreter = MinInterpreter(
     filename: "input", 
@@ -62,16 +119,6 @@ proc open*(i: var MinInterpreter, stream:Stream, filename: string) =
 proc close*(i: var MinInterpreter) = 
   i.parser.close();
 
-proc dump*(i: MinInterpreter): string =
-  var s = ""
-  for item in i.stack:
-    s = s & $item & " "
-  return s
-
-proc debug(i: var MinInterpreter, value: MinValue) =
-  if i.debugging: 
-    stderr.writeLine("-- " & i.dump & $value)
-
 proc push*(i: var MinInterpreter, val: MinValue) = 
   i.debug val
   if val.kind == minSymbol:
@@ -82,7 +129,8 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     let symbolProc = i.scope.getSymbol(symbol)
     if not symbolProc.isNil:
       try:
-        symbolProc(i) 
+        i.newDisposableScope("<" & symbol & ">"):
+          symbolProc(i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
     else:
@@ -147,7 +195,7 @@ proc load*(i: var MinInterpreter, s: string) =
     i.filename = fn
 
 proc apply*(i: var MinInterpreter, symbol: string) =
-  i.scope.symbols[symbol](i)
+  i.scope.getSymbol(symbol)(i)
 
 proc copystack*(i: var MinInterpreter): MinStack =
   var s = newSeq[MinValue](0)

@@ -1,0 +1,45 @@
+(
+ (("OK")) .ok
+
+ (
+  quote .check      // save the check quotation to validate
+  quote .results    // save the result symbol to update
+  check dup first swap rest
+  ( 
+    pop
+    ok results -> append quote results bind
+    "." print pop
+  )
+  (
+    pop
+    check results -> append quote results bind 
+    "x" print pop
+  )
+  ifte
+ ) :assert
+
+ (
+  (
+    quote .result
+    result
+    (ok !=)
+    ("FAILED: " print pop result puts)
+    ()
+    ifte
+  )
+  map
+ ) :report
+
+) =test
+
+#test
+
+// Sample unit test program
+(()) :maths
+'maths (2 3 ==) assert
+'maths (2 1 >) assert
+'maths (2 1 <) assert
+'maths (4 4 ==) assert
+'maths (7 7 ==) assert
+newline
+maths report

@@ -1,4 +1,4 @@
-# Adapted from: https://github.com/Araq/Nimrod/blob/v0.9.6/lib/pure/min.nim
+# Adapted from: https://github.com/Araq/Nimrod/blob/v0.9.6/lib/pure/json.nim
 import lexbase, strutils, streams, unicode, tables
 import types
 
@@ -379,14 +379,33 @@ proc `$`*(a: MinValue): string =
     of minFloat:
       return $a.floatVal
     of minQuotation:
-      var q = "( "
+      var q = "("
       for i in a.qVal:
         q = q & $i & " "
-      q = q & ")"
+      q = q.strip & ")"
+      return q
+
+proc `$$`*(a: MinValue): string =
+  case a.kind:
+    of minBool:
+      return $a.boolVal
+    of minSymbol:
+      return a.symVal
+    of minString:
+      return a.strVal
+    of minInt:
+      return $a.intVal
+    of minFloat:
+      return $a.floatVal
+    of minQuotation:
+      var q = "("
+      for i in a.qVal:
+        q = q & $i & " "
+      q = q.strip & ")"
       return q
 
 proc print*(a: MinValue) =
-  stdout.write($a)
+  stdout.write($$a)
 
 proc `==`*(a: MinValue, b: MinValue): bool =
   if a.kind == minInt and b.kind == minInt:

@@ -64,8 +64,8 @@ proc define*(name: string): ref MinScope =
 
 proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   scope.symbols[sym] = p
-  if not scope.parent.isNil:
-    scope.parent.symbols[scope.name & ":" & sym] = p
+  #if not scope.parent.isNil:
+  #  scope.parent.symbols[scope.name & ":" & sym] = p
   return scope
 
 proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
@@ -79,3 +79,10 @@ proc finalize*(scope: ref MinScope) =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
+
+template `<-`*[T](target, source: var T) =
+  shallowCopy target, source
+
+template alias*[T](varname: untyped, value: var T) =
+  var varname {.inject.}: type(value)
+  shallowCopy varname, value

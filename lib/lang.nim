@@ -12,13 +12,16 @@ ROOT
 
   .symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
-    for s in i.scope.symbols.keys:
-      q.add s.newVal
+    var scope = i.scope.parent
+    while not scope.isNil:
+      for s in scope.symbols.keys:
+        q.add s.newVal
+      scope = scope.parent
     i.push q.newVal
 
   .symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
-    for s in i.scope.sigils.keys:
+    for s in i.scope.parent.sigils.keys:
       q.add s.newVal
     i.push q.newVal
 
@@ -31,7 +34,7 @@ ROOT
 
   # Language constructs
 
-  .symbol("set") do (i: In):
+  .symbol("let") do (i: In):
     var q2 = i.pop # new (can be a quoted symbol or a string)
     var q1 = i.pop # existing (auto-quoted)
     var symbol: string
@@ -43,9 +46,26 @@ ROOT
       symbol = q2.qVal[0].symVal
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
-    if not i.scope.getSymbol(symbol).isNil:
-      i.error errSystem, "Symbol '$1' already exists" % [symbol]
-    i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
+    i.debug "[let] " & symbol & " = " & $q1
+    i.scope.parent.symbols[symbol] = proc(i: var MinInterpreter) =
+      i.evaluating = true
+      i.push q1.qVal
+      i.evaluating = false
+
+  .symbol("bind") do (i: In):
+    var q2 = i.pop # new (can be a quoted symbol or a string)
+    var q1 = i.pop # existing (auto-quoted)
+    var symbol: string
+    if not q1.isQuotation:
+      q1 = @[q1].newVal
+    if q2.isString:
+      symbol = q2.strVal
+    elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
+      symbol = q2.qVal[0].symVal
+    else:
+      i.error errIncorrect, "The top quotation must contain only one symbol value"
+    i.debug "[bind] " & symbol & " = " & $q1
+    i.scope.setSymbol(symbol) do (i: In):
       i.evaluating = true
       i.push q1.qVal
       i.evaluating = false
@@ -54,11 +74,11 @@ ROOT
     var q1 = i.pop
     if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
       var symbol = q1.qVal[0].symVal
-      i.scope.symbols.excl symbol
+      i.scope.parent.symbols.excl symbol
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
 
-  .symbol("define") do (i: In):
+  .symbol("module") do (i: In):
     let name = i.pop
     var code = i.pop
     if not name.isString or not code.isQuotation:
@@ -66,21 +86,14 @@ ROOT
     let id = name.strVal
     let scope = i.scope
     let stack = i.copystack
-    i.scope = new MinScope
-    code.scope = i.scope
-    i.scope.parent = scope
-    for item in code.qVal:
-      i.push item 
-    let p = proc(i: var MinInterpreter) = 
-      i.evaluating = true
-      i.push code
-      i.evaluating = false
-    let symbols = i.scope.symbols
-    i.scope = scope
-    i.scope.symbols[id] = p
-    # Define symbols in parent scope as well
-    for sym, val in symbols.pairs:
-      i.scope.symbols[id & ":" & sym] = val
+    i.newScope(id, code): #<--
+      for item in code.qVal:
+        i.push item 
+      let p = proc(i: In) = 
+        i.evaluating = true
+        i.push code
+        i.evaluating = false
+    i.scope.parent.symbols[id] = p
     i.stack = stack
 
   .symbol("import") do (i: In):
@@ -89,12 +102,14 @@ ROOT
       i.scope.getSymbol(i.pop.strVal)(i)
       mdl = i.pop
     except:
-      discard
+      echo getCurrentExceptionMsg()
     if not mdl.isQuotation:
       i.error errNoQuotation
     if not mdl.scope.isNil:
+      #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
-        i.scope.symbols[sym] = val
+        i.debug "[$1 - import] $2:$3" % [i.scope.parent.name, i.scope.name, sym]
+        i.scope.parent.symbols[sym] = val
   
   .sigil("'") do (i: In):
     i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
@@ -108,9 +123,9 @@ ROOT
       if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
         var symbol = q1.qVal[0].symVal
         if symbol.len == 1:
-          if not i.scope.getSigil(symbol).isNil:
+          if i.scope.parent.sigils.hasKey(symbol):
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
-          i.scope.sigils[symbol] = proc(i: var MinInterpreter) =
+          i.scope.parent.sigils[symbol] = proc(i: var MinInterpreter) =
             i.evaluating = true
             i.push q2.qVal
             i.evaluating = false
@@ -185,17 +200,14 @@ ROOT
     i.push MinValue(kind: minQuotation, qVal: @[a])
   
   .symbol("unquote") do (i: In):
-    let q = i.pop
+    var q = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
-    let scope = i.scope
-    i.scope = new MinScope
-    i.scope.parent = scope
-    for item in q.qVal:
-      i.push item 
-    i.scope = scope
+    i.newScope("<unquote-push>", q):
+      for item in q.qVal:
+        i.push item 
   
-  .symbol("cons") do (i: In):
+  .symbol("append") do (i: In):
     var q = i.pop
     let v = i.pop
     if not q.isQuotation:
@@ -203,6 +215,14 @@ ROOT
     q.qVal.add v
     i.push q
   
+  .symbol("cons") do (i: In):
+    var q = i.pop
+    let v = i.pop
+    if not q.isQuotation:
+      i.error errNoQuotation
+    q.qVal = @[v] & q.qVal
+    i.push q
+
   .symbol("at") do (i: In):
     var index = i.pop
     var q = i.pop
@@ -221,7 +241,7 @@ ROOT
         for pitem in prog.qVal:
           i.push pitem
         i.apply("swap") 
-        i.apply("cons") 
+        i.apply("append") 
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
   
@@ -251,6 +271,7 @@ ROOT
     else:
       i.error(errIncorrect, "Three quotations are required on the stack")
   
+  # TODO test (add new scope?)
   .symbol("while") do (i: In):
     let d = i.pop
     let b = i.pop
@@ -264,6 +285,7 @@ ROOT
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
   
+  # TODO test (add new scope?)
   .symbol("filter") do (i: In):
     let filter = i.pop
     let list = i.pop

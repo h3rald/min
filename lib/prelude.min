@@ -10,16 +10,18 @@
 #time
 
 // Common sigils
-(set)    (:)     sigil 
+(bind)    (:)     sigil 
+(let)     (.)     sigil 
 (getenv)  ($)     sigil 
 (system)  (!)     sigil 
 (run)     (&)     sigil
-(define)  (=)     sigil
+(module)  (=)     sigil
 (load)    (@)     sigil
 
 // Aliases
-'set        ::
-'define      :=
+'bind        ::
+'let         :.
+'module      :=
 'import      :#
 'exit        :quit
 'concat      :,
@@ -36,13 +38,14 @@
 'getenv      :$
 'pop         :zap
 'quote       :unit
+'quote       :'
 'unquote     :i
 'unquote     :apply
+'unquote     :->
 'filter      :select
 'clear       :empty
+'cons        :prepend
 'match       :~
-(".")        :.
-("..")       :..
 
 // Mathematical Operators
 (1 +)           :succ
@@ -70,4 +73,5 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 // Other
-(dup unset set)                 :reset
+//(dup unset set)                 :reset
+
