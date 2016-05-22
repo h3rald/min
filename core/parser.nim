@@ -190,6 +190,23 @@ proc skip(my: var MinParser) =
   var buf = my.buf
   while true: 
     case buf[pos]
+    of ';':
+      # skip line comment:
+      inc(pos, 2)
+      while true:
+        case buf[pos] 
+        of '\0': 
+          break
+        of '\c': 
+          pos = lexbase.handleCR(my, pos)
+          buf = my.buf
+          break
+        of '\L': 
+          pos = lexbase.handleLF(my, pos)
+          buf = my.buf
+          break
+        else:
+          inc(pos)
     of '/': 
       if buf[pos+1] == '/': 
         # skip line comment:

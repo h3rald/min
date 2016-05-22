@@ -1,6 +1,6 @@
 (import)  (#)     sigil
 
-// Imports
+; Imports
 #str
 #io
 #logic
@@ -9,7 +9,7 @@
 #sys
 #time
 
-// Common sigils
+; Common sigils
 (bind)    (:)     sigil 
 (let)     (.)     sigil 
 (getenv)  ($)     sigil 
@@ -18,7 +18,7 @@
 (module)  (=)     sigil
 (load)    (@)     sigil
 
-// Aliases
+; Aliases
 'bind        ::
 'let         :.
 'module      :=
@@ -47,7 +47,7 @@
 'cons        :prepend
 'match       :~
 
-// Mathematical Operators
+; Mathematical Operators
 (1 +)           :succ
 (1 -)           :pred
 (2 mod 0 ==)    :even?
@@ -55,7 +55,7 @@
 
 ((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
 
-// Stack Operators
+; Stack Operators
 (swap cons)                       :swons
 ((pop) dip)                       :popd
 ((dup) dip)                       :dupd
@@ -72,6 +72,7 @@
 ((() cons cons) dip swap i)       :bury2
 ((() cons cons cons) dip swap i)  :bury3
 
-// Other
-//(dup unset set)                 :reset
+; Other
+(print pop)    :print!
+(puts pop)     :puts!
 

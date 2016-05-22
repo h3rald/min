@@ -70,14 +70,6 @@ ROOT
       i.push q1.qVal
       i.evaluating = false
 
-  .symbol("unset") do (i: In):
-    var q1 = i.pop
-    if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-      var symbol = q1.qVal[0].symVal
-      i.scope.parent.symbols.excl symbol
-    else:
-      i.error errIncorrect, "The top quotation must contain only one symbol value"
-
   .symbol("module") do (i: In):
     let name = i.pop
     var code = i.pop
