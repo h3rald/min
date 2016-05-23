@@ -89,8 +89,8 @@ proc minimRepl*() =
   i.eval prelude
   echo "Prelude loaded."
   echo "-> Type 'exit' or 'quit' to exit."
-  if USE_LINENOISE:
-    discard linenoiseSetCompletionCallback completionCallback
+  when USE_LINENOISE:
+    linenoiseSetCompletionCallback completionCallback
   var line: string
   while true:
     line = prompt(": ")

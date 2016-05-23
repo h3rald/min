@@ -45,7 +45,7 @@
 # 	\meta		Match one of the meta character: ^$().[*+?\
 # 
 
-{.compile: "vendor/slre/libslre.c".}
+{.compile: "slre/libslre.c".}
 #
 #  Compiled regular expression
 # 
