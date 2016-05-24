@@ -38,7 +38,7 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming
 
 when USE_LINENOISE:
   import vendor/linenoise
-  proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) = 
+  proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
     var words = ($str).split(" ")
     var w = if words.len > 0: words.pop else: ""
     var sep = ""

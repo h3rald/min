@@ -1,16 +1,16 @@
 {.compile: "linenoise/liblinenoise.c".}
-{.push importc.}
 type 
   linenoiseCompletions* = object 
     len*: csize
     cvec*: cstringArray
-  linenoiseCompletionCallback* = proc (a: cstring, b: ptr linenoiseCompletions)
+  linenoiseCompletionCallback* = proc (a: cstring, b: ptr linenoiseCompletions) {.cdecl.}
 
 const 
   LN_HIDDEN_NO* = (0)       # Fully visible entry.           
   LN_HIDDEN_ALL* = (1)      # Fully hidden, no echo at all   
   LN_HIDDEN_STAR* = (2)     # Hidden entry, echoing *'s back 
 
+{.push importc.}
 {.push cdecl.}
 #
 #  The callback type for tab completion handlers.
