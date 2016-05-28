@@ -33,6 +33,13 @@ proc replace*(str, pattern, repl, mods: string): string =
 proc replace*(str, pattern, repl: string): string =
   return replace(str, pattern, repl, "")
 
+proc `=~`*(str, r: string): seq[string] =
+  let m = r.search("(s)?/(.+?)?/(.+?)?/([mis]{0,3})")
+  if m[1] == "s" and m[3] != "":
+    return @[replace(str, m[2], m[3], m[4])]
+  else:
+    return search(str, m[2], m[4])
+
 when isMainModule:
 
   proc tmatch(str, pattern: string) =
@@ -47,6 +54,8 @@ when isMainModule:
   proc treplace(str, pattern, repl: string) =
     echo str, " =~ ", "s/", pattern, "/", repl, "/", " -> ", str.replace(pattern, repl)
 
+  proc toperator(str, pattern: string) =
+    echo str, " =~ ", pattern, " -> ", str =~ pattern
 
   "HELLO".tmatch("^H(.*)O$")
   "HELLO".tmatch("^H(.*)S$")
@@ -57,4 +66,6 @@ when isMainModule:
   "127.0.0.1".treplace("[0-9]+", "255")
   "Hello".tsearch("HELLO", "i")
   "Hello\nWorld!".tsearch("HELLO.WORLD", "mis")
+  "Testing".toperator("s/test/eat/i")
+  
 

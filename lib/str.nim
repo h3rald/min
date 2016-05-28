@@ -1,10 +1,10 @@
 import tables, strutils
-import ../vendor/slre
 import 
   ../core/types,
   ../core/parser, 
   ../core/interpreter, 
-  ../core/utils
+  ../core/utils,
+  ../core/regex
 
 define("str")
 
@@ -17,24 +17,23 @@ define("str")
     else:
       i.error errIncorrect, "Two strings are required on the stack"
 
-  .symbol("match") do (i: In):
+  .symbol("search") do (i: In):
     let reg = i.pop
     let str = i.pop
     if str.isString and reg.isString:
-      var matches = str.strVal.match(reg.strVal)
-      var res = newSeq[MinValue](0)
-      for s in matches:
-        res.add s.newVal
+      var matches = str.strVal.search(reg.strVal)
+      var res = newSeq[MinValue](matches.len)
+      for i in 0..matches.len-1:
+        res[i] = matches[i].newVal
       i.push res.newVal
     else:
       i.error(errIncorrect, "Two strings are required on the stack")
 
-  .symbol("match?") do (i: In):
+  .symbol("match") do (i: In):
     let reg = i.pop
     let str = i.pop
     if str.isString and reg.isString:
-      var matches = str.strVal.match(reg.strVal)
-      if matches.len > 0:
+      if str.strVal.match(reg.strVal):
         i.push true.newVal
       else:
         i.push false.newVal
@@ -46,8 +45,21 @@ define("str")
     let reg = i.pop
     let s_find = i.pop
     if reg.isString and s_replace.isString and s_find.isString:
-      i.push s_find.strVal.gsub(reg.strVal, s_replace.strVal).newVal
+      i.push regex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
     else:
       i.error(errIncorrect, "Three strings are required on the stack")
+
+  .symbol("=~") do (i: In):
+    let reg = i.pop
+    let str = i.pop
+    if str.isString and reg.isString:
+      let results = str.strVal =~ reg.strVal
+      var res = newSeq[MinValue](0)
+      for r in results:
+        res.add(r.newVal)
+      i.push res.newVal
+    else:
+      i.error(errIncorrect, "Two strings are required on the stack")
+
 
   .finalize()
