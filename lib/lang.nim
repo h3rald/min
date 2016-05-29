@@ -49,6 +49,7 @@ ROOT
       symbol = q2.qVal[0].symVal
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
+      return
     i.debug "[let] " & symbol & " = " & $q1
     i.scope.parent.symbols[symbol] = proc(i: var MinInterpreter) =
       #i.evaluating = true
@@ -68,6 +69,7 @@ ROOT
       symbol = q2.qVal[0].symVal
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
+      return
     i.debug "[bind] " & symbol & " = " & $q1
     #if not i.filename.isNil and i.filename != "eval":
     #  echo "BIND $1 - fn: $2" % [symbol, i.filename]
@@ -93,6 +95,7 @@ ROOT
     var code = i.pop
     if not name.isString or not code.isQuotation:
       i.error(errIncorrect, "A string and a quotation are require on the stack")
+      return
     let id = name.strVal
     let scope = i.scope
     let stack = i.copystack
@@ -140,6 +143,7 @@ ROOT
         if symbol.len == 1:
           if i.scope.parent.sigils.hasKey(symbol):
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
+            return
           #q2.filename = i.filename # Save filename for diagnostic purposes
           i.scope.parent.sigils[symbol] = proc(i: var MinInterpreter) =
             i.evaluating = true
@@ -269,6 +273,7 @@ ROOT
     var q = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
+      return
     i.newScope("<unquote-push>", q):
       for item in q.qVal:
         i.push item 
@@ -287,6 +292,7 @@ ROOT
     let v = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
+      return
     q.qVal = @[v] & q.qVal
     i.push q
 

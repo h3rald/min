@@ -12,6 +12,7 @@ const ERRORS: array [MinError, string] = [
   "Quotation not found on the stack",
   "Symbol undefined",
   "Incorrect items on the stack",
+  "Runtime error",
   "Two numbers are required on the stack",
   "Division by zero"
 ]

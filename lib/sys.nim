@@ -18,7 +18,7 @@ define("sys")
       try:
         f.strVal.setCurrentDir
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "A string is required on the stack"
   
@@ -31,7 +31,7 @@ define("sys")
           list.add newVal(i.path)
         i.push list.newVal
       else:
-        warn "Directory '$1' not found" % [a.strVal]
+        i.error errRuntime, "Directory '$1' not found" % [a.strVal]
     else:
       i.error(errIncorrect, "A string is required on the stack")
   
@@ -95,7 +95,7 @@ define("sys")
       try:
         f.strVal.removeFile
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "A string is required on the stack"
   
@@ -106,7 +106,7 @@ define("sys")
       try:
         copyFile a.strVal, b.strVal
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "Two strings are required on the stack"
   
@@ -117,7 +117,7 @@ define("sys")
       try:
         moveFile a.strVal, b.strVal
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "Two strings are required on the stack"
   
@@ -127,7 +127,7 @@ define("sys")
       try:
         f.strVal.removeDir
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "A string is required on the stack"
   
@@ -137,7 +137,7 @@ define("sys")
       try:
         f.strVal.createDir
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error errIncorrect, "A string is required on the stack"
 

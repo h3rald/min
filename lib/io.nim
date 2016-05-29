@@ -31,9 +31,9 @@ define("io")
         try:
           i.push newVal(a.strVal.readFile)
         except:
-          warn getCurrentExceptionMsg()
+          i.error errRuntime, getCurrentExceptionMsg()
       else:
-        warn "File '$1' not found" % [a.strVal]
+        i.error errRuntime, "File '$1' not found" % [a.strVal]
     else:
       i.error(errIncorrect, "A string is required on the stack")
 
@@ -44,7 +44,7 @@ define("io")
       try:
         a.strVal.writeFile(b.strVal)
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error(errIncorrect, "Two strings are required on the stack")
 
@@ -58,7 +58,7 @@ define("io")
         f.write(b.strVal)
         f.close()
       except:
-        warn getCurrentExceptionMsg()
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
       i.error(errIncorrect, "Two strings are required on the stack")
 

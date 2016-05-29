@@ -91,5 +91,6 @@ type
     errNoQuotation,
     errUndefined,
     errIncorrect,
+    errRuntime,
     errTwoNumbersRequired,
     errDivisionByZero
