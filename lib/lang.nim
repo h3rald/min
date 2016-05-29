@@ -283,6 +283,13 @@ ROOT
       i.push q.qVal[index.intVal]
     else:
       i.error errIncorrect, "An integer and a quotation are required on the stack"
+
+  .symbol("size") do (i: In):
+    let q = i.pop
+    if not q.isQuotation:
+      i.error errNoQuotation
+      return
+    i.push q.qVal.len.newVal
   
   .symbol("map") do (i: In):
     let prog = i.pop
