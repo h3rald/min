@@ -10,7 +10,6 @@
 #time
 
 ; Common sigils
-(quote)           (')     sigil 
 (bind)            (:)     sigil 
 (let)             (.)     sigil 
 (getenv)          ($)     sigil 

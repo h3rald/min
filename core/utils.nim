@@ -65,6 +65,15 @@ proc previous*(scope: ref MinScope): ref MinScope =
   else:
     return scope.parent
 
+proc ancestor*(scope: ref MinScope): ref MinScope =
+  if scope.parent.isNil:
+    return ROOT
+  else:
+    if scope.parent.disposable:
+      return scope.parent.ancestor
+    else:
+      return scope.parent
+
 proc define*(name: string): ref MinScope =
   var scope = new MinScope
   scope.name = name

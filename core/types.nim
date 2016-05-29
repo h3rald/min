@@ -23,11 +23,13 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
+    disposable*: bool
     name*: string
     stack*: MinStack
   MinValue* = object
     line*: int
     column*: int
+    filename*: string
     case kind*: MinKind
       of minInt: intVal*: int
       of minFloat: floatVal*: float
@@ -71,6 +73,7 @@ type
   EMinUndefinedError* = ref object of ValueError
   MinInterpreter* = object
     stack*: MinStack
+    pwd*: string
     scope*: ref MinScope
     parser*: MinParser
     currSym*: MinValue

@@ -1,4 +1,4 @@
-import streams, strutils, critbits
+import streams, strutils, critbits, os
 import 
   types, 
   parser,
@@ -26,6 +26,7 @@ proc fullname*(scope: ref MinScope): string =
     result = scope.parent.fullname & ":" & result
 
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
+  #echo key, " - ", scope.symbols.hasKey(key)
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif not scope.parent.isNil:
@@ -84,6 +85,7 @@ template newDisposableScope*(i: In, id: string, body: stmt): stmt {.immediate.}=
   q.scope = new MinScope
   q.scope.name = id
   q.scope.parent = i.scope
+  q.scope.disposable = true
   #i.debug "[scope] " & q.scope.fullname
   let scope = i.scope
   i.scope = q.scope
@@ -96,6 +98,7 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
   var pr:MinParser
   var i:MinInterpreter = MinInterpreter(
     filename: "input", 
+    pwd: "",
     parser: pr, 
     stack: st,
     scope: ROOT,
@@ -104,12 +107,20 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
   )
   return i
 
+proc copy(i: MinInterpreter, filename = "input"): MinInterpreter =
+  result = newMinInterpreter(debugging = i.debugging)
+  result.filename = filename
+  result.pwd =  filename.parentDir
+  result.stack = i.stack
+  result.scope = i.scope
+  result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
+
 proc error*(i: MinInterpreter, status: MinError, message = "") =
   var msg = if message == "": ERRORS[status] else: message
-  if i.filename == "":
+  if i.currSym.filename == "":
     stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, msg])
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
+    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
 proc open*(i: var MinInterpreter, stream:Stream, filename: string) =
@@ -128,22 +139,30 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     let sigil = "" & symbol[0]
     let symbolProc = i.scope.getSymbol(symbol)
     if not symbolProc.isNil:
+      #let filename = i.filename
       try:
         i.newDisposableScope("<" & symbol & ">"):
+          #i.debug "SCOPE: " & i.scope.fullname
           symbolProc(i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
+      #finally:
+      #  i.filename = filename # filename may change when evaluating quotations
     else:
       let sigilProc = i.scope.getSigil(sigil)
       if symbol.len > 1 and not sigilProc.isNil:
         let sym = symbol[1..symbol.len-1]
+        #let filename = i.filename
         try:
           i.stack.add(MinValue(kind: minString, strVal: sym))
           sigilProc(i) 
         except:
           i.error(errSystem, getCurrentExceptionMsg())
+        #finally:
+        #  i.filename = filename # Filename may change when evaluating quotations
       else:
         i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
+        return
   else:
     i.stack.add(val)
 
@@ -186,9 +205,12 @@ proc eval*(i: var MinInterpreter, s: string) =
 proc load*(i: var MinInterpreter, s: string) =
   let fn = i.filename
   try:
-    i.open(newStringStream(s.readFile), s)
-    discard i.parser.getToken() 
-    i.interpret()
+    var i2 = i.copy(s)
+    i2.open(newStringStream(s.readFile), s)
+    discard i2.parser.getToken() 
+    i2.interpret()
+    i.stack = i2.stack
+    i.scope = i2.scope
   except:
     stderr.writeLine getCurrentExceptionMsg()
   finally:

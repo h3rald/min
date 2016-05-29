@@ -24,7 +24,7 @@ define("io")
     let a = i.peek
     a.print
 
-  .symbol("read") do (i: In):
+  .symbol("fread") do (i: In):
     let a = i.pop
     if a.isString:
       if a.strVal.fileExists:
@@ -37,7 +37,7 @@ define("io")
     else:
       i.error(errIncorrect, "A string is required on the stack")
 
-  .symbol("write") do (i: In):
+  .symbol("fwrite") do (i: In):
     let a = i.pop
     let b = i.pop
     if a.isString and b.isString:
@@ -47,5 +47,20 @@ define("io")
         warn getCurrentExceptionMsg()
     else:
       i.error(errIncorrect, "Two strings are required on the stack")
+
+  .symbol("fappend") do (i: In):
+    let a = i.pop
+    let b = i.pop
+    if a.isString and b.isString:
+      try:
+        var f:File
+        discard f.open(a.strVal, fmAppend)
+        f.write(b.strVal)
+        f.close()
+      except:
+        warn getCurrentExceptionMsg()
+    else:
+      i.error(errIncorrect, "Two strings are required on the stack")
+
 
   .finalize()

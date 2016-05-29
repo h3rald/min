@@ -1,4 +1,4 @@
-import critbits, strutils
+import critbits, strutils, os
 import 
   ../core/types,
   ../core/parser, 
@@ -48,9 +48,10 @@ ROOT
       i.error errIncorrect, "The top quotation must contain only one symbol value"
     i.debug "[let] " & symbol & " = " & $q1
     i.scope.parent.symbols[symbol] = proc(i: var MinInterpreter) =
-      i.evaluating = true
+      #i.evaluating = true
+      #i.filename = q1.filename # filename will be reset automatically by interpreter
       i.push q1.qVal
-      i.evaluating = false
+      #i.evaluating = false
 
   .symbol("bind") do (i: In):
     var q2 = i.pop # new (can be a quoted symbol or a string)
@@ -58,17 +59,25 @@ ROOT
     var symbol: string
     if not q1.isQuotation:
       q1 = @[q1].newVal
-    if q2.isString:
-      symbol = q2.strVal
+    if q2.isStringLike:
+      symbol = q2.getString
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
     i.debug "[bind] " & symbol & " = " & $q1
+    #if not i.filename.isNil and i.filename != "eval":
+    #  echo "BIND $1 - fn: $2" % [symbol, i.filename]
+    #  q1.filename = i.filename # Save filename for diagnostic purposes
     i.scope.setSymbol(symbol) do (i: In):
-      i.evaluating = true
+      #i.evaluating = true
+      let fn = i.filename
+      #if not q1.filename.isNil:
+      #  i.filename = q1.filename 
+      #echo "BIND '$1' FN: $2" % [symbol, i.filename]
       i.push q1.qVal
-      i.evaluating = false
+      #i.filename = fn
+      #i.evaluating = false
 
   .symbol("module") do (i: In):
     let name = i.pop
@@ -78,14 +87,19 @@ ROOT
     let id = name.strVal
     let scope = i.scope
     let stack = i.copystack
-    i.newScope(id, code): #<--
+    code.filename = i.filename
+    i.newScope(id, code): 
       for item in code.qVal:
         i.push item 
       let p = proc(i: In) = 
         i.evaluating = true
+        #let fn = i.filename
+        #if not code.filename.isNil:
+          #i.filename = code.filename # filename will be reset automatically by interpreter
         i.push code
+        #i.filename = fn
         i.evaluating = false
-    i.scope.parent.symbols[id] = p
+    i.scope.ancestor.symbols[id] = p
     i.stack = stack
 
   .symbol("import") do (i: In):
@@ -103,12 +117,12 @@ ROOT
         i.debug "[$1 - import] $2:$3" % [i.scope.parent.name, i.scope.name, sym]
         i.scope.parent.symbols[sym] = val
   
-  #.sigil("'") do (i: In):
-  #  i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
+  .sigil("'") do (i: In):
+    i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
   .symbol("sigil") do (i: In):
     var q1 = i.pop
-    let q2 = i.pop
+    var q2 = i.pop
     if q1.isString:
       q1 = @[q1].newVal
     if q1.isQuotation and q2.isQuotation:
@@ -117,8 +131,10 @@ ROOT
         if symbol.len == 1:
           if i.scope.parent.sigils.hasKey(symbol):
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
+          #q2.filename = i.filename # Save filename for diagnostic purposes
           i.scope.parent.sigils[symbol] = proc(i: var MinInterpreter) =
             i.evaluating = true
+            #i.filename = q2.filename # filename will be reset automatically by interpreter
             i.push q2.qVal
             i.evaluating = false
         else:
@@ -138,7 +154,10 @@ ROOT
   .symbol("load") do (i: In):
     let s = i.pop
     if s.isString:
-      i.load s.strVal
+      var file = s.strVal
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      i.load i.pwd.joinPath(file)
     else:
       i.error(errIncorrect, "A string is required on the stack")
 
@@ -150,14 +169,35 @@ ROOT
       var q: MinValue
       if vals.len == 0:
         i.error(errIncorrect, "No symbol to call")
+        return
+      var symScope = i.scope
+      var symFilename = i.filename
       for c in 0..vals.len-1:
         if not vals[c].isStringLike:
           i.error(errIncorrect, "Quotation must contain only symbols or strings")
-        i.scope.getSymbol(vals[c].getString)(i)
+          return
+        let qProc = i.scope.getSymbol(vals[c].getString)
+        if qProc.isNil:
+          i.error(errUndefined, "Symbol '$1' not found" % [vals[c].getString])
+          return
+        let currScope = i.scope
+        let currFilename = i.filename
+        # Execute operator in "parent" symbol scope
+        #echo "CALL - executing '$1' fn: $2" % [vals[c].getString, "-"]
+        i.scope = symScope
+        #i.filename = symFilename
+        #echo ">>> CALL: ", vals[c].getString, " - ", symFilename
+        qProc(i)
+        i.scope = currScope
+        #echo "<<< CALL: ", currFilename
+        #i.filename = currFilename
         if vals.len > 1 and c < vals.len-1:
           q = i.pop
           if not q.isQuotation:
             i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [vals[c-1].getString])
+            return
+          symScope = q.scope
+          symFilename = q.filename
     else:
       i.error(errIncorrect, "A quotation is required on the stack")
 
@@ -224,6 +264,7 @@ ROOT
     let v = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
+      return
     q.qVal.add v
     i.push q
   

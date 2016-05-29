@@ -382,6 +382,7 @@ proc parseMinValue*(p: var MinParser): MinValue =
     discard getToken(p)
   else:
     raiseUndefinedError(p, "Undefined value: '"&p.a&"'")
+  result.filename = p.filename
 
 proc `$`*(a: MinValue): string =
   case a.kind:

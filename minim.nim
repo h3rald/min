@@ -1,4 +1,4 @@
-import streams, critbits, parseopt2, strutils
+import streams, critbits, parseopt2, strutils, os
 import 
   core/parser, 
   core/interpreter, 
@@ -13,12 +13,12 @@ import
   lib/io,
   lib/sys
 
-const version* = "0.1.0"
-var repl = false
+const version* = "1.0.0"
+var REPL = false
 const prelude = "lib/prelude.min".slurp.strip
 
 const
-  USE_LINENOISE = (defined(i386) or defined(amd64))# and not defined(windows)
+  USE_LINENOISE = true#(defined(i386) or defined(amd64))
 
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
@@ -58,6 +58,7 @@ else:
 
 proc minimStream(s: Stream, filename: string) =
   var i = INTERPRETER
+  i.pwd = filename.parentDir
   i.eval prelude
   i.open(s, filename)
   discard i.parser.getToken() 
@@ -125,7 +126,7 @@ for kind, key, val in getopt():
         of "version", "v":
           echo version
         of "interactive", "i":
-          repl = true
+          REPL = true
         else:
           discard
     else:
@@ -135,7 +136,7 @@ if s != "":
   minimString(s)
 elif file != "":
   minimFile file
-elif repl:
+elif REPL:
   minimRepl()
   quit(0)
 else:
