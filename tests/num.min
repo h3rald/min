@@ -1,0 +1,32 @@
+@test
+#test
+
+"num" describe
+
+  (2 2 + 4 ==) assert
+  (1 3.0 + 4 ==) assert
+  (3.1 3.9 + 7 ==) assert
+  (3 -2.1 + 0.8999999999999999 ==) assert
+
+  (3 3 - 0 ==) assert
+  (-5 -4 - -1 ==) assert
+  (-4 3.7 - -7.7 ==) assert
+
+  (-2 4 * -8 ==) assert
+  (-2.5 -2 * 5 ==) assert
+  (3 3 * 9 ==) assert
+
+  (5 2 / 2.5 ==) assert
+  (1 3 / 0.3333333333333333 ==) assert
+  (-3 2 / -1.5 ==) assert
+
+  (5 2 div 2 ==) assert
+  (1 3 div 0 ==) assert
+  (-3 2 div -1 ==) assert
+  
+  (5 2 mod 1 ==) assert
+  (4 2 mod 0 ==) assert
+  (-3 2 mod -1 ==) assert
+
+  report
+  clear
