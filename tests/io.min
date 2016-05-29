@@ -1,0 +1,13 @@
+@test
+#test
+
+"io" describe
+
+  ("TEST" "test.txt" fwrite
+   "test.txt" fread "TEST" ==) assert
+  
+  (" - TEST" "test.txt" fappend
+   "test.txt" fread "TEST - TEST" ==) assert
+
+  "test.txt" rm
+  report
