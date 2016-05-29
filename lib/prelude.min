@@ -12,6 +12,7 @@
 ; Common sigils
 (bind)            (:)     sigil 
 (let)             (.)     sigil 
+(delete)          (~)     sigil 
 (getenv)          ($)     sigil 
 (system)          (!)     sigil 
 (run)             (&)     sigil

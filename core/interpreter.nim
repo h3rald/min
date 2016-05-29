@@ -201,9 +201,12 @@ proc interpret*(i: var MinInterpreter) =
 proc eval*(i: var MinInterpreter, s: string) =
   let fn = i.filename
   try:
-    i.open(newStringStream(s), "eval")
-    discard i.parser.getToken() 
-    i.interpret()
+    var i2 = i.copy("eval")
+    i2.open(newStringStream(s), "eval")
+    discard i2.parser.getToken() 
+    i2.interpret()
+    i.stack = i2.stack
+    i.scope = i2.scope
   except:
     stderr.writeLine getCurrentExceptionMsg()
   finally:

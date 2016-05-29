@@ -220,9 +220,14 @@ ROOT
   .symbol("dump") do (i: In):
     echo i.dump
 
-  .symbol("stack") do (i: In):
-    var s = i.stack
-    i.push s
+  .symbol("getstack") do (i: In):
+    i.push i.stack.newVal
+
+  .symbol("setstack") do (i: In):
+    let q = i.pop
+    if not q.isQuotation:
+      i.error errNoQuotation
+    i.stack = q.qVal
 
   # Operations on quotations or strings
 
