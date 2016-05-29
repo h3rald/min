@@ -6,7 +6,7 @@
  ;; describe
  (
    .name
-   "Testing: " print! name put! 
+   "Testing: [" print! name print! "]" put! 
    padding
    () 
  ) :describe

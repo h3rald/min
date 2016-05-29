@@ -21,8 +21,11 @@ ROOT
 
   .symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
-    for s in i.scope.parent.sigils.keys:
-      q.add s.newVal
+    var scope = i.scope.parent
+    while not scope.isNil:
+      for s in scope.sigils.keys:
+        q.add s.newVal
+      scope = scope.parent
     i.push q.newVal
 
   .symbol("debug?") do (i: In):
@@ -78,6 +81,12 @@ ROOT
       i.push q1.qVal
       #i.filename = fn
       #i.evaluating = false
+
+  .symbol("delete") do (i: In):
+    var sym = i.pop
+    if not sym.isStringLike:
+      i.error errIncorrect, "A string or a symbol are required on the stack"
+    i.scope.delSymbol(sym.getString) 
 
   .symbol("module") do (i: In):
     let name = i.pop
@@ -290,6 +299,14 @@ ROOT
       i.error errNoQuotation
       return
     i.push q.qVal.len.newVal
+
+  .symbol("contains") do (i: In):
+    let v = i.pop
+    let q = i.pop
+    if not q.isQuotation:
+      i.error errNoQuotation
+      return
+    i.push q.qVal.contains(v).newVal 
   
   .symbol("map") do (i: In):
     let prog = i.pop
