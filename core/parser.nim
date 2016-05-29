@@ -426,10 +426,12 @@ proc print*(a: MinValue) =
   stdout.write($$a)
 
 proc `==`*(a: MinValue, b: MinValue): bool =
-  if a.kind == minInt and b.kind == minInt:
+  if a.kind == minSymbol and b.kind == minSymbol:
+    return a.symVal == b.symVal
+  elif a.kind == minInt and b.kind == minInt:
     return a.intVal == b.intVal
   elif a.kind == minInt and b.kind == minFloat:
-    return a.intVal.float == b.intVal.float
+    return a.intVal.float == b.floatVal.float
   elif a.kind == minFloat and b.kind == minFloat:
     return a.floatVal == b.floatVal
   elif a.kind == minFloat and b.kind == minInt:

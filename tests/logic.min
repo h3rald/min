@@ -1,0 +1,137 @@
+@test
+#test
+
+"logic" describe
+
+  (2 3 <) assert
+  (3 2 < false ==) assert
+  (3 3 < false ==) assert
+  (2.99 3 <) assert
+  (2 1.99 < false ==) assert
+  (1.99 1.991 <) assert
+  (1.99 1.990 < false ==) assert
+  ("test1" "test2" <) assert
+  ("test3" "test2" < false ==) assert
+  ("test2" "test2" < false ==) assert
+
+  (2 3 <=) assert
+  (3 2 <= false ==) assert
+  (3 3 <=) assert
+  (2.99 3 <=) assert
+  (2 1.99 <= false ==) assert
+  (1.99 1.991 <=) assert
+  (1.99 1.990 <=) assert
+  ("test1" "test2" <=) assert
+  ("test3" "test2" <= false ==) assert
+  ("test2" "test2" <=) assert
+
+
+  (2 3 > false ==) assert
+  (3 2 >) assert
+  (3 3 > false ==) assert
+  (2.99 3 > false ==) assert
+  (2 1.99 >) assert
+  (1.99 1.991 > false ==) assert
+  (1.99 1.990 > false ==) assert
+  ("test1" "test2" > false ==) assert
+  ("test3" "test2" >) assert
+  ("test2" "test2" > false ==) assert
+
+  (2 3 >= false ==) assert
+  (3 2 >=) assert
+  (3 3 >=) assert
+  (2.99 3 >= false ==) assert
+  (2 1.99 >=) assert
+  (1.99 1.991 >= false ==) assert
+  (1.99 1.990 >=) assert
+  ("test1" "test2" >= false ==) assert
+  ("test3" "test2" >=) assert
+  ("test2" "test2" >=) assert
+
+
+  (true true ==) assert
+  (false true == false ==) assert
+  (true false == false ==) assert
+  (false false ==) assert
+  (1 1 ==) assert
+  ("aaa" "aaa" ==) assert
+  (1.0 1 ==) assert
+  ((1 2 3.0) (1.0 2 3) ==) assert
+  (("a" "b") ("a" "b") ==) assert
+  (("a" "b" 3) ("a" "b" 4) == false ==) assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) ==) assert
+
+  (true true != false ==) assert
+  (false true !=) assert
+  (true false !=) assert
+  (false false != false ==) assert
+  (1 1 != false ==) assert
+  ("aaa" "aaa" != false ==) assert
+  (1.0 1 != false ==) assert
+  ((1 2 3.0) (1.0 2 3) != false ==) assert
+  (("a" "b") ("a" "b") != false ==) assert
+  (("a" "b" 3) ("a" "b" 4) !=) assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) assert
+
+  (false not) assert
+  (true not false ==) assert
+
+  (true true and) assert
+  (true false and false ==) assert
+  (false true and false ==) assert
+  (false false and false ==) assert
+
+  (true true or) assert
+  (true false or) assert
+  (false true or) assert
+  (false false or false ==) assert
+
+  (true true xor false ==) assert
+  (true false xor) assert
+  (false true xor) assert
+  (false false xor false ==) assert
+
+  ("a" string?) assert
+  (1 string? false ==) assert
+  (1.0 string? false ==) assert
+  (true string? false ==) assert
+  (false string? false ==) assert
+  (("a" 2 c) string? false ==) assert
+
+  ("a" int? false ==) assert
+  (1 int?) assert
+  (1.0 int? false ==) assert
+  (true int? false ==) assert
+  (false int? false ==) assert
+  (("a" 2 c) int? false ==) assert
+
+  ("a" float? false ==) assert
+  (1 float? false ==) assert
+  (1.0 float?) assert
+  (true float? false ==) assert
+  (false float? false ==) assert
+  (("a" 2 c) float? false ==) assert
+
+  ("a" bool? false ==) assert
+  (1 bool? false ==) assert
+  (1.0 bool? false ==) assert
+  (true bool?) assert
+  (false bool?) assert
+  (("a" 2 c) bool? false ==) assert
+
+  ("a" number? false ==) assert
+  (1 number?) assert
+  (1.0 number?) assert
+  (true number? false ==) assert
+  (false number? false ==) assert
+  (("a" 2 c) number? false ==) assert
+
+  ("a" quotation? false ==) assert
+  (1 quotation? false ==) assert
+  (1.0 quotation? false ==) assert
+  (true quotation? false ==) assert
+  (false quotation? false ==) assert
+  (("a" 2 c) quotation?) assert
+
+  report
+  clear

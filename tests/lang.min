@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 154 ==) assert
+  (symbols size 153 ==) assert
 
   (sigils size 11 ==) assert
 

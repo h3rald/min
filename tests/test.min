@@ -1,6 +1,6 @@
 ;; test module
 (
- ("OK") ' .ok
+ 'OK ' .ok
  ("  " print!) .padding
 
  ;; describe
