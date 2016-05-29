@@ -1,0 +1,83 @@
+@test
+#test
+
+"lang" describe
+
+  (symbols size 154 ==) assert
+
+  (sigils size 11 ==) assert
+
+  (debug? false ==) assert
+
+  (2 'a let
+    (3 a + (5 'a let a) -> +) -> a + 12 ==) assert
+
+  (symbols "a" contains false ==) assert
+
+  (5 'five : symbols "five" contains) assert
+
+  ("five" delete symbols "five" contains false  ==) assert
+
+  (
+    (
+      (+) :myplus
+    ) =mymath
+  ) :defmod
+  
+  (defmod symbols "mymath" contains) assert
+
+  (defmod #mymath 2 3 myplus 5 ==) assert
+
+  ((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
+
+  ("3 4 +" eval 7 ==) assert
+
+  ("2 2 +" "tests/testload.min" fwrite @testload 4 ==) assert
+  "tests/testload.min" rm
+
+  (defmod 2 2 %mymath:myplus 4 ==) assert
+  
+  (1 2 3 4 getstack (1 2 3 4) ==) assert
+
+  ((1 2 3) setstack getstack (1 2 3) ==) assert
+
+  ((1 2) (3 4) concat (1 2 3 4) ==) assert
+
+  ((1 2 3) first 1 ==) assert
+  
+  ((1 2 3) rest (2 3) ==) assert
+
+  (2 quote (2) ==) assert
+
+  ((2 3) unquote getstack (2 3) ==) assert
+
+  (4 (1 2 3) append (1 2 3 4) ==) assert
+
+  (1 (2 3) cons (1 2 3) ==) assert
+
+  ((1 2 3 4) 2 at 3 ==) assert
+
+  ((1 2 3) size 3 ==) assert
+
+  ((1 2 3 4) 5 contains false ==) assert
+  ((1 2 3 4) 2 contains) assert
+
+  ((1 2 3 4) (2 +) map (3 4 5 6) ==) assert
+
+  (3 (succ) 3 times 6 ==) assert
+
+  ((2 3 >) ("YES") ("NO") ifte "NO" ==) assert
+  ((2 3 <) ("YES") ("NO") ifte "YES" ==) assert
+
+  (0 .c
+    (c 10 <) (c succ :c) while
+    c 10 ==) assert
+
+  ((1 2 3 4 5) (even?) filter (2 4) ==) assert
+
+  (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
+
+  report
+  ; Tidy up
+  ~defmod
+  clear

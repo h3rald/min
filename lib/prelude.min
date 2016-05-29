@@ -52,7 +52,6 @@
 (2 mod 0 ==)    :even?
 (even? not)     :odd?
 
-((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
 
 ; Stack Operators
 (swap cons)                       :swons
