@@ -103,8 +103,8 @@ ROOT
         i.debug "[$1 - import] $2:$3" % [i.scope.parent.name, i.scope.name, sym]
         i.scope.parent.symbols[sym] = val
   
-  .sigil("'") do (i: In):
-    i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
+  #.sigil("'") do (i: In):
+  #  i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
   .symbol("sigil") do (i: In):
     var q1 = i.pop
@@ -141,6 +141,26 @@ ROOT
       i.load s.strVal
     else:
       i.error(errIncorrect, "A string is required on the stack")
+
+
+  .symbol("call") do (i: In):
+    let fqn = i.pop
+    if fqn.isQuotation:
+      let vals = fqn.qVal
+      var q: MinValue
+      if vals.len == 0:
+        i.error(errIncorrect, "No symbol to call")
+      for c in 0..vals.len-1:
+        if not vals[c].isStringLike:
+          i.error(errIncorrect, "Quotation must contain only symbols or strings")
+        i.scope.getSymbol(vals[c].getString)(i)
+        if vals.len > 1 and c < vals.len-1:
+          q = i.pop
+          if not q.isQuotation:
+            i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [vals[c-1].getString])
+    else:
+      i.error(errIncorrect, "A quotation is required on the stack")
+
 
   # Operations on the whole stack
 

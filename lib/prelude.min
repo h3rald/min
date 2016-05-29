@@ -10,13 +10,15 @@
 #time
 
 ; Common sigils
-(bind)    (:)     sigil 
-(let)     (.)     sigil 
-(getenv)  ($)     sigil 
-(system)  (!)     sigil 
-(run)     (&)     sigil
-(module)  (=)     sigil
-(load)    (@)     sigil
+(quote)           (')     sigil 
+(bind)            (:)     sigil 
+(let)             (.)     sigil 
+(getenv)          ($)     sigil 
+(system)          (!)     sigil 
+(run)             (&)     sigil
+(module)          (=)     sigil
+(load)            (@)     sigil
+(":" split call)  (%)     sigil
 
 ; Aliases
 'bind        ::
@@ -24,15 +26,13 @@
 'module      :=
 'import      :#
 'exit        :quit
-'concat      :,
-'print       :%
 '==          :eq
 '!=          :noteq
 '>           :gt
 '<           :lt
 '>=          :gte
 '<=          :lte
-'puts        :echo
+'put         :echo
 'system      :!
 'run         :&
 'getenv      :$
@@ -45,7 +45,6 @@
 'filter      :select
 'clear       :empty
 'cons        :prepend
-'match       :~
 
 ; Mathematical Operators
 (1 +)           :succ
@@ -74,5 +73,5 @@
 
 ; Other
 (print pop)    :print!
-(puts pop)     :puts!
+(put pop)     :put!
 

@@ -37,6 +37,15 @@ proc newVal*(s: float): MinValue =
 proc newVal*(s: bool): MinValue =
   return MinValue(kind: minBool, boolVal: s)
 
+proc isStringLike*(s: MinValue): bool =
+  return s.isSymbol or s.isString
+
+proc getString*(v: MinValue): string =
+  if v.isSymbol:
+    return v.symVal
+  elif v.isString:
+    return v.strVal
+
 proc warn*(s: string) =
   stderr.writeLine s
 

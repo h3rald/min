@@ -6,7 +6,7 @@
  ;; describe
  (
    .name
-   "Testing: " print! name puts! 
+   "Testing: " print! name put! 
    padding
    () 
  ) :describe
@@ -37,12 +37,12 @@
     total succ :total
     (ok !=) (failed succ :failed) () ifte
   ) map
-  padding total print! " tests executed - " print! failed print! " failed." puts!
+  padding total print! " tests executed - " print! failed print! " failed." put!
   (
     ' .result
     result
     (ok !=)
-    (padding "FAILED: " print! result puts!)
+    (padding "FAILED: " print! result put!)
     ()
     ifte
   )

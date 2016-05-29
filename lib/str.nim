@@ -11,9 +11,11 @@ define("str")
   .symbol("split") do (i: In):
     let sep = i.pop
     let s = i.pop
+    var q = newSeq[MinValue](0)
     if s.isString and sep.isString:
       for e in s.strVal.split(sep.strVal):
-        i.push e.newVal
+        q.add e.newVal
+      i.push q.newVal
     else:
       i.error errIncorrect, "Two strings are required on the stack"
 

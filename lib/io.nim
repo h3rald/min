@@ -13,11 +13,11 @@ define("io")
   .symbol("newline") do (i: In):
     echo ""
 
-  .symbol("puts") do (i: In):
+  .symbol("put") do (i: In):
     let a = i.peek
     echo $$a
 
-  .symbol("gets") do (i: In):
+  .symbol("get") do (i: In):
     i.push newVal(stdin.readLine())
 
   .symbol("print") do (i: In):
