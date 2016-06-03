@@ -150,7 +150,6 @@ ROOT
     else:
       i.error(errIncorrect, "A string is required on the stack")
 
-
   .symbol("call") do (i: In):
     let symbols = i.pop
     var target = i.pop
@@ -181,7 +180,6 @@ ROOT
         i.scope = q.scope 
     i.scope = origScope
 
-
   .symbol("inspect") do (i: In):
     let scope = i.pop
     if not scope.isQuotation:
@@ -190,6 +188,12 @@ ROOT
     for s in scope.scope.symbols.keys:
       symbols.add s.newVal
     i.push symbols.newVal
+
+  .symbol("raise") do (i: In):
+    let err = i.pop
+    if not err.isQuotation:
+      i.error errNoQuotation
+    raise MinRuntimeError(msg: "($1) $2" % [err.qVal[0].getString, err.qVal[1].getString])
 
   # Operations on the whole stack
 

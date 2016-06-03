@@ -68,8 +68,9 @@ type
     err*: MinParserError
     filename*: string
   MinStack* = seq[MinValue]
-  EMinParsingError* = ref object of ValueError 
-  EMinUndefinedError* = ref object of ValueError
+  MinParsingError* = ref object of ValueError 
+  MinUndefinedError* = ref object of ValueError
+  MinRuntimeError* = ref object of SystemError
   MinInterpreter* = object
     stack*: MinStack
     pwd*: string

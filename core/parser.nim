@@ -69,10 +69,10 @@ proc errorMsgExpected*(my: MinParser, e: string): string =
   result = errorMsg(my, e & " expected")
 
 proc raiseParseError*(p: MinParser, msg: string) {.noinline, noreturn.} =
-  raise EMinParsingError(msg: errorMsgExpected(p, msg))
+  raise MinParsingError(msg: errorMsgExpected(p, msg))
 
 proc raiseUndefinedError*(p:MinParser, msg: string) {.noinline, noreturn.} =
-  raise EMinUndefinedError(msg: errorMsg(p, msg))
+  raise MinUndefinedError(msg: errorMsg(p, msg))
 
 #proc error(p: MinParser, msg: string) = 
 #  writeln(stderr, p.errorMsg(msg))

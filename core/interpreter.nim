@@ -128,6 +128,8 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     if not symbolProc.isNil:
       try:
         symbolProc(i) 
+      except MinRuntimeError:
+        stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
       except:
         i.error(errSystem, getCurrentExceptionMsg())
     else:

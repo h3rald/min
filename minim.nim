@@ -22,9 +22,9 @@ const
   USE_LINENOISE = true
 
 
-let usage* = "  MiNiM v" & version & " - a tiny concatenative system programming language" & """
+let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
-  (c) 2014 Fabio Cevasco
+  (c) 2014-2016 Fabio Cevasco
   
   Usage:
     minim [options] [filename]
