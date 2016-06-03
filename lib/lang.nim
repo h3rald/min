@@ -268,10 +268,12 @@ ROOT
 
   .symbol("size") do (i: In):
     let q = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
-    i.push q.qVal.len.newVal
+    if q.isQuotation:
+      i.push q.qVal.len.newVal
+    elif q.isString:
+      i.push q.strVal.len.newVal
+    else:
+      i.error(errIncorrect, "A quotation or a string is required on the stack")
 
   .symbol("contains") do (i: In):
     let v = i.pop

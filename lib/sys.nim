@@ -62,8 +62,8 @@ define("sys")
       i.error(errIncorrect, "A string is required on the stack")
   
   .symbol("putenv") do (i: In):
-    let value = i.pop
     let key = i.pop
+    let value = i.pop
     if value.isString and key.isString:
       key.strVal.putEnv value.strVal
     else:

@@ -44,6 +44,7 @@
 'filter      :select
 'clear       :empty
 'cons        :prepend
+'size        :length
 
 ; Mathematical Operators
 (1 +)           :succ

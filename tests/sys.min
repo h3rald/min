@@ -1,0 +1,35 @@
+@test
+#test
+
+"sys" describe
+
+  ("systest" mkdir "." ls "./systest" contains) assert
+
+  ("systest" cd pwd "systest" match) assert
+  ".." cd
+
+  (&ls "\n" split "systest" contains) assert
+
+  ($PATH length 0 >) assert
+
+  ("TEST" "AAA" putenv $AAA "TEST" ==) assert
+
+  (os length 0 >) assert
+
+  (cpu length 0 >) assert
+
+  ("TEST" "test.txt" fwrite "test.txt" file?) assert
+
+  ("systest" dir?) assert
+
+  ("test.txt" "test2.txt" cp "test2.txt" file?) assert
+
+  ("test.txt" "test1.txt" mv "test1.txt" file?) assert
+
+  ("test2.txt" rm "test1.txt" rm pwd ls "test1.txt" contains :t1 pwd ls "test2" contains t1 and false ==) assert
+
+  ("systest" rmdir pwd ls "systest" contains false ==) assert
+
+  report
+  clear
+  "systest" rmdir
