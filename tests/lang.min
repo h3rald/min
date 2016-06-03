@@ -5,7 +5,7 @@
 
   (symbols size 156 ==) assert
 
-  (sigils size 11 ==) assert
+  (sigils size 10 ==) assert
 
   (debug? false ==) assert
 
@@ -23,12 +23,18 @@
   (
     (
       (+) :myplus
-    ) =mymath
+    ) => :mymath
   ) :defmod
   
   (defmod symbols "mymath" contains) assert
 
   (defmod #mymath 2 3 myplus 5 ==) assert
+
+  ; Extend an existing scope
+  (defmod 
+    (#mymath 
+     (-) :myminus) => .mymath 
+    5 2 %mymath:myminus 3 ==) assert
 
   ((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 

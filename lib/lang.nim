@@ -76,7 +76,6 @@ ROOT
     #  q1.filename = i.filename # Save filename for diagnostic purposes
     let res = i.scope.setSymbol(symbol) do (i: In):
       #i.evaluating = true
-      let fn = i.filename
       #if not q1.filename.isNil:
       #  i.filename = q1.filename 
       #echo "BIND '$1' FN: $2" % [symbol, i.filename]
@@ -94,28 +93,21 @@ ROOT
     if not res:
       i.error errRuntime, "Attempting to delete undefined symbol: " & sym.getString
 
-  .symbol("module") do (i: In):
-    let name = i.pop
+  .symbol("scope") do (i: In):
     var code = i.pop
-    if not name.isString or not code.isQuotation:
-      i.error(errIncorrect, "A string and a quotation are require on the stack")
+    if not code.isQuotation:
+      i.error errNoQuotation
       return
-    let id = name.strVal
-    let scope = i.scope
-    let stack = i.copystack
     code.filename = i.filename
-    i.unquote(id, code)
-    let p = proc(i: In) = 
-      i.evaluating = true
-      i.push code
-      i.evaluating = false
-    i.scope.symbols[id] = p
-    i.stack = stack
+    i.unquote("<scope>", code)
+    i.push @[code].newVal
 
   .symbol("import") do (i: In):
     var mdl: MinValue
+    var name: string
     try:
-      i.scope.getSymbol(i.pop.strVal)(i)
+      name = i.pop.strVal
+      i.scope.getSymbol(name)(i)
       mdl = i.pop
     except:
       echo getCurrentExceptionMsg()

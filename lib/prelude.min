@@ -16,14 +16,12 @@
 (getenv)          ($)     sigil 
 (system)          (!)     sigil 
 (run)             (&)     sigil
-(module)          (=)     sigil
 (load)            (@)     sigil
 (":" split call)  (%)     sigil
 
 ; Aliases
 'define      ::
 'bind        :.
-'module      :=
 'import      :#
 'exit        :quit
 '==          :eq
@@ -42,6 +40,7 @@
 'unquote     :i
 'unquote     :apply
 'unquote     :->
+'scope       :=>
 'filter      :select
 'clear       :empty
 'cons        :prepend
