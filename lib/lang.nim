@@ -37,7 +37,7 @@ ROOT
 
   # Language constructs
 
-  .symbol("let") do (i: In):
+  .symbol("define") do (i: In):
     var q2 = i.pop # new (can be a quoted symbol or a string)
     var q1 = i.pop # existing (auto-quoted)
     var symbol: string
@@ -50,7 +50,7 @@ ROOT
     else:
       i.error errIncorrect, "The top quotation must contain only one symbol value"
       return
-    i.debug "[let] " & symbol & " = " & $q1
+    i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
       #i.evaluating = true
       #i.filename = q1.filename # filename will be reset automatically by interpreter
@@ -74,7 +74,7 @@ ROOT
     #if not i.filename.isNil and i.filename != "eval":
     #  echo "BIND $1 - fn: $2" % [symbol, i.filename]
     #  q1.filename = i.filename # Save filename for diagnostic purposes
-    i.scope.setSymbol(symbol) do (i: In):
+    let res = i.scope.setSymbol(symbol) do (i: In):
       #i.evaluating = true
       let fn = i.filename
       #if not q1.filename.isNil:
@@ -83,12 +83,16 @@ ROOT
       i.push q1.qVal
       #i.filename = fn
       #i.evaluating = false
+    if not res:
+      i.error errRuntime, "Attempting to bind undefined symbol: " & symbol
 
   .symbol("delete") do (i: In):
     var sym = i.pop
     if not sym.isStringLike:
       i.error errIncorrect, "A string or a symbol are required on the stack"
-    i.scope.delSymbol(sym.getString) 
+    let res = i.scope.delSymbol(sym.getString) 
+    if not res:
+      i.error errRuntime, "Attempting to delete undefined symbol: " & sym.getString
 
   .symbol("module") do (i: In):
     let name = i.pop
@@ -168,43 +172,74 @@ ROOT
 
 
   .symbol("call") do (i: In):
-    let fqn = i.pop
-    if fqn.isQuotation:
-      let vals = fqn.qVal
-      var q: MinValue
-      if vals.len == 0:
-        i.error(errIncorrect, "No symbol to call")
-        return
-      var symScope = i.scope
-      var symFilename = i.filename
-      for c in 0..vals.len-1:
-        if not vals[c].isStringLike:
-          i.error(errIncorrect, "Quotation must contain only symbols or strings")
-          return
-        let qProc = i.scope.getSymbol(vals[c].getString)
-        if qProc.isNil:
-          i.error(errUndefined, "Symbol '$1' not found" % [vals[c].getString])
-          return
-        let currScope = i.scope
-        let currFilename = i.filename
-        # Execute operator in "parent" symbol scope
-        #echo "CALL - executing '$1' fn: $2" % [vals[c].getString, "-"]
-        i.scope = symScope
-        #i.filename = symFilename
-        #echo ">>> CALL: ", vals[c].getString, " - ", symFilename
-        qProc(i)
-        i.scope = currScope
-        #echo "<<< CALL: ", currFilename
-        #i.filename = currFilename
-        if vals.len > 1 and c < vals.len-1:
-          q = i.pop
-          if not q.isQuotation:
-            i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [vals[c-1].getString])
-            return
-          symScope = q.scope
-          symFilename = q.filename
-    else:
+    let symbols = i.pop
+    if not symbols.isQuotation:
       i.error(errIncorrect, "A quotation is required on the stack")
+    let vals = symbols.qVal
+    var q: MinValue
+    if vals.len == 0:
+      i.error errIncorrect, "No symbol to call"
+      return
+    let origScope = i.scope
+    for c in 0..vals.len-1:
+      if not vals[c].isStringLike:
+        i.error(errIncorrect, "Quotation must contain only symbols or strings")
+        return
+      let symbol = vals[c].getString
+      let qProc = i.scope.getSymbol(symbol)
+      if qProc.isNil:
+        i.error(errUndefined, "Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
+        return
+      qProc(i)
+      if vals.len > 1 and c < vals.len-1:
+        q = i.pop
+        if not q.isQuotation:
+          i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [symbol])
+          return
+        i.scope = q.scope 
+    i.scope = origScope
+
+     
+
+
+#  .symbol("call") do (i: In):
+#    let fqn = i.pop
+#    if fqn.isQuotation:
+#      let vals = fqn.qVal
+#      var q: MinValue
+#      if vals.len == 0:
+#        i.error(errIncorrect, "No symbol to call")
+#        return
+#      var symScope = i.scope
+#      var symFilename = i.filename
+#      for c in 0..vals.len-1:
+#        if not vals[c].isStringLike:
+#          i.error(errIncorrect, "Quotation must contain only symbols or strings")
+#          return
+#        let qProc = i.scope.getSymbol(vals[c].getString)
+#        if qProc.isNil:
+#          i.error(errUndefined, "Symbol '$1' not found in scope '$2'" % [vals[c].getString, i.scope.fullname])
+#          return
+#        let currScope = i.scope
+#        let currFilename = i.filename
+#        # Execute operator in "parent" symbol scope
+#        #echo "CALL - executing '$1' fn: $2" % [vals[c].getString, "-"]
+#        i.scope = symScope
+#        #i.filename = symFilename
+#        #echo ">>> CALL: ", vals[c].getString, " - ", symFilename
+#        qProc(i)
+#        i.scope = currScope
+#        #echo "<<< CALL: ", currFilename
+#        #i.filename = currFilename
+#        if vals.len > 1 and c < vals.len-1:
+#          q = i.pop
+#          if not q.isQuotation:
+#            i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [vals[c-1].getString])
+#            return
+#          symScope = q.scope
+#          symFilename = q.filename
+#    else:
+#      i.error(errIncorrect, "A quotation is required on the stack")
 
 
   # Operations on the whole stack

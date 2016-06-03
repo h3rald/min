@@ -1,11 +1,11 @@
 ;; test module
 (
- 'OK ' .ok
- ("  " print!) .padding
+ 'OK ' :ok
+ ("  " print!) :padding
 
  ;; describe
  (
-   .name
+   :name
    "Testing: [" print! name print! "]" put! 
    padding
    () 
@@ -13,8 +13,8 @@
 
  ;; assert
  (
-  ' .check      ; save the check quotation to validate
-  ' .results    ; save the result symbol to update
+  ' :check      ; save the check quotation to validate
+  ' :results    ; save the result symbol to update
   (check -> true ==)
   ( 
     ok results append quote :results 
@@ -31,16 +31,16 @@
  ;; report
  (
   newline
-  ' .results ; save the results collected so far
-  0 .total
-  0 .failed
+  ' :results ; save the results collected so far
+  0 :total
+  0 :failed
   results (
-    total succ :total
-    (ok !=) (failed succ :failed) () ifte
+    total succ .total
+    (ok !=) (failed succ .failed) () ifte
   ) map
   padding total print! " tests executed - " print! failed print! " failed." put!
   (
-    ' .result
+    ' :result
     result
     (ok !=)
     (padding "FAILED: " print! result put!)

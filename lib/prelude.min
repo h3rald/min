@@ -10,8 +10,8 @@
 #time
 
 ; Common sigils
-(bind)            (:)     sigil 
-(let)             (.)     sigil 
+(bind)            (.)     sigil 
+(define)          (:)     sigil 
 (delete)          (~)     sigil 
 (getenv)          ($)     sigil 
 (system)          (!)     sigil 
@@ -21,8 +21,8 @@
 (":" split call)  (%)     sigil
 
 ; Aliases
-'bind        ::
-'let         :.
+'define      ::
+'bind        :.
 'module      :=
 'import      :#
 'exit        :quit
@@ -71,6 +71,6 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 ; Other
-(print pop)    :print!
+(print pop)   :print!
 (put pop)     :put!
 

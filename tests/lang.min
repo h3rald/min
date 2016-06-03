@@ -9,14 +9,16 @@
 
   (debug? false ==) assert
 
-  (2 'a let
-    (3 a + (5 'a let a) -> +) -> a + 12 ==) assert
+  (2 'a define
+    (3 a + (5 'a define a) -> +) -> a + 12 ==) assert
 
   (symbols "a" contains false ==) assert
-
-  (5 'five : symbols "five" contains) assert
-
-  ("five" delete symbols "five" contains false  ==) assert
+  
+  5 :five
+  (symbols "five" contains) assert
+  
+  ~five
+  (symbols "five" contains false  ==) assert
 
   (
     (
@@ -69,8 +71,8 @@
   ((2 3 >) ("YES") ("NO") ifte "NO" ==) assert
   ((2 3 <) ("YES") ("NO") ifte "YES" ==) assert
 
-  (0 .c
-    (c 10 <) (c succ :c) while
+  (0 :c
+    (c 10 <) (c succ .c) while
     c 10 ==) assert
 
   ((1 2 3 4 5) (even?) filter (2 4) ==) assert

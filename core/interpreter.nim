@@ -33,29 +33,24 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   elif not scope.parent.isNil:
     return scope.parent.getSymbol(key)
 
-proc delSymbol*(scope: ref MinScope, key: string) =
+proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
   #echo key, " - ", scope.symbols.hasKey(key)
   if scope.symbols.hasKey(key):
     scope.symbols.excl(key)
-  elif not scope.parent.isNil:
-    scope.parent.delSymbol(key)
+    return true
+  return false
 
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.discardable.}=
   result = false
-  # check if a symbol already exists in parent scope
-  if not scope.parent.isNil and scope.parent.symbols.hasKey(key):
-    scope.parent.symbols[key] = value
-    #echo "($1) SET EXISTING SYMBOL: $2" % [scope.parent.fullname, key]
-    return true
+  # check if a symbol already exists in current scope
+  if not scope.isNil and scope.symbols.hasKey(key):
+    scope.symbols[key] = value
+    #echo "($1) SET EXISTING SYMBOL: $2" % [scope.fullname, key]
+    result = true
   else:
     # Go up the scope chain and attempt to find the symbol
     if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value)
-  if not result:
-    # Define local variable
-    #echo "($1) SET LOCAL SYMBOL: $2" % [scope.fullname, key]
-    scope.symbols[key] = value
-    return true
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
