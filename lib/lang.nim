@@ -153,14 +153,16 @@ ROOT
 
   .symbol("call") do (i: In):
     let symbols = i.pop
-    if not symbols.isQuotation:
-      i.error(errIncorrect, "A quotation is required on the stack")
+    var target = i.pop
+    if not symbols.isQuotation or not target.isQuotation:
+      i.error errIncorrect, "Two quotations are required on the stack"
     let vals = symbols.qVal
     var q: MinValue
     if vals.len == 0:
       i.error errIncorrect, "No symbol to call"
       return
     let origScope = i.scope
+    i.scope = target.scope
     for c in 0..vals.len-1:
       if not vals[c].isStringLike:
         i.error(errIncorrect, "Quotation must contain only symbols or strings")

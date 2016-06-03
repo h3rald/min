@@ -34,7 +34,7 @@
   (defmod 
     (#mymath 
      (-) :myminus) => .mymath 
-    5 2 %mymath:myminus 3 ==) assert
+    5 2 mymath %myminus 3 ==) assert
 
   ((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 
@@ -43,7 +43,7 @@
   ("2 2 +" "tests/testload.min" fwrite @testload 4 ==) assert
   "tests/testload.min" rm
 
-  (defmod 2 2 %mymath:myplus 4 ==) assert
+  (defmod 2 2 mymath %myplus 4 ==) assert
   
   (1 2 3 4 getstack (1 2 3 4) ==) assert
 
