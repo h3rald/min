@@ -23,7 +23,6 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
-    disposable*: bool
     name*: string
     stack*: MinStack
   MinValue* = object

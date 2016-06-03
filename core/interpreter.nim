@@ -83,19 +83,6 @@ template newScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate
   #i.debug "[scope] " & scope.fullname
   i.scope = scope
 
-#template newDisposableScope*(i: In, id: string, body: stmt): stmt {.immediate.}=
-#  var q = MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
-#  q.scope = new MinScope
-#  q.scope.name = id
-#  q.scope.parent = i.scope
-#  q.scope.disposable = true
-  #i.debug "[scope] " & q.scope.fullname
-#  let scope = i.scope
-#  i.scope = q.scope
-#  body
-  #i.debug "[scope] " & scope.fullname
-#  i.scope = scope
-
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
   var pr:MinParser

@@ -109,7 +109,7 @@ ROOT
       i.evaluating = true
       i.push code
       i.evaluating = false
-    i.scope.ancestor.symbols[id] = p
+    i.scope.symbols[id] = p
     i.stack = stack
 
   .symbol("import") do (i: In):
