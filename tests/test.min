@@ -17,11 +17,11 @@
   ' :results    ; save the result symbol to update
   (check -> true ==)
   ( 
-    ok results append quote :results 
+    ok results append quote .results 
     "." print!
   )
   (
-    check results append quote :results 
+    check results append quote .results 
     "x" print!
   )
   ifte
