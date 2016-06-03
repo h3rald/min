@@ -34,11 +34,12 @@ proc replace*(str, pattern, repl: string): string =
   return replace(str, pattern, repl, "")
 
 proc `=~`*(str, r: string): seq[string] =
-  let m = r.search("(s)?/(.+?)?/(.+?)?/([mis]{0,3})")
+  let m = r.search("(s)?/(.+?)/((.+?)/)?([mis]{0,3})?")
+  # full match, s, reg, replace/, replace, flags
   if m[1] == "s" and m[3] != "":
-    return @[replace(str, m[2], m[3], m[4])]
+    return @[replace(str, m[2], m[4], m[5])]
   else:
-    return search(str, m[2], m[4])
+    return search(str, m[2], m[5])
 
 when isMainModule:
 

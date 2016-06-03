@@ -1,0 +1,23 @@
+@test
+#test
+
+"str" describe
+  
+  ("a,b,c" "," split ("a" "b" "c") ==) assert
+
+  ("test #1" "[0-9]" search ("1") ==) assert 
+
+  ("This is test #1" "test #([0-9])" search ("test #1" "1") ==) assert 
+
+  ("This is a random string" "random" match true ==) assert
+
+  ("something is not something else" "some" "any" replace "anything is not anything else" ==) assert
+
+  ("MiNiM is a concatenative programming language" "/^minim/i" =~ ("MiNiM") ==) assert
+
+  ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) assert
+
+  ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
+
+  report
+  clear

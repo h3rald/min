@@ -1,0 +1,17 @@
+@test
+#test
+
+"stack" describe
+
+  (1 id 1 ==) assert
+
+  (1 pop getstack () ==) assert
+
+  (1 dup getstack (1 1) ==) assert
+
+  (3 2 (1 +) dip + 6 ==) assert
+
+  ((1) (2 swap append) sip concat (1 2 1) ==) assert
+
+  report
+  clear

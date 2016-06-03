@@ -19,12 +19,11 @@ define("stack")
     i.push i.peek
   
   .symbol("dip") do (i: In):
-    let q = i.pop
+    var q = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
     let v = i.pop
-    for item in q.qVal:
-      i.push item
+    i.unquote("<dip>", q)
     i.push v
   
   .symbol("swap") do (i: In):
@@ -34,11 +33,11 @@ define("stack")
     i.push b
   
   .symbol("sip") do (i: In):
-    let a = i.pop
+    var a = i.pop
     let b = i.pop
     if a.isQuotation and b.isQuotation:
       i.push b
-      i.push a.qVal
+      i.unquote("<sip>", a)
       i.push b
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
