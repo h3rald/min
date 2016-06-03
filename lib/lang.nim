@@ -52,10 +52,7 @@ ROOT
       return
     i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
-      #i.evaluating = true
-      #i.filename = q1.filename # filename will be reset automatically by interpreter
       i.push q1.qVal
-      #i.evaluating = false
 
   .symbol("bind") do (i: In):
     var q2 = i.pop # new (can be a quoted symbol or a string)
@@ -71,17 +68,8 @@ ROOT
       i.error errIncorrect, "The top quotation must contain only one symbol value"
       return
     i.debug "[bind] " & symbol & " = " & $q1
-    #if not i.filename.isNil and i.filename != "eval":
-    #  echo "BIND $1 - fn: $2" % [symbol, i.filename]
-    #  q1.filename = i.filename # Save filename for diagnostic purposes
     let res = i.scope.setSymbol(symbol) do (i: In):
-      #i.evaluating = true
-      #if not q1.filename.isNil:
-      #  i.filename = q1.filename 
-      #echo "BIND '$1' FN: $2" % [symbol, i.filename]
       i.push q1.qVal
-      #i.filename = fn
-      #i.evaluating = false
     if not res:
       i.error errRuntime, "Attempting to bind undefined symbol: " & symbol
 
@@ -190,49 +178,6 @@ ROOT
           return
         i.scope = q.scope 
     i.scope = origScope
-
-     
-
-
-#  .symbol("call") do (i: In):
-#    let fqn = i.pop
-#    if fqn.isQuotation:
-#      let vals = fqn.qVal
-#      var q: MinValue
-#      if vals.len == 0:
-#        i.error(errIncorrect, "No symbol to call")
-#        return
-#      var symScope = i.scope
-#      var symFilename = i.filename
-#      for c in 0..vals.len-1:
-#        if not vals[c].isStringLike:
-#          i.error(errIncorrect, "Quotation must contain only symbols or strings")
-#          return
-#        let qProc = i.scope.getSymbol(vals[c].getString)
-#        if qProc.isNil:
-#          i.error(errUndefined, "Symbol '$1' not found in scope '$2'" % [vals[c].getString, i.scope.fullname])
-#          return
-#        let currScope = i.scope
-#        let currFilename = i.filename
-#        # Execute operator in "parent" symbol scope
-#        #echo "CALL - executing '$1' fn: $2" % [vals[c].getString, "-"]
-#        i.scope = symScope
-#        #i.filename = symFilename
-#        #echo ">>> CALL: ", vals[c].getString, " - ", symFilename
-#        qProc(i)
-#        i.scope = currScope
-#        #echo "<<< CALL: ", currFilename
-#        #i.filename = currFilename
-#        if vals.len > 1 and c < vals.len-1:
-#          q = i.pop
-#          if not q.isQuotation:
-#            i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [vals[c-1].getString])
-#            return
-#          symScope = q.scope
-#          symFilename = q.filename
-#    else:
-#      i.error(errIncorrect, "A quotation is required on the stack")
-
 
   # Operations on the whole stack
 

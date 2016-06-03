@@ -27,14 +27,12 @@ proc fullname*(scope: ref MinScope): string =
     result = scope.parent.fullname & ":" & result
 
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
-  #echo key, " - ", scope.symbols.hasKey(key)
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif not scope.parent.isNil:
     return scope.parent.getSymbol(key)
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
-  #echo key, " - ", scope.symbols.hasKey(key)
   if scope.symbols.hasKey(key):
     scope.symbols.excl(key)
     return true
@@ -45,7 +43,6 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
   # check if a symbol already exists in current scope
   if not scope.isNil and scope.symbols.hasKey(key):
     scope.symbols[key] = value
-    #echo "($1) SET EXISTING SYMBOL: $2" % [scope.fullname, key]
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
@@ -129,27 +126,19 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     let sigil = "" & symbol[0]
     let symbolProc = i.scope.getSymbol(symbol)
     if not symbolProc.isNil:
-      #let filename = i.filename
       try:
-        #i.newDisposableScope("<" & symbol & ">"):
-        #i.debug "SCOPE: " & i.scope.fullname
         symbolProc(i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
-      #finally:
-      #  i.filename = filename # filename may change when evaluating quotations
     else:
       let sigilProc = i.scope.getSigil(sigil)
       if symbol.len > 1 and not sigilProc.isNil:
         let sym = symbol[1..symbol.len-1]
-        #let filename = i.filename
         try:
           i.stack.add(MinValue(kind: minString, strVal: sym))
           sigilProc(i) 
         except:
           i.error(errSystem, getCurrentExceptionMsg())
-        #finally:
-        #  i.filename = filename # Filename may change when evaluating quotations
       else:
         i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
         return
