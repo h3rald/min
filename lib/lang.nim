@@ -12,7 +12,7 @@ ROOT
 
   .symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
-    var scope = i.scope.parent
+    var scope = i.scope
     while not scope.isNil:
       for s in scope.symbols.keys:
         q.add s.newVal
@@ -21,7 +21,7 @@ ROOT
 
   .symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
-    var scope = i.scope.parent
+    var scope = i.scope
     while not scope.isNil:
       for s in scope.sigils.keys:
         q.add s.newVal
@@ -51,7 +51,7 @@ ROOT
       i.error errIncorrect, "The top quotation must contain only one symbol value"
       return
     i.debug "[let] " & symbol & " = " & $q1
-    i.scope.parent.symbols[symbol] = proc(i: var MinInterpreter) =
+    i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
       #i.evaluating = true
       #i.filename = q1.filename # filename will be reset automatically by interpreter
       i.push q1.qVal
@@ -100,17 +100,11 @@ ROOT
     let scope = i.scope
     let stack = i.copystack
     code.filename = i.filename
-    i.newScope(id, code): 
-      for item in code.qVal:
-        i.push item 
-      let p = proc(i: In) = 
-        i.evaluating = true
-        #let fn = i.filename
-        #if not code.filename.isNil:
-          #i.filename = code.filename # filename will be reset automatically by interpreter
-        i.push code
-        #i.filename = fn
-        i.evaluating = false
+    i.unquote(id, code)
+    let p = proc(i: In) = 
+      i.evaluating = true
+      i.push code
+      i.evaluating = false
     i.scope.ancestor.symbols[id] = p
     i.stack = stack
 
@@ -126,8 +120,8 @@ ROOT
     if not mdl.scope.isNil:
       #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
-        i.debug "[$1 - import] $2:$3" % [i.scope.parent.name, i.scope.name, sym]
-        i.scope.parent.symbols[sym] = val
+        i.debug "[import] $1:$2" % [i.scope.name, sym]
+        i.scope.symbols[sym] = val
   
   .sigil("'") do (i: In):
     i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
@@ -141,13 +135,11 @@ ROOT
       if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
         var symbol = q1.qVal[0].symVal
         if symbol.len == 1:
-          if i.scope.parent.sigils.hasKey(symbol):
+          if not i.scope.getSigil(symbol).isNil:
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
             return
-          #q2.filename = i.filename # Save filename for diagnostic purposes
-          i.scope.parent.sigils[symbol] = proc(i: var MinInterpreter) =
+          i.scope.sigils[symbol] = proc(i: var MinInterpreter) =
             i.evaluating = true
-            #i.filename = q2.filename # filename will be reset automatically by interpreter
             i.push q2.qVal
             i.evaluating = false
         else:
@@ -274,9 +266,7 @@ ROOT
     if not q.isQuotation:
       i.error errNoQuotation
       return
-    i.newScope("<unquote-push>", q):
-      for item in q.qVal:
-        i.push item 
+    i.unquote("<unquote>", q)
   
   .symbol("append") do (i: In):
     var q = i.pop
@@ -320,14 +310,13 @@ ROOT
     i.push q.qVal.contains(v).newVal 
   
   .symbol("map") do (i: In):
-    let prog = i.pop
+    var prog = i.pop
     let list = i.pop
     if prog.isQuotation and list.isQuotation:
       i.push newVal(newSeq[MinValue](0))
       for litem in list.qVal:
         i.push litem
-        for pitem in prog.qVal:
-          i.push pitem
+        i.unquote("<map-quotation>", prog)
         i.apply("swap") 
         i.apply("append") 
     else:
@@ -335,51 +324,51 @@ ROOT
   
   .symbol("times") do (i: In):
     let t = i.pop
-    let prog = i.pop
+    var prog = i.pop
     if t.isInt and prog.isQuotation:
       for c in 1..t.intVal:
-        for pitem in prog.qVal:
-          i.push pitem
+        i.unquote("<times-quotation>", prog)
     else:
       i.error errIncorrect, "An integer and a quotation are required on the stack"
   
   .symbol("ifte") do (i: In):
-    let fpath = i.pop
-    let tpath = i.pop
-    let check = i.pop
+    var fpath = i.pop
+    var tpath = i.pop
+    var check = i.pop
     var stack = i.copystack
     if check.isQuotation and tpath.isQuotation and fpath.isQuotation:
-      i.push check.qVal
+      i.unquote("<ifte-check>", check)
       let res = i.pop
       i.stack = stack
       if res.isBool and res.boolVal == true:
-        i.push tpath.qVal
+        i.unquote("<ifte-true>", tpath)
       else:
-        i.push fpath.qVal
+        i.unquote("<ifte-false>", fpath)
     else:
       i.error(errIncorrect, "Three quotations are required on the stack")
   
   .symbol("while") do (i: In):
-    let d = i.pop
-    let b = i.pop
+    var d = i.pop
+    var b = i.pop
     if b.isQuotation and d.isQuotation:
       i.push b.qVal
+      i.unquote("<while-check>", b)
       var check = i.pop
       while check.isBool and check.boolVal == true:
-        i.push d.qVal
-        i.push b.qVal
+        i.unquote("<while-quotation>", d)
+        i.unquote("<while-check>", b)
         check = i.pop
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
   
   .symbol("filter") do (i: In):
-    let filter = i.pop
+    var filter = i.pop
     let list = i.pop
     var res = newSeq[MinValue](0)
     if filter.isQuotation and list.isQuotation:
       for e in list.qVal:
         i.push e
-        i.push filter.qVal
+        i.unquote("<filter-check>", filter)
         var check = i.pop
         if check.isBool and check.boolVal == true:
           res.add e
@@ -393,6 +382,15 @@ ROOT
     var t = i.pop
     var p = i.pop
     if p.isQuotation and t.isQuotation and r1.isQuotation and r2.isQuotation:
+      proc linrec(i: In, p, t, r1, r2: var MinValue) =
+        i.unquote("<linrec-predicate>", p)
+        var check = i.pop
+        if check.isBool and check.boolVal == true:
+          i.unquote("<linrec-true>", t)
+        else:
+          i.unquote("<linrec-r1>", r1)
+          i.linrec(p, t, r1, r2)
+          i.unquote("<linrec-r2>", r2)
       i.linrec(p, t, r1, r2)
     else:
       i.error(errIncorrect, "Four quotations are required on the stack")

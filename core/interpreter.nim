@@ -88,18 +88,18 @@ template newScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate
   #i.debug "[scope] " & scope.fullname
   i.scope = scope
 
-template newDisposableScope*(i: In, id: string, body: stmt): stmt {.immediate.}=
-  var q = MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
-  q.scope = new MinScope
-  q.scope.name = id
-  q.scope.parent = i.scope
-  q.scope.disposable = true
+#template newDisposableScope*(i: In, id: string, body: stmt): stmt {.immediate.}=
+#  var q = MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
+#  q.scope = new MinScope
+#  q.scope.name = id
+#  q.scope.parent = i.scope
+#  q.scope.disposable = true
   #i.debug "[scope] " & q.scope.fullname
-  let scope = i.scope
-  i.scope = q.scope
-  body
+#  let scope = i.scope
+#  i.scope = q.scope
+#  body
   #i.debug "[scope] " & scope.fullname
-  i.scope = scope
+#  i.scope = scope
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
@@ -149,9 +149,9 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     if not symbolProc.isNil:
       #let filename = i.filename
       try:
-        i.newDisposableScope("<" & symbol & ">"):
-          #i.debug "SCOPE: " & i.scope.fullname
-          symbolProc(i) 
+        #i.newDisposableScope("<" & symbol & ">"):
+        #i.debug "SCOPE: " & i.scope.fullname
+        symbolProc(i) 
       except:
         i.error(errSystem, getCurrentExceptionMsg())
       #finally:
@@ -198,6 +198,12 @@ proc interpret*(i: var MinInterpreter) =
     except:
       i.error errParser, getCurrentExceptionMsg()
     i.push val
+
+proc unquote*(i: In, name: string, q: var MinValue) =
+  i.newScope(name, q): 
+    for v in q.qVal:
+      i.push v
+
 
 proc eval*(i: var MinInterpreter, s: string) =
   let fn = i.filename

@@ -49,16 +49,6 @@ proc getString*(v: MinValue): string =
 proc warn*(s: string) =
   stderr.writeLine s
 
-proc linrec*(i: var MinInterpreter, p, t, r1, r2: MinValue) =
-  i.push p.qVal
-  var check = i.pop
-  if check.isBool and check.boolVal == true:
-    i.push t.qVal
-  else:
-    i.push r1.qVal
-    i.linrec(p, t, r1, r2)
-    i.push r2.qVal
-
 proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
     return ROOT
