@@ -71,6 +71,7 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 ; Other
-(print pop)   :print!
-(put pop)     :put!
+(print pop)                                     :print!
+(put pop)                                       :put!
+(:ms :q :check (check) (ms sleep q) while)      :interval
 

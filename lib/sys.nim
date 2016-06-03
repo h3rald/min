@@ -141,4 +141,10 @@ define("sys")
     else:
       i.error errIncorrect, "A string is required on the stack"
 
+   .symbol("sleep") do (i: In):
+     let ms = i.pop
+     if not ms.isInt:
+       i.error errIncorrect, "An integer is required on the stack"
+     sleep ms.intVal
+
   .finalize()

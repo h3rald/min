@@ -1,0 +1,11 @@
+@test
+#test
+
+"time" describe
+
+  (timestamp 1464951736 >) assert
+
+  (now 1464951736 >) assert
+
+  report
+  clear
