@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 159 ==) assert
+  (symbols size 160 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -35,6 +35,8 @@
     (#mymath 
      (-) :myminus) => .mymath 
     5 2 mymath %myminus 3 ==) assert
+
+  (defmod mymath inspect ("myplus") ==) assert
 
   ((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 

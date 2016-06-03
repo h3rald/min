@@ -181,6 +181,16 @@ ROOT
         i.scope = q.scope 
     i.scope = origScope
 
+
+  .symbol("inspect") do (i: In):
+    let scope = i.pop
+    if not scope.isQuotation:
+      i.error errNoQuotation
+    var symbols = newSeq[MinValue](0)
+    for s in scope.scope.symbols.keys:
+      symbols.add s.newVal
+    i.push symbols.newVal
+
   # Operations on the whole stack
 
   .symbol("clear") do (i: In):
