@@ -23,13 +23,13 @@ ROOT.name = "ROOT"
 
 proc fullname*(scope: ref MinScope): string =
   result = scope.name
-  if not scope.parent.isNil:
+  if scope.parent.isNotNil:
     result = scope.parent.fullname & ":" & result
 
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
-  elif not scope.parent.isNil:
+  elif scope.parent.isNotNil:
     return scope.parent.getSymbol(key)
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
@@ -41,18 +41,18 @@ proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.discardable.}=
   result = false
   # check if a symbol already exists in current scope
-  if not scope.isNil and scope.symbols.hasKey(key):
+  if scope.isNotNil and scope.symbols.hasKey(key):
     scope.symbols[key] = value
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
-    if not scope.parent.isNil:
+    if scope.parent.isNotNil:
       result = scope.parent.setSymbol(key, value)
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
-  elif not scope.parent.isNil:
+  elif scope.parent.isNotNil:
     return scope.parent.getSigil(key)
 
 proc dump*(i: MinInterpreter): string =
@@ -126,7 +126,7 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     let symbol = val.symVal
     let sigil = "" & symbol[0]
     let symbolProc = i.scope.getSymbol(symbol)
-    if not symbolProc.isNil:
+    if symbolProc.isNotNil:
       if i.unsafe:
         symbolProc(i) 
       else:
@@ -138,7 +138,7 @@ proc push*(i: var MinInterpreter, val: MinValue) =
           i.error(errSystem, getCurrentExceptionMsg())
     else:
       let sigilProc = i.scope.getSigil(sigil)
-      if symbol.len > 1 and not sigilProc.isNil:
+      if symbol.len > 1 and sigilProc.isNotNil:
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:
@@ -185,7 +185,6 @@ proc unquote*(i: In, name: string, q: var MinValue) =
   i.newScope(name, q): 
     for v in q.qVal:
       i.push v
-
 
 proc eval*(i: var MinInterpreter, s: string) =
   let fn = i.filename

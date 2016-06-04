@@ -6,6 +6,8 @@ import
   ../core/utils,
   ../core/regex
 
+var TIN {.threadvar.}: MinInterpreter
+
 ROOT
 
   .symbol("exit") do (i: In):
@@ -14,7 +16,7 @@ ROOT
   .symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
     var scope = i.scope
-    while not scope.isNil:
+    while scope.isNotNil:
       for s in scope.symbols.keys:
         q.add s.newVal
       scope = scope.parent
@@ -23,7 +25,7 @@ ROOT
   .symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
     var scope = i.scope
-    while not scope.isNil:
+    while scope.isNotNil:
       for s in scope.sigils.keys:
         q.add s.newVal
       scope = scope.parent
@@ -102,7 +104,7 @@ ROOT
       echo getCurrentExceptionMsg()
     if not mdl.isQuotation:
       i.error errNoQuotation
-    if not mdl.scope.isNil:
+    if mdl.scope.isNotNil:
       #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
         i.debug "[import] $1:$2" % [i.scope.name, sym]
@@ -120,7 +122,7 @@ ROOT
       if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
         var symbol = q1.qVal[0].symVal
         if symbol.len == 1:
-          if not i.scope.getSigil(symbol).isNil:
+          if i.scope.getSigil(symbol).isNotNil:
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
             return
           i.scope.sigils[symbol] = proc(i: var MinInterpreter) =
@@ -200,6 +202,7 @@ ROOT
     var prog = i.pop
     if not prog.isQuotation:
       i.error errNoQuotation
+      return
     if prog.qVal.len < 2:
       i.error errIncorrect, "Quotation must contain at least two elements"
       return
@@ -246,6 +249,7 @@ ROOT
     let q = i.pop
     if not q.isQuotation:
       i.error errNoQuotation
+      return
     i.stack = q.qVal
 
   # Operations on quotations or strings
@@ -261,6 +265,7 @@ ROOT
       i.push newVal(q)
     else:
       i.error(errIncorrect, "Two quotations or two strings are required on the stack")
+      return
 
   .symbol("first") do (i: In):
     var q = i.pop
@@ -270,6 +275,7 @@ ROOT
       i.push newVal($q.strVal[0])
     else:
       i.error(errIncorrect, "A quotation or a string is required on the stack")
+      return
 
   .symbol("rest") do (i: In):
     var q = i.pop
@@ -279,6 +285,7 @@ ROOT
       i.push newVal(q.strVal[1..q.strVal.len-1])
     else:
       i.error(errIncorrect, "A quotation or a string is required on the stack")
+      return
 
   .symbol("quote") do (i: In):
     let a = i.pop
@@ -316,6 +323,7 @@ ROOT
       i.push q.qVal[index.intVal]
     else:
       i.error errIncorrect, "An integer and a quotation are required on the stack"
+      return
 
   .symbol("size") do (i: In):
     let q = i.pop
@@ -325,6 +333,7 @@ ROOT
       i.push q.strVal.len.newVal
     else:
       i.error(errIncorrect, "A quotation or a string is required on the stack")
+      return
 
   .symbol("contains") do (i: In):
     let v = i.pop
@@ -346,6 +355,7 @@ ROOT
         i.apply("append") 
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
+      return
   
   .symbol("times") do (i: In):
     let t = i.pop
@@ -355,6 +365,7 @@ ROOT
         i.unquote("<times-quotation>", prog)
     else:
       i.error errIncorrect, "An integer and a quotation are required on the stack"
+      return
   
   .symbol("ifte") do (i: In):
     var fpath = i.pop
@@ -371,6 +382,7 @@ ROOT
         i.unquote("<ifte-false>", fpath)
     else:
       i.error(errIncorrect, "Three quotations are required on the stack")
+      return
   
   .symbol("while") do (i: In):
     var d = i.pop
@@ -385,6 +397,7 @@ ROOT
         check = i.pop
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
+      return
   
   .symbol("filter") do (i: In):
     var filter = i.pop
@@ -400,6 +413,7 @@ ROOT
       i.push res.newVal
     else:
       i.error(errIncorrect, "Two quotations are required on the stack")
+      return
   
   .symbol("linrec") do (i: In):
     var r2 = i.pop
@@ -419,5 +433,6 @@ ROOT
       i.linrec(p, t, r1, r2)
     else:
       i.error(errIncorrect, "Four quotations are required on the stack")
+      return
   
   .finalize()
