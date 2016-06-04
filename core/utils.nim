@@ -77,7 +77,7 @@ proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
 proc finalize*(scope: ref MinScope) =
   var mdl = newSeq[MinValue](0).newVal
   mdl.scope = scope
-  mdl.scope.previous.symbols[scope.name] = proc(i: var MinInterpreter) =
+  mdl.scope.previous.symbols[scope.name] = proc(i: In) =
     i.evaluating = true
     i.push mdl
     i.evaluating = false

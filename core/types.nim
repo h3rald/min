@@ -83,8 +83,8 @@ type
     evaluating*: bool 
     unsafe*: bool
   In* = var MinInterpreter
-  MinOperator* = proc (i: var MinInterpreter)
-  MinSigil* = proc (i: var MinInterpreter, sym: string)
+  MinOperator* = proc (i: In)
+  MinSigil* = proc (i: In, sym: string)
   MinError* = enum
     errSystem,
     errParser,

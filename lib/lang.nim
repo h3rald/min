@@ -54,7 +54,7 @@ ROOT
       i.error errIncorrect, "The top quotation must contain only one symbol value"
       return
     i.debug "[define] " & symbol & " = " & $q1
-    i.scope.symbols[symbol] = proc(i: var MinInterpreter) =
+    i.scope.symbols[symbol] = proc(i: In) =
       i.push q1.qVal
 
   .symbol("bind") do (i: In):
@@ -125,7 +125,7 @@ ROOT
           if i.scope.getSigil(symbol).isNotNil:
             i.error errSystem, "Sigil '$1' already exists" % [symbol]
             return
-          i.scope.sigils[symbol] = proc(i: var MinInterpreter) =
+          i.scope.sigils[symbol] = proc(i: In) =
             i.evaluating = true
             i.push q2.qVal
             i.evaluating = false

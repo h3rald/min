@@ -61,11 +61,11 @@ proc dump*(i: MinInterpreter): string =
     s = s & $item & " "
   return s
 
-proc debug*(i: var MinInterpreter, value: MinValue) =
+proc debug*(i: In, value: MinValue) =
   if i.debugging: 
     stderr.writeLine("-- " & i.dump & $value)
 
-proc debug*(i: var MinInterpreter, value: string) =
+proc debug*(i: In, value: string) =
   if i.debugging: 
     stderr.writeLine("-- " & value)
 
@@ -111,14 +111,14 @@ proc error*(i: MinInterpreter, status: MinError, message = "") =
     stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
-proc open*(i: var MinInterpreter, stream:Stream, filename: string) =
+proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
 
-proc close*(i: var MinInterpreter) = 
+proc close*(i: In) = 
   i.parser.close();
 
-proc push*(i: var MinInterpreter, val: MinValue) = 
+proc push*(i: In, val: MinValue) = 
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
@@ -156,11 +156,11 @@ proc push*(i: var MinInterpreter, val: MinValue) =
   else:
     i.stack.add(val)
 
-proc push*(i: var MinInterpreter, q: seq[MinValue]) =
+proc push*(i: In, q: seq[MinValue]) =
   for e in q:
     i.push e
 
-proc pop*(i: var MinInterpreter): MinValue =
+proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
@@ -172,7 +172,7 @@ proc peek*(i: MinInterpreter): MinValue =
   else:
     i.error(errEmptyStack)
 
-proc interpret*(i: var MinInterpreter) = 
+proc interpret*(i: In) = 
   var val: MinValue
   while i.parser.token != tkEof: 
     try:
@@ -186,7 +186,7 @@ proc unquote*(i: In, name: string, q: var MinValue) =
     for v in q.qVal:
       i.push v
 
-proc eval*(i: var MinInterpreter, s: string) =
+proc eval*(i: In, s: string) =
   let fn = i.filename
   try:
     var i2 = i.copy("eval")
@@ -200,7 +200,7 @@ proc eval*(i: var MinInterpreter, s: string) =
   finally:
     i.filename = fn
 
-proc load*(i: var MinInterpreter, s: string) =
+proc load*(i: In, s: string) =
   let fn = i.filename
   try:
     var i2 = i.copy(s)
@@ -214,10 +214,10 @@ proc load*(i: var MinInterpreter, s: string) =
   finally:
     i.filename = fn
 
-proc apply*(i: var MinInterpreter, symbol: string) =
+proc apply*(i: In, symbol: string) =
   i.scope.getSymbol(symbol)(i)
 
-proc copystack*(i: var MinInterpreter): MinStack =
+proc copystack*(i: In): MinStack =
   var s = newSeq[MinValue](0)
   for i in i.stack:
     s.add i
