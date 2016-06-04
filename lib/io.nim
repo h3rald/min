@@ -25,42 +25,34 @@ define("io")
     a.print
 
   .symbol("fread") do (i: In):
-    let a = i.pop
-    if a.isString:
-      if a.strVal.fileExists:
-        try:
-          i.push newVal(a.strVal.readFile)
-        except:
-          i.error errRuntime, getCurrentExceptionMsg()
-      else:
-        i.error errRuntime, "File '$1' not found" % [a.strVal]
+    var a: MinValue
+    i.reqString a
+    if a.strVal.fileExists:
+      try:
+        i.push newVal(a.strVal.readFile)
+      except:
+        i.error errRuntime, getCurrentExceptionMsg()
     else:
-      i.error(errIncorrect, "A string is required on the stack")
+      i.error errRuntime, "File '$1' not found" % [a.strVal]
 
   .symbol("fwrite") do (i: In):
-    let a = i.pop
-    let b = i.pop
-    if a.isString and b.isString:
-      try:
-        a.strVal.writeFile(b.strVal)
-      except:
-        i.error errRuntime, getCurrentExceptionMsg()
-    else:
-      i.error(errIncorrect, "Two strings are required on the stack")
+    var a, b: MinValue
+    i.reqTwoStrings a, b
+    try:
+      a.strVal.writeFile(b.strVal)
+    except:
+      i.error errRuntime, getCurrentExceptionMsg()
 
   .symbol("fappend") do (i: In):
-    let a = i.pop
-    let b = i.pop
-    if a.isString and b.isString:
-      try:
-        var f:File
-        discard f.open(a.strVal, fmAppend)
-        f.write(b.strVal)
-        f.close()
-      except:
-        i.error errRuntime, getCurrentExceptionMsg()
-    else:
-      i.error(errIncorrect, "Two strings are required on the stack")
+    var a, b: MinValue
+    i.reqTwoStrings a, b
+    try:
+      var f:File
+      discard f.open(a.strVal, fmAppend)
+      f.write(b.strVal)
+      f.close()
+    except:
+       i.error errRuntime, getCurrentExceptionMsg()
 
 
   .finalize()

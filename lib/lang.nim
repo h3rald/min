@@ -112,50 +112,39 @@ ROOT
     i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
 
   .symbol("sigil") do (i: In):
-    var q1 = i.pop
-    var q2 = i.pop
-    if q1.isString:
-      q1 = @[q1].newVal
-    if q1.isQuotation and q2.isQuotation:
-      if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-        var symbol = q1.qVal[0].symVal
-        if symbol.len == 1:
-          if i.scope.getSigil(symbol).isNotNil:
-            i.error errSystem, "Sigil '$1' already exists" % [symbol]
-            return
-          i.scope.sigils[symbol] = proc(i: In) =
-            i.evaluating = true
-            i.push q2.qVal
-            i.evaluating = false
-        else:
-          i.error errIncorrect, "A sigil can only have one character"
+    var q1, q2: MinValue
+    i.reqTwoQuotations q1, q2
+    if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
+      var symbol = q1.qVal[0].symVal
+      if symbol.len == 1:
+        if i.scope.getSigil(symbol).isNotNil:
+          i.error errSystem, "Sigil '$1' already exists" % [symbol]
+          return
+        i.scope.sigils[symbol] = proc(i: In) =
+          i.evaluating = true
+          i.push q2.qVal
+          i.evaluating = false
       else:
-        i.error errIncorrect, "The top quotation must contain only one symbol value"
+        i.error errIncorrect, "A sigil can only have one character"
     else:
-      i.error errIncorrect, "Two quotations are required on the stack"
+      i.error errIncorrect, "The top quotation must contain only one symbol value"
 
   .symbol("eval") do (i: In):
-    let s = i.pop
-    if s.isString:
-      i.eval s.strVal
-    else:
-      i.error(errIncorrect, "A string is required on the stack")
+    var s: MinValue
+    i.reqString s
+    i.eval s.strVal
 
   .symbol("load") do (i: In):
-    let s = i.pop
-    if s.isString:
-      var file = s.strVal
-      if not file.endsWith(".min"):
-        file = file & ".min"
-      i.load i.pwd.joinPath(file)
-    else:
-      i.error(errIncorrect, "A string is required on the stack")
+    var s: MinValue
+    i.reqString s
+    var file = s.strVal
+    if not file.endsWith(".min"):
+      file = file & ".min"
+    i.load i.pwd.joinPath(file)
 
   .symbol("call") do (i: In):
-    let symbols = i.pop
-    var target = i.pop
-    if not symbols.isQuotation or not target.isQuotation:
-      i.error errIncorrect, "Two quotations are required on the stack"
+    var symbols, target: MinValue
+    i.reqTwoQuotations symbols, target
     let vals = symbols.qVal
     var q: MinValue
     if vals.len == 0:

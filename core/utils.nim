@@ -91,15 +91,38 @@ template alias*[T](varname: untyped, value: var T) =
 
 # Validators
 
+proc reqInt*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isInt:
+    raise MinInvalidError(msg: "An integer is required on the stack")
+
 proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
     raise MinInvalidError(msg: "A quotation is required on the stack")
 
+proc reqString*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isString:
+    raise MinInvalidError(msg: "A string is required on the stack")
+
 proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
-  if not a.isQuotation or not a.isString:
+  if not a.isQuotation and not a.isString:
     raise MinInvalidError(msg: "A quotation or a string is required on the stack")
+
+proc reqTwoStrings*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not a.isString or not b.isString:
+    raise MinInvalidError(msg: "Two strings are required on the stack")
+
+proc reqThreeStrings*(i: var MinInterpreter, a, b, c: var MinValue) =
+  a = i.pop
+  b = i.pop
+  c = i.pop
+  if not a.isString or not b.isString or not c.isString: 
+    raise MinInvalidError(msg: "Three strings are required on the stack")
 
 proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
@@ -112,7 +135,7 @@ proc reqThreeQuotations*(i: var MinInterpreter, a, b, c: var MinValue) =
   b = i.pop
   c = i.pop
   if not a.isQuotation or not b.isQuotation or not c.isQuotation: 
-    raise MinInvalidError(msg: "Four quotations are required on the stack")
+    raise MinInvalidError(msg: "Three quotations are required on the stack")
 
 proc reqFourQuotations*(i: var MinInterpreter, a, b, c, d: var MinValue) =
   a = i.pop
