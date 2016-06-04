@@ -71,6 +71,7 @@ type
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError
   MinRuntimeError* = ref object of SystemError
+    qVal*: seq[MinValue]
   MinInterpreter* = object
     stack*: MinStack
     pwd*: string
@@ -80,6 +81,7 @@ type
     filename*: string
     debugging*: bool 
     evaluating*: bool 
+    unsafe*: bool
   In* = var MinInterpreter
   MinOperator* = proc (i: var MinInterpreter)
   MinSigil* = proc (i: var MinInterpreter, sym: string)

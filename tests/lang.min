@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 161 ==) assert
+  (symbols size 162 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -86,6 +86,19 @@
   ((1 2 3 4 5) (even?) filter (2 4) ==) assert
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
+
+  (
+   (
+    (() 1 at) 
+    (first) 
+    ("Caught an " swap concat)
+    ) try "Caught an IndexError" ==) assert 
+
+  (
+   (
+    (("TestError" "Test Message") raise) 
+    (1 at)
+    ) try "Test Message" ==) assert
 
   report
   ; Tidy up

@@ -454,3 +454,6 @@ proc `==`*(a: MinValue, b: MinValue): bool =
         return false
   else:
     return false
+
+proc isNil*(a: MinValue): bool =
+  return a.kind != minQuotation and a.kind != minString and a.kind != minFloat and a.kind != minInt and a.kind != minBool and a.kind != minSymbol

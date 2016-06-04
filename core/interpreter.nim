@@ -90,6 +90,7 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     stack: st,
     scope: ROOT,
     debugging: debugging, 
+    unsafe: false,
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
   )
   return i
@@ -126,21 +127,29 @@ proc push*(i: var MinInterpreter, val: MinValue) =
     let sigil = "" & symbol[0]
     let symbolProc = i.scope.getSymbol(symbol)
     if not symbolProc.isNil:
-      try:
+      if i.unsafe:
         symbolProc(i) 
-      except MinRuntimeError:
-        stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
-      except:
-        i.error(errSystem, getCurrentExceptionMsg())
+      else:
+        try:
+          symbolProc(i) 
+        except MinRuntimeError:
+          stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+        except:
+          i.error(errSystem, getCurrentExceptionMsg())
     else:
       let sigilProc = i.scope.getSigil(sigil)
       if symbol.len > 1 and not sigilProc.isNil:
         let sym = symbol[1..symbol.len-1]
-        try:
-          i.stack.add(MinValue(kind: minString, strVal: sym))
+        i.stack.add(MinValue(kind: minString, strVal: sym))
+        if i.unsafe:
           sigilProc(i) 
-        except:
-          i.error(errSystem, getCurrentExceptionMsg())
+        else:
+          try:
+            sigilProc(i) 
+          except MinRuntimeError:
+            stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+          except:
+            i.error(errSystem, getCurrentExceptionMsg())
       else:
         i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
         return

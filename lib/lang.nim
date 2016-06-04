@@ -3,7 +3,8 @@ import
   ../core/types,
   ../core/parser, 
   ../core/interpreter, 
-  ../core/utils
+  ../core/utils,
+  ../core/regex
 
 ROOT
 
@@ -193,7 +194,41 @@ ROOT
     let err = i.pop
     if not err.isQuotation:
       i.error errNoQuotation
-    raise MinRuntimeError(msg: "($1) $2" % [err.qVal[0].getString, err.qVal[1].getString])
+    raise MinRuntimeError(msg: "($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], qVal: err.qVal)
+
+  .symbol("try") do (i: In):
+    var prog = i.pop
+    if not prog.isQuotation:
+      i.error errNoQuotation
+    if prog.qVal.len < 2:
+      i.error errIncorrect, "Quotation must contain at least two elements"
+      return
+    var code = prog.qVal[0]
+    var catch = prog.qVal[1]
+    var final: MinValue
+    var hasFinally = false
+    if prog.qVal.len > 2:
+      final = prog.qVal[2]
+      hasFinally = true
+    if (not code.isQuotation or not catch.isQuotation) or (hasFinally and not final.isQuotation):
+      i.error errIncorrect, "Quotation must contain at least two quotations"
+      return
+    i.unsafe = true
+    try:
+      i.unquote("<try-code>", code)
+    except MinRuntimeError:
+      i.unsafe = false
+      let e = (MinRuntimeError)getCurrentException()
+      i.push e.qVal.newVal
+      i.unquote("<try-catch>", catch)
+    except:
+      i.unsafe = false
+      let e = getCurrentException()
+      i.push @[e.name.newVal, e.msg.newVal].newVal
+      i.unquote("<try-catch>", catch)
+    finally:
+      if hasFinally:
+        i.unquote("<try-finally>", final)
 
   # Operations on the whole stack
 

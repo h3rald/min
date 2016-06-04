@@ -25,6 +25,9 @@ proc isBool*(s: MinValue): bool =
 proc newVal*(s: string): MinValue =
   return MinValue(kind: minString, strVal: s)
 
+proc newVal*(s: cstring): MinValue =
+  return MinValue(kind: minString, strVal: $s)
+
 proc newVal*(q: seq[MinValue]): MinValue =
   return MinValue(kind: minQuotation, qVal: q)
 

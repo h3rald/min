@@ -66,8 +66,6 @@ define("num")
   .symbol("/") do (i: In):
     let a = i.pop
     let b = i.pop
-    if b.isInt and b.intVal == 0:
-      i.error errDivisionByZero
     if a.isInt:
       if b.isInt:
         i.push newVal(b.intVal / a.intVal)
