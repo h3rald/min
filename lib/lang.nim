@@ -260,24 +260,20 @@ ROOT
       return
 
   .symbol("first") do (i: In):
-    var q = i.pop
+    var q: MinValue
+    i.reqStringOrQuotation q
     if q.isQuotation:
       i.push q.qVal[0]
     elif q.isString:
       i.push newVal($q.strVal[0])
-    else:
-      i.error(errIncorrect, "A quotation or a string is required on the stack")
-      return
 
   .symbol("rest") do (i: In):
-    var q = i.pop
+    var q: MinValue
+    i.reqStringOrQuotation q
     if q.isQuotation:
       i.push newVal(q.qVal[1..q.qVal.len-1])
     elif q.isString:
       i.push newVal(q.strVal[1..q.strVal.len-1])
-    else:
-      i.error(errIncorrect, "A quotation or a string is required on the stack")
-      return
 
   .symbol("quote") do (i: In):
     let a = i.pop
@@ -312,14 +308,12 @@ ROOT
       return
 
   .symbol("size") do (i: In):
-    let q = i.pop
+    var q: MinValue
+    i.reqStringOrQuotation q
     if q.isQuotation:
       i.push q.qVal.len.newVal
     elif q.isString:
       i.push q.strVal.len.newVal
-    else:
-      i.error(errIncorrect, "A quotation or a string is required on the stack")
-      return
 
   .symbol("contains") do (i: In):
     let v = i.pop

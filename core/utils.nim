@@ -96,6 +96,11 @@ proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
   if not a.isQuotation:
     raise MinInvalidError(msg: "A quotation is required on the stack")
 
+proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation or not a.isString:
+    raise MinInvalidError(msg: "A quotation or a string is required on the stack")
+
 proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
