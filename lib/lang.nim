@@ -85,10 +85,8 @@ ROOT
       i.error errRuntime, "Attempting to delete undefined symbol: " & sym.getString
 
   .symbol("scope") do (i: In):
-    var code = i.pop
-    if not code.isQuotation:
-      i.error errNoQuotation
-      return
+    var code: MinValue
+    i.reqQuotation code
     code.filename = i.filename
     i.unquote("<scope>", code)
     i.push @[code].newVal
@@ -184,25 +182,21 @@ ROOT
     i.scope = origScope
 
   .symbol("inspect") do (i: In):
-    let scope = i.pop
-    if not scope.isQuotation:
-      i.error errNoQuotation
+    var scope: MinValue
+    i.reqQuotation scope
     var symbols = newSeq[MinValue](0)
     for s in scope.scope.symbols.keys:
       symbols.add s.newVal
     i.push symbols.newVal
 
   .symbol("raise") do (i: In):
-    let err = i.pop
-    if not err.isQuotation:
-      i.error errNoQuotation
+    var err: MinValue
+    i.reqQuotation err
     raise MinRuntimeError(msg: "($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], qVal: err.qVal)
 
   .symbol("try") do (i: In):
-    var prog = i.pop
-    if not prog.isQuotation:
-      i.error errNoQuotation
-      return
+    var prog: MinValue
+    i.reqQuotation prog
     if prog.qVal.len < 2:
       i.error errIncorrect, "Quotation must contain at least two elements"
       return
@@ -246,10 +240,8 @@ ROOT
     i.push i.stack.newVal
 
   .symbol("setstack") do (i: In):
-    let q = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
+    var q: MinValue
+    i.reqQuotation q
     i.stack = q.qVal
 
   # Operations on quotations or strings
@@ -292,27 +284,21 @@ ROOT
     i.push MinValue(kind: minQuotation, qVal: @[a])
   
   .symbol("unquote") do (i: In):
-    var q = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
+    var q: MinValue
+    i.reqQuotation q
     i.unquote("<unquote>", q)
   
   .symbol("append") do (i: In):
-    var q = i.pop
+    var q: MinValue
+    i.reqQuotation q
     let v = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
     q.qVal.add v
     i.push q
   
   .symbol("cons") do (i: In):
-    var q = i.pop
+    var q: MinValue
+    i.reqQuotation q
     let v = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
     q.qVal = @[v] & q.qVal
     i.push q
 
@@ -337,10 +323,8 @@ ROOT
 
   .symbol("contains") do (i: In):
     let v = i.pop
-    let q = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
-      return
+    var q: MinValue
+    i.reqQuotation q
     i.push q.qVal.contains(v).newVal 
   
   .symbol("map") do (i: In):
