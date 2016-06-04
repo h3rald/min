@@ -89,13 +89,30 @@ template alias*[T](varname: untyped, value: var T) =
   var varname {.inject.}: type(value)
   shallowCopy varname, value
 
+# Validators
+
+proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raise MinInvalidError(msg: "A quotation is required on the stack")
+
 proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not a.isQuotation or not b.isQuotation:
     raise MinInvalidError(msg: "Two quotations are required on the stack")
 
-proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
+proc reqThreeQuotations*(i: var MinInterpreter, a, b, c: var MinValue) =
   a = i.pop
-  if not a.isQuotation:
-    raise MinInvalidError(msg: "A quotation is required on the stack")
+  b = i.pop
+  c = i.pop
+  if not a.isQuotation or not b.isQuotation or not c.isQuotation: 
+    raise MinInvalidError(msg: "Four quotations are required on the stack")
+
+proc reqFourQuotations*(i: var MinInterpreter, a, b, c, d: var MinValue) =
+  a = i.pop
+  b = i.pop
+  c = i.pop
+  d = i.pop
+  if not a.isQuotation or not b.isQuotation or not c.isQuotation or not d.isQuotation:
+    raise MinInvalidError(msg: "Four quotations are required on the stack")

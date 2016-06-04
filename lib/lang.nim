@@ -328,18 +328,14 @@ ROOT
     i.push q.qVal.contains(v).newVal 
   
   .symbol("map") do (i: In):
-    var prog = i.pop
-    let list = i.pop
-    if prog.isQuotation and list.isQuotation:
-      i.push newVal(newSeq[MinValue](0))
-      for litem in list.qVal:
-        i.push litem
-        i.unquote("<map-quotation>", prog)
-        i.apply("swap") 
-        i.apply("append") 
-    else:
-      i.error(errIncorrect, "Two quotations are required on the stack")
-      return
+    var prog, list: MinValue
+    i.reqTwoQuotations prog, list
+    i.push newVal(newSeq[MinValue](0))
+    for litem in list.qVal:
+      i.push litem
+      i.unquote("<map-quotation>", prog)
+      i.apply("swap") 
+      i.apply("append") 
   
   .symbol("times") do (i: In):
     let t = i.pop
@@ -352,71 +348,52 @@ ROOT
       return
   
   .symbol("ifte") do (i: In):
-    var fpath = i.pop
-    var tpath = i.pop
-    var check = i.pop
+    var fpath, tpath, check: MinValue
+    i.reqThreeQuotations fpath, tpath, check
     var stack = i.copystack
-    if check.isQuotation and tpath.isQuotation and fpath.isQuotation:
-      i.unquote("<ifte-check>", check)
-      let res = i.pop
-      i.stack = stack
-      if res.isBool and res.boolVal == true:
-        i.unquote("<ifte-true>", tpath)
-      else:
-        i.unquote("<ifte-false>", fpath)
+    i.unquote("<ifte-check>", check)
+    let res = i.pop
+    i.stack = stack
+    if res.isBool and res.boolVal == true:
+      i.unquote("<ifte-true>", tpath)
     else:
-      i.error(errIncorrect, "Three quotations are required on the stack")
-      return
+      i.unquote("<ifte-false>", fpath)
   
   .symbol("while") do (i: In):
-    var d = i.pop
-    var b = i.pop
-    if b.isQuotation and d.isQuotation:
-      i.push b.qVal
+    var d, b: MinValue
+    i.reqTwoQuotations d, b
+    i.push b.qVal
+    i.unquote("<while-check>", b)
+    var check = i.pop
+    while check.isBool and check.boolVal == true:
+      i.unquote("<while-quotation>", d)
       i.unquote("<while-check>", b)
-      var check = i.pop
-      while check.isBool and check.boolVal == true:
-        i.unquote("<while-quotation>", d)
-        i.unquote("<while-check>", b)
-        check = i.pop
-    else:
-      i.error(errIncorrect, "Two quotations are required on the stack")
-      return
+      check = i.pop
   
   .symbol("filter") do (i: In):
-    var filter = i.pop
-    let list = i.pop
+    var filter, list: MinValue
+    i.reqTwoQuotations filter, list
     var res = newSeq[MinValue](0)
-    if filter.isQuotation and list.isQuotation:
-      for e in list.qVal:
-        i.push e
-        i.unquote("<filter-check>", filter)
-        var check = i.pop
-        if check.isBool and check.boolVal == true:
-          res.add e
-      i.push res.newVal
-    else:
-      i.error(errIncorrect, "Two quotations are required on the stack")
-      return
+    for e in list.qVal:
+      i.push e
+      i.unquote("<filter-check>", filter)
+      var check = i.pop
+      if check.isBool and check.boolVal == true:
+        res.add e
+    i.push res.newVal
   
   .symbol("linrec") do (i: In):
-    var r2 = i.pop
-    var r1 = i.pop
-    var t = i.pop
-    var p = i.pop
-    if p.isQuotation and t.isQuotation and r1.isQuotation and r2.isQuotation:
-      proc linrec(i: In, p, t, r1, r2: var MinValue) =
-        i.unquote("<linrec-predicate>", p)
-        var check = i.pop
-        if check.isBool and check.boolVal == true:
-          i.unquote("<linrec-true>", t)
-        else:
-          i.unquote("<linrec-r1>", r1)
-          i.linrec(p, t, r1, r2)
-          i.unquote("<linrec-r2>", r2)
-      i.linrec(p, t, r1, r2)
-    else:
-      i.error(errIncorrect, "Four quotations are required on the stack")
-      return
+    var r2, r1, t, p: MinValue
+    i.reqFourQuotations r2, r1, t, p
+    proc linrec(i: In, p, t, r1, r2: var MinValue) =
+      i.unquote("<linrec-predicate>", p)
+      var check = i.pop
+      if check.isBool and check.boolVal == true:
+        i.unquote("<linrec-true>", t)
+      else:
+        i.unquote("<linrec-r1>", r1)
+        i.linrec(p, t, r1, r2)
+        i.unquote("<linrec-r2>", r2)
+    i.linrec(p, t, r1, r2)
   
   .finalize()
