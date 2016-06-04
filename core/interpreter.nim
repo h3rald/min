@@ -14,7 +14,8 @@ const ERRORS: array [MinError, string] = [
   "Incorrect items on the stack",
   "Runtime error",
   "Two numbers are required on the stack",
-  "Division by zero"
+  "Division by zero",
+  "Two quotations are required on the stack"
 ]
 
 var ROOT*: ref MinScope = new MinScope
@@ -111,6 +112,14 @@ proc error*(i: MinInterpreter, status: MinError, message = "") =
     stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
     quit(int(status))
 
+template execute(i: In, body: stmt) {.immediate.}=
+  try:
+    body
+  except MinRuntimeError:
+    stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+  except:
+    i.error(errSystem, getCurrentExceptionMsg())
+
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
@@ -130,12 +139,8 @@ proc push*(i: In, val: MinValue) =
       if i.unsafe:
         symbolProc(i) 
       else:
-        try:
-          symbolProc(i) 
-        except MinRuntimeError:
-          stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
-        except:
-          i.error(errSystem, getCurrentExceptionMsg())
+        i.execute:
+          i.symbolProc
     else:
       let sigilProc = i.scope.getSigil(sigil)
       if symbol.len > 1 and sigilProc.isNotNil:
@@ -144,12 +149,8 @@ proc push*(i: In, val: MinValue) =
         if i.unsafe:
           sigilProc(i) 
         else:
-          try:
-            sigilProc(i) 
-          except MinRuntimeError:
-            stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
-          except:
-            i.error(errSystem, getCurrentExceptionMsg())
+          i.execute:
+            i.sigilProc
       else:
         i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
         return
@@ -175,10 +176,8 @@ proc peek*(i: MinInterpreter): MinValue =
 proc interpret*(i: In) = 
   var val: MinValue
   while i.parser.token != tkEof: 
-    try:
+    i.execute:
       val = i.parser.parseMinValue
-    except:
-      i.error errParser, getCurrentExceptionMsg()
     i.push val
 
 proc unquote*(i: In, name: string, q: var MinValue) =

@@ -88,3 +88,14 @@ template `<-`*[T](target, source: var T) =
 template alias*[T](varname: untyped, value: var T) =
   var varname {.inject.}: type(value)
   shallowCopy varname, value
+
+proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not a.isQuotation or not b.isQuotation:
+    raise MinInvalidError(msg: "Two quotations are required on the stack")
+
+proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raise MinInvalidError(msg: "A quotation is required on the stack")

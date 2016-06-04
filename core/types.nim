@@ -68,10 +68,6 @@ type
     err*: MinParserError
     filename*: string
   MinStack* = seq[MinValue]
-  MinParsingError* = ref object of ValueError 
-  MinUndefinedError* = ref object of ValueError
-  MinRuntimeError* = ref object of SystemError
-    qVal*: seq[MinValue]
   MinInterpreter* = object
     stack*: MinStack
     pwd*: string
@@ -95,7 +91,13 @@ type
     errIncorrect,
     errRuntime,
     errTwoNumbersRequired,
-    errDivisionByZero
+    errDivisionByZero,
+    errTwoQuotationsRequired
+  MinParsingError* = ref object of ValueError 
+  MinUndefinedError* = ref object of ValueError
+  MinInvalidError* = ref object of ValueError
+  MinRuntimeError* = ref object of SystemError
+    qVal*: seq[MinValue]
 
 proc isNotNil*[T](obj: T): bool =
   return not obj.isNil

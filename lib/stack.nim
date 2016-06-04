@@ -19,9 +19,8 @@ define("stack")
     i.push i.peek
   
   .symbol("dip") do (i: In):
-    var q = i.pop
-    if not q.isQuotation:
-      i.error errNoQuotation
+    var q: MinValue
+    i.reqQuotation q
     let v = i.pop
     i.unquote("<dip>", q)
     i.push v
@@ -33,14 +32,11 @@ define("stack")
     i.push b
   
   .symbol("sip") do (i: In):
-    var a = i.pop
-    let b = i.pop
-    if a.isQuotation and b.isQuotation:
-      i.push b
-      i.unquote("<sip>", a)
-      i.push b
-    else:
-      i.error(errIncorrect, "Two quotations are required on the stack")
+    var a, b: MinValue 
+    i.reqTwoQuotations a, b
+    i.push b
+    i.unquote("<sip>", a)
+    i.push b
 
   .finalize()
   
