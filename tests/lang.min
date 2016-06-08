@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 162 ==) assert
+  (symbols size 163 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -99,6 +99,13 @@
     (("TestError" "Test Message") raise) 
     (1 at)
     ) try "Test Message" ==) assert
+
+  (
+   (
+    ((1 2 3) (dup *) map)
+    ((4 5 6) (dup *) map)
+    ((7 8 9)  (dup *) map)
+    ) counquote ((1 4 9) (16 25 36) (49 64 81)) ==) assert
 
   report
   ; Tidy up

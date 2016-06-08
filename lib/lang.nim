@@ -4,9 +4,8 @@ import
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/regex
-
-var TIN {.threadvar.}: MinInterpreter
+  ../core/regex,
+  ../vendor/routine
 
 ROOT
 
@@ -215,6 +214,23 @@ ROOT
     finally:
       if hasFinally:
         i.unquote("<try-finally>", final)
+
+  .symbol("counquote") do (i: In):
+    var q: MinValue
+    i.reqQuotation q
+    let stack = i.copystack
+    proc coroutine(i: MinInterpreter, val: MinValue, results: ptr MinStack) {.routine.} =
+      i.unquote("<counquote>", val)
+      results[].add i.stack
+    var results = newSeq[MinValue](0)
+    for r in q.qVal:
+      # TODO raise error if r is not a quotation
+      var i2 = i.copy(i.filename)
+      var res: MinStack = newSeq[MinValue](0)
+      pRun coroutine, (i2, r, results.addr)
+    waitAllRoutine()
+    i.push results.newVal
+
 
   # Operations on the whole stack
 

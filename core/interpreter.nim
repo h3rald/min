@@ -81,6 +81,12 @@ template newScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate
   #i.debug "[scope] " & scope.fullname
   i.scope = scope
 
+proc copystack*(i: MinInterpreter): MinStack =
+  var s = newSeq[MinValue](0)
+  for i in i.stack:
+    s.add i
+  return s
+
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
   var pr:MinParser
@@ -96,11 +102,11 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
   )
   return i
 
-proc copy(i: MinInterpreter, filename = "input"): MinInterpreter =
+proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result = newMinInterpreter(debugging = i.debugging)
   result.filename = filename
   result.pwd =  filename.parentDir
-  result.stack = i.stack
+  result.stack = i.copystack
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
@@ -215,11 +221,5 @@ proc load*(i: In, s: string) =
 
 proc apply*(i: In, symbol: string) =
   i.scope.getSymbol(symbol)(i)
-
-proc copystack*(i: In): MinStack =
-  var s = newSeq[MinValue](0)
-  for i in i.stack:
-    s.add i
-  return s
 
 var INTERPRETER* = newMinInterpreter()
