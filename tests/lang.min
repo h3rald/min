@@ -101,11 +101,12 @@
     ) try "Test Message" ==) assert
 
   (
+   ((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
    (
-    ((1 2 3) (dup *) map)
-    ((4 5 6) (dup *) map)
-    ((7 8 9)  (dup *) map)
-    ) counquote ((1 4 9) (16 25 36) (49 64 81)) ==) assert
+    (8 factorial)
+    (12 factorial)
+    (9 factorial)
+    ) counquote (40320 479001600 362880) ==) assert
 
   report
   ; Tidy up

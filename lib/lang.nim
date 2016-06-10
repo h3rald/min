@@ -219,15 +219,16 @@ ROOT
     var q: MinValue
     i.reqQuotation q
     let stack = i.copystack
-    proc coroutine(i: MinInterpreter, val: MinValue, results: ptr MinStack) {.routine.} =
-      i.unquote("<counquote>", val)
-      results[].add i.stack
-    var results = newSeq[MinValue](0)
-    for r in q.qVal:
-      # TODO raise error if r is not a quotation
+    proc coroutine(i: MinInterpreter, c: int, results: ptr MinStack) {.routine.} =
+      i.unquote("<counquote>", q.qVal[c])
+      results[][c] = i.stack[0]
+    var results = newSeq[MinValue](q.qVal.len)
+    for c in 0..q.qVal.high:
+      if not q.qVal[c].isQuotation:
+        raise MinInvalidError(msg: "Item #$1 is not a quotation" % [$(c+1)])
       var i2 = i.copy(i.filename)
       var res: MinStack = newSeq[MinValue](0)
-      pRun coroutine, (i2, r, results.addr)
+      pRun coroutine, (i2, c, results.addr)
     waitAllRoutine()
     i.push results.newVal
 
