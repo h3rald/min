@@ -91,15 +91,50 @@ template alias*[T](varname: untyped, value: var T) =
 
 # Validators
 
+proc reqBool*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isBool:
+    raise MinInvalidError(msg: "A bool value is required on the stack")
+
+proc reqTwoBools*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not a.isBool or not b.isBool:
+    raise MinInvalidError(msg: "Two bool values are required on the stack")
+
 proc reqInt*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isInt:
     raise MinInvalidError(msg: "An integer is required on the stack")
 
+proc reqTwoInts*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not a.isInt or not b.isInt:
+    raise MinInvalidError(msg: "Two integers are required on the stack")
+
 proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
     raise MinInvalidError(msg: "A quotation is required on the stack")
+
+proc reqIntAndQuotation*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not (a.isInt and b.isQuotation):
+    raise MinInvalidError(msg: "An integer and a quotation are required on the stack")
+
+proc reqTwoNumbers*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not (a.isNumber and b.isNumber):
+    raise MinInvalidError(msg: "Two numbers are required on the stack")
+
+proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not (a.isString and b.isString or a.isNumber and b.isNumber):
+    raise MinInvalidError(msg: "Two numbers or two strings are required on the stack")
 
 proc reqString*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
@@ -110,6 +145,11 @@ proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation and not a.isString:
     raise MinInvalidError(msg: "A quotation or a string is required on the stack")
+
+proc reqStringOrSymbol*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isStringLike:
+    raise MinInvalidError(msg: "A symbol or a string is required on the stack")
 
 proc reqTwoStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
@@ -130,6 +170,12 @@ proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
   if not a.isQuotation or not b.isQuotation:
     raise MinInvalidError(msg: "Two quotations are required on the stack")
 
+proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not (a.isQuotation and b.isQuotation or a.isString and b.isString):
+    raise MinInvalidError(msg: "Two quotations or two strings are required on the stack")
+
 proc reqThreeQuotations*(i: var MinInterpreter, a, b, c: var MinValue) =
   a = i.pop
   b = i.pop
@@ -144,3 +190,9 @@ proc reqFourQuotations*(i: var MinInterpreter, a, b, c, d: var MinValue) =
   d = i.pop
   if not a.isQuotation or not b.isQuotation or not c.isQuotation or not d.isQuotation:
     raise MinInvalidError(msg: "Four quotations are required on the stack")
+
+proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not ((a.kind == a.kind or (a.isNumber and a.isNumber)) and not a.isSymbol):
+    raise MinInvalidError(msg: "Two non-symbol values of similar type are required on the stack")

@@ -50,8 +50,7 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
-      i.error errIncorrect, "The top quotation must contain only one symbol value"
-      return
+      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
     i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: In) =
       i.push q1.qVal
@@ -67,21 +66,19 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
-      i.error errIncorrect, "The top quotation must contain only one symbol value"
-      return
+      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
     i.debug "[bind] " & symbol & " = " & $q1
     let res = i.scope.setSymbol(symbol) do (i: In):
       i.push q1.qVal
     if not res:
-      i.error errRuntime, "Attempting to bind undefined symbol: " & symbol
+      raise MinUndefinedError(msg:"Attempting to bind undefined symbol: " & symbol)
 
   .symbol("delete") do (i: In):
-    var sym = i.pop
-    if not sym.isStringLike:
-      i.error errIncorrect, "A string or a symbol are required on the stack"
+    var sym: MinValue 
+    i.reqStringOrSymbol sym
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
-      i.error errRuntime, "Attempting to delete undefined symbol: " & sym.getString
+      raise MinUndefinedError(msg:"Attempting to delete undefined symbol: " & sym.getString)
 
   .symbol("scope") do (i: In):
     var code: MinValue
@@ -117,16 +114,15 @@ ROOT
       var symbol = q1.qVal[0].symVal
       if symbol.len == 1:
         if i.scope.getSigil(symbol).isNotNil:
-          i.error errSystem, "Sigil '$1' already exists" % [symbol]
-          return
+          raise MinRuntimeError(msg:"Sigil '$1' already exists" % [symbol])
         i.scope.sigils[symbol] = proc(i: In) =
           i.evaluating = true
           i.push q2.qVal
           i.evaluating = false
       else:
-        i.error errIncorrect, "A sigil can only have one character"
+        raise MinInvalidError(msg:"A sigil can only have one character")
     else:
-      i.error errIncorrect, "The top quotation must contain only one symbol value"
+      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
 
   .symbol("eval") do (i: In):
     var s: MinValue
@@ -147,25 +143,21 @@ ROOT
     let vals = symbols.qVal
     var q: MinValue
     if vals.len == 0:
-      i.error errIncorrect, "No symbol to call"
-      return
+      raise MinRuntimeError(msg:"No symbol to call")
     let origScope = i.scope
     i.scope = target.scope
     for c in 0..vals.len-1:
       if not vals[c].isStringLike:
-        i.error(errIncorrect, "Quotation must contain only symbols or strings")
-        return
+        raise MinInvalidError(msg:"Quotation must contain only symbols or strings")
       let symbol = vals[c].getString
       let qProc = i.scope.getSymbol(symbol)
       if qProc.isNil:
-        i.error(errUndefined, "Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
-        return
+        raise MinUndefinedError(msg:"Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
       qProc(i)
       if vals.len > 1 and c < vals.len-1:
         q = i.pop
         if not q.isQuotation:
-          i.error(errIncorrect, "Unable to evaluate symbol '$1'" % [symbol])
-          return
+          raise MinRuntimeError(msg:"Unable to evaluate symbol '$1'" % [symbol])
         i.scope = q.scope 
     i.scope = origScope
 
@@ -180,14 +172,13 @@ ROOT
   .symbol("raise") do (i: In):
     var err: MinValue
     i.reqQuotation err
-    raise MinRuntimeError(msg: "($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], qVal: err.qVal)
+    raise MinRuntimeError(msg:"($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], qVal: err.qVal)
 
   .symbol("try") do (i: In):
     var prog: MinValue
     i.reqQuotation prog
     if prog.qVal.len < 2:
-      i.error errIncorrect, "Quotation must contain at least two elements"
-      return
+      raise MinInvalidError(msg:"Quotation must contain at least two elements")
     var code = prog.qVal[0]
     var catch = prog.qVal[1]
     var final: MinValue
@@ -196,8 +187,7 @@ ROOT
       final = prog.qVal[2]
       hasFinally = true
     if (not code.isQuotation or not catch.isQuotation) or (hasFinally and not final.isQuotation):
-      i.error errIncorrect, "Quotation must contain at least two quotations"
-      return
+      raise MinInvalidError(msg:"Quotation must contain at least two quotations")
     i.unsafe = true
     try:
       i.unquote("<try-code>", code)
@@ -253,17 +243,14 @@ ROOT
   # Operations on quotations or strings
 
   .symbol("concat") do (i: In):
-    var q1 = i.pop
-    var q2 = i.pop
+    var q1, q2: MinValue 
+    i.reqTwoQuotationsOrStrings q1, q2
     if q1.isString and q2.isString:
       let s = q2.strVal & q1.strVal
       i.push newVal(s)
-    elif q1.isQuotation and q2.isQuotation:
+    else:
       let q = q2.qVal & q1.qVal
       i.push newVal(q)
-    else:
-      i.error(errIncorrect, "Two quotations or two strings are required on the stack")
-      return
 
   .symbol("first") do (i: In):
     var q: MinValue
@@ -305,13 +292,9 @@ ROOT
     i.push q
 
   .symbol("at") do (i: In):
-    var index = i.pop
-    var q = i.pop
-    if index.isInt and q.isQuotation:
-      i.push q.qVal[index.intVal]
-    else:
-      i.error errIncorrect, "An integer and a quotation are required on the stack"
-      return
+    var index, q: MinValue
+    i.reqIntAndQuotation index, q
+    i.push q.qVal[index.intVal]
 
   .symbol("size") do (i: In):
     var q: MinValue
@@ -338,14 +321,10 @@ ROOT
       i.apply("append") 
   
   .symbol("times") do (i: In):
-    let t = i.pop
-    var prog = i.pop
-    if t.isInt and prog.isQuotation:
-      for c in 1..t.intVal:
-        i.unquote("<times-quotation>", prog)
-    else:
-      i.error errIncorrect, "An integer and a quotation are required on the stack"
-      return
+    var t, prog: MinValue
+    i.reqIntAndQuotation t, prog
+    for c in 1..t.intVal:
+      i.unquote("<times-quotation>", prog)
   
   .symbol("ifte") do (i: In):
     var fpath, tpath, check: MinValue

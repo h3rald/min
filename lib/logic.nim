@@ -10,8 +10,8 @@ import
 define("logic")
 
   .symbol(">") do (i: In):
-    let n2 = i.pop
-    let n1 = i.pop
+    var n2, n1: MinValue
+    i.reqTwoNumbersOrStrings n2, n1
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
         i.push newVal(n1.intVal > n2.intVal)
@@ -21,14 +21,12 @@ define("logic")
         i.push newVal(n1.floatVal > n2.floatVal)
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float)
-    elif n1.isString and n2.isString:
-        i.push newVal(n1.strVal > n2.strVal)
     else:
-      i.error(errIncorrect, "Two numbers or two strings are required on the stack")
+        i.push newVal(n1.strVal > n2.strVal)
 
   .symbol(">=") do (i: In):
-    let n2 = i.pop
-    let n1 = i.pop
+    var n2, n1: MinValue
+    i.reqTwoNumbersOrStrings n2, n1
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
         i.push newVal(n1.intVal >= n2.intVal)
@@ -38,14 +36,12 @@ define("logic")
         i.push newVal(n1.floatVal >= n2.floatVal)
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal >= n2.intVal.float)
-    elif n1.isString and n2.isString:
-        i.push newVal(n1.strVal >= n2.strVal)
     else:
-      i.error(errIncorrect, "Two numbers or two strings are required on the stack")
+        i.push newVal(n1.strVal >= n2.strVal)
   
   .symbol("<") do (i: In):
-    let n1 = i.pop
-    let n2 = i.pop
+    var n2, n1: MinValue
+    i.reqTwoNumbersOrStrings n1, n2
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
         i.push newVal(n1.intVal > n2.intVal)
@@ -55,14 +51,12 @@ define("logic")
         i.push newVal(n1.floatVal > n2.floatVal)
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float)
-    elif n1.isString and n2.isString:
-        i.push newVal(n1.strVal > n2.strVal)
     else:
-      i.error(errIncorrect, "Two numbers or two strings are required on the stack")
+        i.push newVal(n1.strVal > n2.strVal)
   
   .symbol("<=") do (i: In):
-    let n1 = i.pop
-    let n2 = i.pop
+    var n2, n1: MinValue
+    i.reqTwoNumbersOrStrings n1, n2
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
         i.push newVal(n1.intVal >= n2.intVal)
@@ -72,59 +66,40 @@ define("logic")
         i.push newVal(n1.floatVal >= n2.floatVal)
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal >= n2.intVal.float)
-    elif n1.isString and n2.isString:
-        i.push newVal(n1.strVal >= n2.strVal)
     else:
-      i.error(errIncorrect, "Two numbers or two strings are required on the stack")
+        i.push newVal(n1.strVal >= n2.strVal)
   
   .symbol("==") do (i: In):
-    let n2 = i.pop
-    let n1 = i.pop
-    if (n1.kind == n2.kind or (n1.isNumber and n2.isNumber)) and not n1.isSymbol:
-      i.push newVal(n1 == n2)
-    else:
-      i.error(errIncorrect, "Two non-symbol values of similar type are required")
+    var n1, n2: MinValue
+    i.reqTwoSimilarTypesNonSymbol n2, n1
+    i.push newVal(n1 == n2)
   
   .symbol("!=") do (i: In):
-    let n2 = i.pop
-    let n1 = i.pop
-    if (n1.kind == n2.kind or (n1.isNumber and n2.isNumber)) and not n1.isSymbol:
-      i.push newVal(not (n1 == n2))
-    else:
-      i.error(errIncorrect, "Two non-symbol values of similar type are required")
+    var n1, n2: MinValue
+    i.reqTwoSimilarTypesNonSymbol n2, n1
+    i.push newVal(not (n1 == n2))
   
   # Boolean Logic
   
   .symbol("not") do (i: In):
-    let b = i.pop
-    if b.isBool:
-      i.push newVal(not b.boolVal)
-    else:
-      i.error(errIncorrect, "A bool value is required on the stack")
+    var b: MinValue
+    i.reqBool b
+    i.push newVal(not b.boolVal)
   
   .symbol("and") do (i: In):
-    let a = i.pop
-    let b = i.pop
-    if a.isBool and b.isBool:
-      i.push newVal(a.boolVal and b.boolVal)
-    else:
-      i.error(errIncorrect, "Two bool values are required on the stack")
+    var a, b: MinValue
+    i.reqTwoBools a, b
+    i.push newVal(a.boolVal and b.boolVal)
   
   .symbol("or") do (i: In):
-    let a = i.pop
-    let b = i.pop
-    if a.isBool and b.isBool:
-      i.push newVal(a.boolVal or b.boolVal)
-    else:
-      i.error(errIncorrect, "Two bool values are required on the stack")
+    var a, b: MinValue
+    i.reqTwoBools a, b
+    i.push newVal(a.boolVal or b.boolVal)
   
   .symbol("xor") do (i: In):
-    let a = i.pop
-    let b = i.pop
-    if a.isBool and b.isBool:
-      i.push newVal(a.boolVal xor b.boolVal)
-    else:
-      i.error(errIncorrect, "Two bool values are required on the stack")
+    var a, b: MinValue
+    i.reqTwoBools a, b
+    i.push newVal(a.boolVal xor b.boolVal)
   
   .symbol("string?") do (i: In):
     if i.peek.kind == minString:
