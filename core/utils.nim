@@ -40,6 +40,9 @@ proc newVal*(s: float): MinValue =
 proc newVal*(s: bool): MinValue =
   return MinValue(kind: minBool, boolVal: s)
 
+proc newSym*(s: string): MinValue =
+  return MinValue(kind: minSymbol, symVal: s)
+
 proc isStringLike*(s: MinValue): bool =
   return s.isSymbol or s.isString
 
@@ -88,6 +91,9 @@ template `<-`*[T](target, source: var T) =
 template alias*[T](varname: untyped, value: var T) =
   var varname {.inject.}: type(value)
   shallowCopy varname, value
+
+proc to*(q: MinValue, T: typedesc): T =
+  return cast[T](q.obj)
 
 # Error Helpers
 
@@ -210,3 +216,8 @@ proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
   b = i.pop
   if not ((a.kind == a.kind or (a.isNumber and a.isNumber)) and not a.isSymbol):
     raiseInvalid("Two non-symbol values of similar type are required on the stack")
+
+proc reqObject*(i: var MinInterpreter, t: string, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation or a.objType.isNil or a.objType != t:
+    raiseInvalid("A $1 object is required" % [t])

@@ -1,4 +1,4 @@
-import net, nativesockets
+import net, nativesockets, strutils
 import 
   ../core/types,
   ../core/parser,
@@ -9,8 +9,7 @@ import
 
 define("net")
 
-  .symbol("open") do (i: In):
-    echo "all good"
+  .symbol("open-socket") do (i: In):
     var q: MinValue
     i.reqQuotation q
     # (ipv4 stream tcp)
@@ -41,31 +40,85 @@ define("net")
     else:
       protocol = IPPROTO_UDP
     var socket = newSocket(domain, sockettype, protocol)
-    echo "all good"
     q.objType = "socket"
-    q.obj = socket.addr
+    q.obj = socket[].addr
     i.push @[q]
-    
 
-  .symbol("close") do (i: In):
-    discard
+  .symbol("tcp-socket") do (i: In):
+    i.eval("(ipv4 stream tcp) net %open-socket")
+    
+  .symbol("udp-socket") do (i: In):
+    i.eval("(ipv4 dgram udp) net %open-socket")
+
+  .symbol("tcp6-socket") do (i: In):
+    i.eval("(ipv6 stream tcp) net %open-socket")
+    
+  .symbol("udp6-socket") do (i: In):
+    i.eval("(ipv6 dgram udp) net %open-socket")
+
+  .symbol("close-socket") do (i: In):
+    var q: MinValue
+    i.reqObject "socket", q
+    q.to(Socket).close()
 
   .symbol("listen") do (i: In):
-    discard
+    var port, q: MinValue
+    i.reqInt port
+    i.reqObject "socket", q
+    var socket = q.to(Socket)
+    socket.bindAddr(Port(port.intVal))
+    q.qVal.add "0.0.0.0".newSym
+    q.qVal.add port
+    socket.listen()
+    i.push @[q]
 
   .symbol("accept") do (i: In):
-    discard
+    var server: MinValue
+    i.reqObject "socket", server
+    # Open same socket type as server
+    echo $server
+    i.eval "$1 net %open-socket" % [$server.qVal[0..2].newVal]
+    var clientVal: MinValue
+    i.reqObject "socket", clientVal
+    var client = clientVal.to(Socket)
+    var address = ""
+    server.to(Socket).acceptAddr(client, address)
+    clientVal.qVal.add address.newSym
+    i.push @[clientVal]
 
   .symbol("connect") do (i: In):
-    discard
+    var q, address, port: MinValue
+    i.reqInt port
+    i.reqString address
+    i.reqObject "socket", q
+    q.to(Socket).connect(address.strVal, Port(port.intVal))
+    q.qVal.add address.strVal.newSym
+    q.qVal.add port
+    i.push @[q]
 
   .symbol("send") do (i: In):
-    discard
+    var q, s: MinValue
+    i.reqString s
+    i.reqObject "socket", q
+    q.to(Socket).send s.strVal
+    i.push @[q]
+
 
   .symbol("recv") do (i: In):
-    discard
+    var size, q: MinValue
+    i.reqInt size
+    i.reqObject "socket", q
+    var s = ""
+    discard q.to(Socket).recv(s, size.intVal)
+    i.push @[q]
+    i.push s.newVal
 
-  .symbol("bind") do (i: In):
-    discard
+  .symbol("recv-line") do (i: In):
+    var q: MinValue
+    i.reqObject "socket", q
+    var s = ""
+    q.to(Socket).readLine(s)
+    i.push @[q]
+    i.push s.newVal
 
   .finalize()
