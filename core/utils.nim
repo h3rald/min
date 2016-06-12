@@ -97,6 +97,9 @@ proc raiseInvalid*(msg: string) =
 proc raiseUndefined*(msg: string) =
   raise MinUndefinedError(msg: msg)
 
+proc raiseOutOfBounds*(msg: string) =
+  raise MinOutOfBoundsError(msg: msg)
+
 proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
   raise MinRuntimeError(msg: msg, qVal: qVal)
 

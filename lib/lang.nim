@@ -202,12 +202,12 @@ ROOT
       if hasFinally:
         i.unquote("<try-finally>", final)
 
-  .symbol("counquote") do (i: In):
+  .symbol("multiunquote") do (i: In):
     var q: MinValue
     i.reqQuotation q
     let stack = i.copystack
     proc coroutine(i: MinInterpreter, c: int, results: ptr MinStack) {.routine.} =
-      i.unquote("<counquote>", q.qVal[c])
+      i.unquote("<multiunquote>", q.qVal[c])
       results[][c] = i.stack[0]
     var results = newSeq[MinValue](q.qVal.len)
     for c in 0..q.qVal.high:
@@ -253,16 +253,24 @@ ROOT
     var q: MinValue
     i.reqStringOrQuotation q
     if q.isQuotation:
+      if q.qVal.len == 0:
+        raiseOutOfBounds("Quotation is empty")
       i.push q.qVal[0]
     elif q.isString:
+      if q.strVal.len == 0:
+        raiseOutOfBounds("String is empty")
       i.push newVal($q.strVal[0])
 
   .symbol("rest") do (i: In):
     var q: MinValue
     i.reqStringOrQuotation q
     if q.isQuotation:
+      if q.qVal.len == 0:
+        raiseOutOfBounds("Quotation is empty")
       i.push newVal(q.qVal[1..q.qVal.len-1])
     elif q.isString:
+      if q.strVal.len == 0:
+        raiseOutOfBounds("String is empty")
       i.push newVal(q.strVal[1..q.strVal.len-1])
 
   .symbol("quote") do (i: In):
@@ -291,6 +299,8 @@ ROOT
   .symbol("at") do (i: In):
     var index, q: MinValue
     i.reqIntAndQuotation index, q
+    if q.qVal.len-1 < index.intVal:
+      raiseOutOfBounds("Insufficient items in quotation")
     i.push q.qVal[index.intVal]
 
   .symbol("size") do (i: In):
@@ -320,6 +330,8 @@ ROOT
   .symbol("times") do (i: In):
     var t, prog: MinValue
     i.reqIntAndQuotation t, prog
+    if t.intVal < 1:
+      raiseInvalid("A non-zero natural number is required")
     for c in 1..t.intVal:
       i.unquote("<times-quotation>", prog)
   

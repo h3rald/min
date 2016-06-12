@@ -85,6 +85,7 @@ type
   MinUndefinedError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError
+  MinOutOfBoundsError* = ref object of ValueError
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 

@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 163 ==) assert
+  (symbols size 165 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -101,12 +101,18 @@
     ) try "Test Message" ==) assert
 
   (
+   (
+    (() 1 at)
+    (1)
+    ) try 1 ==) assert
+
+  (
    ((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
    (
     (8 factorial)
     (12 factorial)
     (9 factorial)
-    ) counquote (40320 479001600 362880) ==) assert
+    ) ->> (40320 479001600 362880) ==) assert
 
   report
   ; Tidy up

@@ -20,31 +20,33 @@
 (":" split call)  (%)     sigil
 
 ; Aliases
-'define      ::
-'bind        :.
-'import      :#
-'exit        :quit
-'==          :eq
-'!=          :noteq
-'>           :gt
-'<           :lt
-'>=          :gte
-'<=          :lte
-'put         :echo
-'system      :!
-'run         :&
-'getenv      :$
-'pop         :zap
-'quote       :unit
-'quote       :'
-'unquote     :i
-'unquote     :apply
-'unquote     :->
-'scope       :=>
-'filter      :select
-'clear       :empty
-'cons        :prepend
-'size        :length
+'define       ::
+'bind         :.
+'import       :#
+'exit         :quit
+'==           :eq
+'!=           :noteq
+'>            :gt
+'<            :lt
+'>=           :gte
+'<=           :lte
+'put          :echo
+'system       :!
+'run          :&
+'getenv       :$
+'pop          :zap
+'quote        :unit
+'quote        :'
+'unquote      :i
+'unquote      :apply
+'unquote      :->
+'multiunquote :multiapply
+'multiunquote :->>
+'scope        :=>
+'filter       :select
+'clear        :empty
+'cons         :prepend
+'size         :length
 
 ; Mathematical Operators
 (1 +)           :succ
