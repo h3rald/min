@@ -5,14 +5,15 @@ import
   core/utils,
   vendor/linenoise
 import 
-  lib/lang, 
-  lib/stack, 
-  lib/num,
-  lib/str,
-  lib/logic,
-  lib/time, 
-  lib/io,
-  lib/sys
+  lib/min_lang, 
+  lib/min_stack, 
+  lib/min_num,
+  lib/min_str,
+  lib/min_logic,
+  lib/min_time, 
+  lib/min_io,
+  lib/min_sys,
+  lib/min_net
 
 const version* = "1.0.0-preview"
 var REPL = false
