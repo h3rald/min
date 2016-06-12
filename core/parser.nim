@@ -68,15 +68,11 @@ proc errorMsg*(my: MinParser): string =
 proc errorMsgExpected*(my: MinParser, e: string): string = 
   result = errorMsg(my, e & " expected")
 
-proc raiseParseError*(p: MinParser, msg: string) {.noinline, noreturn.} =
+proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn.} =
   raise MinParsingError(msg: errorMsgExpected(p, msg))
 
-proc raiseUndefinedError*(p:MinParser, msg: string) {.noinline, noreturn.} =
+proc raiseUndefined*(p:MinParser, msg: string) {.noinline, noreturn.} =
   raise MinUndefinedError(msg: errorMsg(p, msg))
-
-#proc error(p: MinParser, msg: string) = 
-#  writeln(stderr, p.errorMsg(msg))
-#  flushFile(stderr)
 
 proc parseNumber(my: var MinParser) = 
   var pos = my.bufpos
@@ -348,7 +344,7 @@ proc next*(my: var MinParser) =
 
 proc eat(p: var MinParser, token: MinTokenKind) = 
   if p.token == token: discard getToken(p)
-  else: raiseParseError(p, tokToStr[token])
+  else: raiseParsing(p, tokToStr[token])
 
 proc parseMinValue*(p: var MinParser): MinValue =
   #echo p.a, " (", p.token, ")"
@@ -381,7 +377,7 @@ proc parseMinValue*(p: var MinParser): MinValue =
     p.a = ""
     discard getToken(p)
   else:
-    raiseUndefinedError(p, "Undefined value: '"&p.a&"'")
+    raiseUndefined(p, "Undefined value: '"&p.a&"'")
   result.filename = p.filename
 
 proc `$`*(a: MinValue): string =

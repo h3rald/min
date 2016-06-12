@@ -4,23 +4,16 @@ import
   parser,
   ../vendor/linenoise
 
-const ERRORS: array [MinError, string] = [
-  "A system error occurred",
-  "A parsing error occurred",
-  "A generic error occurred",
-  "Insufficient items on the stack", 
-  "Quotation not found on the stack",
-  "Symbol undefined",
-  "Incorrect items on the stack",
-  "Runtime error",
-  "Two numbers are required on the stack",
-  "Division by zero",
-  "Two quotations are required on the stack"
-]
-
 var ROOT*: ref MinScope = new MinScope
 
 ROOT.name = "ROOT"
+
+
+proc raiseUndefined(msg: string) =
+  raise MinUndefinedError(msg: msg)
+
+proc raiseEmptyStack() =
+  raise MinEmptyStackError(msg:"Insufficient items on the stack")
 
 proc fullname*(scope: ref MinScope): string =
   result = scope.name
@@ -110,13 +103,12 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
-proc error*(i: MinInterpreter, status: MinError, message = "") =
-  var msg = if message == "": ERRORS[status] else: message
+proc error(i: MinInterpreter, message: string) =
   if i.currSym.filename == "":
-    stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, msg])
+    stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, msg])
-    quit(int(status))
+    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
+    quit(100)
 
 template execute(i: In, body: stmt) {.immediate.}=
   try:
@@ -124,7 +116,7 @@ template execute(i: In, body: stmt) {.immediate.}=
   except MinRuntimeError:
     stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
   except:
-    i.error(errSystem, getCurrentExceptionMsg())
+    i.error(getCurrentExceptionMsg())
 
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
@@ -158,8 +150,7 @@ proc push*(i: In, val: MinValue) =
           i.execute:
             i.sigilProc
       else:
-        i.error(errUndefined, "Undefined symbol: '"&val.symVal&"'")
-        return
+        raiseUndefined("Undefined symbol: '"&val.symVal&"'")
   else:
     i.stack.add(val)
 
@@ -171,13 +162,13 @@ proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
-    i.error(errEmptyStack)
+    raiseEmptyStack()
 
 proc peek*(i: MinInterpreter): MinValue = 
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
-    i.error(errEmptyStack)
+    raiseEmptyStack()
 
 proc interpret*(i: In) = 
   var val: MinValue

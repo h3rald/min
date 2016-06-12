@@ -89,10 +89,10 @@
 
   (
    (
-    (() 1 at) 
+    (pop) 
     (first) 
-    ("Caught an " swap concat)
-    ) try "Caught an IndexError" ==) assert 
+    ("Caught a " swap concat)
+    ) try "Caught a MinEmptyStackError" ==) assert 
 
   (
    (

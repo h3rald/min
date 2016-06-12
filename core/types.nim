@@ -81,21 +81,10 @@ type
   In* = var MinInterpreter
   MinOperator* = proc (i: In)
   MinSigil* = proc (i: In, sym: string)
-  MinError* = enum
-    errSystem,
-    errParser,
-    errGeneric,
-    errEmptyStack,
-    errNoQuotation,
-    errUndefined,
-    errIncorrect,
-    errRuntime,
-    errTwoNumbersRequired,
-    errDivisionByZero,
-    errTwoQuotationsRequired
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
+  MinEmptyStackError* = ref object of ValueError
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 

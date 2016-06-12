@@ -50,7 +50,7 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
-      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
+      raiseInvalid("The top quotation must contain only one symbol value")
     i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: In) =
       i.push q1.qVal
@@ -66,19 +66,19 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
-      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
+      raiseInvalid("The top quotation must contain only one symbol value")
     i.debug "[bind] " & symbol & " = " & $q1
     let res = i.scope.setSymbol(symbol) do (i: In):
       i.push q1.qVal
     if not res:
-      raise MinUndefinedError(msg:"Attempting to bind undefined symbol: " & symbol)
+      raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
   .symbol("delete") do (i: In):
     var sym: MinValue 
     i.reqStringOrSymbol sym
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
-      raise MinUndefinedError(msg:"Attempting to delete undefined symbol: " & sym.getString)
+      raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
 
   .symbol("scope") do (i: In):
     var code: MinValue
@@ -90,14 +90,11 @@ ROOT
   .symbol("import") do (i: In):
     var mdl: MinValue
     var name: string
-    try:
-      name = i.pop.strVal
-      i.scope.getSymbol(name)(i)
-      mdl = i.pop
-    except:
-      echo getCurrentExceptionMsg()
+    name = i.pop.strVal
+    i.scope.getSymbol(name)(i)
+    mdl = i.pop
     if not mdl.isQuotation:
-      i.error errNoQuotation
+      raiseInvalid("No quotation was found on the stack")
     if mdl.scope.isNotNil:
       #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
@@ -114,15 +111,15 @@ ROOT
       var symbol = q1.qVal[0].symVal
       if symbol.len == 1:
         if i.scope.getSigil(symbol).isNotNil:
-          raise MinRuntimeError(msg:"Sigil '$1' already exists" % [symbol])
+          raiseInvalid("Sigil '$1' already exists" % [symbol])
         i.scope.sigils[symbol] = proc(i: In) =
           i.evaluating = true
           i.push q2.qVal
           i.evaluating = false
       else:
-        raise MinInvalidError(msg:"A sigil can only have one character")
+        raiseInvalid("A sigil can only have one character")
     else:
-      raise MinInvalidError(msg:"The top quotation must contain only one symbol value")
+      raiseInvalid("The top quotation must contain only one symbol value")
 
   .symbol("eval") do (i: In):
     var s: MinValue
@@ -143,21 +140,21 @@ ROOT
     let vals = symbols.qVal
     var q: MinValue
     if vals.len == 0:
-      raise MinRuntimeError(msg:"No symbol to call")
+      raiseInvalid("No symbol to call")
     let origScope = i.scope
     i.scope = target.scope
     for c in 0..vals.len-1:
       if not vals[c].isStringLike:
-        raise MinInvalidError(msg:"Quotation must contain only symbols or strings")
+        raiseInvalid("Quotation must contain only symbols or strings")
       let symbol = vals[c].getString
       let qProc = i.scope.getSymbol(symbol)
       if qProc.isNil:
-        raise MinUndefinedError(msg:"Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
+        raiseUndefined("Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
       qProc(i)
       if vals.len > 1 and c < vals.len-1:
         q = i.pop
         if not q.isQuotation:
-          raise MinRuntimeError(msg:"Unable to evaluate symbol '$1'" % [symbol])
+          raiseInvalid("Unable to evaluate symbol '$1'" % [symbol])
         i.scope = q.scope 
     i.scope = origScope
 
@@ -172,13 +169,13 @@ ROOT
   .symbol("raise") do (i: In):
     var err: MinValue
     i.reqQuotation err
-    raise MinRuntimeError(msg:"($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], qVal: err.qVal)
+    raiseRuntime("($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], err.qVal)
 
   .symbol("try") do (i: In):
     var prog: MinValue
     i.reqQuotation prog
     if prog.qVal.len < 2:
-      raise MinInvalidError(msg:"Quotation must contain at least two elements")
+      raiseInvalid("Quotation must contain at least two elements")
     var code = prog.qVal[0]
     var catch = prog.qVal[1]
     var final: MinValue
@@ -187,7 +184,7 @@ ROOT
       final = prog.qVal[2]
       hasFinally = true
     if (not code.isQuotation or not catch.isQuotation) or (hasFinally and not final.isQuotation):
-      raise MinInvalidError(msg:"Quotation must contain at least two quotations")
+      raiseInvalid("Quotation must contain at least two quotations")
     i.unsafe = true
     try:
       i.unquote("<try-code>", code)
@@ -199,7 +196,7 @@ ROOT
     except:
       i.unsafe = false
       let e = getCurrentException()
-      i.push @[e.name.newVal, e.msg.newVal].newVal
+      i.push @[regex.replace($e.name, ":.+$", "").newVal, e.msg.newVal].newVal
       i.unquote("<try-catch>", catch)
     finally:
       if hasFinally:
@@ -215,7 +212,7 @@ ROOT
     var results = newSeq[MinValue](q.qVal.len)
     for c in 0..q.qVal.high:
       if not q.qVal[c].isQuotation:
-        raise MinInvalidError(msg: "Item #$1 is not a quotation" % [$(c+1)])
+        raiseInvalid("Item #$1 is not a quotation" % [$(c+1)])
       var i2 = i.copy(i.filename)
       var res: MinStack = newSeq[MinValue](0)
       pRun coroutine, (i2, c, results.addr)
