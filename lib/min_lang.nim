@@ -135,6 +135,13 @@ ROOT
       file = file & ".min"
     i.load i.pwd.joinPath(file)
 
+ .symbol("with") do (i: In):
+   var qscope, qprog: Minvalue
+   i.reqTwoQuotations qscope, qprog
+   i.unquote("<with-scope>", qscope)
+   i.withScope(qscope):
+     i.unquote("<with-program>", qprog)
+
   .symbol("call") do (i: In):
     var symbols, target: MinValue
     i.reqTwoQuotations symbols, target

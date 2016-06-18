@@ -68,7 +68,7 @@ proc newScope*(i: In, id: string, q: var MinValue) =
   q.scope.name = id
   q.scope.parent = i.scope
 
-template withScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.}=
+template createScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.} =
   q.scope = new MinScope
   q.scope.name = id
   q.scope.parent = i.scope
@@ -78,6 +78,14 @@ template withScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediat
   body
   #i.debug "[scope] " & scope.fullname
   i.scope = scope
+
+template withScope*(i: In, q: MinValue, body: stmt): stmt {.immediate.} =
+  #i.debug "[scope] " & q.scope.fullname
+  let origScope = i.scope
+  i.scope = q.scope
+  body
+  #i.debug "[scope] " & scope.fullname
+  i.scope = origScope
 
 proc copystack*(i: MinInterpreter): MinStack =
   var s = newSeq[MinValue](0)
@@ -196,7 +204,7 @@ proc interpret*(i: In) =
     i.push val
 
 proc unquote*(i: In, name: string, q: var MinValue) =
-  i.withScope(name, q): 
+  i.createScope(name, q): 
     for v in q.qVal:
       i.push v
 

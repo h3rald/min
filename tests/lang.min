@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 178 ==) assert
+  (symbols size 179 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -116,6 +116,8 @@
     (12 factorial)
     (9 factorial)
     ) ->> (40320 479001600 362880) ==) assert
+
+  ((a b +) (4 :a 5 :b) with 9 ==) assert
 
   report
   ; Tidy up
