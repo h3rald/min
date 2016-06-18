@@ -63,7 +63,12 @@ proc debug*(i: In, value: string) =
   if i.debugging: 
     stderr.writeLine("-- " & value)
 
-template newScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.}=
+proc newScope*(i: In, id: string, q: var MinValue) =
+  q.scope = new MinScope
+  q.scope.name = id
+  q.scope.parent = i.scope
+
+template withScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.}=
   q.scope = new MinScope
   q.scope.name = id
   q.scope.parent = i.scope
@@ -178,7 +183,7 @@ proc interpret*(i: In) =
     i.push val
 
 proc unquote*(i: In, name: string, q: var MinValue) =
-  i.newScope(name, q): 
+  i.withScope(name, q): 
     for v in q.qVal:
       i.push v
 

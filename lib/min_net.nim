@@ -1,4 +1,4 @@
-import net, nativesockets, strutils
+import net, nativesockets, strutils, critbits
 import 
   ../core/types,
   ../core/parser,
@@ -46,6 +46,13 @@ define("net")
     var socket = newSocket(domain, sockettype, protocol)
     q.objType = "socket"
     q.obj = socket[].addr
+    i.newScope("<socket>", q)
+    q.scope.symbols["protocol"] = proc (i:In) =
+      i.push vals[2].symVal.newVal
+    q.scope.symbols["type"] = proc (i:In) =
+      i.push vals[1].symVal.newVal
+    q.scope.symbols["domain"] = proc (i:In) =
+      i.push vals[0].symVal.newVal
     i.push @[q]
 
   .symbol("tcp-socket") do (i: In):
@@ -73,6 +80,10 @@ define("net")
     socket.bindAddr(Port(port.intVal))
     q.qVal.add "0.0.0.0".newSym
     q.qVal.add port
+    q.scope.symbols["address"] = proc (i:In) =
+      i.push "0.0.0.0".newVal
+    q.scope.symbols["port"] = proc (i:In) =
+      i.push port
     socket.listen()
     i.push @[q]
 
@@ -98,6 +109,10 @@ define("net")
     q.to(Socket).connect(address.strVal, Port(port.intVal))
     q.qVal.add address.strVal.newSym
     q.qVal.add port
+    q.scope.symbols["client-address"] = proc (i:In) =
+      i.push address.strVal.newVal
+    q.scope.symbols["client-port"] = proc (i:In) =
+      i.push port
     i.push @[q]
 
   .symbol("send") do (i: In):
