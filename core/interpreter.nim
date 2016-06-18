@@ -116,11 +116,14 @@ proc error(i: MinInterpreter, message: string) =
     quit(100)
 
 template execute(i: In, body: stmt) {.immediate.}=
+  let stack = i.copystack
   try:
     body
   except MinRuntimeError:
+    i.stack = stack
     stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
   except:
+    i.stack = stack
     i.error(getCurrentExceptionMsg())
 
 proc open*(i: In, stream:Stream, filename: string) =
@@ -140,7 +143,12 @@ proc push*(i: In, val: MinValue) =
     let symbolProc = i.scope.getSymbol(symbol)
     if symbolProc.isNotNil:
       if i.unsafe:
-        symbolProc(i) 
+        let stack = i.copystack
+        try:
+          symbolProc(i) 
+        except:
+          i.stack = stack
+          raise
       else:
         i.execute:
           i.symbolProc
@@ -150,7 +158,12 @@ proc push*(i: In, val: MinValue) =
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:
-          sigilProc(i) 
+          let stack = i.copystack
+          try:
+            sigilProc(i) 
+          except:
+            i.stack = stack
+            raise
         else:
           i.execute:
             i.sigilProc
