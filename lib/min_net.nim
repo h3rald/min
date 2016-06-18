@@ -14,13 +14,17 @@ define("net")
     i.reqQuotation q
     # (ipv4 stream tcp)
     if q.qVal.len < 3 or not (q.qVal[0].isSymbol and q.qVal[1].isSymbol and q.qVal[2].isSymbol):
+      i.push q
       raiseInvalid("Quotation must contain three symbols for <domain> <type> <protocol>")
     let vals = q.qVal
     if not ["ipv4", "ipv6"].contains(vals[0].symVal):
+      i.push q
       raiseInvalid("Domain symbol must be 'ipv4' or 'ipv6'")
     if not ["stream", "dgram"].contains(vals[1].symVal):
+      i.push q
       raiseInvalid("Type symbol must be 'stream' or 'dgram'")
     if not ["tcp", "udp"].contains(vals[2].symVal):
+      i.push q
       raiseInvalid("Protocol symbol must be 'tcp' or 'udp'")
     var 
       domain: Domain

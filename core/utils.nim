@@ -114,67 +114,85 @@ proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
 proc reqBool*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isBool:
+    i.push a
     raiseInvalid("A bool value is required on the stack")
 
 proc reqTwoBools*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not a.isBool or not b.isBool:
+    i.push b
+    i.push a
     raiseInvalid("Two bool values are required on the stack")
 
 proc reqInt*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isInt:
+    i.push a
     raiseInvalid("An integer is required on the stack")
 
 proc reqTwoInts*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not a.isInt or not b.isInt:
+    i.push b
+    i.push a
     raiseInvalid("Two integers are required on the stack")
 
 proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
+    i.push a
     raiseInvalid("A quotation is required on the stack")
 
 proc reqIntAndQuotation*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isInt and b.isQuotation):
+    i.push b
+    i.push a
     raiseInvalid("An integer and a quotation are required on the stack")
 
 proc reqTwoNumbers*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isNumber and b.isNumber):
+    i.push b
+    i.push a
     raiseInvalid("Two numbers are required on the stack")
 
 proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isString and b.isString or a.isNumber and b.isNumber):
+    i.push b
+    i.push a
     raiseInvalid("Two numbers or two strings are required on the stack")
 
 proc reqString*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isString:
+    i.push a
     raiseInvalid("A string is required on the stack")
 
 proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation and not a.isString:
+    i.push a
     raiseInvalid("A quotation or a string is required on the stack")
 
 proc reqStringOrSymbol*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isStringLike:
+    i.push a
     raiseInvalid("A symbol or a string is required on the stack")
 
 proc reqTwoStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not a.isString or not b.isString:
+    i.push b
+    i.push a
     raiseInvalid("Two strings are required on the stack")
 
 proc reqThreeStrings*(i: var MinInterpreter, a, b, c: var MinValue) =
@@ -182,18 +200,25 @@ proc reqThreeStrings*(i: var MinInterpreter, a, b, c: var MinValue) =
   b = i.pop
   c = i.pop
   if not a.isString or not b.isString or not c.isString: 
+    i.push c
+    i.push b
+    i.push a
     raiseInvalid("Three strings are required on the stack")
 
 proc reqTwoQuotations*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not a.isQuotation or not b.isQuotation:
+    i.push b
+    i.push a
     raiseInvalid("Two quotations are required on the stack")
 
 proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isQuotation and b.isQuotation or a.isString and b.isString):
+    i.push b
+    i.push a
     raiseInvalid("Two quotations or two strings are required on the stack")
 
 proc reqThreeQuotations*(i: var MinInterpreter, a, b, c: var MinValue) =
@@ -201,6 +226,9 @@ proc reqThreeQuotations*(i: var MinInterpreter, a, b, c: var MinValue) =
   b = i.pop
   c = i.pop
   if not a.isQuotation or not b.isQuotation or not c.isQuotation: 
+    i.push c
+    i.push b
+    i.push a
     raiseInvalid("Three quotations are required on the stack")
 
 proc reqFourQuotations*(i: var MinInterpreter, a, b, c, d: var MinValue) =
@@ -209,15 +237,22 @@ proc reqFourQuotations*(i: var MinInterpreter, a, b, c, d: var MinValue) =
   c = i.pop
   d = i.pop
   if not a.isQuotation or not b.isQuotation or not c.isQuotation or not d.isQuotation:
+    i.push d
+    i.push c
+    i.push b
+    i.push a
     raiseInvalid("Four quotations are required on the stack")
 
 proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not ((a.kind == a.kind or (a.isNumber and a.isNumber)) and not a.isSymbol):
+    i.push b
+    i.push a
     raiseInvalid("Two non-symbol values of similar type are required on the stack")
 
 proc reqObject*(i: var MinInterpreter, t: string, a: var MinValue) =
   a = i.pop
   if not a.isQuotation or a.objType.isNil or a.objType != t:
+    i.push a
     raiseInvalid("A $1 object is required" % [t])

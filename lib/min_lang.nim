@@ -43,6 +43,7 @@ ROOT
     var q2 = i.pop # new (can be a quoted symbol or a string)
     var q1 = i.pop # existing (auto-quoted)
     var symbol: string
+    let rawQ1 = q1
     if not q1.isQuotation:
       q1 = @[q1].newVal
     if q2.isString:
@@ -50,6 +51,8 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
+      i.push rawQ1
+      i.push q2
       raiseInvalid("The top quotation must contain only one symbol value")
     i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: In) =
@@ -58,6 +61,7 @@ ROOT
   .symbol("bind") do (i: In):
     var q2 = i.pop # new (can be a quoted symbol or a string)
     var q1 = i.pop # existing (auto-quoted)
+    let rawQ1 = q1
     var symbol: string
     if not q1.isQuotation:
       q1 = @[q1].newVal
@@ -66,11 +70,15 @@ ROOT
     elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
       symbol = q2.qVal[0].symVal
     else:
+      i.push rawQ1
+      i.push q2
       raiseInvalid("The top quotation must contain only one symbol value")
     i.debug "[bind] " & symbol & " = " & $q1
     let res = i.scope.setSymbol(symbol) do (i: In):
       i.push q1.qVal
     if not res:
+      i.push rawQ1
+      i.push q2
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
   .symbol("delete") do (i: In):
@@ -78,6 +86,7 @@ ROOT
     i.reqStringOrSymbol sym
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
+      i.push sym
       raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
 
   .symbol("scope") do (i: In):
@@ -88,13 +97,12 @@ ROOT
     i.push @[code].newVal
 
   .symbol("import") do (i: In):
-    var mdl: MinValue
+    var mdl, rawName: MinValue
     var name: string
-    name = i.pop.strVal
+    i.reqString rawName
+    name = rawName.strVal
     i.scope.getSymbol(name)(i)
-    mdl = i.pop
-    if not mdl.isQuotation:
-      raiseInvalid("No quotation was found on the stack")
+    i.reqQuotation mdl
     if mdl.scope.isNotNil:
       #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
@@ -111,14 +119,20 @@ ROOT
       var symbol = q1.qVal[0].symVal
       if symbol.len == 1:
         if i.scope.getSigil(symbol).isNotNil:
+          i.push q2
+          i.push q1
           raiseInvalid("Sigil '$1' already exists" % [symbol])
         i.scope.sigils[symbol] = proc(i: In) =
           i.evaluating = true
           i.push q2.qVal
           i.evaluating = false
       else:
+        i.push q2
+        i.push q1
         raiseInvalid("A sigil can only have one character")
     else:
+      i.push q2
+      i.push q1
       raiseInvalid("The top quotation must contain only one symbol value")
 
   .symbol("eval") do (i: In):
@@ -140,20 +154,27 @@ ROOT
     let vals = symbols.qVal
     var q: MinValue
     if vals.len == 0:
+      i.push target
+      i.push symbols
       raiseInvalid("No symbol to call")
     let origScope = i.scope
     i.scope = target.scope
     for c in 0..vals.len-1:
       if not vals[c].isStringLike:
+        i.push target
+        i.push symbols
         raiseInvalid("Quotation must contain only symbols or strings")
       let symbol = vals[c].getString
       let qProc = i.scope.getSymbol(symbol)
       if qProc.isNil:
+        i.push target
+        i.push symbols
         raiseUndefined("Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
       qProc(i)
       if vals.len > 1 and c < vals.len-1:
         q = i.pop
         if not q.isQuotation:
+          i.push q
           raiseInvalid("Unable to evaluate symbol '$1'" % [symbol])
         i.scope = q.scope 
     i.scope = origScope
@@ -174,26 +195,35 @@ ROOT
   .symbol("try") do (i: In):
     var prog: MinValue
     i.reqQuotation prog
-    if prog.qVal.len < 2:
-      raiseInvalid("Quotation must contain at least two elements")
+    if prog.qVal.len == 0:
+      i.push prog
+      raiseInvalid("Quotation must contain at least one element")
     var code = prog.qVal[0]
-    var catch = prog.qVal[1]
-    var final: MinValue
+    var final, catch: MinValue
     var hasFinally = false
+    var hasCatch = false
+    if prog.qVal.len > 1:
+      catch = prog.qVal[1]
+      hasCatch = true
     if prog.qVal.len > 2:
       final = prog.qVal[2]
       hasFinally = true
-    if (not code.isQuotation or not catch.isQuotation) or (hasFinally and not final.isQuotation):
-      raiseInvalid("Quotation must contain at least two quotations")
+    if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
+      i.push prog
+      raiseInvalid("Quotation must contain at one quotation")
     i.unsafe = true
     try:
       i.unquote("<try-code>", code)
     except MinRuntimeError:
+      if not hasCatch:
+        return
       i.unsafe = false
       let e = (MinRuntimeError)getCurrentException()
       i.push e.qVal.newVal
       i.unquote("<try-catch>", catch)
     except:
+      if not hasCatch:
+        return
       i.unsafe = false
       let e = getCurrentException()
       i.push @[regex.replace($e.name, ":.+$", "").newVal, e.msg.newVal].newVal
@@ -212,6 +242,7 @@ ROOT
     var results = newSeq[MinValue](q.qVal.len)
     for c in 0..q.qVal.high:
       if not q.qVal[c].isQuotation:
+        i.push q
         raiseInvalid("Item #$1 is not a quotation" % [$(c+1)])
       var i2 = i.copy(i.filename)
       var res: MinStack = newSeq[MinValue](0)
@@ -254,10 +285,12 @@ ROOT
     i.reqStringOrQuotation q
     if q.isQuotation:
       if q.qVal.len == 0:
+        i.push q
         raiseOutOfBounds("Quotation is empty")
       i.push q.qVal[0]
     elif q.isString:
       if q.strVal.len == 0:
+        i.push q
         raiseOutOfBounds("String is empty")
       i.push newVal($q.strVal[0])
 
@@ -266,10 +299,12 @@ ROOT
     i.reqStringOrQuotation q
     if q.isQuotation:
       if q.qVal.len == 0:
+        i.push q
         raiseOutOfBounds("Quotation is empty")
       i.push newVal(q.qVal[1..q.qVal.len-1])
     elif q.isString:
       if q.strVal.len == 0:
+        i.push q
         raiseOutOfBounds("String is empty")
       i.push newVal(q.strVal[1..q.strVal.len-1])
 
@@ -300,6 +335,8 @@ ROOT
     var index, q: MinValue
     i.reqIntAndQuotation index, q
     if q.qVal.len-1 < index.intVal:
+      i.push q
+      i.push index
       raiseOutOfBounds("Insufficient items in quotation")
     i.push q.qVal[index.intVal.int]
 
@@ -331,6 +368,8 @@ ROOT
     var t, prog: MinValue
     i.reqIntAndQuotation t, prog
     if t.intVal < 1:
+      i.push prog
+      i.push t
       raiseInvalid("A non-zero natural number is required")
     for c in 1..t.intVal:
       i.unquote("<times-quotation>", prog)

@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size put 178 ==) assert
+  (symbols size 178 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -99,6 +99,9 @@
     (("TestError" "Test Message") raise) 
     (1 at)
     ) try "Test Message" ==) assert
+
+  (
+   (("test" (1 2) :)) try getstack ("test" (1 2)) ==) assert
 
   (
    (
