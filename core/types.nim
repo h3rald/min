@@ -30,8 +30,8 @@ type
     column*: int
     filename*: string
     case kind*: MinKind
-      of minInt: intVal*: int
-      of minFloat: floatVal*: float
+      of minInt: intVal*: BiggestInt
+      of minFloat: floatVal*: BiggestFloat
       of minQuotation: 
         qVal*: seq[MinValue]
         scope*: ref MinScope

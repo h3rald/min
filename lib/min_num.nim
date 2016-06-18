@@ -56,7 +56,7 @@ define("num")
     i.reqTwoNumbers a, b
     if a.isInt:
       if b.isInt:
-        i.push newVal(b.intVal / a.intVal)
+        i.push newVal(b.intVal.int / a.intVal.int)
       else:
         i.push newVal(b.floatVal / a.intVal.float)
     else:

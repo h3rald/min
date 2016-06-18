@@ -109,7 +109,7 @@ define("net")
     i.reqInt size
     i.reqObject "socket", q
     var s = ""
-    discard q.to(Socket).recv(s, size.intVal)
+    discard q.to(Socket).recv(s, size.intVal.int)
     i.push @[q]
     i.push s.newVal
 

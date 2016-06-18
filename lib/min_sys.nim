@@ -94,6 +94,6 @@ define("sys")
    .symbol("sleep") do (i: In):
      var ms: MinValue
      i.reqInt ms
-     sleep ms.intVal
+     sleep ms.intVal.int
 
   .finalize()

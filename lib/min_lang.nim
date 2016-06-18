@@ -301,7 +301,7 @@ ROOT
     i.reqIntAndQuotation index, q
     if q.qVal.len-1 < index.intVal:
       raiseOutOfBounds("Insufficient items in quotation")
-    i.push q.qVal[index.intVal]
+    i.push q.qVal[index.intVal.int]
 
   .symbol("size") do (i: In):
     var q: MinValue

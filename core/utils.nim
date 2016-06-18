@@ -31,10 +31,10 @@ proc newVal*(s: cstring): MinValue =
 proc newVal*(q: seq[MinValue]): MinValue =
   return MinValue(kind: minQuotation, qVal: q)
 
-proc newVal*(s: int): MinValue =
+proc newVal*(s: BiggestInt): MinValue =
   return MinValue(kind: minInt, intVal: s)
 
-proc newVal*(s: float): MinValue =
+proc newVal*(s: BiggestFloat): MinValue =
   return MinValue(kind: minFloat, floatVal: s)
 
 proc newVal*(s: bool): MinValue =
