@@ -51,18 +51,6 @@ define("net")
       i.push vals[0].symVal.newVal
     i.push @[q]
 
-  .symbol("tcp-socket") do (i: In):
-    i.eval("(ipv4 stream tcp) net %open-socket")
-    
-  .symbol("udp-socket") do (i: In):
-    i.eval("(ipv4 dgram udp) net %open-socket")
-
-  .symbol("tcp6-socket") do (i: In):
-    i.eval("(ipv6 stream tcp) net %open-socket")
-    
-  .symbol("udp6-socket") do (i: In):
-    i.eval("(ipv6 dgram udp) net %open-socket")
-
   .symbol("close-socket") do (i: In):
     var q: MinValue
     i.reqObject "socket", q
