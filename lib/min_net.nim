@@ -17,12 +17,15 @@ proc socketSymbol(name: string, body: proc(q: Val, i: In))=
       q.body(i)
 
 socketSymbol("domain") do (q: Val, i: In):
+  i.push q
   i.push q.qVal[0].symVal.newVal
 
 socketSymbol("type") do (q: Val, i: In):
+  i.push q
   i.push q.qVal[1].symVal.newVal
 
 socketSymbol("protocol") do (q: Val, i: In):
+  i.push q
   i.push q.qVal[2].symVal.newVal
 
 socketSymbol("close") do (q: Val, i: In):
@@ -40,6 +43,51 @@ socketSymbol("listen") do (q: Val, i: In):
   q.scope.symbols["port"] = proc (i:In) =
     i.push port
   socket.listen()
+  i.push q
+
+socketSymbol("accept") do (q: Val, i: In):
+  # Open same socket type as server
+  i.eval "$1 net %^socket" % [$q.qVal[0..2].newVal]
+  var clientVal: MinValue
+  i.reqObject "socket", clientVal
+  var client = clientVal.to(Socket)
+  var address = ""
+  q.to(Socket).acceptAddr(client, address)
+  clientVal.qVal.add address.newSym
+  i.push clientVal
+
+socketSymbol("connect") do (q: Val, i: In):
+  var q, address, port: MinValue
+  i.reqInt port
+  i.reqString address
+  q.to(Socket).connect(address.strVal, Port(port.intVal))
+  q.qVal.add address.strVal.newSym
+  q.qVal.add port
+  q.scope.symbols["client-address"] = proc (i:In) =
+    i.push address.strVal.newVal
+  q.scope.symbols["client-port"] = proc (i:In) =
+    i.push port
+  i.push q
+
+socketSymbol("send") do (q: Val, i: In):
+  var s: MinValue
+  i.reqString s
+  q.to(Socket).send s.strVal
+  i.push q
+
+socketSymbol("recv") do (q: Val, i: In):
+  var size: MinValue
+  i.reqInt size
+  var s = ""
+  discard q.to(Socket).recv(s, size.intVal.int)
+  i.push q
+  i.push s.newVal
+  
+socketSymbol("recv-line") do (q: Val, i: In):
+  var s = ""
+  q.to(Socket).readLine(s)
+  i.push @[q]
+  i.push s.newVal
 
 define("net")
 
@@ -82,73 +130,11 @@ define("net")
     q.scope.symbols["protocol"] = symbols["protocol"](q, i)
     q.scope.symbols["close"] = symbols["close"](q, i)
     q.scope.symbols["listen"] = symbols["listen"](q, i)
-    i.push @[q]
-
-  #.symbol("listen") do (i: In):
-  #  var port, q: MinValue
-  #  i.reqObject "socket", q
-  #  i.reqInt port
-  #  var socket = q.to(Socket)
-  #  socket.bindAddr(Port(port.intVal))
-  #  q.qVal.add "0.0.0.0".newSym
-  #  q.qVal.add port
-  #  q.scope.symbols["address"] = proc (i:In) =
-  #    i.push "0.0.0.0".newVal
-  #  q.scope.symbols["port"] = proc (i:In) =
-  #    i.push port
-  #  socket.listen()
-  #  i.push @[q]
-
-  .symbol("accept") do (i: In):
-    var server: MinValue
-    i.reqObject "socket", server
-    # Open same socket type as server
-    i.eval "$1 net %open-socket" % [$server.qVal[0..2].newVal]
-    var clientVal: MinValue
-    i.reqObject "socket", clientVal
-    var client = clientVal.to(Socket)
-    var address = ""
-    server.to(Socket).acceptAddr(client, address)
-    clientVal.qVal.add address.newSym
-    i.push @[clientVal]
-
-  .symbol("connect") do (i: In):
-    var q, address, port: MinValue
-    i.reqInt port
-    i.reqString address
-    i.reqObject "socket", q
-    q.to(Socket).connect(address.strVal, Port(port.intVal))
-    q.qVal.add address.strVal.newSym
-    q.qVal.add port
-    q.scope.symbols["client-address"] = proc (i:In) =
-      i.push address.strVal.newVal
-    q.scope.symbols["client-port"] = proc (i:In) =
-      i.push port
-    i.push @[q]
-
-  .symbol("send") do (i: In):
-    var q, s: MinValue
-    i.reqString s
-    i.reqObject "socket", q
-    q.to(Socket).send s.strVal
-    i.push @[q]
-
-
-  .symbol("recv") do (i: In):
-    var size, q: MinValue
-    i.reqInt size
-    i.reqObject "socket", q
-    var s = ""
-    discard q.to(Socket).recv(s, size.intVal.int)
-    i.push @[q]
-    i.push s.newVal
-
-  .symbol("recv-line") do (i: In):
-    var q: MinValue
-    i.reqObject "socket", q
-    var s = ""
-    q.to(Socket).readLine(s)
-    i.push @[q]
-    i.push s.newVal
+    q.scope.symbols["accept"] = symbols["accept"](q, i)
+    q.scope.symbols["connect"] = symbols["connect"](q, i)
+    q.scope.symbols["send"] = symbols["send"](q, i)
+    q.scope.symbols["recv"] = symbols["recv"](q, i)
+    q.scope.symbols["recv-line"] = symbols["recv-line"](q, i)
+    i.push q
 
   .finalize()

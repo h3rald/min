@@ -155,7 +155,6 @@ ROOT
     # Restore original quotation
     sProc(i)
     i.scope = origScope
-    i.push @[q]
 
     #var symbols, target: MinValue
     #i.reqTwoQuotations symbols, target
