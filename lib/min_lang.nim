@@ -77,7 +77,7 @@ ROOT
 
   .symbol("delete") do (i: In):
     var sym: MinValue 
-    i.reqStringOrSymbol sym
+    i.reqStringLike sym
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
       raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
@@ -143,28 +143,42 @@ ROOT
      i.unquote("<with-program>", qprog)
 
   .symbol("call") do (i: In):
-    var symbols, target: MinValue
-    i.reqTwoQuotations symbols, target
-    let vals = symbols.qVal
-    var q: MinValue
-    if vals.len == 0:
-      raiseInvalid("No symbol to call")
+    var symbol, q: Minvalue
+    i.reqStringLike symbol
+    i.reqQuotation  q
+    let s = symbol.getString
     let origScope = i.scope
-    i.scope = target.scope
-    for c in 0..vals.len-1:
-      if not vals[c].isStringLike:
-        raiseInvalid("Quotation must contain only symbols or strings")
-      let symbol = vals[c].getString
-      let qProc = i.scope.getSymbol(symbol)
-      if qProc.isNil:
-        raiseUndefined("Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
-      qProc(i)
-      if vals.len > 1 and c < vals.len-1:
-        q = i.pop
-        if not q.isQuotation:
-          raiseInvalid("Unable to evaluate symbol '$1'" % [symbol])
-        i.scope = q.scope 
+    i.scope = q.scope
+    let sProc = i.scope.getSymbol(s)
+    if sProc.isNil:
+      raiseUndefined("Symbol '$1' not found in scope '$2'" % [s, i.scope.fullname])
+    sProc(i)
     i.scope = origScope
+    # Restore original quotation
+    i.push @[q]
+
+    #var symbols, target: MinValue
+    #i.reqTwoQuotations symbols, target
+    #let vals = symbols.qVal
+    #var q: MinValue
+    #if vals.len == 0:
+    #  raiseInvalid("No symbol to call")
+    #let origScope = i.scope
+    #i.scope = target.scope
+    #for c in 0..vals.len-1:
+    #  if not vals[c].isStringLike:
+    #    raiseInvalid("Quotation must contain only symbols or strings")
+    #  let symbol = vals[c].getString
+    #  let qProc = i.scope.getSymbol(symbol)
+    #  if qProc.isNil:
+    #    raiseUndefined("Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
+    #  qProc(i)
+    #  if vals.len > 1 and c < vals.len-1:
+    #    q = i.pop
+    #    if not q.isQuotation:
+    #      raiseInvalid("Unable to evaluate symbol '$1'" % [symbol])
+    #    i.scope = q.scope 
+    #i.scope = origScope
 
   .symbol("inspect") do (i: In):
     var scope: MinValue

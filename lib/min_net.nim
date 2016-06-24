@@ -7,9 +7,12 @@ import
 
 # Network
 
+proc close(i: In) =
+  discard
+
 define("net")
 
-  .symbol("open-socket") do (i: In):
+  .symbol("^socket") do (i: In):
     var q: MinValue
     i.reqQuotation q
     # (ipv4 stream tcp)
@@ -58,8 +61,8 @@ define("net")
 
   .symbol("listen") do (i: In):
     var port, q: MinValue
-    i.reqInt port
     i.reqObject "socket", q
+    i.reqInt port
     var socket = q.to(Socket)
     socket.bindAddr(Port(port.intVal))
     q.qVal.add "0.0.0.0".newSym

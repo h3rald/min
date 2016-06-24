@@ -3,7 +3,7 @@
 
 "lang" describe
 
-  (symbols size 179 ==) assert
+  (symbols size 180 ==) assert
 
   (sigils size 10 ==) assert
 
@@ -34,7 +34,7 @@
   (defmod 
     (#mymath 
      (-) :myminus) => .mymath 
-    5 2 mymath %myminus 3 ==) assert
+    5 2 mymath %myminus pop 3 ==) assert
 
   (defmod mymath inspect ("myplus") ==) assert
 
@@ -45,7 +45,7 @@
   ("2 2 +" "tests/testload.min" fwrite @testload 4 ==) assert
   "tests/testload.min" rm
 
-  (defmod 2 2 mymath %myplus 4 ==) assert
+  (defmod 2 2 mymath %myplus pop 4 ==) assert
   
   (1 2 3 4 getstack (1 2 3 4) ==) assert
 

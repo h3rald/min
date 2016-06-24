@@ -44,13 +44,35 @@ proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
 
 proc isStringLike*(s: MinValue): bool =
-  return s.isSymbol or s.isString
+  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
+
+# Error Helpers
+
+proc raiseInvalid*(msg: string) =
+  raise MinInvalidError(msg: msg)
+
+proc raiseUndefined*(msg: string) =
+  raise MinUndefinedError(msg: msg)
+
+proc raiseOutOfBounds*(msg: string) =
+  raise MinOutOfBoundsError(msg: msg)
+
+proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
+  raise MinRuntimeError(msg: msg, qVal: qVal)
 
 proc getString*(v: MinValue): string =
   if v.isSymbol:
     return v.symVal
   elif v.isString:
     return v.strVal
+  elif v.isQuotation:
+    if v.qVal.len == 1:
+      raiseInvalid("Quotation is not a quoted symbol")
+    let sym = v.qVal[0]
+    if sym.isSymbol:
+      return v.symVal
+    else:
+      raiseInvalid("Quotation is not a quoted symbol")
 
 proc warn*(s: string) =
   stderr.writeLine s
@@ -94,20 +116,6 @@ template alias*[T](varname: untyped, value: var T) =
 
 proc to*(q: MinValue, T: typedesc): T =
   return cast[T](q.obj)
-
-# Error Helpers
-
-proc raiseInvalid*(msg: string) =
-  raise MinInvalidError(msg: msg)
-
-proc raiseUndefined*(msg: string) =
-  raise MinUndefinedError(msg: msg)
-
-proc raiseOutOfBounds*(msg: string) =
-  raise MinOutOfBoundsError(msg: msg)
-
-proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
-  raise MinRuntimeError(msg: msg, qVal: qVal)
 
 # Validators
 
@@ -166,7 +174,7 @@ proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   if not a.isQuotation and not a.isString:
     raiseInvalid("A quotation or a string is required on the stack")
 
-proc reqStringOrSymbol*(i: var MinInterpreter, a: var MinValue) =
+proc reqStringLike*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isStringLike:
     raiseInvalid("A symbol or a string is required on the stack")

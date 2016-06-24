@@ -18,7 +18,7 @@
 (system)          (!)     sigil 
 (run)             (&)     sigil
 (load)            (@)     sigil
-(":" split call)  (%)     sigil
+(call)            (%)     sigil
 
 ; Aliases
 'define       ::
@@ -77,11 +77,12 @@
 (print pop)                                     :print!
 (put pop)                                       :put!
 (:ms :q :check (check) (ms sleep q) while)      :interval
+(call pop)                                      :call!
 
 ; Socket constructors
-((ipv4 stream tcp) socket)   :tcp-socket
-((ipv6 stream tcp) socket)   :tcp6-socket
-((ipv4 dgram tcp) socket)    :udp-socket
-((ipv6 dgram tcp) socket)    :udp6-socket
+((ipv4 stream tcp) ^socket)   :tcp-socket
+((ipv6 stream tcp) ^socket)   :tcp6-socket
+((ipv4 dgram tcp) ^socket)    :udp-socket
+((ipv6 dgram tcp) ^socket)    :udp6-socket
 
 
