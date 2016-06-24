@@ -81,6 +81,7 @@ type
     evaluating*: bool 
     unsafe*: bool
   In* = var MinInterpreter
+  Val* = var MinValue
   MinOperator* = proc (i: In)
   MinSigil* = proc (i: In, sym: string)
   MinParsingError* = ref object of ValueError 

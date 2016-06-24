@@ -22,6 +22,12 @@ proc isNumber*(s: MinValue): bool =
 proc isBool*(s: MinValue): bool =
   return s.kind == minBool
 
+proc isStringLike*(s: MinValue): bool =
+  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
+
+proc isObject*(a: MinValue, t: string): bool =
+  return a.isQuotation and not a.objType.isNil and a.objType == t
+
 proc newVal*(s: string): MinValue =
   return MinValue(kind: minString, strVal: s)
 
@@ -43,9 +49,6 @@ proc newVal*(s: bool): MinValue =
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
 
-proc isStringLike*(s: MinValue): bool =
-  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
-
 # Error Helpers
 
 proc raiseInvalid*(msg: string) =
@@ -66,11 +69,11 @@ proc getString*(v: MinValue): string =
   elif v.isString:
     return v.strVal
   elif v.isQuotation:
-    if v.qVal.len == 1:
+    if v.qVal.len != 1:
       raiseInvalid("Quotation is not a quoted symbol")
     let sym = v.qVal[0]
     if sym.isSymbol:
-      return v.symVal
+      return sym.symVal
     else:
       raiseInvalid("Quotation is not a quoted symbol")
 
@@ -94,6 +97,13 @@ proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   #if not scope.parent.isNil:
   #  scope.parent.symbols[scope.name & ":" & sym] = p
   return scope
+
+proc localSymbol*(i: In, obj: MinValue, objType: string, body: MinOperator): MinOperator =
+  if not obj.isObject(objType):
+    raiseInvalid("Object is not a socket")
+  return proc(i: In) =
+    i.push @[obj]
+    i.body()
 
 proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   scope.previous.sigils[sym] = p
@@ -227,5 +237,5 @@ proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
 
 proc reqObject*(i: var MinInterpreter, t: string, a: var MinValue) =
   a = i.pop
-  if not a.isQuotation or a.objType.isNil or a.objType != t:
+  if not a.isObject(t):
     raiseInvalid("A $1 object is required" % [t])

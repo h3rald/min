@@ -7,8 +7,39 @@ import
 
 # Network
 
-proc close(i: In) =
-  discard
+var symbols*: CritBitTree[proc(obj: Val, i: In): MinOperator]
+
+proc socketSymbol(name: string, body: proc(q: Val, i: In))=
+  symbols[name] = proc(obj: Val, i: In): MinOperator = 
+    i.localSymbol(obj, "socket") do (i: In):
+      var q: MinValue
+      i.reqObject "socket", q
+      q.body(i)
+
+socketSymbol("domain") do (q: Val, i: In):
+  i.push q.qVal[0].symVal.newVal
+
+socketSymbol("type") do (q: Val, i: In):
+  i.push q.qVal[1].symVal.newVal
+
+socketSymbol("protocol") do (q: Val, i: In):
+  i.push q.qVal[2].symVal.newVal
+
+socketSymbol("close") do (q: Val, i: In):
+  q.to(Socket).close()
+
+socketSymbol("listen") do (q: Val, i: In):
+  var port: MinValue
+  i.reqInt port
+  var socket = q.to(Socket)
+  socket.bindAddr(Port(port.intVal))
+  q.qVal.add "0.0.0.0".newSym
+  q.qVal.add port
+  q.scope.symbols["address"] = proc (i:In) =
+    i.push "0.0.0.0".newVal
+  q.scope.symbols["port"] = proc (i:In) =
+    i.push port
+  socket.listen()
 
 define("net")
 
@@ -46,39 +77,32 @@ define("net")
     q.objType = "socket"
     q.obj = socket[].addr
     i.newScope("<socket>", q)
-    q.scope.symbols["protocol"] = proc (i:In) =
-      i.push vals[2].symVal.newVal
-    q.scope.symbols["type"] = proc (i:In) =
-      i.push vals[1].symVal.newVal
-    q.scope.symbols["domain"] = proc (i:In) =
-      i.push vals[0].symVal.newVal
+    q.scope.symbols["domain"] = symbols["domain"](q, i)
+    q.scope.symbols["type"] = symbols["type"](q, i)
+    q.scope.symbols["protocol"] = symbols["protocol"](q, i)
+    q.scope.symbols["close"] = symbols["close"](q, i)
+    q.scope.symbols["listen"] = symbols["listen"](q, i)
     i.push @[q]
 
-  .symbol("close-socket") do (i: In):
-    var q: MinValue
-    i.reqObject "socket", q
-    q.to(Socket).close()
-
-  .symbol("listen") do (i: In):
-    var port, q: MinValue
-    i.reqObject "socket", q
-    i.reqInt port
-    var socket = q.to(Socket)
-    socket.bindAddr(Port(port.intVal))
-    q.qVal.add "0.0.0.0".newSym
-    q.qVal.add port
-    q.scope.symbols["address"] = proc (i:In) =
-      i.push "0.0.0.0".newVal
-    q.scope.symbols["port"] = proc (i:In) =
-      i.push port
-    socket.listen()
-    i.push @[q]
+  #.symbol("listen") do (i: In):
+  #  var port, q: MinValue
+  #  i.reqObject "socket", q
+  #  i.reqInt port
+  #  var socket = q.to(Socket)
+  #  socket.bindAddr(Port(port.intVal))
+  #  q.qVal.add "0.0.0.0".newSym
+  #  q.qVal.add port
+  #  q.scope.symbols["address"] = proc (i:In) =
+  #    i.push "0.0.0.0".newVal
+  #  q.scope.symbols["port"] = proc (i:In) =
+  #    i.push port
+  #  socket.listen()
+  #  i.push @[q]
 
   .symbol("accept") do (i: In):
     var server: MinValue
     i.reqObject "socket", server
     # Open same socket type as server
-    echo $server
     i.eval "$1 net %open-socket" % [$server.qVal[0..2].newVal]
     var clientVal: MinValue
     i.reqObject "socket", clientVal

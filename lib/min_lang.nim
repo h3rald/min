@@ -152,9 +152,9 @@ ROOT
     let sProc = i.scope.getSymbol(s)
     if sProc.isNil:
       raiseUndefined("Symbol '$1' not found in scope '$2'" % [s, i.scope.fullname])
+    # Restore original quotation
     sProc(i)
     i.scope = origScope
-    # Restore original quotation
     i.push @[q]
 
     #var symbols, target: MinValue
