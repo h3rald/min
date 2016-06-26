@@ -15,7 +15,7 @@ import
   lib/min_sys,
   lib/min_net
 
-const version* = "1.0.0-preview"
+const version* = "1.0.0-dev"
 var REPL = false
 const prelude = "lib/prelude.min".slurp.strip
 
@@ -120,6 +120,7 @@ for kind, key, val in getopt():
           quit(0)
         of "version", "v":
           echo version
+          quit(0)
         of "interactive", "i":
           REPL = true
         else:
