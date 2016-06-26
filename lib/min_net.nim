@@ -7,88 +7,6 @@ import
 
 # Network
 
-var symbols*: CritBitTree[proc(obj: Val, i: In): MinOperator]
-
-proc socketSymbol(name: string, body: proc(q: Val, i: In))=
-  symbols[name] = proc(obj: Val, i: In): MinOperator = 
-    i.localSymbol(obj, "socket") do (i: In):
-      var q: MinValue
-      i.reqObject "socket", q
-      q.body(i)
-
-socketSymbol("domain") do (q: Val, i: In):
-  i.push q
-  i.push q.qVal[0].symVal.newVal
-
-socketSymbol("type") do (q: Val, i: In):
-  i.push q
-  i.push q.qVal[1].symVal.newVal
-
-socketSymbol("protocol") do (q: Val, i: In):
-  i.push q
-  i.push q.qVal[2].symVal.newVal
-
-socketSymbol("close") do (q: Val, i: In):
-  q.to(Socket).close()
-
-socketSymbol("listen") do (q: Val, i: In):
-  var port: MinValue
-  i.reqInt port
-  var socket = q.to(Socket)
-  socket.bindAddr(Port(port.intVal))
-  q.qVal.add "0.0.0.0".newSym
-  q.qVal.add port
-  q.scope.symbols["address"] = proc (i:In) =
-    i.push "0.0.0.0".newVal
-  q.scope.symbols["port"] = proc (i:In) =
-    i.push port
-  socket.listen()
-  i.push q
-
-socketSymbol("accept") do (q: Val, i: In):
-  # Open same socket type as server
-  i.eval "$1 net %^socket" % [$q.qVal[0..2].newVal]
-  var clientVal: MinValue
-  i.reqObject "socket", clientVal
-  var client = clientVal.to(Socket)
-  var address = ""
-  q.to(Socket).acceptAddr(client, address)
-  clientVal.qVal.add address.newSym
-  i.push clientVal
-
-socketSymbol("connect") do (q: Val, i: In):
-  var q, address, port: MinValue
-  i.reqInt port
-  i.reqString address
-  q.to(Socket).connect(address.strVal, Port(port.intVal))
-  q.qVal.add address.strVal.newSym
-  q.qVal.add port
-  q.scope.symbols["client-address"] = proc (i:In) =
-    i.push address.strVal.newVal
-  q.scope.symbols["client-port"] = proc (i:In) =
-    i.push port
-  i.push q
-
-socketSymbol("send") do (q: Val, i: In):
-  var s: MinValue
-  i.reqString s
-  q.to(Socket).send s.strVal
-  i.push q
-
-socketSymbol("recv") do (q: Val, i: In):
-  var size: MinValue
-  i.reqInt size
-  var s = ""
-  discard q.to(Socket).recv(s, size.intVal.int)
-  i.push q
-  i.push s.newVal
-  
-socketSymbol("recv-line") do (q: Val, i: In):
-  var s = ""
-  q.to(Socket).readLine(s)
-  i.push @[q]
-  i.push s.newVal
-
 define("net")
 
   .symbol("^socket") do (i: In):
@@ -125,16 +43,87 @@ define("net")
     q.objType = "socket"
     q.obj = socket[].addr
     i.newScope("<socket>", q)
-    q.scope.symbols["domain"] = symbols["domain"](q, i)
-    q.scope.symbols["type"] = symbols["type"](q, i)
-    q.scope.symbols["protocol"] = symbols["protocol"](q, i)
-    q.scope.symbols["close"] = symbols["close"](q, i)
-    q.scope.symbols["listen"] = symbols["listen"](q, i)
-    q.scope.symbols["accept"] = symbols["accept"](q, i)
-    q.scope.symbols["connect"] = symbols["connect"](q, i)
-    q.scope.symbols["send"] = symbols["send"](q, i)
-    q.scope.symbols["recv"] = symbols["recv"](q, i)
-    q.scope.symbols["recv-line"] = symbols["recv-line"](q, i)
+
+    q.scope
+      .symbol("domain") do (i: In):
+        i.push q
+        i.push q.qVal[0].symVal.newVal
+  
+      .symbol("type") do (i: In):
+        i.push q
+        i.push q.qVal[1].symVal.newVal
+  
+      .symbol("protocol") do (i: In):
+        i.push q
+        i.push q.qVal[2].symVal.newVal
+  
+      .symbol("close") do (i: In):
+        q.to(Socket).close()
+  
+      .symbol("listen") do (i: In):
+        var port: MinValue
+        i.reqInt port
+        var socket = q.to(Socket)
+        socket.bindAddr(Port(port.intVal))
+        q.qVal.add "0.0.0.0".newSym
+        q.qVal.add port
+        q.scope
+          .symbol("address") do (i:In):
+            i.push "0.0.0.0".newVal
+          .symbol("port") do (i:In):
+            i.push port
+          .finalize()
+        socket.listen()
+        i.push q
+  
+      .symbol("accept") do (i: In):
+        # Open same socket type as server
+        i.eval "$1 net %^socket" % [$q.qVal[0..2].newVal]
+        var clientVal: MinValue
+        i.reqObject "socket", clientVal
+        var client = clientVal.to(Socket)
+        var address = ""
+        q.to(Socket).acceptAddr(client, address)
+        clientVal.qVal.add address.newSym
+        i.push clientVal
+  
+      .symbol("connect") do (i: In):
+        var q, address, port: MinValue
+        i.reqInt port
+        i.reqString address
+        q.to(Socket).connect(address.strVal, Port(port.intVal))
+        q.qVal.add address.strVal.newSym
+        q.qVal.add port
+        q.scope
+          .symbol("client-address") do (i:In):
+            i.push address.strVal.newVal
+          .symbol("client-port") do (i:In):
+            i.push port
+          .finalize()
+        i.push q
+  
+      .symbol("send") do (i: In):
+        var s: MinValue
+        i.reqString s
+        q.to(Socket).send s.strVal
+        i.push q
+  
+      .symbol("recv") do (i: In):
+        var size: MinValue
+        i.reqInt size
+        var s = ""
+        discard q.to(Socket).recv(s, size.intVal.int)
+        i.push q
+        i.push s.newVal
+  
+      .symbol("recv-line") do (i: In):
+        var s = ""
+        q.to(Socket).readLine(s)
+        i.push @[q]
+        i.push s.newVal
+  
+      .finalize()
+      
     i.push q
 
   .finalize()

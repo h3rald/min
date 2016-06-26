@@ -1,11 +1,15 @@
 @test
 #test
 
+
 "lang" describe
 
-  (symbols size put 175 ==) assert
+  "Total Symbols: " print! symbols size put!
+  "  Total Sigils: " print! sigils size put!
 
-  (sigils size 10 ==) assert
+  (symbols size 176 ==) assert
+
+  (sigils size 11 ==) assert
 
   (debug? false ==) assert
 
@@ -23,7 +27,7 @@
   (
     (
       (+) :myplus
-    ) => :mymath
+    ) =mymath
   ) :defmod
   
   (defmod symbols "mymath" contains) assert

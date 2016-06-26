@@ -86,18 +86,28 @@ ROOT
     var code: MinValue
     i.reqQuotation code
     code.filename = i.filename
+    code.objType = "scope"
     i.unquote("<scope>", code)
     i.push @[code].newVal
+
+  .symbol("module") do (i: In):
+    var code, name: MinValue
+    i.reqStringLike name
+    i.reqQuotation code
+    code.filename = i.filename
+    code.objType = "module"
+    i.unquote("<module>", code)
+    i.scope.symbols[name.getString] = proc(i: In) =
+      i.push code
 
   .symbol("import") do (i: In):
     var mdl, rawName: MinValue
     var name: string
-    i.reqString rawName
-    name = rawName.strVal
+    i.reqStringLike rawName
+    name = rawName.getString
     i.scope.getSymbol(name)(i)
     i.reqQuotation mdl
     if mdl.scope.isNotNil:
-      #echo "MODULE SCOPE PARENT: ", mdl.scope.name
       for sym, val in mdl.scope.symbols.pairs:
         i.debug "[import] $1:$2" % [i.scope.name, sym]
         i.scope.symbols[sym] = val
@@ -155,29 +165,6 @@ ROOT
     # Restore original quotation
     sProc(i)
     i.scope = origScope
-
-    #var symbols, target: MinValue
-    #i.reqTwoQuotations symbols, target
-    #let vals = symbols.qVal
-    #var q: MinValue
-    #if vals.len == 0:
-    #  raiseInvalid("No symbol to call")
-    #let origScope = i.scope
-    #i.scope = target.scope
-    #for c in 0..vals.len-1:
-    #  if not vals[c].isStringLike:
-    #    raiseInvalid("Quotation must contain only symbols or strings")
-    #  let symbol = vals[c].getString
-    #  let qProc = i.scope.getSymbol(symbol)
-    #  if qProc.isNil:
-    #    raiseUndefined("Symbol '$1' not found in scope '$2'" % [symbol, i.scope.fullname])
-    #  qProc(i)
-    #  if vals.len > 1 and c < vals.len-1:
-    #    q = i.pop
-    #    if not q.isQuotation:
-    #      raiseInvalid("Unable to evaluate symbol '$1'" % [symbol])
-    #    i.scope = q.scope 
-    #i.scope = origScope
 
   .symbol("inspect") do (i: In):
     var scope: MinValue

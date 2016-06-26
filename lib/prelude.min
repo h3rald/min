@@ -19,6 +19,7 @@
 (run)             (&)     sigil
 (load)            (@)     sigil
 (call)            (%)     sigil
+(module)          (=)     sigil
 
 ; Aliases
 'define       ::

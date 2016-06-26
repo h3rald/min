@@ -94,16 +94,7 @@ proc define*(name: string): ref MinScope =
 
 proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   scope.symbols[sym] = p
-  #if not scope.parent.isNil:
-  #  scope.parent.symbols[scope.name & ":" & sym] = p
   return scope
-
-proc localSymbol*(i: In, obj: MinValue, objType: string, body: MinOperator): MinOperator =
-  if not obj.isObject(objType):
-    raiseInvalid("Object is not a socket")
-  return proc(i: In) =
-    i.push @[obj]
-    i.body()
 
 proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
   scope.previous.sigils[sym] = p
