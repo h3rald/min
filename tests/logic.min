@@ -68,7 +68,7 @@
   (1 1 != false ==) assert
   ("aaa" "aaa" != false ==) assert
   (1.0 1 != false ==) assert
-  ((1 2 3.0) (1 2 3) != false ==) assert
+  ((1 2 3.0) (1.0 2.0 3) != false ==) assert
   (("a" "b") ("a" "b") != false ==) assert
   (("a" "b" 3) ("a" "b" 4) !=) assert
   ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) assert

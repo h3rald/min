@@ -21,10 +21,18 @@ define("sys")
     var a: MinValue
     i.reqString a
     var list = newSeq[MinValue](0)
-    for i in walkdir(a.strVal):
+    for i in walkDir(a.strVal):
       list.add newVal(i.path)
     i.push list.newVal
   
+  .symbol("ls-r") do (i: In):
+    var a: MinValue
+    i.reqString a
+    var list = newSeq[MinValue](0)
+    for i in walkDirRec(a.strVal):
+      list.add newVal(i)
+    i.push list.newVal
+
   .symbol("system") do (i: In):
     var a: MinValue
     i.reqString a
