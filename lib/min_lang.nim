@@ -40,35 +40,25 @@ ROOT
   # Language constructs
 
   .symbol("define") do (i: In):
-    var q2 = i.pop # new (can be a quoted symbol or a string)
+    var sym, val: MinValue
+    i.reqStringLike sym
     var q1 = i.pop # existing (auto-quoted)
     var symbol: string
-    let rawQ1 = q1
     if not q1.isQuotation:
       q1 = @[q1].newVal
-    if q2.isString:
-      symbol = q2.strVal
-    elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
-      symbol = q2.qVal[0].symVal
-    else:
-      raiseInvalid("The top quotation must contain only one symbol value")
+    symbol = sym.getString
     i.debug "[define] " & symbol & " = " & $q1
     i.scope.symbols[symbol] = proc(i: In) =
       i.push q1.qVal
 
   .symbol("bind") do (i: In):
-    var q2 = i.pop # new (can be a quoted symbol or a string)
+    var sym, val: MinValue
+    i.reqStringLike sym
     var q1 = i.pop # existing (auto-quoted)
-    let rawQ1 = q1
     var symbol: string
     if not q1.isQuotation:
       q1 = @[q1].newVal
-    if q2.isStringLike:
-      symbol = q2.getString
-    elif q2.isQuotation and q2.qVal.len == 1 and q2.qVal[0].kind == minSymbol:
-      symbol = q2.qVal[0].symVal
-    else:
-      raiseInvalid("The top quotation must contain only one symbol value")
+    symbol = sym.getString
     i.debug "[bind] " & symbol & " = " & $q1
     let res = i.scope.setSymbol(symbol) do (i: In):
       i.push q1.qVal
@@ -153,8 +143,8 @@ ROOT
 
   .symbol("load") do (i: In):
     var s: MinValue
-    i.reqString s
-    var file = s.strVal
+    i.reqStringLike s
+    var file = s.getString
     if not file.endsWith(".min"):
       file = file & ".min"
     i.load i.pwd.joinPath(file)
