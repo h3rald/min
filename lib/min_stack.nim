@@ -13,6 +13,8 @@ define("stack")
     discard
   
   .symbol("pop") do (i: In):
+    if i.stack.len < 1:
+      raiseEmptyStack()
     discard i.pop
   
   .symbol("dup") do (i: In):
@@ -26,6 +28,8 @@ define("stack")
     i.push v
   
   .symbol("swap") do (i: In):
+    if i.stack.len < 2:
+      raiseEmptyStack()
     let a = i.pop
     let b = i.pop
     i.push a

@@ -7,7 +7,7 @@
   "Total Symbols: " print! symbols size put!
   "  Total Sigils: " print! sigils size put!
 
-  (symbols size 182 ==) assert
+  (symbols size 180 ==) assert
 
   (sigils size 12 ==) assert
 

@@ -66,6 +66,9 @@ proc raiseOutOfBounds*(msg: string) =
 proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
   raise MinRuntimeError(msg: msg, qVal: qVal)
 
+proc raiseEmptyStack*() =
+  raise MinEmptyStackError(msg: "Insufficient items on the stack")
+
 proc getString*(v: MinValue): string =
   if v.isSymbol:
     return v.symVal

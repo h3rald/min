@@ -50,7 +50,6 @@
 'clear        :empty
 'cons         :prepend
 'size         :length
-'swap         :<>
 
 ; Mathematical Operators
 (1 +)           :succ
@@ -81,7 +80,6 @@
 (put pop)                                       :put!
 (:ms :q :check (check) (ms sleep q) while)      :interval
 (call pop)                                      :call!
-(swap pop)                                      :<!>
 
 ; Socket constructors
 ((ipv4 stream tcp) ^socket)   :tcp-socket
