@@ -100,6 +100,20 @@ ROOT
     i.scope.symbols[name.getString] = proc(i: In) =
       i.push code
 
+  .symbol("object") do (i: In):
+    var code, t: MinValue
+    i.reqStringLike t
+    i.reqQuotation code
+    code.filename = i.filename
+    code.objType = t.getString
+    i.unquote("<object>", code)
+    i.push code
+
+  .symbol("type") do (i: In):
+    var obj: MinValue
+    i.reqObject obj
+    i.push obj.objType.newVal
+
   .symbol("import") do (i: In):
     var mdl, rawName: MinValue
     var name: string

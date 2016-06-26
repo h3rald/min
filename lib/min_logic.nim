@@ -137,4 +137,22 @@ define("logic")
     else:
       i.push false.newVal
 
+  .symbol("object?") do (i: In):
+    if i.peek.isObject:
+      i.push true.newVal
+    else:
+      i.push false.newVal
+
+  .symbol("module?") do (i: In):
+    if i.peek.isObject and i.peek.objType == "module":
+      i.push true.newVal
+    else:
+      i.push false.newVal
+
+  .symbol("scope?") do (i: In):
+    if i.peek.isObject and i.peek.objType == "scope":
+      i.push true.newVal
+    else:
+      i.push false.newVal
+
   .finalize()

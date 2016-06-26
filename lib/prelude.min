@@ -20,6 +20,7 @@
 (load)            (@)     sigil
 (call)            (%)     sigil
 (module)          (=)     sigil
+(object)          (^)     sigil
 
 ; Aliases
 'define       ::

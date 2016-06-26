@@ -28,6 +28,9 @@ proc isStringLike*(s: MinValue): bool =
 proc isObject*(a: MinValue, t: string): bool =
   return a.isQuotation and not a.objType.isNil and a.objType == t
 
+proc isObject*(a: MinValue): bool =
+  return a.isQuotation and not a.objType.isNil 
+
 proc newVal*(s: string): MinValue =
   return MinValue(kind: minString, strVal: s)
 
@@ -229,4 +232,9 @@ proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
 proc reqObject*(i: var MinInterpreter, t: string, a: var MinValue) =
   a = i.pop
   if not a.isObject(t):
-    raiseInvalid("A $1 object is required" % [t])
+    raiseInvalid("An object of type $1 is required on the stack" % [t])
+
+proc reqObject*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isObject:
+    raiseInvalid("An object is required on the stack")

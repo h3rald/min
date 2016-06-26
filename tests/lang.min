@@ -7,9 +7,9 @@
   "Total Symbols: " print! symbols size put!
   "  Total Sigils: " print! sigils size put!
 
-  (symbols size 176 ==) assert
+  (symbols size 181 ==) assert
 
-  (sigils size 11 ==) assert
+  (sigils size 12 ==) assert
 
   (debug? false ==) assert
 
@@ -122,6 +122,12 @@
     ) ->> (40320 479001600 362880) ==) assert
 
   ((a b +) (4 :a 5 :b) with 9 ==) assert
+
+  ((4 :four 5 :five) ^myobject type "myobject" ==) assert
+
+  (("test" :test) =test1 test1 object?) assert
+
+  (("test" :test) =test2 test2 module?) assert
 
   report
   ; Tidy up
