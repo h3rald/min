@@ -6,7 +6,10 @@ import
   ../core/utils,
   ../core/regex
 
-define("str")
+
+
+proc str_module*(i: In) = 
+  i.define("str")
 
   .symbol("split") do (i: In):
     var sep, s: MinValue

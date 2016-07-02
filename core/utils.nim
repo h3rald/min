@@ -88,14 +88,14 @@ proc warn*(s: string) =
 
 proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
-    return ROOT
+    return scope #### was: ROOT
   else:
     return scope.parent
 
-proc define*(name: string): ref MinScope =
+proc define*(i: In, name: string): ref MinScope =
   var scope = new MinScope
   scope.name = name
-  scope.parent = INTERPRETER.scope
+  scope.parent = i.scope
   return scope
 
 proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
@@ -109,7 +109,7 @@ proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
 proc finalize*(scope: ref MinScope) =
   var mdl = newSeq[MinValue](0).newVal
   mdl.scope = scope
-  mdl.scope.previous.symbols[scope.name] = proc(i: In) =
+  mdl.scope.previous.symbols[scope.name] = proc(i: In) {.gcsafe, closure.} =
     i.evaluating = true
     i.push mdl
     i.evaluating = false

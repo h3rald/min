@@ -43,8 +43,8 @@
 'unquote      :i
 'unquote      :apply
 'unquote      :->
-'multiunquote :multiapply
-'multiunquote :->>
+;'multiunquote :multiapply
+;'multiunquote :->>
 'scope        :=>
 'filter       :select
 'clear        :empty

@@ -7,13 +7,15 @@ import
 
 # Time
 
-define("time")
 
-  .symbol("timestamp") do (i: In):
-    i.push getTime().int.newVal
+proc time_module*(i: In)=
+  i.define("time")
   
-  .symbol("now") do (i: In):
-    i.push epochTime().newVal
-
-  .finalize()
-
+    .symbol("timestamp") do (i: In):
+      i.push getTime().int.newVal
+    
+    .symbol("now") do (i: In):
+      i.push epochTime().newVal
+  
+    .finalize()
+  

@@ -4,10 +4,6 @@ import
   parser,
   ../vendor/linenoise
 
-var ROOT*: ref MinScope = new MinScope
-
-ROOT.name = "ROOT"
-
 
 proc raiseUndefined(msg: string) =
   raise MinUndefinedError(msg: msg)
@@ -43,7 +39,7 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
     if scope.parent.isNotNil:
       result = scope.parent.setSymbol(key, value)
 
-proc getSigil*(scope: ref MinScope, key: string): MinOperator =
+proc getSigil*(scope: ref MinScope, key: string): MinOperator {.gcsafe.}=
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
   elif scope.parent.isNotNil:
@@ -96,12 +92,14 @@ proc copystack*(i: MinInterpreter): MinStack =
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
   var pr:MinParser
+  var scope = new MinScope
+  scope.name = "ROOT"
   var i:MinInterpreter = MinInterpreter(
     filename: "input", 
     pwd: "",
     parser: pr, 
     stack: st,
-    scope: ROOT,
+    scope: scope,
     debugging: debugging, 
     unsafe: false,
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
@@ -141,7 +139,7 @@ proc open*(i: In, stream:Stream, filename: string) =
 proc close*(i: In) = 
   i.parser.close();
 
-proc push*(i: In, val: MinValue) = 
+proc push*(i: In, val: MinValue) {.gcsafe.}= 
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
@@ -168,7 +166,7 @@ proc push*(i: In, val: MinValue) =
         if i.unsafe:
           let stack = i.copystack
           try:
-            sigilProc(i) 
+            i.sigilProc 
           except:
             i.stack = stack
             raise
@@ -196,7 +194,7 @@ proc peek*(i: MinInterpreter): MinValue =
   else:
     raiseEmptyStack()
 
-proc interpret*(i: In) = 
+proc interpret*(i: In) {.gcsafe.}= 
   var val: MinValue
   while i.parser.token != tkEof: 
     i.execute:
@@ -238,5 +236,3 @@ proc load*(i: In, s: string) =
 
 proc apply*(i: In, symbol: string) =
   i.scope.getSymbol(symbol)(i)
-
-var INTERPRETER* = newMinInterpreter()

@@ -1,8 +1,10 @@
 import streams, critbits, parseopt2, strutils, os
 import 
+  core/types,
   core/parser, 
   core/interpreter, 
   core/utils,
+  core/server,
   vendor/linenoise
 import 
   lib/min_lang, 
@@ -17,11 +19,12 @@ import
 
 const version* = "1.0.0-dev"
 var REPL = false
-const prelude = "lib/prelude.min".slurp.strip
+var DEBUGGING = false
 
 const
   USE_LINENOISE = true
 
+const PRELUDE* = "lib/prelude.min".slurp.strip
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -44,46 +47,61 @@ proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.
   var sep = ""
   if words.len > 0:
     sep = " "
-  for s in ROOT.symbols.keys:
-    if startsWith(s, w):
-      linenoiseAddCompletion completions, words.join(" ") & sep & s
+  # TODO REDO
+  #for s in ROOT.symbols.keys:
+  #  if startsWith(s, w):
+  #    linenoiseAddCompletion completions, words.join(" ") & sep & s
 proc prompt(s: string): string = 
   var res = linenoise(s)
   discard $linenoiseHistoryAdd(res)
   return $res
 
-proc minimStream(s: Stream, filename: string) =
-  var i = INTERPRETER
+
+proc stdLib(i: In) =
+  i.lang_module
+  i.io_module
+  i.logic_module
+  i.net_module
+  i.num_module
+  i.stack_module
+  i.str_module
+  i.sys_module
+  i.time_module
+  i.eval PRELUDE
+  
+
+proc minimStream(s: Stream, filename: string, debugging = false) =
+  var i = newMinInterpreter(debugging)
   i.pwd = filename.parentDir
-  i.eval prelude
+  i.stdLib()
   i.open(s, filename)
   discard i.parser.getToken() 
   i.interpret()
   i.close()
 
-proc minimString*(buffer: string) =
-  minimStream(newStringStream(buffer), "input")
+proc minimString*(buffer: string, debugging = false) =
+  minimStream(newStringStream(buffer), "input", debugging)
 
-proc minimFile*(filename: string) =
+proc minimFile*(filename: string, debugging = false) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from file: "& filename)
     stderr.flushFile()
-  minimStream(stream, filename)
+  minimStream(stream, filename, debugging)
 
-proc minimFile*(file: File, filename="stdin") =
+proc minimFile*(file: File, filename="stdin", debugging = false) =
   var stream = newFileStream(stdin)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from "& filename)
     stderr.flushFile()
-  minimStream(stream, filename)
+  minimStream(stream, filename, debugging)
 
-proc minimRepl*() = 
-  var i = INTERPRETER
+proc minimRepl*(debugging = false) = 
+  var i = newMinInterpreter(debugging)
+  i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
   echo "MiNiM v"&version&" - REPL initialized."
-  i.eval prelude
   echo "-> Type 'exit' or 'quit' to exit."
   when USE_LINENOISE:
     linenoiseSetCompletionCallback completionCallback
@@ -112,7 +130,7 @@ for kind, key, val in getopt():
     of cmdLongOption, cmdShortOption:
       case key:
         of "debug", "d":
-          INTERPRETER.debugging = true
+          DEBUGGING = true
         of "evaluate", "e":
           s = val
         of "help", "h":
@@ -129,12 +147,12 @@ for kind, key, val in getopt():
       discard
 
 if s != "":
-  minimString(s)
+  minimString(s, DEBUGGING)
 elif file != "":
-  minimFile file
+  minimFile file, DEBUGGING
 elif REPL:
-  minimRepl()
+  minimRepl DEBUGGING
   quit(0)
 else:
-  minimFile stdin
+  minimFile stdin, "stdin", DEBUGGING
 
