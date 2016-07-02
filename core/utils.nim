@@ -1,4 +1,4 @@
-import tables, strutils, macros, critbits
+import tables, strutils, macros, critbits, httpclient
 import types, parser, interpreter
 
 proc isSymbol*(s: MinValue): bool =
@@ -68,6 +68,9 @@ proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
 
 proc raiseEmptyStack*() =
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
+
+proc raiseServer*(code: HttpCode, msg: string) = 
+  raise MinServerError(msg: msg, code: code)
 
 proc getString*(v: MinValue): string =
   if v.isSymbol:

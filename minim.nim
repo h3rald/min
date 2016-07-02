@@ -43,10 +43,10 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
 
 proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
   var words = ($str).split(" ")
-  var w = if words.len > 0: words.pop else: ""
-  var sep = ""
-  if words.len > 0:
-    sep = " "
+  #var w = if words.len > 0: words.pop else: ""
+  #var sep = ""
+  #if words.len > 0:
+  #  sep = " "
   # TODO REDO
   #for s in ROOT.symbols.keys:
   #  if startsWith(s, w):

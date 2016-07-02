@@ -1,4 +1,4 @@
-import lexbase, critbits
+import lexbase, critbits, httpclient
 
 type 
   MinTokenKind* = enum
@@ -89,6 +89,8 @@ type
   MinInvalidError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
+  MinServerError* = ref object of SystemError
+    code*: HttpCode
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 

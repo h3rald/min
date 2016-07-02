@@ -4,7 +4,8 @@ import
   httpclient,
   streams,
   critbits,
-  pegs
+  pegs,
+  strutils
 
 import
   types,
@@ -19,16 +20,7 @@ proc validUrl(req: Request, url: string): bool =
 proc validMethod(req: Request, meth: string): bool =
   return req.reqMethod == meth
 
-proc reqPost(req: Request) {.async.}=
-  if not req.validMethod("POST"):
-    await req.respond(Http405, "Method Not Allowed: " & req.reqMethod)
-
-#proc reqUrl(req: Request, url: string) {.async.}=
-#  if not req.validUrl(url):
-#    await req.respond(Http400, "Bad Request: POST " & req.url.path)
-
-
-proc exec(req: Request, interpreter: MinInterpreter): string {.gcsafe.}=
+proc exec(req: Request, interpreter: MinInterpreter, hosts: CritBitTree[string]): string {.gcsafe.}=
   let filename = "request"
   let s = newStringStream(req.body)
   var i = interpreter
@@ -38,20 +30,30 @@ proc exec(req: Request, interpreter: MinInterpreter): string {.gcsafe.}=
   result = i.dump()
   i.close()
 
-proc process(req: Request, i: MinInterpreter): string {.gcsafe.} =
+proc process(req: Request, i: MinInterpreter, hosts: CritBitTree[string]): string {.gcsafe.} =
   var matches = @["", "", ""]
   template route(req, peg: expr, op: stmt): stmt {.immediate.}=
     if req.url.path.find(peg, matches) != -1:
       op
   req.route peg"^\/exec\/?$":
-    return exec(req, i)
+    if not req.validMethod("POST"):
+      raiseServer(Http405, "Method Not Allowed: " & req.reqMethod)
+    return exec(req, i, hosts)
+  raiseServer(Http400, "Bad Request: POST "& req.url.path)
+  
 
 proc serve*(port: Port, address = "", interpreter: MinInterpreter) =
   var hosts: CritBitTree[string]
   proc handleHttpRequest(req: Request): Future[void] {.async.} =
-    if not req.validMethod("POST"):
-      await req.respond(Http405, "Method Not Allowed: " & req.reqMethod)
-    await req.respond(Http200, req.process(interpreter))
+    var res: string
+    var code: HttpCode = Http200
+    try:
+      res = req.process(interpreter, hosts)
+    except MinServerError:
+      let e: MinServerError = (MinServerError)getCurrentException()
+      res = e.msg
+      code = e.code
+    await req.respond(code, res)
   let server = newAsyncHttpServer()
   asyncCheck server.serve(port, handleHttpRequest, address)
 
