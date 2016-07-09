@@ -1,4 +1,4 @@
-import streams, critbits, parseopt2, strutils, os
+import streams, critbits, parseopt2, strutils, os, asyncdispatch
 import 
   core/types,
   core/parser, 
@@ -15,11 +15,17 @@ import
   lib/min_time, 
   lib/min_io,
   lib/min_sys,
-  lib/min_net
+  lib/min_net,
+  lib/min_comm
 
 const version* = "1.0.0-dev"
 var REPL = false
 var DEBUGGING = false
+var PORT = 7500
+var ADDRESS = "0.0.0.0"
+var SRVTHREAD: Thread[ref MinLink]
+var SERVER = false
+var HOSTNAME = ""
 
 const
   USE_LINENOISE = true
@@ -38,6 +44,9 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
   Options:
     -e, --evaluate    Evaluate a minim program inline
     -h, --help        Print this help
+    -a, --address     Specify server address (default: 0.0.0.0)
+    -p, --port        Specify server port (default: 7500)
+    -s, --server      Start server remote command execution
     -v, --version     Print the program version
     -i, --interactive Start MiNiM's Read Eval Print Loop"""
 
@@ -67,6 +76,7 @@ proc stdLib(i: In) =
   i.str_module
   i.sys_module
   i.time_module
+  i.comm_module
   i.eval PRELUDE
   
 
@@ -96,8 +106,7 @@ proc minimFile*(file: File, filename="stdin", debugging = false) =
     stderr.flushFile()
   minimStream(stream, filename, debugging)
 
-proc minimRepl*(debugging = false) = 
-  var i = newMinInterpreter(debugging)
+proc minimRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
@@ -118,6 +127,11 @@ proc minimRepl*(debugging = false) =
     finally:
       stdout.write "-> "
       echo i.dump
+
+proc minimRepl*(debugging = false) = 
+  var i = newMinInterpreter(debugging)
+  i.minimRepl
+
     
 ###
 
@@ -129,6 +143,15 @@ for kind, key, val in getopt():
       file = key
     of cmdLongOption, cmdShortOption:
       case key:
+        of "port", "p":
+          PORT = val.parseInt
+        of "address", "a":
+          if val.strip.len > 0:
+            ADDRESS = val
+        of "server", "s":
+          if val.strip.len > 0:
+            HOSTNAME = val
+          SERVER = true
         of "debug", "d":
           DEBUGGING = true
         of "evaluate", "e":
@@ -150,9 +173,24 @@ if s != "":
   minimString(s, DEBUGGING)
 elif file != "":
   minimFile file, DEBUGGING
+elif SERVER:
+  var i = newMinInterpreter(DEBUGGING)
+  if HOSTNAME == "":
+    HOSTNAME = ADDRESS & ":" & $PORT
+  var link = newMinLink(HOSTNAME, ADDRESS, PORT, i)
+  link.hosts[HOSTNAME] = ADDRESS & ":" & $PORT
+  echo "MiNiM v"&version&" - Host '", HOSTNAME,"' started on ", ADDRESS, ":", PORT
+  proc srv(link: ref MinLink) =
+    link.init()
+    runForever()
+  createThread(SRVTHREAD, srv, link)
+  i.minimRepl
 elif REPL:
   minimRepl DEBUGGING
   quit(0)
 else:
   minimFile stdin, "stdin", DEBUGGING
+
+if SERVER:
+  joinThreads([SRVTHREAD])
 

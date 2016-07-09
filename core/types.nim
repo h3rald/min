@@ -1,4 +1,4 @@
-import lexbase, critbits, httpclient
+import lexbase, critbits, asyncdispatch, asynchttpserver
 
 type 
   MinTokenKind* = enum
@@ -80,6 +80,14 @@ type
     debugging*: bool 
     evaluating*: bool 
     unsafe*: bool
+    link*: ref MinLink
+  MinLink* = object
+    hosts*: CritBitTree[string]
+    name*: string
+    address*: string
+    port*: Port
+    server*: AsyncHttpServer
+    interpreter*: MinInterpreter
   In* = var MinInterpreter
   Val* = var MinValue
   MinOperator* = proc (i: In) {.gcsafe, closure.}

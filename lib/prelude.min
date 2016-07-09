@@ -9,6 +9,7 @@
 #sys
 #time
 #net
+#comm
 
 ; Common sigils
 (bind)            (.)     sigil 

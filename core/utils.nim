@@ -195,6 +195,12 @@ proc reqTwoStrings*(i: var MinInterpreter, a, b: var MinValue) =
   if not a.isString or not b.isString:
     raiseInvalid("Two strings are required on the stack")
 
+proc reqTwoStringLike*(i: var MinInterpreter, a, b: var MinValue) =
+  a = i.pop
+  b = i.pop
+  if not a.isStringLike or not b.isStringLike:
+    raiseInvalid("Two symbols or strings are required on the stack")
+
 proc reqThreeStrings*(i: var MinInterpreter, a, b, c: var MinValue) =
   a = i.pop
   b = i.pop
