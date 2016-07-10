@@ -95,6 +95,11 @@ proc previous*(scope: ref MinScope): ref MinScope =
   else:
     return scope.parent
 
+proc replace*[T](c: var CritBitTree, s: string, v: T): T {.discardable.}=
+  if c.hasKey(s):
+    c.excl(s)
+  c[s] = v
+
 proc define*(i: In, name: string): ref MinScope =
   var scope = new MinScope
   scope.name = name

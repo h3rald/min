@@ -70,10 +70,11 @@ proc remoteExec*(i: MinInterpreter, host, content: string): string {.gcsafe.}=
 proc syncHosts*(i: MinInterpreter): CritBitTree[string] {.gcsafe.}=
   var cmd = ""
   for key, val in i.link.hosts.pairs:
-    cmd = cmd & """ ('$1 '$2)""" % [key, val] 
+    cmd = cmd & """ ($1 "$2")""" % [key, val] 
   cmd = "(" & cmd.strip & ") set-hosts"
   for key, val in i.link.hosts.pairs:
-    result[key] = i.remoteExec(key, cmd)
+    if key != i.link.name:
+      result[key] = i.remoteExec(key, cmd)
 
 proc newMinLink*(name, address: string, port: int, i: var MinInterpreter): ref MinLink =
   var link: ref MinLink = new MinLink

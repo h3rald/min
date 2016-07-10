@@ -4,8 +4,8 @@ import
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/regex,
-  ../vendor/routine
+  ../core/regex
+  #../vendor/routine
 
 
 proc lang_module*(i: In) =

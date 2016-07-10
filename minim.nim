@@ -51,7 +51,8 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     -i, --interactive Start MiNiM's Read Eval Print Loop"""
 
 proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
-  var words = ($str).split(" ")
+  discard
+  #var words = ($str).split(" ")
   #var w = if words.len > 0: words.pop else: ""
   #var sep = ""
   #if words.len > 0:
