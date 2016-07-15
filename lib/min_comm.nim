@@ -1,4 +1,4 @@
-import strutils, critbits
+import strutils, critbits, streams
 import 
   ../core/types,
   ../core/parser, 
@@ -44,5 +44,18 @@ proc comm_module*(i: In) =
 
     .symbol("host") do (i: In):
       i.push i.link.name.newSym
+
+    .symbol("to-host") do (i: In):
+      var h, q: MinValue
+      i.reqStringLikeAndQuotation(h, q)
+      let host = h.getString
+      if not i.link.hosts.hasKey(host):
+        raiseInvalid("Unknown host: " & host)
+      let res = i.remoteExec(host, $q & " unquote")
+      echo res
+      i.open(newStringStream(res), "to-host")
+      discard i.parser.getToken() 
+      i.interpret()
+
 
     .finalize()

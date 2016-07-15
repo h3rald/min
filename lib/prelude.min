@@ -22,6 +22,7 @@
 (call)            (%)     sigil
 (module)          (=)     sigil
 (object)          (^)     sigil
+(to-host)         (>)     sigil
 
 ; Aliases
 'define       ::
