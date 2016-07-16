@@ -118,8 +118,8 @@ proc error(i: MinInterpreter, message: string) =
   if i.currSym.filename == "":
     stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
-    quit(100)
+    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
+    #quit(100)
 
 template execute(i: In, body: stmt) {.immediate.}=
   let stack = i.copystack
@@ -127,7 +127,7 @@ template execute(i: In, body: stmt) {.immediate.}=
     body
   except MinRuntimeError:
     i.stack = stack
-    stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+    stderr.writeLine("$1 [$2,$3]: $4" % [i.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
   except:
     i.stack = stack
     i.error(getCurrentExceptionMsg())

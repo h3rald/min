@@ -46,19 +46,20 @@ proc comm_module*(i: In) =
       i.push q
 
     .symbol("host") do (i: In):
-      i.push i.link.name.newSym
+      i.push i.link.name.newVal
 
     .symbol("to-host") do (i: In):
       var h, q: MinValue
       i.reqStringLikeAndQuotation(h, q)
       let host = h.getString
-      if not i.link.hosts.hasKey(host):
-        raiseInvalid("Unknown host: " & host)
-      let res = i.remoteExec(host, $q & " unquote")
-      echo res
-      i.open(newStringStream(res), "to-host")
-      discard i.parser.getToken() 
-      i.interpret()
+      i.executeOnHost(host, q)
+
+    .symbol("to-all-hosts") do (i: In):
+      var q: MinValue
+      i.reqQuotation(q)
+      for host in i.link.hosts.keys:
+        if host != i.link.name:
+          i.executeOnHost(host, q)
 
 
     .finalize()
