@@ -1,4 +1,4 @@
-import tables, strutils, macros, critbits, httpclient, json, os
+import tables, strutils, macros, critbits, httpclient, json, os, regex
 import types, parser, interpreter
 
 proc cfgfile*(): string =
@@ -291,3 +291,48 @@ proc `%`*(c: CritBitTree[string]): JsonNode =
 proc critbit*(o: JsonNode): CritBitTree[string] =
   for key, value in o.pairs:
     result[key] = value.getStr
+
+proc `%`*(a: MinValue): JsonNode =
+  case a.kind:
+    of minBool:
+      return %a.boolVal
+    of minSymbol:
+      return %(";sym:$1" % [a.symVal])
+    of minString:
+      return %a.strVal
+    of minInt:
+      return %a.intVal
+    of minFloat:
+      return %a.floatVal
+    of minQuotation:
+      result = newJArray()
+      for i in a.qVal:
+        result.add %i
+
+proc fromJson*(json: JsonNode): MinValue = 
+  case json.kind:
+    of JNull:
+      result = newSeq[MinValue](0).newVal
+    of JBool: 
+      result = json.getBVal.newVal
+    of JInt:
+      result = json.getNum.newVal
+    of JFloat:
+      result = json.getFNum.newVal
+    of JString:
+      let s = json.getStr
+      if s.match("^;sym:"):
+        result = regex.replace(s, "^;sym:", "").newSym
+      else:
+        result = json.getStr.newVal
+    of JObject:
+      var res = newSeq[MinValue](0)
+      for key, value in json.pairs:
+        res.add @[key.newSym, value.fromJson].newVal
+      return res.newVal
+    of JArray:
+      var res = newSeq[MinValue](0)
+      for value in json.items:
+        res.add value.fromJson
+      return res.newVal
+

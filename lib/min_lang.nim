@@ -1,4 +1,4 @@
-import critbits, strutils, os
+import critbits, strutils, os, json
 import 
   ../core/types,
   ../core/parser, 
@@ -34,6 +34,19 @@ proc lang_module*(i: In) =
         scope = scope.parent
       i.push q.newVal
   
+    .symbol("config") do (i: In):
+      echo cfgfile().readFile
+
+    .symbol("from-json") do (i: In):
+      var s: MinValue
+      i.reqString s
+      i.push s.getString.parseJson.fromJson
+
+    .symbol("to-json") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      i.push(($(%q)).newVal)
+
     .symbol("debug?") do (i: In):
       i.push i.debugging.newVal
   
@@ -107,6 +120,12 @@ proc lang_module*(i: In) =
       var obj: MinValue
       i.reqObject obj
       i.push obj.objType.newVal
+  
+    .symbol("defines?") do (i: In):
+      var obj, s: MinValue
+      i.reqStringLike s
+      i.reqObject obj
+      i.push obj.scope.symbols.hasKey(s.getString).newVal
   
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
