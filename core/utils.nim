@@ -1,5 +1,11 @@
-import tables, strutils, macros, critbits, httpclient
+import tables, strutils, macros, critbits, httpclient, json, os
 import types, parser, interpreter
+
+proc cfgfile*(): string =
+  if hostOS == "windows":
+    return "HOMEPATH".getEnv / "minconfig.json"
+  else:
+    return "HOME".getEnv / "minconfig.json"
 
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
@@ -261,3 +267,27 @@ proc reqObject*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isObject:
     raiseInvalid("An object is required on the stack")
+
+
+proc cfgRead(): JsonNode =
+  return cfgfile().parseFile
+
+proc cfgWrite(cfg: JsonNode) =
+  cfgfile().writeFile(cfg.pretty)  
+
+proc cfgGet*(key: string): JsonNode = 
+  return cfgRead()[key]
+
+proc cfgSet*(key: string, value: JsonNode) =
+  var cfg = cfgRead()
+  cfg[key] = value
+  cfg.cfgWrite()
+
+proc `%`*(c: CritBitTree[string]): JsonNode =
+  result = newJObject()
+  for key, value in c.pairs:
+    result[key] = %value
+
+proc critbit*(o: JsonNode): CritBitTree[string] =
+  for key, value in o.pairs:
+    result[key] = value.getStr

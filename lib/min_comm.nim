@@ -18,11 +18,13 @@ proc comm_module*(i: In) =
       i.link.hosts[host.getString] = address.getString
       for host, response in i.syncHosts().pairs:
         echo host, ": ", response
+      cfgSet("hosts", %i.link.hosts)
 
     .symbol("unreg") do (i: In):
       i.link.hosts.excl(i.link.name)
       for host, response in i.syncHosts().pairs:
         echo host, ": ", response
+      cfgSet("hosts", %i.link.hosts)
     
     .symbol("set-hosts") do (i: In):
       var q: MinValue
@@ -34,6 +36,7 @@ proc comm_module*(i: In) =
         if not pair.isQuotation or vals.len != 2 or not vals[0].isStringLike or not vals[1].isStringLike:
           raiseInvalid("Invalid host quotation")
         i.link.hosts.replace(vals[0].getString, vals[1].getString)
+      cfgSet("hosts", %i.link.hosts)
       i.push("OK".newVal)
 
     .symbol("hosts") do (i: In):

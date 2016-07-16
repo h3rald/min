@@ -170,6 +170,9 @@ for kind, key, val in getopt():
     else:
       discard
 
+if not cfgfile().existsFile:
+  cfgfile().writeFile("{}")
+  
 if s != "":
   minimString(s, DEBUGGING)
 elif file != "":
@@ -179,6 +182,11 @@ elif SERVER:
   if HOSTNAME == "":
     HOSTNAME = ADDRESS & ":" & $PORT
   var link = newMinLink(HOSTNAME, ADDRESS, PORT, i)
+    # Load hosts
+  try:
+    link.hosts = cfgGet("hosts").critbit
+  except:
+    discard
   link.hosts[HOSTNAME] = ADDRESS & ":" & $PORT
   echo "MiNiM v"&version&" - Host '", HOSTNAME,"' started on ", ADDRESS, ":", PORT
   proc srv(link: ref MinLink) =
