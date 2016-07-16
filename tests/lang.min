@@ -7,10 +7,6 @@
   "Total Symbols: " print! symbols size put!
   "  Total Sigils: " print! sigils size put!
 
-  ;(symbols size 177 ==) assert
-
-  ;(sigils size 12 ==) assert
-
   (debug? false ==) assert
 
   (2 'a define
@@ -111,14 +107,6 @@
     (() 1 at)
     (1)
     ) try 1 ==) assert
-
-  ;(
-  ; ((dup 0 ==) (1 +) (dup 1 -) ( * ) linrec) :factorial
-  ; (
-  ;  (8 factorial)
-  ;  (12 factorial)
-  ;  (9 factorial)
-  ;  ) ->> (40320 479001600 362880) ==) assert
 
   ((a b +) (4 :a 5 :b) with 9 ==) assert
 

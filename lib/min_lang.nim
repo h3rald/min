@@ -5,13 +5,9 @@ import
   ../core/interpreter, 
   ../core/utils,
   ../core/regex
-  #../vendor/routine
 
 
 proc lang_module*(i: In) =
-  #var ROOT: ref MinScope = new MinScope
-  #ROOT.name = "ROOT"
-  #ROOT
   i.scope
     .symbol("exit") do (i: In):
       quit(0)
@@ -243,25 +239,6 @@ proc lang_module*(i: In) =
       finally:
         if hasFinally:
           i.unquote("<try-finally>", final)
-  
-    # TODO: waitAllRoutine is not gc-safe!
-    #.symbol("multiunquote") do (i: In) {.gcsafe.}:
-    #  var q: MinValue
-    #  i.reqQuotation q
-    #  let stack = i.copystack
-    #  proc coroutine(i: MinInterpreter, c: int, results: ptr MinStack) {.routine.} =
-    #    i.unquote("<multiunquote>", q.qVal[c])
-    #    results[][c] = i.stack[0]
-    #  var results = newSeq[MinValue](q.qVal.len)
-    #  for c in 0..q.qVal.high:
-    #    if not q.qVal[c].isQuotation:
-    #      raiseInvalid("Item #$1 is not a quotation" % [$(c+1)])
-    #    var i2 = i.copy(i.filename)
-    #    var res: MinStack = newSeq[MinValue](0)
-    #    pRun coroutine, (i2, c, results.addr)
-    #  waitAllRoutine()
-    #  i.push results.newVal
-  
   
     # Operations on the whole stack
   
