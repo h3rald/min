@@ -50,17 +50,18 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     -v, --version     Print the program version
     -i, --interactive Start MiNiM's Read Eval Print Loop"""
 
+
+var CURRSCOPE*: ref MinScope
+
 proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
-  discard
-  #var words = ($str).split(" ")
-  #var w = if words.len > 0: words.pop else: ""
-  #var sep = ""
-  #if words.len > 0:
-  #  sep = " "
-  # TODO REDO
-  #for s in ROOT.symbols.keys:
-  #  if startsWith(s, w):
-  #    linenoiseAddCompletion completions, words.join(" ") & sep & s
+  var words = ($str).split(" ")
+  var w = if words.len > 0: words.pop else: ""
+  var sep = ""
+  if words.len > 0:
+    sep = " "
+  for s in CURRSCOPE.symbols.keys:
+    if startsWith(s, w):
+      linenoiseAddCompletion completions, words.join(" ") & sep & s
 proc prompt(s: string): string = 
   var res = linenoise(s)
   discard $linenoiseHistoryAdd(res)
@@ -113,10 +114,11 @@ proc minimRepl*(i: var MinInterpreter) =
   i.open(s, "")
   echo "MiNiM v"&version&" - REPL initialized."
   echo "-> Type 'exit' or 'quit' to exit."
-  when USE_LINENOISE:
-    linenoiseSetCompletionCallback completionCallback
   var line: string
   while true:
+    when USE_LINENOISE:
+      CURRSCOPE = i.scope
+      linenoiseSetCompletionCallback completionCallback
     line = prompt(": ")
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
