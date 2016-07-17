@@ -37,7 +37,7 @@ proc comm_module*(i: In) =
           raiseInvalid("Invalid host quotation")
         i.link.hosts.replace(vals[0].getString, vals[1].getString)
       cfgSet("hosts", %i.link.hosts)
-      i.push("OK".newVal)
+      i.push(@["OK".newSym].newVal)
 
     .symbol("hosts") do (i: In):
       var q = newSeq[MinValue](0).newVal
@@ -63,5 +63,10 @@ proc comm_module*(i: In) =
           res = res & " " & i.executeOnHost(host, q)
       i.eval("($1)" % res)
 
+    .symbol("hostsync") do (i: In):
+      var res = ""
+      for key, value in i.syncHosts().pairs:
+        res = res & " " & value
+      i.eval "($1) dprint!" % res
 
     .finalize()
