@@ -114,6 +114,8 @@
 
   ((4 :four 7 :seven) ^myobject2 'seven defines?) assert
 
+  ((4 :four 7 :seven) ^myobject2 members (four seven) ==) assert
+
   (("test" :test) =test1 test1 object?) assert
 
   (("test" :test) =test2 test2 module?) assert
@@ -123,6 +125,18 @@
   ((1 2 3 "aaa" 'q q true) to-json "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) assert
+
+  (((a 1)(b 2)(c 3)) dictionary?) assert
+
+  (((a 1)(b 2)(c 3)) 'b dget 2 ==) assert
+
+  (((a 1)(b 2)(c 3)) 'b  5 dset ((a 1)(b 5)(c 3)) ==) assert
+
+  (((a 1)(b 2)(c 3)) 'b ddel ((a 1)(c 3)) ==) assert
+
+  (((a 1)(b 2)(c 3)) keys (a b c) ==) assert
+
+  (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 
   report
   ; Tidy up

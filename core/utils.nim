@@ -37,6 +37,18 @@ proc isObject*(a: MinValue, t: string): bool =
 proc isObject*(a: MinValue): bool =
   return a.isQuotation and not a.objType.isNil 
 
+proc isDictionary*(q: MinValue): bool =
+  if not q.isQuotation:
+    return false
+  if q.qVal.len == 0:
+    return true
+  for val in q.qVal:
+    if not val.isQuotation or val.qVal.len != 2 or not val.qVal[0].isSymbol:
+      return false
+  return true
+
+# Constructors
+
 proc newVal*(s: string): MinValue =
   return MinValue(kind: minString, strVal: s)
 
@@ -137,6 +149,126 @@ template alias*[T](varname: untyped, value: var T) =
 
 proc to*(q: MinValue, T: typedesc): T =
   return cast[T](q.obj)
+
+proc cfgRead(): JsonNode =
+  return cfgfile().parseFile
+
+proc cfgWrite(cfg: JsonNode) =
+  cfgfile().writeFile(cfg.pretty)  
+
+proc cfgGet*(key: string): JsonNode = 
+  return cfgRead()[key]
+
+proc cfgSet*(key: string, value: JsonNode) =
+  var cfg = cfgRead()
+  cfg[key] = value
+  cfg.cfgWrite()
+
+proc cfgDel*(key: string) =
+  var cfg = cfgRead()
+  cfg.delete key
+  cfg.cfgWrite()
+
+proc `%`*(c: CritBitTree[string]): JsonNode =
+  result = newJObject()
+  for key, value in c.pairs:
+    result[key] = %value
+
+proc critbit*(o: JsonNode): CritBitTree[string] =
+  for key, value in o.pairs:
+    result[key] = value.getStr
+
+proc `%`*(a: MinValue): JsonNode =
+  case a.kind:
+    of minBool:
+      return %a.boolVal
+    of minSymbol:
+      return %(";sym:$1" % [a.symVal])
+    of minString:
+      return %a.strVal
+    of minInt:
+      return %a.intVal
+    of minFloat:
+      return %a.floatVal
+    of minQuotation:
+      result = newJArray()
+      for i in a.qVal:
+        result.add %i
+
+proc fromJson*(json: JsonNode): MinValue = 
+  case json.kind:
+    of JNull:
+      result = newSeq[MinValue](0).newVal
+    of JBool: 
+      result = json.getBVal.newVal
+    of JInt:
+      result = json.getNum.newVal
+    of JFloat:
+      result = json.getFNum.newVal
+    of JString:
+      let s = json.getStr
+      if s.match("^;sym:"):
+        result = regex.replace(s, "^;sym:", "").newSym
+      else:
+        result = json.getStr.newVal
+    of JObject:
+      var res = newSeq[MinValue](0)
+      for key, value in json.pairs:
+        res.add @[key.newSym, value.fromJson].newVal
+      return res.newVal
+    of JArray:
+      var res = newSeq[MinValue](0)
+      for value in json.items:
+        res.add value.fromJson
+      return res.newVal
+
+# Dictionary Methods
+
+proc dget*(q: MinValue, s: MinValue): MinValue =
+  # Assumes q is a dictionary
+  for v in q.qVal:
+    if v.qVal[0].getString == s.getString:
+      return v.qVal[1]
+  raiseInvalid("Key '$1' not found" % [s.getString])
+
+proc ddel*(q: var MinValue, s: MinValue): MinValue =
+  # Assumes q is a dictionary
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+    q.qVal.delete(c)
+  return q
+      
+proc dset*(q: var MinValue, s: MinValue, m: MinValue): MinValue =
+  # Assumes q is a dictionary
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+      q.qVal.delete(c)
+      q.qVal.insert(@[s.getString.newSym, m].newVal, c)
+  return q
+
+proc keys*(q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal
+  for v in q.qVal:
+    result.qVal.add v.qVal[0]
+
+proc values*(q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal
+  for v in q.qVal:
+    result.qVal.add v.qVal[1]
 
 # Validators
 
@@ -268,71 +400,7 @@ proc reqObject*(i: var MinInterpreter, a: var MinValue) =
   if not a.isObject:
     raiseInvalid("An object is required on the stack")
 
-
-proc cfgRead(): JsonNode =
-  return cfgfile().parseFile
-
-proc cfgWrite(cfg: JsonNode) =
-  cfgfile().writeFile(cfg.pretty)  
-
-proc cfgGet*(key: string): JsonNode = 
-  return cfgRead()[key]
-
-proc cfgSet*(key: string, value: JsonNode) =
-  var cfg = cfgRead()
-  cfg[key] = value
-  cfg.cfgWrite()
-
-proc `%`*(c: CritBitTree[string]): JsonNode =
-  result = newJObject()
-  for key, value in c.pairs:
-    result[key] = %value
-
-proc critbit*(o: JsonNode): CritBitTree[string] =
-  for key, value in o.pairs:
-    result[key] = value.getStr
-
-proc `%`*(a: MinValue): JsonNode =
-  case a.kind:
-    of minBool:
-      return %a.boolVal
-    of minSymbol:
-      return %(";sym:$1" % [a.symVal])
-    of minString:
-      return %a.strVal
-    of minInt:
-      return %a.intVal
-    of minFloat:
-      return %a.floatVal
-    of minQuotation:
-      result = newJArray()
-      for i in a.qVal:
-        result.add %i
-
-proc fromJson*(json: JsonNode): MinValue = 
-  case json.kind:
-    of JNull:
-      result = newSeq[MinValue](0).newVal
-    of JBool: 
-      result = json.getBVal.newVal
-    of JInt:
-      result = json.getNum.newVal
-    of JFloat:
-      result = json.getFNum.newVal
-    of JString:
-      let s = json.getStr
-      if s.match("^;sym:"):
-        result = regex.replace(s, "^;sym:", "").newSym
-      else:
-        result = json.getStr.newVal
-    of JObject:
-      var res = newSeq[MinValue](0)
-      for key, value in json.pairs:
-        res.add @[key.newSym, value.fromJson].newVal
-      return res.newVal
-    of JArray:
-      var res = newSeq[MinValue](0)
-      for value in json.items:
-        res.add value.fromJson
-      return res.newVal
-
+proc reqDictionary*(i: In, q: var MinValue) =
+  q = i.pop
+  if not q.isDictionary:
+    raiseInvalid("An dictionary is required on the stack")

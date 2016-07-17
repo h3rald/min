@@ -145,6 +145,12 @@ proc logic_module*(i: In)=
       else:
         i.push false.newVal
   
+    .symbol("dictionary?") do (i: In):
+      if i.peek.isDictionary:
+        i.push true.newVal
+      else:
+        i.push false.newVal
+  
     .symbol("module?") do (i: In):
       if i.peek.isObject and i.peek.objType == "module":
         i.push true.newVal

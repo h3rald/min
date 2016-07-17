@@ -197,6 +197,7 @@ proc lang_module*(i: In) =
         symbols.add s.newVal
       i.push symbols.newVal
   
+    # ("SomeError" "message")
     .symbol("raise") do (i: In):
       var err: MinValue
       i.reqQuotation err
@@ -403,5 +404,74 @@ proc lang_module*(i: In) =
           i.linrec(p, t, r1, r2)
           i.unquote("<linrec-r2>", r2)
       i.linrec(p, t, r1, r2)
-    
+
+    .symbol("cget") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      i.push cfgGet(s.getString).fromJson
+
+    .symbol("cset") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      let val = i.pop
+      cfgSet(s.getString, %val)
+
+    .symbol("cdel") do (i: In):
+      var s: MinValue
+      cfgDel(s.getString)
+
+    .symbol("members") do (i: In):
+      var o: MinValue
+      i.reqObject o
+      var res = newSeq[MinValue](0)
+      for sym in o.scope.symbols.keys:
+        res.add sym.newSym
+      i.push o
+      i.push res.newVal
+
+    .symbol("dget") do (i: In):
+      var d, k: MinValue
+      i.reqStringLike k
+      i.reqDictionary d
+      i.push d
+      i.push d.dget(k)
+      
+    .symbol("dset") do (i: In):
+      var d, k: MinValue
+      let m = i.pop
+      i.reqStringLike k
+      i.reqDictionary d
+      i.push d.dset(k, m) 
+
+    .symbol("ddel") do (i: In):
+      var d, k: MinValue
+      i.reqStringLike k
+      i.reqDictionary d
+      i.push d.ddel(k)
+
+    .symbol("dprint") do (i: In):
+      var d: MinValue
+      i.reqDictionary d
+      for v in d.qVal:
+        echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
+      i.push d
+
+    .symbol("dprint!") do (i: In):
+      var d: MinValue
+      i.reqDictionary d
+      for v in d.qVal:
+        echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
+
+    .symbol("keys") do (i: In):
+      var d: MinValue
+      i.reqDictionary d
+      i.push d
+      i.push d.keys
+
+    .symbol("values") do (i: In):
+      var d: MinValue
+      i.reqDictionary d
+      i.push d
+      i.push d.values
+
     .finalize()
