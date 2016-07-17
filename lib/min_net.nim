@@ -28,104 +28,103 @@ proc net_module*(i: In)=
         domain: Domain
         sockettype: SockType
         protocol: Protocol
+        sDomain, sSockType, sProtocol: string
       # Process domain
       if vals[0].symVal == "ipv4":
+        sDomain = "ipv4"
         domain = AF_INET
       else:
+        sDomain = "ipv6"
         domain = AF_INET6
       if vals[1].symVal == "stream":
+        sSockType = "stream"
         sockettype = SOCK_STREAM
       else:
+        sSockType = "dgram"
         sockettype = SOCK_DGRAM
       if vals[2].symVal == "tcp":
+        sProtocol = "tcp"
         protocol = IPPROTO_TCP
       else:
+        sProtocol = "udp"
         protocol = IPPROTO_UDP
       var socket = newSocket(domain, sockettype, protocol)
-      q.objType = "socket"
-      q.obj = socket[].addr
-      i.newScope("<socket>", q)
+      var qs = @[
+        @["domain".newSym, sDomain.newVal].newVal, 
+        @["type".newSym, sSockType.newVal].newVal,
+        @["protocol".newSym, sProtocol.newVal].newVal
+      ].newVal
+      qs.objType = "socket"
+      qs.obj = socket[].addr
+      i.newScope("<socket>", qs)
+
+      var sAddress: string
+      var sPort: BiggestInt
   
-      q.scope
-        .symbol("domain") do (i: In):
-          i.push q
-          i.push q.qVal[0].symVal.newVal
-    
-        .symbol("type") do (i: In):
-          i.push q
-          i.push q.qVal[1].symVal.newVal
-    
-        .symbol("protocol") do (i: In):
-          i.push q
-          i.push q.qVal[2].symVal.newVal
-    
+      qs.scope
         .symbol("close") do (i: In):
-          q.to(Socket).close()
+          qs.to(Socket).close()
     
         .symbol("listen") do (i: In):
           var port: MinValue
           i.reqInt port
-          var socket = q.to(Socket)
-          socket.bindAddr(Port(port.intVal))
-          q.qVal.add "0.0.0.0".newSym
-          q.qVal.add port
-          q.scope
-            .symbol("address") do (i:In):
-              i.push "0.0.0.0".newVal
-            .symbol("port") do (i:In):
-              i.push port
-            .finalize()
+          var socket = qs.to(Socket)
+          sAddress = "0.0.0.0"
+          sPort = port.intVal
+          socket.bindAddr(Port(sPort))
+          qs.qVal.add @["address".newSym, sAddress.newVal].newVal
+          qs.qVal.add @["port".newSym, sPort.newVal].newVal
           socket.listen()
-          i.push q
+          i.push qs
     
         .symbol("accept") do (i: In):
           # Open same socket type as server
-          i.eval "$1 net %^socket" % [$q.qVal[0..2].newVal]
+          i.eval "($1 $2 $3) net %^socket" % [sDomain, sSockType, sProtocol]
           var clientVal: MinValue
           i.reqObject "socket", clientVal
           var client = clientVal.to(Socket)
           var address = ""
-          q.to(Socket).acceptAddr(client, address)
+          qs.to(Socket).acceptAddr(client, address)
           clientVal.qVal.add address.newSym
           i.push clientVal
     
         .symbol("connect") do (i: In):
-          var q, address, port: MinValue
+          var address, port: MinValue
           i.reqInt port
-          i.reqString address
-          q.to(Socket).connect(address.strVal, Port(port.intVal))
-          q.qVal.add address.strVal.newSym
-          q.qVal.add port
-          q.scope
-            .symbol("client-address") do (i:In):
-              i.push address.strVal.newVal
-            .symbol("client-port") do (i:In):
-              i.push port
-            .finalize()
-          i.push q
+          i.reqStringLike address
+          qs.to(Socket).connect(address.strVal, Port(port.intVal))
+          #var qc = @[
+          #  @["domain".newSym, sDomain.newVal].newVal, 
+          #  @["type".newSym, sSockType.newVal].newVal, 
+          #  @["protocol".newSym, sProtocol.newVal].newVal
+          #].newVal
+          qs.qVal.add @["address".newSym, address.getString.newVal].newVal
+          qs.qVal.add @["port".newSym, port].newVal
+          i.push qs
     
         .symbol("send") do (i: In):
+          echo "sending"
           var s: MinValue
           i.reqString s
-          q.to(Socket).send s.strVal
-          i.push q
+          qs.to(Socket).send s.strVal
+          i.push qs
     
         .symbol("recv") do (i: In):
           var size: MinValue
           i.reqInt size
           var s = ""
-          discard q.to(Socket).recv(s, size.intVal.int)
-          i.push q
+          discard qs.to(Socket).recv(s, size.intVal.int)
+          i.push qs
           i.push s.newVal
     
         .symbol("recv-line") do (i: In):
           var s = ""
-          q.to(Socket).readLine(s)
-          i.push @[q]
+          qs.to(Socket).readLine(s)
+          i.push @[qs]
           i.push s.newVal
     
         .finalize()
         
-      i.push q
+      i.push qs
   
     .finalize()

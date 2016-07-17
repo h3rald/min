@@ -84,7 +84,7 @@ proc syncHosts*(i: In): CritBitTree[string] {.gcsafe.}=
   var cmd = ""
   for key, val in i.link.hosts.pairs:
     cmd = cmd & """ ($1 "$2")""" % [key, val] 
-  cmd = "(" & cmd.strip & ") set-hosts"
+  cmd = "(" & cmd.strip & ") comm %set-hosts"
   for key, val in i.link.hosts.pairs:
     if key != i.link.name:
       result[key] = i.remoteExec(key, cmd)
