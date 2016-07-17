@@ -80,11 +80,12 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 ; Other
-(print pop)                                     :print!
-(put pop)                                       :put!
-(:ms :q :check (check) (ms sleep q) while)      :interval
-(call pop)                                      :call!
-(('OK) >*)                                      :linkcheck             
+(print pop)                                                   :print!
+(dprint pop)                                                  :dprint!
+(put pop)                                                     :put!
+(:ms :q :check (check) (ms sleep q) while)                    :interval
+(call pop)                                                    :call!
+(host print! ":" print! " (OK)" put!  ('OK) >* dprint!)       :linkcheck             
 
 ; Socket constructors
 ((ipv4 stream tcp) ^socket)   :tcp-socket

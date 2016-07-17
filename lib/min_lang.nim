@@ -456,12 +456,6 @@ proc lang_module*(i: In) =
         echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
       i.push d
 
-    .symbol("dprint!") do (i: In):
-      var d: MinValue
-      i.reqDictionary d
-      for v in d.qVal:
-        echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
-
     .symbol("keys") do (i: In):
       var d: MinValue
       i.reqDictionary d

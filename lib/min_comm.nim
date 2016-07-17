@@ -52,14 +52,16 @@ proc comm_module*(i: In) =
       var h, q: MinValue
       i.reqStringLikeAndQuotation(h, q)
       let host = h.getString
-      i.executeOnHost(host, q)
+      i.eval i.executeOnHost(host, q)
 
     .symbol("to-all-hosts") do (i: In):
       var q: MinValue
       i.reqQuotation(q)
+      var res = ""
       for host in i.link.hosts.keys:
         if host != i.link.name:
-          i.executeOnHost(host, q)
+          res = res & " " & i.executeOnHost(host, q)
+      i.eval("($1)" % res)
 
 
     .finalize()

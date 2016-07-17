@@ -201,6 +201,11 @@ proc interpret*(i: In) {.gcsafe.}=
       val = i.parser.parseMinValue
     i.push val
 
+#proc interpretString*(i: In, s, ctxname: string) =
+#  i.open(newStringStream(s), ctxname)
+#  discard i.parser.getToken() 
+#  i.interpret()
+
 proc unquote*(i: In, name: string, q: var MinValue) =
   i.createScope(name, q): 
     for v in q.qVal:

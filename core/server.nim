@@ -89,13 +89,26 @@ proc syncHosts*(i: In): CritBitTree[string] {.gcsafe.}=
     if key != i.link.name:
       result[key] = i.remoteExec(key, cmd)
 
-proc executeOnHost*(i: var MinInterpreter, host: string, q: MinValue) =
+proc checkHost*(link: ref MinLink) =
+  let host = link.address & ":" & $link.port
+  try:
+    link.hosts = cfgGet("hosts").critbit
+  except:
+    discard
+  var name: string
+  for key, value in link.hosts.pairs:
+    if host == value:
+      name = key
+      break
+  if not name.isNil:
+    link.hosts.excl name
+  link.hosts[link.name] = host
+  discard link.interpreter.syncHosts()
+  
+proc executeOnHost*(i: var MinInterpreter, host: string, q: MinValue): string =
   if not i.link.hosts.hasKey(host):
     raiseInvalid("Unknown host: " & host)
-  let res = i.remoteExec(host, $q & " unquote")
-  i.open(newStringStream(res), "remote-exec")
-  discard i.parser.getToken() 
-  i.interpret()
+  return i.remoteExec(host, $q & " unquote")
 
 proc newMinLink*(name, address: string, port: int, i: var MinInterpreter): ref MinLink =
   var link: ref MinLink = new MinLink

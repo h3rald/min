@@ -112,7 +112,7 @@ proc minimRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
-  echo "MiNiM v"&version&" - REPL initialized."
+  echo "Terminal initialized."
   echo "-> Type 'exit' or 'quit' to exit."
   var line: string
   while true:
@@ -174,23 +174,22 @@ for kind, key, val in getopt():
 
 if not cfgfile().existsFile:
   cfgfile().writeFile("{}")
-  
+
+if REPL or SERVER:
+  echo "MiNiM v"&version
+
 if s != "":
   minimString(s, DEBUGGING)
 elif file != "":
   minimFile file, DEBUGGING
 elif SERVER:
   var i = newMinInterpreter(DEBUGGING)
+  let host = ADDRESS & ":" & $PORT
   if HOSTNAME == "":
-    HOSTNAME = ADDRESS & ":" & $PORT
+    HOSTNAME = host
   var link = newMinLink(HOSTNAME, ADDRESS, PORT, i)
-    # Load hosts
-  try:
-    link.hosts = cfgGet("hosts").critbit
-  except:
-    discard
-  link.hosts[HOSTNAME] = ADDRESS & ":" & $PORT
-  echo "MiNiM v"&version&" - Host '", HOSTNAME,"' started on ", ADDRESS, ":", PORT
+  i.link.checkHost()
+  echo "Host '", HOSTNAME,"' started on ", HOSTNAME
   proc srv(link: ref MinLink) =
     link.init()
     runForever()
