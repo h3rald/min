@@ -1,11 +1,15 @@
-import tables, strutils, macros, critbits, httpclient, json, os, regex
-import types, parser, interpreter
-
-proc cfgfile*(): string =
-  if hostOS == "windows":
-    return "HOMEPATH".getEnv / "minconfig.json"
-  else:
-    return "HOME".getEnv / "minconfig.json"
+import 
+  tables, 
+  strutils, 
+  macros, 
+  critbits, 
+  json, 
+  os, 
+  regex
+import 
+  types, 
+  parser, 
+  interpreter
 
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
@@ -131,34 +135,12 @@ proc finalize*(scope: ref MinScope) =
     i.push mdl
     i.evaluating = false
 
-template `<-`*[T](target, source: var T) =
-  shallowCopy target, source
-
 template alias*[T](varname: untyped, value: var T) =
   var varname {.inject.}: type(value)
   shallowCopy varname, value
 
 proc to*(q: MinValue, T: typedesc): T =
   return cast[T](q.obj)
-
-proc cfgRead(): JsonNode =
-  return cfgfile().parseFile
-
-proc cfgWrite(cfg: JsonNode) =
-  cfgfile().writeFile(cfg.pretty)  
-
-proc cfgGet*(key: string): JsonNode = 
-  return cfgRead()[key]
-
-proc cfgSet*(key: string, value: JsonNode) =
-  var cfg = cfgRead()
-  cfg[key] = value
-  cfg.cfgWrite()
-
-proc cfgDel*(key: string) =
-  var cfg = cfgRead()
-  cfg.delete key
-  cfg.cfgWrite()
 
 proc `%`*(c: CritBitTree[string]): JsonNode =
   result = newJObject()

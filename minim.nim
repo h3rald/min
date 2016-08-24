@@ -151,9 +151,6 @@ for kind, key, val in getopt():
     else:
       discard
 
-if not cfgfile().existsFile:
-  cfgfile().writeFile("{}")
-
 if REPL:
   echo "MiNiM v"&version
 

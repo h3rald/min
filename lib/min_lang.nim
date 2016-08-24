@@ -1,4 +1,8 @@
-import critbits, strutils, os, json
+import 
+  critbits, 
+  strutils, 
+  os, 
+  json
 import 
   ../core/types,
   ../core/parser, 
@@ -30,9 +34,6 @@ proc lang_module*(i: In) =
         scope = scope.parent
       i.push q.newVal
   
-    .symbol("config") do (i: In):
-      echo cfgfile().readFile
-
     .symbol("from-json") do (i: In):
       var s: MinValue
       i.reqString s
@@ -382,21 +383,6 @@ proc lang_module*(i: In) =
           i.linrec(p, t, r1, r2)
           i.unquote("<linrec-r2>", r2)
       i.linrec(p, t, r1, r2)
-
-    .symbol("cget") do (i: In):
-      var s: MinValue
-      i.reqStringLike s
-      i.push cfgGet(s.getString).fromJson
-
-    .symbol("cset") do (i: In):
-      var s: MinValue
-      i.reqStringLike s
-      let val = i.pop
-      cfgSet(s.getString, %val)
-
-    .symbol("cdel") do (i: In):
-      var s: MinValue
-      cfgDel(s.getString)
 
     .symbol("dget") do (i: In):
       var d, k: MinValue
