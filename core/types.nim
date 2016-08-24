@@ -78,14 +78,6 @@ type
     debugging*: bool 
     evaluating*: bool 
     unsafe*: bool
-    link*: ref MinLink
-  MinLink* = object
-    hosts*: CritBitTree[string]
-    name*: string
-    address*: string
-    port*: Port
-    server*: AsyncHttpServer
-    interpreter*: MinInterpreter
   In* = var MinInterpreter
   Val* = var MinValue
   MinOperator* = proc (i: In) {.gcsafe, closure.}
@@ -95,8 +87,6 @@ type
   MinInvalidError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
-  MinServerError* = ref object of SystemError
-    code*: HttpCode
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 

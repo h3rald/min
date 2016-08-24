@@ -8,7 +8,6 @@
 #stack
 #sys
 #time
-#comm
 
 ; Common sigils
 (bind)            (.)     sigil 
@@ -20,7 +19,6 @@
 (load)            (@)     sigil
 (call)            (%)     sigil
 (module)          (=)     sigil
-(to-host)         (>)     sigil
 (dget)            (/)     sigil
 (ddel)            (-)     sigil
 
@@ -51,7 +49,6 @@
 'clear        :empty
 'cons         :prepend
 'size         :length
-'to-all-hosts :>*
 
 ; Mathematical Operators
 (1 +)           :succ
@@ -83,4 +80,3 @@
 (put pop)                                                     :put!
 (:ms :q :check (check) (ms sleep q) while)                    :interval
 (call pop)                                                    :call!
-(host print! ":" print! " (OK)" put!  ('OK) >* dprint!)       :hostcheck             

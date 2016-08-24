@@ -1,10 +1,9 @@
-import streams, critbits, parseopt2, strutils, os, asyncdispatch
+import streams, critbits, parseopt2, strutils, os
 import 
   core/types,
   core/parser, 
   core/interpreter, 
   core/utils,
-  core/server,
   vendor/linenoise
 import 
   lib/min_lang, 
@@ -14,17 +13,11 @@ import
   lib/min_logic,
   lib/min_time, 
   lib/min_io,
-  lib/min_sys,
-  lib/min_comm
+  lib/min_sys
 
 const version* = "1.0.0-dev"
 var REPL = false
 var DEBUGGING = false
-var PORT = 7500
-var ADDRESS = "0.0.0.0"
-var SRVTHREAD: Thread[ref MinLink]
-var SERVER = false
-var HOSTNAME = ""
 
 const
   USE_LINENOISE = true
@@ -43,9 +36,6 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
   Options:
     -e, --evaluate    Evaluate a minim program inline
     -h, --help        Print this help
-    -a, --address     Specify server address (default: 0.0.0.0)
-    -p, --port        Specify server port (default: 7500)
-    -s, --server      Start server remote command execution
     -v, --version     Print the program version
     -i, --interactive Start MiNiM's Read Eval Print Loop"""
 
@@ -61,6 +51,7 @@ proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.
   for s in CURRSCOPE.symbols.keys:
     if startsWith(s, w):
       linenoiseAddCompletion completions, words.join(" ") & sep & s
+
 proc prompt(s: string): string = 
   var res = linenoise(s)
   discard $linenoiseHistoryAdd(res)
@@ -76,7 +67,6 @@ proc stdLib(i: In) =
   i.str_module
   i.sys_module
   i.time_module
-  i.comm_module
   i.eval PRELUDE
   
 
@@ -144,15 +134,6 @@ for kind, key, val in getopt():
       file = key
     of cmdLongOption, cmdShortOption:
       case key:
-        of "port", "p":
-          PORT = val.parseInt
-        of "address", "a":
-          if val.strip.len > 0:
-            ADDRESS = val
-        of "server", "s":
-          if val.strip.len > 0:
-            HOSTNAME = val
-          SERVER = true
         of "debug", "d":
           DEBUGGING = true
         of "evaluate", "e":
@@ -173,32 +154,15 @@ for kind, key, val in getopt():
 if not cfgfile().existsFile:
   cfgfile().writeFile("{}")
 
-if REPL or SERVER:
+if REPL:
   echo "MiNiM v"&version
 
 if s != "":
   minimString(s, DEBUGGING)
 elif file != "":
   minimFile file, DEBUGGING
-elif SERVER:
-  var i = newMinInterpreter(DEBUGGING)
-  let host = ADDRESS & ":" & $PORT
-  if HOSTNAME == "":
-    HOSTNAME = host
-  var link = newMinLink(HOSTNAME, ADDRESS, PORT, i)
-  i.link.checkHost()
-  echo "Host '", HOSTNAME,"' started on ", HOSTNAME
-  proc srv(link: ref MinLink) =
-    link.init()
-    runForever()
-  createThread(SRVTHREAD, srv, link)
-  i.minimRepl
 elif REPL:
   minimRepl DEBUGGING
   quit(0)
 else:
   minimFile stdin, "stdin", DEBUGGING
-
-if SERVER:
-  joinThreads([SRVTHREAD])
-
