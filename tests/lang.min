@@ -110,16 +110,6 @@
 
   ((a b +) (4 :a 5 :b) with 9 ==) assert
 
-  ((4 :four 5 :five) ^myobject type "myobject" ==) assert
-
-  ((4 :four 7 :seven) ^myobject2 'seven defines?) assert
-
-  ((4 :four 7 :seven) ^myobject2 members (four seven) ==) assert
-
-  (("test" :test) =test1 test1 object?) assert
-
-  (("test" :test) =test2 test2 module?) assert
-
   ("{\"a\": 1, \"b\": 2.3}" from-json ((a 1) (b 2.3)) ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert

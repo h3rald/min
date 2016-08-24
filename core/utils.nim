@@ -31,12 +31,6 @@ proc isBool*(s: MinValue): bool =
 proc isStringLike*(s: MinValue): bool =
   return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
 
-proc isObject*(a: MinValue, t: string): bool =
-  return a.isQuotation and not a.objType.isNil and a.objType == t
-
-proc isObject*(a: MinValue): bool =
-  return a.isQuotation and not a.objType.isNil 
-
 proc isDictionary*(q: MinValue): bool =
   if not q.isQuotation:
     return false
@@ -191,9 +185,14 @@ proc `%`*(a: MinValue): JsonNode =
     of minFloat:
       return %a.floatVal
     of minQuotation:
-      result = newJArray()
-      for i in a.qVal:
-        result.add %i
+      if a.isDictionary:
+        result = newJObject()
+        for i in a.qVal:
+          result[$i.qVal[0].symVal] = %i.qVal[1]
+      else:
+        result = newJArray()
+        for i in a.qVal:
+          result.add %i
 
 proc fromJson*(json: JsonNode): MinValue = 
   case json.kind:
@@ -389,16 +388,6 @@ proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
   b = i.pop
   if not ((a.kind == a.kind or (a.isNumber and a.isNumber)) and not a.isSymbol):
     raiseInvalid("Two non-symbol values of similar type are required on the stack")
-
-proc reqObject*(i: var MinInterpreter, t: string, a: var MinValue) =
-  a = i.pop
-  if not a.isObject(t):
-    raiseInvalid("An object of type $1 is required on the stack" % [t])
-
-proc reqObject*(i: var MinInterpreter, a: var MinValue) =
-  a = i.pop
-  if not a.isObject:
-    raiseInvalid("An object is required on the stack")
 
 proc reqDictionary*(i: In, q: var MinValue) =
   q = i.pop

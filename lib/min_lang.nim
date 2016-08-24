@@ -89,7 +89,6 @@ proc lang_module*(i: In) =
       var code: MinValue
       i.reqQuotation code
       code.filename = i.filename
-      code.objType = "scope"
       i.unquote("<scope>", code)
       i.push @[code].newVal
   
@@ -98,30 +97,9 @@ proc lang_module*(i: In) =
       i.reqStringLike name
       i.reqQuotation code
       code.filename = i.filename
-      code.objType = "module"
       i.unquote("<module>", code)
       i.scope.symbols[name.getString] = proc(i: In) =
         i.push code
-  
-    .symbol("object") do (i: In):
-      var code, t: MinValue
-      i.reqStringLike t
-      i.reqQuotation code
-      code.filename = i.filename
-      code.objType = t.getString
-      i.unquote("<object>", code)
-      i.push code
-  
-    .symbol("type") do (i: In):
-      var obj: MinValue
-      i.reqObject obj
-      i.push obj.objType.newVal
-  
-    .symbol("defines?") do (i: In):
-      var obj, s: MinValue
-      i.reqStringLike s
-      i.reqObject obj
-      i.push obj.scope.symbols.hasKey(s.getString).newVal
   
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
@@ -419,15 +397,6 @@ proc lang_module*(i: In) =
     .symbol("cdel") do (i: In):
       var s: MinValue
       cfgDel(s.getString)
-
-    .symbol("members") do (i: In):
-      var o: MinValue
-      i.reqObject o
-      var res = newSeq[MinValue](0)
-      for sym in o.scope.symbols.keys:
-        res.add sym.newSym
-      i.push o
-      i.push res.newVal
 
     .symbol("dget") do (i: In):
       var d, k: MinValue

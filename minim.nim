@@ -15,7 +15,6 @@ import
   lib/min_time, 
   lib/min_io,
   lib/min_sys,
-#  lib/min_net,
   lib/min_comm
 
 const version* = "1.0.0-dev"
@@ -72,7 +71,6 @@ proc stdLib(i: In) =
   i.lang_module
   i.io_module
   i.logic_module
-  #i.net_module
   i.num_module
   i.stack_module
   i.str_module

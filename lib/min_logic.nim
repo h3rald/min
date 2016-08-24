@@ -139,26 +139,8 @@ proc logic_module*(i: In)=
       else:
         i.push false.newVal
   
-    .symbol("object?") do (i: In):
-      if i.peek.isObject:
-        i.push true.newVal
-      else:
-        i.push false.newVal
-  
     .symbol("dictionary?") do (i: In):
       if i.peek.isDictionary:
-        i.push true.newVal
-      else:
-        i.push false.newVal
-  
-    .symbol("module?") do (i: In):
-      if i.peek.isObject and i.peek.objType == "module":
-        i.push true.newVal
-      else:
-        i.push false.newVal
-  
-    .symbol("scope?") do (i: In):
-      if i.peek.isObject and i.peek.objType == "scope":
         i.push true.newVal
       else:
         i.push false.newVal
