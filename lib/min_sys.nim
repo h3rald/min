@@ -60,6 +60,16 @@ proc sys_module*(i: In)=
       i.reqTwoStrings key, value
       key.strVal.putEnv value.strVal
     
+    .symbol("env?") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      i.push s.getString.existsEnv.newVal
+
+    .symbol("which") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      i.push s.getString.findExe.newVal
+
     .symbol("os") do (i: In):
       i.push hostOS.newVal
     
@@ -106,4 +116,24 @@ proc sys_module*(i: In)=
        i.reqInt ms
        sleep ms.intVal.int
   
+    .symbol("chmod") do (i: In):
+      var s, perms: MinValue
+      i.reqStringAndNumber s, perms
+      s.getString.setFilePermissions(perms.intVal.toFilePermissions)
+
+    .symbol("symlink?") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      i.push s.getString.symlinkExists.newVal
+
+    .symbol("symlink") do (i: In):
+      var src, dest: MinValue
+      i.reqTwoStrings dest, src
+      src.getString.createSymlink dest.getString
+
+    .symbol("hardlink") do (i: In):
+      var src, dest: MinValue
+      i.reqTwoStrings dest, src
+      src.getString.createHardlink dest.getString
+
     .finalize()

@@ -13,7 +13,8 @@ import
   lib/min_logic,
   lib/min_time, 
   lib/min_io,
-  lib/min_sys
+  lib/min_sys,
+  lib/min_fs
 
 const version* = "1.0.0-dev"
 var REPL = false
@@ -67,8 +68,8 @@ proc stdLib(i: In) =
   i.str_module
   i.sys_module
   i.time_module
+  i.fs_module
   i.eval PRELUDE
-  
 
 proc minimStream(s: Stream, filename: string, debugging = false) =
   var i = newMinInterpreter(debugging)
@@ -100,7 +101,7 @@ proc minimRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
-  echo "Terminal initialized."
+  echo "MiNiM Shell v" & version
   echo "-> Type 'exit' or 'quit' to exit."
   var line: string
   while true:
@@ -116,8 +117,7 @@ proc minimRepl*(i: var MinInterpreter) =
     except:
       warn getCurrentExceptionMsg()
     finally:
-      stdout.write "-> "
-      echo i.dump
+      echo "-> ($1)" % i.dump.strip
 
 proc minimRepl*(debugging = false) = 
   var i = newMinInterpreter(debugging)
@@ -150,9 +150,6 @@ for kind, key, val in getopt():
           discard
     else:
       discard
-
-if REPL:
-  echo "MiNiM v"&version
 
 if s != "":
   minimString(s, DEBUGGING)

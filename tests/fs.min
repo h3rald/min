@@ -1,0 +1,22 @@
+@test
+#test
+
+"fs" describe
+
+  "TEST" "test.txt" fwrite
+  
+  ("test.txt" fsize 4 ==) assert
+
+  ("test.txt" fperms 644 ==) assert
+
+  ("test.txt" ftype "file" ==) assert
+
+  ("test.txt" hidden? false ==) assert
+
+  ("test.txt" fstats 'type dget "file" ==) assert
+
+
+  
+  report
+  clear
+  "test.txt" rm

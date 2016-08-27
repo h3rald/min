@@ -5,9 +5,9 @@
 
   (1 id 1 ==) assert
 
-  (1 pop getstack () ==) assert
+  (1 pop get-stack () ==) assert
 
-  (1 dup getstack (1 1) ==) assert
+  (1 dup get-stack (1 1) ==) assert
 
   (3 2 (1 +) dip + 6 ==) assert
 

@@ -84,10 +84,11 @@ template withScope*(i: In, q: MinValue, body: stmt): stmt {.immediate.} =
   i.scope = origScope
 
 proc copystack*(i: MinInterpreter): MinStack =
-  var s = newSeq[MinValue](0)
-  for i in i.stack:
-    s.add i
-  return s
+  return i.stack
+  #var s = newSeq[MinValue](0)
+  #for i in i.stack:
+  #  s.add i
+  #return s
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var st:MinStack = newSeq[MinValue](0)
@@ -119,7 +120,6 @@ proc error(i: MinInterpreter, message: string) =
     stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
   else:
     stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
-    #quit(100)
 
 template execute(i: In, body: stmt) {.immediate.}=
   let stack = i.copystack
@@ -200,11 +200,6 @@ proc interpret*(i: In) {.gcsafe.}=
     i.execute:
       val = i.parser.parseMinValue
     i.push val
-
-#proc interpretString*(i: In, s, ctxname: string) =
-#  i.open(newStringStream(s), ctxname)
-#  discard i.parser.getToken() 
-#  i.interpret()
 
 proc unquote*(i: In, name: string, q: var MinValue) =
   i.createScope(name, q): 

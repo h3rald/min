@@ -229,10 +229,10 @@ proc lang_module*(i: In) =
     .symbol("dump") do (i: In):
       echo i.dump
   
-    .symbol("getstack") do (i: In):
+    .symbol("get-stack") do (i: In):
       i.push i.stack.newVal
   
-    .symbol("setstack") do (i: In):
+    .symbol("set-stack") do (i: In):
       var q: MinValue
       i.reqQuotation q
       i.stack = q.qVal

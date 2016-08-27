@@ -10,6 +10,8 @@
 
   (&ls "\n" split "systest" contains) assert
 
+  ("PATH" env?) assert
+
   ($PATH length 0 >) assert
 
   ("TEST" "AAA" putenv $AAA "TEST" ==) assert

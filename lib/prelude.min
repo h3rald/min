@@ -8,6 +8,7 @@
 #stack
 #sys
 #time
+#fs
 
 ; Common sigils
 (bind)            (.)     sigil 

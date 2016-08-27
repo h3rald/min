@@ -47,9 +47,9 @@
 
   (defmod 2 2 mymath %myplus 4 ==) assert
   
-  (1 2 3 4 getstack (1 2 3 4) ==) assert
+  (1 2 3 4 get-stack (1 2 3 4) ==) assert
 
-  ((1 2 3) setstack getstack (1 2 3) ==) assert
+  ((1 2 3) set-stack get-stack (1 2 3) ==) assert
 
   ((1 2) (3 4) concat (1 2 3 4) ==) assert
 
@@ -59,7 +59,7 @@
 
   (2 quote (2) ==) assert
 
-  ((2 3) unquote getstack (2 3) ==) assert
+  ((2 3) unquote get-stack (2 3) ==) assert
 
   (4 (1 2 3) append (1 2 3 4) ==) assert
 
@@ -100,7 +100,7 @@
     ) try "Test Message" ==) assert
 
   (
-   (("test" (1 2) :)) try getstack ("test" (1 2)) ==) assert
+   (("test" (1 2) :)) try get-stack ("test" (1 2)) ==) assert
 
   (
    (
