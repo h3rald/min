@@ -115,7 +115,15 @@ proc lang_module*(i: In) =
           i.scope.symbols[sym] = val
     
     .sigil("'") do (i: In):
-      i.push(@[MinValue(kind: minSymbol, symVal: i.pop.strVal)].newVal)
+      var s: MinValue
+      i.reqString s
+      i.push(@[MinValue(kind: minSymbol, symVal: s.strVal)].newVal)
+
+    .sigil("#") do (i: In):
+      var s: MinValue
+      i.reqString s
+      i.push s
+      i.push "import".newSym
   
     .symbol("sigil") do (i: In):
       var q1, q2: MinValue
@@ -123,7 +131,7 @@ proc lang_module*(i: In) =
       if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
         var symbol = q1.qVal[0].symVal
         if symbol.len == 1:
-          if i.scope.getSigil(symbol).isNotNil:
+          if i.scope.hasSigil(symbol):
             raiseInvalid("Sigil '$1' already exists" % [symbol])
           i.scope.sigils[symbol] = proc(i: In) =
             i.evaluating = true
@@ -162,8 +170,6 @@ proc lang_module*(i: In) =
       let origScope = i.scope
       i.scope = q.scope
       let sProc = i.scope.getSymbol(s)
-      if sProc.isNil:
-        raiseUndefined("Symbol '$1' not found in scope '$2'" % [s, i.scope.fullname])
       # Restore original quotation
       sProc(i)
       i.scope = origScope

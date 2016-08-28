@@ -21,6 +21,16 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
     return scope.symbols[key]
   elif scope.parent.isNotNil:
     return scope.parent.getSymbol(key)
+  else:
+    raiseUndefined("Symbol '$1' not found." % key)
+
+proc hasSymbol*(scope: ref MinScope, key: string): bool =
+  if scope.symbols.hasKey(key):
+    return true
+  elif scope.parent.isNotNil:
+    return scope.parent.hasSymbol(key)
+  else:
+    return false
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
   if scope.symbols.hasKey(key):
@@ -39,11 +49,21 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
     if scope.parent.isNotNil:
       result = scope.parent.setSymbol(key, value)
 
-proc getSigil*(scope: ref MinScope, key: string): MinOperator {.gcsafe.}=
+proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
   elif scope.parent.isNotNil:
     return scope.parent.getSigil(key)
+  else:
+    raiseUndefined("Sigil '$1' not found." % key)
+
+proc hasSigil*(scope: ref MinScope, key: string): bool =
+  if scope.sigils.hasKey(key):
+    return true
+  elif scope.parent.isNotNil:
+    return scope.parent.hasSigil(key)
+  else:
+    return false
 
 proc dump*(i: MinInterpreter): string =
   var s = ""
@@ -146,8 +166,9 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
-    let symbolProc = i.scope.getSymbol(symbol)
-    if symbolProc.isNotNil:
+    let found = i.scope.hasSymbol(symbol)
+    if found:
+      let symbolProc = i.scope.getSymbol(symbol)
       if i.unsafe:
         let stack = i.copystack
         try:
@@ -159,8 +180,9 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
         i.execute:
           i.symbolProc
     else:
-      let sigilProc = i.scope.getSigil(sigil)
-      if symbol.len > 1 and sigilProc.isNotNil:
+      let found = i.scope.hasSigil(sigil)
+      if symbol.len > 1 and found:
+        let sigilProc = i.scope.getSigil(sigil)
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:

@@ -39,7 +39,7 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     -e, --evaluate    Evaluate a minim program inline
     -h, --help        Print this help
     -v, --version     Print the program version
-    -i, --interactive Start MiNiM's Read Eval Print Loop"""
+    -i, --interactive Start MiNiM Shell"""
 
 
 var CURRSCOPE*: ref MinScope
@@ -56,8 +56,9 @@ proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.
 
 proc prompt(s: string): string = 
   var res = linenoise(s)
-  discard $linenoiseHistoryAdd(res)
-  return $res
+  if not res.isNil:
+    discard $linenoiseHistoryAdd(res)
+    return $res
 
 
 proc stdLib(i: In) =
@@ -111,6 +112,9 @@ proc minimRepl*(i: var MinInterpreter) =
       CURRSCOPE = i.scope
       linenoiseSetCompletionCallback completionCallback
     line = prompt(": ")
+    if line.isNil:
+      echo "-> Exiting..."
+      quit(0)
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
@@ -119,7 +123,10 @@ proc minimRepl*(i: var MinInterpreter) =
     except:
       warn getCurrentExceptionMsg()
     finally:
-      echo "-> ($1)" % i.dump.strip
+      if i.stack.len > 0:
+        echo("[$1] -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]])
+      else:
+        echo "[0]"
 
 proc minimRepl*(debugging = false) = 
   var i = newMinInterpreter(debugging)
