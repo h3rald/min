@@ -11,6 +11,11 @@ import
 proc str_module*(i: In) = 
   i.define("str")
 
+  .symbol("strip") do (i: In):
+    var s: MinValue
+    i.reqStringLike s
+    i.push s.getString.strip.newVal
+    
   .symbol("split") do (i: In):
     var sep, s: MinValue
     i.reqTwoStrings sep, s

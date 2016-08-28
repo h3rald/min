@@ -9,6 +9,7 @@
 #sys
 #time
 #fs
+#crypto
 
 ; Common sigils
 (bind)            (.)     sigil 

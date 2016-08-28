@@ -3,6 +3,8 @@
 
 "str" describe
   
+  (" test   " strip "test" ==) assert
+
   ("a,b,c" "," split ("a" "b" "c") ==) assert
 
   ("test #1" "[0-9]" search ("1") ==) assert 

@@ -40,6 +40,7 @@ proc fs_module*(i: In) =
       i.reqStringLike s
       let fi = s.getString.getFileInfo
       var info = newSeq[MinValue](0).newVal
+      info.qVal.add @["name".newSym, s].newVal
       info.qVal.add @["device".newSym, fi.id.device.newVal].newVal
       info.qVal.add @["file".newSym, fi.id.file.newVal].newVal
       info.qVal.add @["type".newSym, fi.kind.filetype.newVal].newVal

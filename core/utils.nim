@@ -365,6 +365,11 @@ proc reqInt*(i: var MinInterpreter, a: var MinValue) =
   if not a.isInt:
     raiseInvalid("An integer is required on the stack")
 
+proc reqNumber*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isNumber:
+    raiseInvalid("A number is required on the stack")
+
 proc reqTwoInts*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop

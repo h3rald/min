@@ -1,4 +1,6 @@
-import tables
+import 
+  tables,
+  random
 import 
   ../core/types,
   ../core/parser, 
@@ -76,5 +78,5 @@ proc num_module*(i: In)=
       var a, b: MinValue
       i.reqTwoInts b, a
       i.push(newVal(a.intVal mod b.intVal))
-    
+
     .finalize()
