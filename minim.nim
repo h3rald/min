@@ -124,9 +124,18 @@ proc minimRepl*(i: var MinInterpreter) =
       warn getCurrentExceptionMsg()
     finally:
       if i.stack.len > 0:
-        echo("[$1] -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]])
+        let last = i.stack[i.stack.len - 1]
+        let n = $i.stack.len
+        var output: string
+        if last.isQuotation and last.qVal.len > 1:
+          echo "{$1} -> (" % n
+          for item in last.qVal:
+            echo  "         " & $item
+          echo " ".repeat(n.len) & "      )"
+        else:
+          echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
       else:
-        echo "[0]"
+        echo "{0} --"
 
 proc minimRepl*(debugging = false) = 
   var i = newMinInterpreter(debugging)

@@ -80,7 +80,7 @@ type
     unsafe*: bool
   In* = var MinInterpreter
   Val* = var MinValue
-  MinOperator* = proc (i: In) {.gcsafe, closure.}
+  MinOperator* = proc (i: In) {.closure.}
   MinSigil* = proc (i: In, sym: string)
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError

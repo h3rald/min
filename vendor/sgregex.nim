@@ -17,21 +17,20 @@ type
 proc RX_STRLENGTHFUNC*(str: string): int = 
   return str.len
 
-proc srx_DefaultMemFunc*(userdata: pointer, ptr1: pointer, size: csize): pointer = 
-  #cast[ptr string](userdata)
-  #if not size.isNil: 
-  #return realloc(ptr, size)
-  #free(ptr1)
-  return nil
-
 type 
   srx_Context* = object
 
+proc srx_DefaultMemFunc*(userdata: pointer, ptr1: pointer, size: csize): pointer =
+  discard cast[string](userdata)
+  if size > 0:
+    return realloc(ptr1, size)
+  dealloc(ptr1)
+  return nil
+
 {.push importc.}
-proc srx_CreateExt*(str: cstring; strsize: csize; mods: cstring; 
-                    errnpos: ptr cint; memfn: srx_MemFunc; memctx: pointer): ptr srx_Context
-template srx_Create*(str, mods: expr): expr = 
-  srx_CreateExt(str, RX_STRLENGTHFUNC(str), mods, nil, nil, nil)#srx_DefaultMemFunc, nil)
+proc srx_CreateExt*(str: cstring; strsize: csize; mods: cstring; errnpos: ptr cint; memfn: srx_MemFunc; memctx: pointer): ptr srx_Context
+template srx_Create*(str, mods: string): ptr srx_Context = 
+  srx_CreateExt(str, RX_STRLENGTHFUNC(str), mods, nil, srx_DefaultMemFunc, nil)
 
 proc srx_Destroy*(R: ptr srx_Context): cint
 proc srx_DumpToStdout*(R: ptr srx_Context)
