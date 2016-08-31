@@ -1,4 +1,5 @@
-{.compile: "linenoise/libwin32fixes.c".}
+when defined(windows):
+  {.compile: "linenoise/libwin32fixes.c".}
 {.compile: "linenoise/liblinenoise.c".}
 
 type 
