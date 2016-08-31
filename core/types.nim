@@ -92,4 +92,3 @@ type
 
 proc isNotNil*[T](obj: T): bool =
   return not obj.isNil
-

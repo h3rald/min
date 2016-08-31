@@ -3,8 +3,7 @@ import
   core/types,
   core/parser, 
   core/interpreter, 
-  core/utils,
-  vendor/linenoise
+  core/utils
 import 
   lib/min_lang, 
   lib/min_stack, 
@@ -17,13 +16,15 @@ import
   lib/min_crypto,
   lib/min_fs
 
+const USE_LINENOISE* = true
+
+when USE_LINENOISE:
+  import
+    vendor/linenoise
+
 const version* = "1.0.0-dev"
 var REPL = false
 var DEBUGGING = false
-
-const
-  USE_LINENOISE = true
-
 const PRELUDE* = "lib/prelude.min".slurp.strip
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
@@ -44,22 +45,26 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
 
 var CURRSCOPE*: ref MinScope
 
-proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
-  var words = ($str).split(" ")
-  var w = if words.len > 0: words.pop else: ""
-  var sep = ""
-  if words.len > 0:
-    sep = " "
-  for s in CURRSCOPE.symbols.keys:
-    if startsWith(s, w):
-      linenoiseAddCompletion completions, words.join(" ") & sep & s
+when USE_LINENOISE:
+  proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
+    var words = ($str).split(" ")
+    var w = if words.len > 0: words.pop else: ""
+    var sep = ""
+    if words.len > 0:
+      sep = " "
+    for s in CURRSCOPE.symbols.keys:
+      if startsWith(s, w):
+        linenoiseAddCompletion completions, words.join(" ") & sep & s
 
 proc prompt(s: string): string = 
-  var res = linenoise(s)
-  if not res.isNil:
-    discard $linenoiseHistoryAdd(res)
-    return $res
-
+  when USE_LINENOISE:
+    var res = linenoise(s)
+    if not res.isNil:
+      discard $linenoiseHistoryAdd(res)
+      return $res
+  when not(USE_LINENOISE):
+    stdout.write(s)
+    return stdin.readLine
 
 proc stdLib(i: In) =
   i.lang_module
@@ -126,7 +131,6 @@ proc minimRepl*(i: var MinInterpreter) =
       if i.stack.len > 0:
         let last = i.stack[i.stack.len - 1]
         let n = $i.stack.len
-        var output: string
         if last.isQuotation and last.qVal.len > 1:
           echo "{$1} -> (" % n
           for item in last.qVal:

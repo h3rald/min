@@ -2,8 +2,9 @@
  * line editing lib needs to be 20,000 lines of C code.
  *
  * You can find the latest source code at:
- * 
  *   http://github.com/antirez/linenoise
+ * and the win32 port at:
+ *   http://github.com/Choonster/lua-linenoise-windows
  *
  * Does a number of crazy assumptions that happen to be true in 99.9999% of
  * the 2010 UNIX computers around.
@@ -47,7 +48,6 @@
  * Todo list:
  * - Switch to gets() if $TERM is something we can't support.
  * - Filter bogus Ctrl+<char> combinations.
- * - Win32 support
  *
  * Bloat:
  * - Completion?
@@ -84,13 +84,11 @@
  *    Effect: clear the whole screen
  * 
  */
-
 #ifndef _WIN32
-#include <termios.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
+  #include <termios.h>
+  #include <unistd.h>
+  #include <sys/ioctl.h>
 #endif
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -98,15 +96,16 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include "linenoise.h"
-
+#define NOTUSED(V) ((void) V)
 #ifdef _WIN32
-#include <windows.h>
+  #include "win32fixes.h"
 #endif
-
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100
 #define LINENOISE_MAX_LINE 4096
+#ifndef _WIN32
 static char *unsupported_term[] = {"dumb","cons25",NULL};
+#endif
 static linenoiseCompletionCallback *completionCallback = NULL;
 
 #ifndef _WIN32
@@ -125,7 +124,6 @@ int linenoiseHistoryAdd(const char *line);
 #ifndef STDIN_FILENO
   #define STDIN_FILENO (_fileno(stdin))
 #endif
-
 
 HANDLE hOut;
 HANDLE hIn;
@@ -300,6 +298,7 @@ static int enableRawMode(int fd) {
     if (tcsetattr(fd,TCSAFLUSH,&raw) < 0) goto fatal;
     rawmode = 1;
 #else
+    NOTUSED(fd);
 
     if (!atexit_registered) {
         /* Init windows console handles only once */
@@ -338,6 +337,7 @@ fatal:
 
 static void disableRawMode(int fd) {
 #ifdef _WIN32
+    NOTUSED(fd);
     rawmode = 0;
 #else
     /* Don't even check the return value as it's too late. */
@@ -404,6 +404,9 @@ static void refreshLine(int fd, const char *prompt, char *buf, size_t len, size_
     snprintf(seq,64,"\x1b[0G\x1b[%dC", (int)(pos+plen));
     if (write(fd,seq,strlen(seq)) == -1) return;
 #else
+
+    NOTUSED(seq);
+    NOTUSED(fd);
 
     /* Get buffer console info */
     if (!GetConsoleScreenBufferInfo(hOut, &b)) return;
@@ -503,8 +506,6 @@ static int linenoisePrompt(int fd, char *buf, size_t buflen, const char *prompt)
     size_t len = 0;
     size_t cols = getColumns();
     int history_index = 0;
-    size_t old_pos;
-    size_t diff;
 #ifdef _WIN32
     DWORD foo;
 #endif
@@ -708,7 +709,9 @@ up_down_arrow:
             refreshLine(fd,prompt,buf,len,pos,cols);
             break;
         case 23: /* ctrl+w, delete previous word */
-            old_pos = pos;
+          {
+            size_t old_pos = pos;
+            size_t diff;
             while (pos > 0 && buf[pos-1] == ' ')
                 pos--;
             while (pos > 0 && buf[pos-1] != ' ')
@@ -718,6 +721,7 @@ up_down_arrow:
             len -= diff;
             refreshLine(fd,prompt,buf,len,pos,cols);
             break;
+          }
         }
     }
     return (int)len;
@@ -806,18 +810,18 @@ int linenoiseHistoryAdd(const char *line) {
 }
 
 int linenoiseHistorySetMaxLen(int len) {
-    char **new;
+    char **newC;
 
     if (len < 1) return 0;
     if (history) {
         int tocopy = history_len;
 
-        new = malloc(sizeof(char*)*len);
-        if (new == NULL) return 0;
+        newC = malloc(sizeof(char*)*len);
+        if (newC == NULL) return 0;
         if (len < tocopy) tocopy = len;
-        memcpy(new,history+(history_max_len-tocopy), sizeof(char*)*tocopy);
+        memcpy(newC,history+(history_max_len-tocopy), sizeof(char*)*tocopy);
         free(history);
-        history = new;
+        history = newC;
     }
     history_max_len = len;
     if (history_len > history_max_len)

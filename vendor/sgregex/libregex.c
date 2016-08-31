@@ -829,9 +829,9 @@ srx_Context* srx_CreateExt( const RX_Char* str, size_t strsize, const RX_Char* m
 		}
 	}
 	
-	if( !memfn )
+	//if( !memfn ) // FC - Always using default memfn (problems on Windows).
 		memfn = srx_DefaultMemFunc;
-	
+
 	R = (srx_Context*) memfn( memctx, NULL, sizeof(srx_Context) );
 	memset( R, 0, sizeof(*R) );
 	memset( cel, 0, sizeof(cel) );

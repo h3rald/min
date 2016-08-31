@@ -1,9 +1,16 @@
 import strutils
 import ../vendor/sgregex
 
+type 
+  InvalidRegexError = ref SystemError
+
+proc newRegex(pattern, mods: string): ptr srx_Context =
+  result = srx_Create(pattern, mods)
+  if result.isNil:
+    raise(InvalidRegexError(msg: "Invalid regular expression: \"$1\"" % pattern))
 
 proc match*(str, pattern, mods: string): bool =
-  let r = srx_Create(pattern, mods)
+  let r = newRegex(pattern, mods)
   result = srx_Match(r, str, 0) == 1
   discard srx_Destroy(r)
 
@@ -11,7 +18,7 @@ proc match*(str, pattern: string): bool =
   return match(str, pattern, "")
 
 proc search*(str, pattern, mods: string): seq[string] =
-  let r = srx_Create(pattern, mods)
+  let r = newRegex(pattern, mods)
   discard srx_Match(r, str, 0) == 1
   let count = srx_GetCaptureCount(r)
   result = newSeq[string](count)
@@ -26,7 +33,7 @@ proc search*(str, pattern: string): seq[string] =
   return search(str, pattern, "")
 
 proc replace*(str, pattern, repl, mods: string): string =
-  var r = srx_Create(pattern, mods)
+  var r = newRegex(pattern, mods)
   result = $srx_Replace(r, str, repl)
   discard srx_Destroy(r)
 

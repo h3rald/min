@@ -1,9 +1,7 @@
 import streams, strutils, critbits, os
 import 
   types, 
-  parser,
-  ../vendor/linenoise
-
+  parser
 
 proc raiseUndefined(msg: string) =
   raise MinUndefinedError(msg: msg)

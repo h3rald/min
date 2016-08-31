@@ -1,4 +1,6 @@
+{.compile: "linenoise/libwin32fixes.c".}
 {.compile: "linenoise/liblinenoise.c".}
+
 type 
   linenoiseCompletions* = object 
     len*: csize
