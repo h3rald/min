@@ -38,11 +38,6 @@ proc linenoiseAddCompletion*(a2: ptr linenoiseCompletions; a3: cstring)
 # 
 proc linenoise*(prompt: cstring): cstring
 #
-#  Activates password entry in future calls of linenoise(), i.e. user
-#  input will not be echoed back to the terminal during entry.
-# 
-proc linenoiseSetHidden*(enable: cint)
-#
 #  Activates normal entry in future calls of linenoise(), i.e. user
 #  input will again be echoed back to the terminal during entry.
 # 
@@ -73,20 +68,6 @@ proc linenoiseHistorySave*(filename: cstring): cint
 # 
 proc linenoiseHistoryLoad*(filename: cstring): cint
 #
-#  Frees all history entries, clearing the history.
-# 
-proc linenoiseHistoryFree*()
+# Clears the screen.
 #
-#  Returns a pointer to the list of history entries, writing its
-#  length to *len if len is not NULL. The memory is owned by linenoise
-#  and must not be freed.
-# 
-proc linenoiseHistory*(len: ptr cint): cstringArray
-#
-#  Returns the number of display columns in the current terminal.
-# 
-proc linenoiseColumns*(): cint
-#
-#  Returns the number of display rows|lines in the current terminal.
-# 
-proc linenoiseLines*(): cint
+proc linenoiseClearScreen*()

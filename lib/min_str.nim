@@ -6,8 +6,6 @@ import
   ../core/utils,
   ../core/regex
 
-
-
 proc str_module*(i: In) = 
   i.define("str")
 

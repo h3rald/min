@@ -8,8 +8,8 @@ import
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/regex
-
+  ../core/regex,
+  ../vendor/linenoise
 
 proc lang_module*(i: In) =
   i.scope
@@ -228,11 +228,11 @@ proc lang_module*(i: In) =
   
     # Operations on the whole stack
   
-    .symbol("clear") do (i: In):
+    .symbol("clear-stack") do (i: In):
       while i.stack.len > 0:
         discard i.pop
   
-    .symbol("dump") do (i: In):
+    .symbol("dump-stack") do (i: In):
       echo i.dump
   
     .symbol("get-stack") do (i: In):
@@ -428,5 +428,8 @@ proc lang_module*(i: In) =
       i.reqDictionary d
       i.push d
       i.push d.values
+
+    .symbol("clear") do (i: In):
+      linenoiseClearScreen()
 
     .finalize()
