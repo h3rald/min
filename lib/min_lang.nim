@@ -114,17 +114,6 @@ proc lang_module*(i: In) =
           i.debug "[import] $1:$2" % [i.scope.name, sym]
           i.scope.symbols[sym] = val
     
-    .sigil("'") do (i: In):
-      var s: MinValue
-      i.reqString s
-      i.push(@[MinValue(kind: minSymbol, symVal: s.strVal)].newVal)
-
-    .sigil("#") do (i: In):
-      var s: MinValue
-      i.reqString s
-      i.push s
-      i.push "import".newSym
-  
     .symbol("sigil") do (i: In):
       var q1, q2: MinValue
       i.reqTwoQuotations q1, q2
@@ -429,7 +418,58 @@ proc lang_module*(i: In) =
       i.push d
       i.push d.values
 
+    .symbol("interpolate") do (i: In):
+      var s, q: MinValue
+      i.reqQuotationAndString q, s
+      var strings = newSeq[string](0)
+      for el in q.qVal:
+        if el.isSymbol:
+          i.push el
+          strings.add $$i.pop
+        else:
+          strings.add $$el
+      let res = s.strVal % strings
+      i.push res.newVal
+
+    .symbol("version") do (i: In):
+      i.push version.newVal
+
     .symbol("clear") do (i: In):
       linenoiseClearScreen()
+
+    .sigil("'") do (i: In):
+      var s: MinValue
+      i.reqString s
+      i.push(@[s.strVal.newSym].newVal)
+
+    .sigil(":") do (i: In):
+      i.push("define".newSym)
+
+    .sigil("~") do (i: In):
+      i.push("delete".newSym)
+
+    .sigil("$") do (i: In):
+      i.push("getenv".newSym)
+
+    .sigil("!") do (i: In):
+      i.push("system".newSym)
+
+    .sigil("&") do (i: In):
+      i.push("run".newSym)
+
+    .sigil("@") do (i: In):
+      i.push("bind".newSym)
+
+    .sigil("=") do (i: In):
+      i.push("module".newSym)
+
+    .sigil("%") do (i: In):
+      i.push("call".newSym)
+
+    .sigil("/") do (i: In):
+      i.push("dget".newSym)
+
+    .sigil("-") do (i: In):
+      i.push("ddel".newSym)
 
     .finalize()

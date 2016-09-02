@@ -22,10 +22,9 @@ when USE_LINENOISE:
   import
     vendor/linenoise
 
-const version* = "1.0.0-dev"
 var REPL = false
 var DEBUGGING = false
-const PRELUDE* = "lib/prelude.min".slurp.strip
+const PRELUDE* = ".minimrc".slurp.strip
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -109,8 +108,6 @@ proc minimRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
-  echo "MiNiM Shell v" & version
-  echo "-> Type 'exit' or 'quit' to exit."
   var line: string
   while true:
     when USE_LINENOISE:

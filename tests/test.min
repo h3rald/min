@@ -17,11 +17,11 @@
   ' :results    ; save the result symbol to update
   (check -> true ==)
   ( 
-    ok results append quote .results 
+    ok results append quote @results 
     "." print!
   )
   (
-    check results append quote .results 
+    check results append quote @results 
     "x" print!
   )
   ifte
@@ -35,8 +35,8 @@
   0 :total
   0 :failed
   results (
-    total succ .total
-    (ok !=) (failed succ .failed) () ifte
+    total succ @total
+    (ok !=) (failed succ @failed) () ifte
   ) map
   padding total print! " tests executed - " print! failed print! " failed." put!
   (

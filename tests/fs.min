@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "fs" describe
 
@@ -16,5 +16,5 @@
   ("test.txt" fstats 'type dget "file" ==) assert
   
   report
-  clear
+  clear-stack
   "test.txt" rm

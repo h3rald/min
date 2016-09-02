@@ -416,6 +416,12 @@ proc reqStringLikeAndQuotation*(i: var MinInterpreter, a, q: var MinValue) =
   if not a.isStringLike or not q.isQuotation:
     raiseInvalid("A string or symbol and a quotation are required on the stack")
 
+proc reqQuotationAndString*(i: var MinInterpreter, q, a: var MinValue) =
+  q = i.pop
+  a = i.pop
+  if not a.isString or not q.isQuotation:
+    raiseInvalid("A string and a quotation are required on the stack")
+
 proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation and not a.isString:
@@ -424,7 +430,7 @@ proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
 proc reqStringLike*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isStringLike:
-    raiseInvalid("A symbol or a string is required on the stack")
+    raiseInvalid("A quoted symbol or a string is required on the stack")
 
 proc reqTwoStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop

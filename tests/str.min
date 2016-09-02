@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "str" describe
   
@@ -22,4 +22,4 @@
   ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
 
   report
-  clear
+  clear-stack

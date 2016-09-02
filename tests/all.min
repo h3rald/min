@@ -1,10 +1,10 @@
-@io
-@lang
-@logic
-@num
-@stack
-@str
-@sys
-@fs
-@crypto
-@time
+'io      load
+'lang    load
+'logic   load
+'num     load
+'stack   load
+'str     load
+'sys     load
+'time    load
+'fs      load
+'crypto  load

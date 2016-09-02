@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "time" describe
 
@@ -14,4 +14,4 @@
   (1464951736 timeinfo 'second dget 16 ==) assert
 
   report
-  clear
+  clear-stack

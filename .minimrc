@@ -1,32 +1,18 @@
 ; Imports
-#str
-#io
-#logic
-#num
-#stack
-#sys
-#time
-#fs
-#crypto
-
-; Common sigils
-(bind)            (.)     sigil 
-(define)          (:)     sigil 
-(delete)          (~)     sigil 
-(getenv)          ($)     sigil 
-(system)          (!)     sigil 
-(run)             (&)     sigil
-(load)            (@)     sigil
-(call)            (%)     sigil
-(module)          (=)     sigil
-(dget)            (/)     sigil
-(ddel)            (-)     sigil
+'str       import
+'io        import
+'logic     import
+'num       import
+'stack     import
+'sys       import
+'time      import
+'fs        import
+'crypto    import
 
 
 ; Aliases
 'define       ::
-'bind         :.
-'import       :#
+'bind         :@
 'exit         :quit
 '==           :eq
 '!=           :noteq
@@ -46,7 +32,6 @@
 'unquote      :->
 'scope        :=>
 'filter       :select
-'clear        :empty
 'cons         :prepend
 'size         :length
 
@@ -80,3 +65,6 @@
 (put pop)                                                     :put!
 (:ms :q :check (check) (ms sleep q) while)                    :interval
 (call pop)                                                    :call!
+
+"MiNiM Shell v$1" (version) interpolate put!
+"-> Type 'exit' or 'quit' to exit."     put!

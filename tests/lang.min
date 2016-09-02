@@ -1,6 +1,5 @@
-@test
-#test
-
+'test load
+'test import
 
 "lang" describe
 
@@ -28,12 +27,14 @@
   
   (defmod symbols "mymath" contains) assert
 
-  (defmod #mymath 2 3 myplus 5 ==) assert
+  (defmod 'mymath import symbols "myplus" contains) assert
+
+  (defmod 'mymath import 2 3 myplus 5 ==) assert
 
   ; Extend an existing scope
   (defmod 
-    (#mymath 
-     (-) :myminus) => .mymath 
+    ('mymath import 
+     (-) :myminus) => @mymath 
     5 2 mymath %myminus 3 ==) assert
 
   (defmod mymath inspect ("myplus") ==) assert
@@ -42,7 +43,7 @@
 
   ("3 4 +" eval 7 ==) assert
 
-  ("2 2 +" "tests/testload.min" fwrite @testload 4 ==) assert
+  ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
   "tests/testload.min" rm
 
   (defmod 2 2 mymath %myplus 4 ==) assert
@@ -79,7 +80,7 @@
   ((2 3 <) ("YES") ("NO") ifte "YES" ==) assert
 
   (0 :c
-    (c 10 <) (c succ .c) while
+    (c 10 <) (c succ @c) while
     c 10 ==) assert
 
   ((1 2 3 4 5) (even?) filter (2 4) ==) assert
@@ -128,7 +129,9 @@
 
   (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 
+  ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
+
   report
   ; Tidy up
   ~defmod
-  clear
+  clear-stack

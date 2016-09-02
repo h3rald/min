@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "sys" describe
 
@@ -33,5 +33,5 @@
   ("systest" rmdir pwd ls "systest" contains false ==) assert
 
   report
-  clear
+  clear-stack
   "systest" rmdir

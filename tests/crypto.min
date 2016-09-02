@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "crypto" describe
 
@@ -20,5 +20,5 @@
   ("test" "test" aes "test" aes strip "test" ==) assert
   
   report
-  clear
+  clear-stack
   "test.txt" rm

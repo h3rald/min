@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "logic" describe
 
@@ -133,4 +133,4 @@
   (("a" 2 c) quotation?) assert
 
   report
-  clear
+  clear-stack

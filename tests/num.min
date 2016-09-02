@@ -1,5 +1,5 @@
-@test
-#test
+'test load
+'test import
 
 "num" describe
 
@@ -29,4 +29,4 @@
   (-3 2 mod -1 ==) assert
 
   report
-  clear
+  clear-stack

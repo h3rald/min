@@ -92,3 +92,5 @@ type
 
 proc isNotNil*[T](obj: T): bool =
   return not obj.isNil
+
+const version* = "1.0.0-dev"
