@@ -24,7 +24,7 @@ when USE_LINENOISE:
 
 var REPL = false
 var DEBUGGING = false
-const PRELUDE* = ".minimrc".slurp.strip
+const PRELUDE* = "prelude.min".slurp.strip
 when defined(windows):
   const HOME = getenv("HOMEPATH")
 when not defined(windows):
@@ -73,12 +73,6 @@ proc prompt(s: string): string =
     stdout.write(s)
     return stdin.readLine
 
-proc saverc() =
-  MINIMRC.writeFile(PRELUDE)
-
-proc loadrc(): string =
-  return MINIMRC.readFile()
-
 proc stdLib(i: In) =
   i.lang_module
   i.io_module
@@ -90,13 +84,14 @@ proc stdLib(i: In) =
   i.time_module
   i.fs_module
   i.crypto_module
+  i.eval PRELUDE
   if not MINIMSYMBOLS.fileExists:
     MINIMSYMBOLS.writeFile("{}")
   if not MINIMHISTORY.fileExists:
     MINIMHISTORY.writeFile("")
   if not MINIMRC.fileExists:
-    saverc()
-  i.eval loadrc()
+    MINIMRC.writeFile("")
+  i.eval MINIMRC.readFile()
 
 proc minimStream(s: Stream, filename: string, debugging = false) =
   var i = newMinInterpreter(debugging)
@@ -135,6 +130,8 @@ proc minimRepl*(i: var MinInterpreter) =
       linenoiseSetCompletionCallback completionCallback
       discard linenoiseHistorySetMaxLen(1000)
       discard linenoiseHistoryLoad(MINIMHISTORY)
+    echo "MiNiM Shell v$1" % version
+    echo "-> Type 'exit' or 'quit' to exit."
     line = prompt(": ")
     if line.isNil:
       echo "-> Exiting..."
