@@ -25,6 +25,11 @@ when USE_LINENOISE:
 var REPL = false
 var DEBUGGING = false
 const PRELUDE* = ".minimrc".slurp.strip
+when defined(windows):
+  const HOME = getenv("HOMEPATH")
+when not defined(windows):
+  const HOME = getenv("HOME")
+const MINIMRC = HOME / ".minimrc"
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -65,6 +70,12 @@ proc prompt(s: string): string =
     stdout.write(s)
     return stdin.readLine
 
+proc saverc() =
+  MINIMRC.writeFile(PRELUDE)
+
+proc loadrc(): string =
+  return MINIMRC.readFile()
+
 proc stdLib(i: In) =
   i.lang_module
   i.io_module
@@ -76,7 +87,9 @@ proc stdLib(i: In) =
   i.time_module
   i.fs_module
   i.crypto_module
-  i.eval PRELUDE
+  if not MINIMRC.fileExists:
+    saverc()
+  i.eval loadrc()
 
 proc minimStream(s: Stream, filename: string, debugging = false) =
   var i = newMinInterpreter(debugging)
