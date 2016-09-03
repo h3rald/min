@@ -157,7 +157,20 @@ proc open*(i: In, stream:Stream, filename: string) =
 proc close*(i: In) = 
   i.parser.close();
 
-proc push*(i: In, val: MinValue) {.gcsafe.}= 
+proc push*(i: In, val: MinValue) {.gcsafe.}
+
+proc execOp*(i: In, op: MinOperator) =
+  case op.kind
+  of minProcOp:
+    op.prc(i)
+  of minValOp:
+    if op.val.kind == minQuotation:
+      for e in op.val.qVal:
+        i.push e
+    else:
+      i.push(op.val)
+
+proc push*(i: In, val: MinValue) = 
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
@@ -166,33 +179,33 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
     let sigil = "" & symbol[0]
     let found = i.scope.hasSymbol(symbol)
     if found:
-      let symbolProc = i.scope.getSymbol(symbol).prc # TODO review
+      let sym = i.scope.getSymbol(symbol) 
       if i.unsafe:
         let stack = i.copystack
         try:
-          symbolProc(i) 
+          i.execOp(sym)
         except:
           i.stack = stack
           raise
       else:
         i.execute:
-          i.symbolProc
+          i.execOp(sym)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
-        let sigilProc = i.scope.getSigil(sigil).prc # TODO review
+        let sig = i.scope.getSigil(sigil) 
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:
           let stack = i.copystack
           try:
-            i.sigilProc 
+            i.execOp(sig) 
           except:
             i.stack = stack
             raise
         else:
           i.execute:
-            i.sigilProc
+            i.execOp(sig)
       else:
         raiseUndefined("Undefined symbol: '"&val.symVal&"'")
   else:

@@ -62,10 +62,10 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal
       symbol = sym.getString
       i.debug "[define] " & symbol & " = " & $q1
-      # TODO review
-      let p = proc(i: In) =
-        i.push q1.qVal
-      i.scope.symbols[symbol] = MinOperator(kind: minProcOp, prc: p)
+      #let p = proc(i: In) =
+      #  i.push q1.qVal
+      #i.scope.symbols[symbol] = MinOperator(kind: minProcOp, prc: p)
+      i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1)
   
     .symbol("bind") do (i: In):
       var sym, val: MinValue
@@ -76,10 +76,10 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal
       symbol = sym.getString
       i.debug "[bind] " & symbol & " = " & $q1
-      # TODO review
-      let p = proc (i: In) =
-        i.push q1.qVal
-      let res = i.scope.setSymbol(symbol, MinOperator(kind: minProcOp, prc: p))
+      #let p = proc (i: In) =
+      #  i.push q1.qVal
+      #let res = i.scope.setSymbol(symbol, MinOperator(kind: minProcOp, prc: p))
+      let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
       if not res:
         raiseUndefined("Attempting to bind undefined symbol: " & symbol)
   
@@ -103,17 +103,18 @@ proc lang_module*(i: In) =
       i.reqQuotation code
       code.filename = i.filename
       i.unquote("<module>", code)
-      # TODO review
-      let p = proc(i: In) =
-        i.push code
-      i.scope.symbols[name.getString] = MinOperator(kind: minProcOp, prc: p)
+      #let p = proc(i: In) =
+      #  i.push code
+      #i.scope.symbols[name.getString] = MinOperator(kind: minProcOp, prc: p)
+      i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal)
   
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
       var name: string
       i.reqStringLike rawName
       name = rawName.getString
-      i.scope.getSymbol(name).prc(i) # TODO review
+      #i.scope.getSymbol(name).prc(i) 
+      i.execOp(i.scope.getSymbol(name))
       i.reqQuotation mdl
       if mdl.scope.isNotNil:
         for sym, val in mdl.scope.symbols.pairs:
@@ -128,12 +129,11 @@ proc lang_module*(i: In) =
         if symbol.len == 1:
           if i.scope.hasSigil(symbol):
             raiseInvalid("Sigil '$1' already exists" % [symbol])
-          # TODO review
-          let p = proc(i: In) =
-            i.evaluating = true
-            i.push q2.qVal
-            i.evaluating = false
-          i.scope.sigils[symbol] = MinOperator(kind: minProcOp, prc: p) 
+          #let p = proc(i: In) =
+          #  i.evaluating = true
+          #  i.push q2.qVal
+          #  i.evaluating = false
+          i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q2) 
         else:
           raiseInvalid("A sigil can only have one character")
       else:
@@ -166,10 +166,11 @@ proc lang_module*(i: In) =
       let s = symbol.getString
       let origScope = i.scope
       i.scope = q.scope
-      # TODO review
-      let sProc = i.scope.getSymbol(s).prc
+      #let sProc = i.scope.getSymbol(s).prc
       # Restore original quotation
-      sProc(i)
+      #sProc(i)
+      let sym = i.scope.getSymbol(s)
+      i.execOp(sym)
       i.scope = origScope
   
     .symbol("inspect") do (i: In):
@@ -485,8 +486,5 @@ proc lang_module*(i: In) =
 
     .sigil("/") do (i: In):
       i.push("dget".newSym)
-
-    .sigil("-") do (i: In):
-      i.push("ddel".newSym)
 
     .finalize()

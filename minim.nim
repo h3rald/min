@@ -124,14 +124,14 @@ proc minimRepl*(i: var MinInterpreter) =
   var s = newStringStream("")
   i.open(s, "")
   var line: string
+  echo "MiNiM Shell v$1" % version
+  echo "-> Type 'exit' or 'quit' to exit."
   while true:
     when USE_LINENOISE:
       CURRSCOPE = i.scope
       linenoiseSetCompletionCallback completionCallback
       discard linenoiseHistorySetMaxLen(1000)
       discard linenoiseHistoryLoad(MINIMHISTORY)
-    echo "MiNiM Shell v$1" % version
-    echo "-> Type 'exit' or 'quit' to exit."
     line = prompt(": ")
     if line.isNil:
       echo "-> Exiting..."
