@@ -25,15 +25,6 @@ when USE_LINENOISE:
 var REPL = false
 var DEBUGGING = false
 const PRELUDE* = "prelude.min".slurp.strip
-when defined(windows):
-  const HOME = getenv("HOMEPATH")
-when not defined(windows):
-  const HOME = getenv("HOME")
-
-const MINIMRC = HOME / ".minimrc"
-const MINIMSYMBOLS = HOME / ".minim_symbols"
-const MINIMHISTORY = HOME / ".minim_history"
-
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
   (c) 2014-2016 Fabio Cevasco

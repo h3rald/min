@@ -447,11 +447,46 @@ proc lang_module*(i: In) =
     .symbol("clear") do (i: In):
       linenoiseClearScreen()
 
+    # Save/load symbols
     
-    .symbol("store-symbol") do (i: In):
+    .symbol("save-symbol") do (i: In):
       var s:MinValue
       i.reqStringLike s
+      let sym = s.getString
+      let op = i.scope.getSymbol(sym)
+      if op.kind == minProcOp:
+        raiseInvalid("Symbol '$1' cannot be serialized." % sym)
+      let json = MINIMSYMBOLS.readFile.parseJson
+      json[sym] = %op.val
+      MINIMSYMBOLS.writeFile(json.pretty)
 
+    .symbol("load-symbol") do (i: In):
+      var s:MinValue
+      i.reqStringLike s
+      let sym = s.getString
+      let json = MINIMSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      let val = json[sym].fromJson
+      i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val)
+
+    .symbol("stored-symbols") do (i: In):
+      var s:MinValue
+      var q = newSeq[MinValue](0)
+      let json = MINIMSYMBOLS.readFile.parseJson
+      for k,v in json.pairs:
+        q.add k.newVal
+      i.push q.newVal
+
+    .symbol("remove-symbol") do (i: In):
+      var s:MinValue
+      i.reqStringLike s
+      let sym = s.getString
+      var json = MINIMSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      json.delete(sym)
+      MINIMSYMBOLS.writeFile(json.pretty)
 
     # Sigils
 
@@ -486,5 +521,11 @@ proc lang_module*(i: In) =
 
     .sigil("/") do (i: In):
       i.push("dget".newSym)
+
+    .sigil(">") do (i: In):
+      i.push("save-symbol".newSym)
+
+    .sigil("<") do (i: In):
+      i.push("load-symbol".newSym)
 
     .finalize()

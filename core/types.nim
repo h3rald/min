@@ -1,4 +1,4 @@
-import lexbase, critbits
+import lexbase, critbits, os
 
 type 
   MinTokenKind* = enum
@@ -103,3 +103,13 @@ proc isNotNil*[T](obj: T): bool =
   return not obj.isNil
 
 const version* = "1.0.0-dev"
+
+when defined(windows):
+  const HOME* = getenv("HOMEPATH")
+when not defined(windows):
+  const HOME* = getenv("HOME")
+
+const MINIMRC* = HOME / ".minimrc"
+const MINIMSYMBOLS* = HOME / ".minim_symbols"
+const MINIMHISTORY* = HOME / ".minim_history"
+
