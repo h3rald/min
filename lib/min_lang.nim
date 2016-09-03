@@ -437,6 +437,14 @@ proc lang_module*(i: In) =
     .symbol("clear") do (i: In):
       linenoiseClearScreen()
 
+    
+    .symbol("store-symbol") do (i: In):
+      var s:MinValue
+      i.reqStringLike s
+
+
+    # Sigils
+
     .sigil("'") do (i: In):
       var s: MinValue
       i.reqString s

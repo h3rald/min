@@ -29,7 +29,10 @@ when defined(windows):
   const HOME = getenv("HOMEPATH")
 when not defined(windows):
   const HOME = getenv("HOME")
+
 const MINIMRC = HOME / ".minimrc"
+const MINIMSYMBOLS = HOME / ".minim_symbols"
+const MINIMHISTORY = HOME / ".minim_history"
 
 let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
 
@@ -87,6 +90,10 @@ proc stdLib(i: In) =
   i.time_module
   i.fs_module
   i.crypto_module
+  if not MINIMSYMBOLS.fileExists:
+    MINIMSYMBOLS.writeFile("{}")
+  if not MINIMHISTORY.fileExists:
+    MINIMHISTORY.writeFile("")
   if not MINIMRC.fileExists:
     saverc()
   i.eval loadrc()
@@ -126,10 +133,14 @@ proc minimRepl*(i: var MinInterpreter) =
     when USE_LINENOISE:
       CURRSCOPE = i.scope
       linenoiseSetCompletionCallback completionCallback
+      discard linenoiseHistorySetMaxLen(1000)
+      discard linenoiseHistoryLoad(MINIMHISTORY)
     line = prompt(": ")
     if line.isNil:
       echo "-> Exiting..."
       quit(0)
+    if $line != "(null)":
+      discard linenoiseHistorySave(MINIMHISTORY)
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
