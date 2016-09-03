@@ -218,21 +218,30 @@ proc define*(i: In, name: string): ref MinScope =
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
-  scope.symbols[sym] = p
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc): ref MinScope =
+  scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp)
   return scope
 
-proc sigil*(scope: ref MinScope, sym: string, p: MinOperator): ref MinScope =
-  scope.previous.sigils[sym] = p
+proc symbol*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
+  scope.symbols[sym] = MinOperator(val: v, kind: minValOp)
+  return scope
+
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc): ref MinScope =
+  scope.previous.sigils[sym] = MinOperator(prc: p, kind: minProcOp)
+  return scope
+
+proc sigil*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
+  scope.previous.sigils[sym] = MinOperator(val: v, kind: minValOp)
   return scope
 
 proc finalize*(scope: ref MinScope) =
   var mdl = newSeq[MinValue](0).newVal
   mdl.scope = scope
-  mdl.scope.previous.symbols[scope.name] = proc(i: In) {.gcsafe, closure.} =
+  let op = proc(i: In) {.gcsafe, closure.} =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
+  mdl.scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
 
 template alias*[T](varname: untyped, value: var T) =
   var varname {.inject.}: type(value)

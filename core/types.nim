@@ -80,7 +80,16 @@ type
     unsafe*: bool
   In* = var MinInterpreter
   Val* = var MinValue
-  MinOperator* = proc (i: In) {.closure.}
+  MinOperatorProc* = proc (i: In) {.closure.}
+  MinOperatorKind* = enum
+    minProcOp
+    minValOp
+  MinOperator* = object
+    case kind*: MinOperatorKind
+    of minProcOp:
+      prc*: MinOperatorProc
+    of minValOp:
+      val*: MinValue
   MinSigil* = proc (i: In, sym: string)
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError

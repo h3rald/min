@@ -166,7 +166,7 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
     let sigil = "" & symbol[0]
     let found = i.scope.hasSymbol(symbol)
     if found:
-      let symbolProc = i.scope.getSymbol(symbol)
+      let symbolProc = i.scope.getSymbol(symbol).prc # TODO review
       if i.unsafe:
         let stack = i.copystack
         try:
@@ -180,7 +180,7 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
-        let sigilProc = i.scope.getSigil(sigil)
+        let sigilProc = i.scope.getSigil(sigil).prc # TODO review
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:
@@ -255,4 +255,5 @@ proc load*(i: In, s: string) =
     i.filename = fn
 
 proc apply*(i: In, symbol: string) =
-  i.scope.getSymbol(symbol)(i)
+  # TODO review
+  i.scope.getSymbol(symbol).prc(i)

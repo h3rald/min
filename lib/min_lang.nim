@@ -62,8 +62,10 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal
       symbol = sym.getString
       i.debug "[define] " & symbol & " = " & $q1
-      i.scope.symbols[symbol] = proc(i: In) =
+      # TODO review
+      let p = proc(i: In) =
         i.push q1.qVal
+      i.scope.symbols[symbol] = MinOperator(kind: minProcOp, prc: p)
   
     .symbol("bind") do (i: In):
       var sym, val: MinValue
@@ -74,8 +76,10 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal
       symbol = sym.getString
       i.debug "[bind] " & symbol & " = " & $q1
-      let res = i.scope.setSymbol(symbol) do (i: In):
+      # TODO review
+      let p = proc (i: In) =
         i.push q1.qVal
+      let res = i.scope.setSymbol(symbol, MinOperator(kind: minProcOp, prc: p))
       if not res:
         raiseUndefined("Attempting to bind undefined symbol: " & symbol)
   
@@ -99,15 +103,17 @@ proc lang_module*(i: In) =
       i.reqQuotation code
       code.filename = i.filename
       i.unquote("<module>", code)
-      i.scope.symbols[name.getString] = proc(i: In) =
+      # TODO review
+      let p = proc(i: In) =
         i.push code
+      i.scope.symbols[name.getString] = MinOperator(kind: minProcOp, prc: p)
   
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
       var name: string
       i.reqStringLike rawName
       name = rawName.getString
-      i.scope.getSymbol(name)(i)
+      i.scope.getSymbol(name).prc(i) # TODO review
       i.reqQuotation mdl
       if mdl.scope.isNotNil:
         for sym, val in mdl.scope.symbols.pairs:
@@ -122,10 +128,12 @@ proc lang_module*(i: In) =
         if symbol.len == 1:
           if i.scope.hasSigil(symbol):
             raiseInvalid("Sigil '$1' already exists" % [symbol])
-          i.scope.sigils[symbol] = proc(i: In) =
+          # TODO review
+          let p = proc(i: In) =
             i.evaluating = true
             i.push q2.qVal
             i.evaluating = false
+          i.scope.sigils[symbol] = MinOperator(kind: minProcOp, prc: p) 
         else:
           raiseInvalid("A sigil can only have one character")
       else:
@@ -158,7 +166,8 @@ proc lang_module*(i: In) =
       let s = symbol.getString
       let origScope = i.scope
       i.scope = q.scope
-      let sProc = i.scope.getSymbol(s)
+      # TODO review
+      let sProc = i.scope.getSymbol(s).prc
       # Restore original quotation
       sProc(i)
       i.scope = origScope
