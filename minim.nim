@@ -50,8 +50,23 @@ when USE_LINENOISE:
     var sep = ""
     if words.len > 0:
       sep = " "
+    if w.startsWith("'"):
+      for s in CURRSCOPE.symbols.keys:
+        if startsWith("'$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "'" & s
+      return
+    if w.startsWith("$"):
+      for s,v in envPairs():
+        if startsWith("$$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "$" & s
+      return
+    if w.startsWith("\""):
+      for c,s in walkDir(getCurrentDir(), true):
+        if startsWith("\"$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "\"" & s & "\""
+      return
     for s in CURRSCOPE.symbols.keys:
-      if startsWith(s, w):
+      if s.startsWith(w):
         linenoiseAddCompletion completions, words.join(" ") & sep & s
 
 proc prompt(s: string): string = 
