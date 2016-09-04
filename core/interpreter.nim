@@ -9,6 +9,9 @@ proc raiseUndefined(msg: string) =
 proc raiseEmptyStack() =
   raise MinEmptyStackError(msg:"Insufficient items on the stack")
 
+proc raiseInvalid(msg: string) =
+  raise MinInvalidError(msg: msg)
+
 proc fullname*(scope: ref MinScope): string =
   result = scope.name
   if scope.parent.isNotNil:
@@ -40,6 +43,8 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
   result = false
   # check if a symbol already exists in current scope
   if scope.isNotNil and scope.symbols.hasKey(key):
+    if scope.symbols[key].sealed:
+      raiseInvalid("Symbol '$1' is sealed." % key) 
     scope.symbols[key] = value
     result = true
   else:

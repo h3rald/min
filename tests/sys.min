@@ -3,10 +3,10 @@
 
 "sys" describe
 
-  ("systest" mkdir "." ls "./systest" contains) assert
+  ("systest" mkdir . ls . "/systest" concat  contains) assert
 
-  ("systest" cd pwd "systest" match) assert
-  ".." cd
+  ("systest" cd . "systest" match) assert
+  .. cd
 
   (&ls "\n" split "systest" contains) assert
 
@@ -28,9 +28,9 @@
 
   ("test.txt" "test1.txt" mv "test1.txt" file?) assert
 
-  ("test2.txt" rm "test1.txt" rm pwd ls "test1.txt" contains :t1 pwd ls "test2" contains t1 and false ==) assert
+  ("test2.txt" rm "test1.txt" rm . ls "test1.txt" contains :t1 . ls "test2" contains t1 and false ==) assert
 
-  ("systest" rmdir pwd ls "systest" contains false ==) assert
+  ("systest" rmdir . ls "systest" contains false ==) assert
 
   report
   clear-stack

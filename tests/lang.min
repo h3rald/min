@@ -94,6 +94,8 @@
     ("Caught a " swap concat)
     ) try "Caught a MinEmptyStackError" ==) assert 
 
+  ("aaaa" :. . "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
+
   (
    (
     (("TestError" "Test Message") raise) 
@@ -130,6 +132,12 @@
   (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 
   ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
+
+  (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" contains) assert
+
+  (<sym1 symbols "sym1" contains) assert
+
+  ('sym1 remove-symbol stored-symbols "sym1" contains false ==) assert
 
   report
   ; Tidy up

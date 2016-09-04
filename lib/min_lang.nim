@@ -65,7 +65,9 @@ proc lang_module*(i: In) =
       #let p = proc(i: In) =
       #  i.push q1.qVal
       #i.scope.symbols[symbol] = MinOperator(kind: minProcOp, prc: p)
-      i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1)
+      if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+        raiseUndefined("Attempting to redefined sealed symbol '$1'" % symbol)
+      i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
       var sym, val: MinValue

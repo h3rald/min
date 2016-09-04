@@ -85,6 +85,7 @@ type
     minProcOp
     minValOp
   MinOperator* = object
+    sealed*: bool
     case kind*: MinOperatorKind
     of minProcOp:
       prc*: MinOperatorProc

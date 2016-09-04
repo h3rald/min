@@ -11,8 +11,11 @@ import
 proc sys_module*(i: In)=
   i.define("sys")
   
-    .symbol("pwd") do (i: In):
+    .symbol(".") do (i: In):
       i.push newVal(getCurrentDir())
+    
+    .symbol("..") do (i: In):
+      i.push newVal(getCurrentDir().parentDir)
     
     .symbol("cd") do (i: In):
       var f: MinValue
