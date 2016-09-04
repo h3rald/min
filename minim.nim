@@ -1,4 +1,4 @@
-import streams, critbits, parseopt2, strutils, os
+import streams, critbits, parseopt2, strutils, os, json
 import 
   core/types,
   core/parser, 
@@ -43,6 +43,17 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
 
 var CURRSCOPE*: ref MinScope
 
+proc getExecs(): seq[string] =
+  var res = newSeq[string](0)
+  let getFiles = proc(dir: string) =
+    for c, s in walkDir(dir, true):
+      if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
+        res.add s
+  getFiles(getCurrentDir())
+  for dir in "PATH".getEnv.split(PathSep):
+    getFiles(dir)
+  return res
+
 when USE_LINENOISE:
   proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
     var words = ($str).split(" ")
@@ -55,6 +66,31 @@ when USE_LINENOISE:
         if startsWith("'$1"%s, w):
           linenoiseAddCompletion completions, words.join(" ") & sep & "'" & s
       return
+    if w.startsWith("~"):
+      for s in CURRSCOPE.symbols.keys:
+        if startsWith("~$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "~" & s
+      return
+    if w.startsWith("@"):
+      for s in CURRSCOPE.symbols.keys:
+        if startsWith("@$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "@" & s
+      return
+    if w.startsWith(">"):
+      for s in CURRSCOPE.symbols.keys:
+        if startsWith(">$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & ">" & s
+      return
+    if w.startsWith("<"):
+      for s, v in MINIMSYMBOLS.readFile.parseJson.pairs:
+        if startsWith("<$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "<" & s
+      return
+    if w.startsWith("*"):
+      for s in CURRSCOPE.symbols.keys:
+        if startsWith("*$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "*" & s
+      return
     if w.startsWith("$"):
       for s,v in envPairs():
         if startsWith("$$1"%s, w):
@@ -65,6 +101,15 @@ when USE_LINENOISE:
         if startsWith("\"$1"%s, w):
           linenoiseAddCompletion completions, words.join(" ") & sep & "\"" & s & "\""
       return
+    let execs = getExecs()
+    if w.startsWith("!"):
+      for s in execs:
+        if startsWith("!$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "!" & s
+    if w.startsWith("&"):
+      for s in execs:
+        if startsWith("&$1"%s, w):
+          linenoiseAddCompletion completions, words.join(" ") & sep & "&" & s
     for s in CURRSCOPE.symbols.keys:
       if s.startsWith(w):
         linenoiseAddCompletion completions, words.join(" ") & sep & s

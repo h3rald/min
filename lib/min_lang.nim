@@ -490,6 +490,13 @@ proc lang_module*(i: In) =
       json.delete(sym)
       MINIMSYMBOLS.writeFile(json.pretty)
 
+    .symbol("seal") do (i: In):
+      var sym: MinValue 
+      i.reqStringLike sym
+      var s = i.scope.getSymbol(sym.getString) 
+      s.sealed = true
+      i.scope.setSymbol(sym.getString, s)
+
     # Sigils
 
     .sigil("'") do (i: In):
@@ -529,5 +536,8 @@ proc lang_module*(i: In) =
 
     .sigil("<") do (i: In):
       i.push("load-symbol".newSym)
+
+    .sigil("*") do (i: In):
+      i.push("seal".newSym)
 
     .finalize()

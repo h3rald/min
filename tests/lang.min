@@ -96,6 +96,8 @@
 
   ("aaaa" :. . "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
 
+  (((2 :a1 *a1 3 :a1) ("failed")) try "failed" ==) assert
+
   (
    (
     (("TestError" "Test Message") raise) 

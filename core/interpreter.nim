@@ -35,6 +35,8 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
   if scope.symbols.hasKey(key):
+    if scope.symbols[key].sealed:
+      raiseInvalid("Symbol '$1' is sealed." % key) 
     scope.symbols.excl(key)
     return true
   return false
