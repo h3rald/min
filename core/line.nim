@@ -106,6 +106,15 @@ proc deletePrevious*(ln: var Line) =
       ln.text = ln.fromFirst & ln.text[ln.position+1..ln.last]
       stdout.cursorBackward(rest.len)
   
+proc deleteNext*(ln: var Line) =
+  if not ln.empty:
+    if not ln.full:
+      let rest = ln.toLast[1..^1] & " "
+      for c in rest:
+        putchar c.ord
+      stdout.cursorBackward(rest.len)
+      ln.text = ln.fromFirst & ln.toLast[1..^1]
+
 proc printChar*(ln: var Line, c: int) =  
   if ln.full:
     putchar(c.cint)
@@ -149,7 +158,12 @@ var KEYMAP*: CritBitTree[KeyCallBack]
 KEYMAP["backspace"] = proc(ln: var Line) =
   ln.deletePrevious()
 KEYMAP["delete"] = proc(ln: var Line) =
-  discard #TODO
+  ln.deleteNext()
+KEYMAP["insert"] = proc(ln: var Line) =
+  if ln.mode == mdInsert:
+    ln.mode = mdReplace
+  else:
+    ln.mode = mdInsert
 KEYMAP["down"] = proc(ln: var Line) =
   discard #TODO
 KEYMAP["up"] = proc(ln: var Line) =
