@@ -41,99 +41,102 @@ type
   Key* = int
   KeySeq* = seq[Key]
   LineError* = ref Exception
-  LineEditingMode* = enum
+  LineEditorMode* = enum
     mdInsert
     mdReplace
   Line* = object
     text*: string
     position*: int
-    mode*: LineEditingMode
-  KeyCallback* = proc(ln: var Line)
+  KeyCallback* = proc(ed: var LineEditor)
+  LineEditor* = object
+    history: seq[string]
+    line*: Line
+    mode*: LineEditorMode
 
-proc len*(ln: Line): int =
-  return ln.text.len
+proc len*(line: Line): int =
+  return line.text.len
 
-proc empty*(ln: Line): bool =
-  return ln.text.len == 0
+proc empty*(line: Line): bool =
+  return line.text.len == 0
 
-proc full*(ln: Line): bool =
-  return ln.position >= ln.text.len
+proc full*(line: Line): bool =
+  return line.position >= line.text.len
 
-proc first*(ln: Line): int =
-  if ln.empty:
+proc first*(line: Line): int =
+  if line.empty:
     raise LineError(msg: "Line is empty!")
   return 0
 
-proc last*(ln: Line): int =
-  if ln.empty:
+proc last*(line: Line): int =
+  if line.empty:
     raise LineError(msg: "Line is empty!")
-  return ln.text.len-1
+  return line.text.len-1
 
-proc back*(ln: var Line, n=1) =
-  if ln.empty:
+proc fromFirst*(line: var Line): string =
+  if line.empty:
+    raise LineError(msg: "Line is empty!")
+  return line.text[line.first..line.position-1]
+
+proc toLast*(line: var Line): string =
+  if line.empty:
+    raise LineError(msg: "Line is empty!")
+  return line.text[line.position..line.last]
+
+proc back*(ed: var LineEditor, n=1) =
+  if ed.line.empty:
     return
   stdout.cursorBackward(n)
-  ln.position = ln.position - n
+  ed.line.position = ed.line.position - n
 
-proc forward*(ln: var Line, n=1) = 
-  if ln.full:
+proc forward*(ed: var LineEditor, n=1) = 
+  if ed.line.full:
     return
   stdout.cursorForward(n)
-  ln.position += n
+  ed.line.position += n
 
-proc fromFirst*(ln: var Line): string =
-  if ln.empty:
-    raise LineError(msg: "Line is empty!")
-  return ln.text[ln.first..ln.position-1]
-
-proc toLast*(ln: var Line): string =
-  if ln.empty:
-    raise LineError(msg: "Line is empty!")
-  return ln.text[ln.position..ln.last]
-
-proc deletePrevious*(ln: var Line) =
-  if not ln.empty:
-    if ln.full:
+proc deletePrevious*(ed: var LineEditor) =
+  if not ed.line.empty:
+    if ed.line.full:
       stdout.cursorBackward
       putchar(32)
       stdout.cursorBackward
-      ln.text = ln.text[0..ln.last-1]
+      ed.line.text = ed.line.text[0..ed.line.last-1]
     else:
-      let rest = ln.toLast & " "
-      ln.back
+      let rest = ed.line.toLast & " "
+      ed.back
       for i in rest:
         putchar i.ord
-      ln.text = ln.fromFirst & ln.text[ln.position+1..ln.last]
+      ed.line.text = ed.line.fromFirst & ed.line.text[ed.line.position+1..ed.line.last]
       stdout.cursorBackward(rest.len)
   
-proc deleteNext*(ln: var Line) =
-  if not ln.empty:
-    if not ln.full:
-      let rest = ln.toLast[1..^1] & " "
+proc deleteNext*(ed: var LineEditor) =
+  if not ed.line.empty:
+    if not ed.line.full:
+      let rest = ed.line.toLast[1..^1] & " "
       for c in rest:
         putchar c.ord
       stdout.cursorBackward(rest.len)
-      ln.text = ln.fromFirst & ln.toLast[1..^1]
+      ed.line.text = ed.line.fromFirst & ed.line.toLast[1..^1]
 
-proc printChar*(ln: var Line, c: int) =  
-  if ln.full:
+proc printChar*(ed: var LineEditor, c: int) =  
+  if ed.line.full:
     putchar(c.cint)
-    ln.text &= c.chr
-    ln.position += 1
+    ed.line.text &= c.chr
+    ed.line.position += 1
   else:
-    if ln.mode == mdInsert:
+    if ed.mode == mdInsert:
       putchar(c.cint)
-      let rest = ln.toLast
-      ln.text.insert($c.chr, ln.position)
-      ln.position += 1
+      let rest = ed.line.toLast
+      ed.line.text.insert($c.chr, ed.line.position)
+      ed.line.position += 1
       for j in rest:
         putchar(j.ord)
-        ln.position += 1
-      ln.back(rest.len)
+        ed.line.position += 1
+      ed.back(rest.len)
     else: 
       putchar(c.cint)
-      ln.text &= c.chr
-      ln.position += 1
+      ed.line.text &= c.chr
+      ed.line.position += 1
 
 # Character sets
 const
@@ -155,24 +158,24 @@ let TERMSETTINGS* = termSave()
 # Key Mappings
 var KEYMAP*: CritBitTree[KeyCallBack]
 
-KEYMAP["backspace"] = proc(ln: var Line) =
-  ln.deletePrevious()
-KEYMAP["delete"] = proc(ln: var Line) =
-  ln.deleteNext()
-KEYMAP["insert"] = proc(ln: var Line) =
-  if ln.mode == mdInsert:
-    ln.mode = mdReplace
+KEYMAP["backspace"] = proc(ed: var LineEditor) =
+  ed.deletePrevious()
+KEYMAP["delete"] = proc(ed: var LineEditor) =
+  ed.deleteNext()
+KEYMAP["insert"] = proc(ed: var LineEditor) =
+  if ed.mode == mdInsert:
+    ed.mode = mdReplace
   else:
-    ln.mode = mdInsert
-KEYMAP["down"] = proc(ln: var Line) =
+    ed.mode = mdInsert
+KEYMAP["down"] = proc(ed: var LineEditor) =
   discard #TODO
-KEYMAP["up"] = proc(ln: var Line) =
+KEYMAP["up"] = proc(ed: var LineEditor) =
   discard #TODO
-KEYMAP["left"] = proc(ln: var Line) =
-  ln.back()
-KEYMAP["right"] = proc(ln: var Line) =
-  ln.forward()
-KEYMAP["ctrl+c"] = proc(ln: var Line) =
+KEYMAP["left"] = proc(ed: var LineEditor) =
+  ed.back()
+KEYMAP["right"] = proc(ed: var LineEditor) =
+  ed.forward()
+KEYMAP["ctrl+c"] = proc(ed: var LineEditor) =
   termRestore(TERMSETTINGS)
   quit(0)
 
@@ -200,52 +203,53 @@ else:
   KEYSEQS["delete"]     = @[27, 91, 51, 126]
   
 
-proc readLine*(prompt="", history=false): string =
+proc readLine*(ed: var LineEditor, prompt=""): string =
   termSetup()
   stdout.write(prompt)
-  var line = Line(text: "", position: 0, mode: mdInsert)
+  ed.line = Line(text: "", position: 0)
   while true:
     let c1 = getchar()
     if c1 in {10, 13}:
       termRestore(TERMSETTINGS)
-      return line.text
+      return ed.line.text
     elif c1 in {8, 127}:
-      KEYMAP["backspace"](line)
+      KEYMAP["backspace"](ed)
     elif c1 in PRINTABLE:
-      line.printChar(c1)
+      ed.printChar(c1)
     elif c1 in ESCAPES:
       var s = newSeq[Key](0)
       s.add(c1)
       let c2 = getchar()
       s.add(c2)
       if s == KEYSEQS["left"]:
-        KEYMAP["left"](line)
+        KEYMAP["left"](ed)
       elif s == KEYSEQS["right"]:
-        KEYMAP["right"](line)
+        KEYMAP["right"](ed)
       elif s == KEYSEQS["up"]:
-        KEYMAP["up"](line)
+        KEYMAP["up"](ed)
       elif s == KEYSEQS["down"]:
-        KEYMAP["down"](line)
+        KEYMAP["down"](ed)
       elif s == KEYSEQS["delete"]:
-        KEYMAP["delete"](line)
+        KEYMAP["delete"](ed)
       elif s == KEYSEQS["insert"]:
-        KEYMAP["insert"](line)
+        KEYMAP["insert"](ed)
       elif c2 == 91:
         let c3 = getchar()
         s.add(c3)
         if s == KEYSEQS["right"]:
-          KEYMAP["right"](line)
+          KEYMAP["right"](ed)
         elif s == KEYSEQS["left"]:
-          KEYMAP["left"](line)
+          KEYMAP["left"](ed)
         elif c3 in {50, 51}:
           let c4 = getchar()
           s.add(c4)
           if c4 == 126 and c3 == 50:
-            KEYMAP["insert"](line)
+            KEYMAP["insert"](ed)
           elif c4 == 126 and c3 == 51:
-            KEYMAP["delete"](line)
+            KEYMAP["delete"](ed)
     elif KEYMAP.hasKey(KEYNAMES[c1]):
-      KEYMAP[KEYNAMES[c1]](line)
+      KEYMAP[KEYNAMES[c1]](ed)
 
 when isMainModule:
-  echo "\n---", readLine("-> "), "---"
+  var ed = LineEditor(mode: mdInsert, history: newSeq[string](0))
+  echo "\n---", ed.readLine("-> "), "---"
