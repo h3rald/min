@@ -26,8 +26,9 @@ else:
     let res = execCmdEx "stty </dev/tty -g"
     return res[0]
 
-  proc termRestore*(c: string) =
-    discard execCmd "stty </dev/tty " & c
+  let TERMSETTINGS* = termSave()
+  proc termRestore*() =
+    discard execCmd "stty </dev/tty " & TERMSETTINGS
 
   proc getchar(): cint =
     return stdin.readChar().ord.cint
@@ -35,12 +36,12 @@ else:
   proc putchar(c: cint) =
     stdout.write(c.chr)
 
-
 # Types
 
 type
   Key* = int
   KeySeq* = seq[Key]
+  KeyCallback* = proc(ed: var LineEditor)
   LineError* = ref Exception
   LineEditorMode = enum
     mdInsert
@@ -48,7 +49,6 @@ type
   Line = object
     text: string
     position: int
-  KeyCallback* = proc(ed: var LineEditor)
   LineHistory = object
     tainted: bool
     position: int
@@ -58,6 +58,8 @@ type
     history: LineHistory
     line: Line
     mode: LineEditorMode
+
+# Internal Methods
 
 proc empty(line: Line): bool =
   return line.text.len == 0
@@ -96,6 +98,46 @@ proc forward*(ed: var LineEditor, n=1) =
     return
   stdout.cursorForward(n)
   ed.line.position += n
+
+proc `[]`( q: Queue[string], pos: int): string =
+  var c = 0
+  for e in q.items:
+    if c == pos:
+      result = e
+      break
+    c.inc
+
+proc `[]=`( q: var Queue[string], pos: int, s: string) =
+  var c = 0
+  for e in q.mitems:
+    if c == pos:
+      e = s
+      break
+    c.inc
+
+proc add(h: var LineHistory, s: string, force=false) =
+  if s == "" and not force:
+    return
+  if h.queue.len >= h.max:
+    discard h.queue.dequeue
+  if h.tainted:
+    h.queue[h.queue.len-1] = s
+  else:
+    h.queue.enqueue s
+
+proc previous(h: var LineHistory): string =
+  if h.queue.len == 0 or h.position <= 0:
+    return nil
+  h.position.dec
+  result = h.queue[h.position]
+
+proc next(h: var LineHistory): string =
+  if h.queue.len == 0 or h.position >= h.queue.len-1:
+    return nil
+  h.position.inc
+  result = h.queue[h.position]
+
+# Public API
 
 proc deletePrevious*(ed: var LineEditor) =
   if not ed.line.empty:
@@ -145,11 +187,8 @@ proc changeLine*(ed: var LineEditor, s: string) =
   let text = ed.line.text
   let diff = text.len - s.len
   let position = ed.line.position
-  try:
+  if position > 0:
     stdout.cursorBackward(position)
-  except:
-    discard
-    #echo "Error setting cursor back by ", position, " chars."
   for c in s:
     putchar(c.ord)
   ed.line.position = s.len
@@ -158,44 +197,6 @@ proc changeLine*(ed: var LineEditor, s: string) =
     for i in 0.countup(diff-1):
       putchar(32)
     stdout.cursorBackward(diff)
-
-proc `[]`( q: Queue[string], pos: int): string =
-  var c = 0
-  for e in q.items:
-    if c == pos:
-      result = e
-      break
-    c.inc
-
-proc `[]=`( q: var Queue[string], pos: int, s: string) =
-  var c = 0
-  for e in q.mitems:
-    if c == pos:
-      e = s
-      break
-    c.inc
-
-proc add(h: var LineHistory, s: string, force=false) =
-  if s == "" and not force:
-    return
-  if h.queue.len >= h.max:
-    discard h.queue.dequeue
-  if h.tainted:
-    h.queue[h.queue.len-1] = s
-  else:
-    h.queue.enqueue s
-
-proc previous(h: var LineHistory): string =
-  if h.queue.len == 0 or h.position <= 0:
-    return nil
-  h.position.dec
-  result = h.queue[h.position]
-
-proc next(h: var LineHistory): string =
-  if h.queue.len == 0 or h.position >= h.queue.len-1:
-    return nil
-  h.position.inc
-  result = h.queue[h.position]
 
 proc historyInit*(size = 256): LineHistory =
   result.queue = initQueue[string](size)
@@ -233,9 +234,9 @@ proc historyFlush*(ed: var LineEditor) =
     ed.history.tainted = false
   
 proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
+  termSetup()
   result.mode = mode
   result.history = historyInit(historySize)
-
 
 # Character sets
 const
@@ -252,7 +253,6 @@ else:
   const
     ESCAPES* = {27}
 
-let TERMSETTINGS* = termSave()
 
 # Key Mappings
 var KEYMAP*: CritBitTree[KeyCallBack]
@@ -275,13 +275,12 @@ KEYMAP["left"] = proc(ed: var LineEditor) =
 KEYMAP["right"] = proc(ed: var LineEditor) =
   ed.forward()
 KEYMAP["ctrl+c"] = proc(ed: var LineEditor) =
-  termRestore(TERMSETTINGS)
+  termRestore()
   quit(0)
 
 # Key Names
 var KEYNAMES*: array[0..31, string]
 KEYNAMES[3] = "ctrl+c"
-
 
 # Key Sequences
 var KEYSEQS*: CritBitTree[KeySeq]
@@ -303,13 +302,12 @@ else:
 
 
 proc readLine*(ed: var LineEditor, prompt=""): string =
-  termSetup()
   stdout.write(prompt)
   ed.line = Line(text: "", position: 0)
   while true:
     let c1 = getchar()
     if c1 in {10, 13}:
-      termRestore(TERMSETTINGS)
+      stdout.write("\n")
       ed.historyAdd()
       ed.historyFlush()
       return ed.line.text
@@ -341,6 +339,10 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
           KEYMAP["right"](ed)
         elif s == KEYSEQS["left"]:
           KEYMAP["left"](ed)
+        elif s == KEYSEQS["up"]:
+          KEYMAP["up"](ed)
+        elif s == KEYSEQS["down"]:
+          KEYMAP["down"](ed)
         elif c3 in {50, 51}:
           let c4 = getchar()
           s.add(c4)

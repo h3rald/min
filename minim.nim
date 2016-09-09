@@ -1,5 +1,6 @@
 import streams, critbits, parseopt2, strutils, os, json
 import 
+  core/linedit,
   core/types,
   core/parser, 
   core/interpreter, 
@@ -16,11 +17,7 @@ import
   lib/min_crypto,
   lib/min_fs
 
-const USE_LINENOISE* = true
-
-when USE_LINENOISE:
-  import
-    vendor/linenoise
+const USE_LINENOISE* = false
 
 var REPL = false
 var DEBUGGING = false
@@ -55,6 +52,7 @@ proc getExecs(): seq[string] =
   return res
 
 when USE_LINENOISE:
+  # TODO: rewrite
   proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
     var words = ($str).split(" ")
     var w = if words.len > 0: words.pop else: ""
@@ -114,16 +112,6 @@ when USE_LINENOISE:
       if s.startsWith(w):
         linenoiseAddCompletion completions, words.join(" ") & sep & s
 
-proc prompt(s: string): string = 
-  when USE_LINENOISE:
-    var res = linenoise(s)
-    if not res.isNil:
-      discard $linenoiseHistoryAdd(res)
-      return $res
-  when not(USE_LINENOISE):
-    stdout.write(s)
-    return stdin.readLine
-
 proc stdLib(i: In) =
   i.lang_module
   i.io_module
@@ -177,18 +165,16 @@ proc minimRepl*(i: var MinInterpreter) =
   var line: string
   echo "MiNiM Shell v$1" % version
   echo "-> Type 'exit' or 'quit' to exit."
+  var ed = initEditor()
   while true:
-    when USE_LINENOISE:
-      CURRSCOPE = i.scope
-      linenoiseSetCompletionCallback completionCallback
-      discard linenoiseHistorySetMaxLen(1000)
-      discard linenoiseHistoryLoad(MINIMHISTORY)
-    line = prompt(": ")
-    if line.isNil:
-      echo "-> Exiting..."
-      quit(0)
-    if $line != "(null)":
-      discard linenoiseHistorySave(MINIMHISTORY)
+    #when USE_LINENOISE:
+      #CURRSCOPE = i.scope
+      #linenoiseSetCompletionCallback completionCallback
+      #discard linenoiseHistorySetMaxLen(1000)
+      #discard linenoiseHistoryLoad(MINIMHISTORY)
+    line = ed.readLine(": ")
+    #if $line != "(null)":
+    #  discard linenoiseHistorySave(MINIMHISTORY)
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 

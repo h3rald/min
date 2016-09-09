@@ -9,11 +9,12 @@ import
   ../core/interpreter, 
   ../core/utils,
   ../core/regex,
-  ../vendor/linenoise
+  ../core/linedit
 
 proc lang_module*(i: In) =
   i.scope
     .symbol("exit") do (i: In):
+      termRestore()
       quit(0)
   
     .symbol("symbols") do (i: In):
@@ -445,9 +446,6 @@ proc lang_module*(i: In) =
 
     .symbol("version") do (i: In):
       i.push version.newVal
-
-    .symbol("clear") do (i: In):
-      linenoiseClearScreen()
 
     # Save/load symbols
     
