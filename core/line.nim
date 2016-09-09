@@ -1,6 +1,7 @@
 import
   critbits,
-  terminal
+  terminal,
+  queues
 
 # getch/putch implementations
 when defined(windows):
@@ -48,8 +49,12 @@ type
     text*: string
     position*: int
   KeyCallback* = proc(ed: var LineEditor)
+  LineHistory* = object
+    position*: int
+    queue*: Queue[string]
+    max*: int
   LineEditor* = object
-    history: seq[string]
+    history: LineHistory
     line*: Line
     mode*: LineEditorMode
 
@@ -135,8 +140,28 @@ proc printChar*(ed: var LineEditor, c: int) =
       ed.back(rest.len)
     else: 
       putchar(c.cint)
-      ed.line.text &= c.chr
+      ed.line.text[ed.line.position] = c.chr
       ed.line.position += 1
+
+proc initHistory(size = 256): LineHistory =
+  result.queue = initQueue[string](size)
+  result.position = 0
+  result.max = size
+
+proc add(h: var LineHistory, s: string) =
+  if s == "":
+    return
+  if h.queue.len >= h.max:
+    discard h.queue.dequeue
+  h.queue.enqueue s
+
+proc addToHistory(ed: var LineEditor) =
+  ed.history.add ed.line.text
+
+proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
+  result.mode =mode
+  result.history = initHistory(historySize)
+
 
 # Character sets
 const
@@ -201,7 +226,7 @@ else:
   KEYSEQS["left"]       = @[27, 91, 68]
   KEYSEQS["insert"]     = @[27, 91, 50, 126]
   KEYSEQS["delete"]     = @[27, 91, 51, 126]
-  
+
 
 proc readLine*(ed: var LineEditor, prompt=""): string =
   termSetup()
@@ -211,6 +236,7 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
     let c1 = getchar()
     if c1 in {10, 13}:
       termRestore(TERMSETTINGS)
+      ed.addToHistory()
       return ed.line.text
     elif c1 in {8, 127}:
       KEYMAP["backspace"](ed)
@@ -250,6 +276,8 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
     elif KEYMAP.hasKey(KEYNAMES[c1]):
       KEYMAP[KEYNAMES[c1]](ed)
 
+ 
 when isMainModule:
-  var ed = LineEditor(mode: mdInsert, history: newSeq[string](0))
-  echo "\n---", ed.readLine("-> "), "---"
+  var ed = initEditor()
+  while true:
+    echo "\n---", ed.readLine("-> "), "---"
