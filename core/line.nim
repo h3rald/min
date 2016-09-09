@@ -42,47 +42,45 @@ type
   Key* = int
   KeySeq* = seq[Key]
   LineError* = ref Exception
-  LineEditorMode* = enum
+  LineEditorMode = enum
     mdInsert
     mdReplace
-  Line* = object
-    text*: string
-    position*: int
+  Line = object
+    text: string
+    position: int
   KeyCallback* = proc(ed: var LineEditor)
-  LineHistory* = object
-    position*: int
-    queue*: Queue[string]
-    max*: int
+  LineHistory = object
+    tainted: bool
+    position: int
+    queue: Queue[string]
+    max: int
   LineEditor* = object
     history: LineHistory
-    line*: Line
-    mode*: LineEditorMode
+    line: Line
+    mode: LineEditorMode
 
-proc len*(line: Line): int =
-  return line.text.len
-
-proc empty*(line: Line): bool =
+proc empty(line: Line): bool =
   return line.text.len == 0
 
-proc full*(line: Line): bool =
+proc full(line: Line): bool =
   return line.position >= line.text.len
 
-proc first*(line: Line): int =
+proc first(line: Line): int =
   if line.empty:
     raise LineError(msg: "Line is empty!")
   return 0
 
-proc last*(line: Line): int =
+proc last(line: Line): int =
   if line.empty:
     raise LineError(msg: "Line is empty!")
   return line.text.len-1
 
-proc fromFirst*(line: var Line): string =
+proc fromFirst(line: var Line): string =
   if line.empty:
     raise LineError(msg: "Line is empty!")
   return line.text[line.first..line.position-1]
 
-proc toLast*(line: var Line): string =
+proc toLast(line: var Line): string =
   if line.empty:
     raise LineError(msg: "Line is empty!")
   return line.text[line.position..line.last]
@@ -143,24 +141,100 @@ proc printChar*(ed: var LineEditor, c: int) =
       ed.line.text[ed.line.position] = c.chr
       ed.line.position += 1
 
-proc initHistory(size = 256): LineHistory =
-  result.queue = initQueue[string](size)
-  result.position = 0
-  result.max = size
+proc changeLine*(ed: var LineEditor, s: string) =
+  let text = ed.line.text
+  let diff = text.len - s.len
+  let position = ed.line.position
+  try:
+    stdout.cursorBackward(position)
+  except:
+    discard
+    #echo "Error setting cursor back by ", position, " chars."
+  for c in s:
+    putchar(c.ord)
+  ed.line.position = s.len
+  ed.line.text = s
+  if diff > 0:
+    for i in 0.countup(diff-1):
+      putchar(32)
+    stdout.cursorBackward(diff)
 
-proc add(h: var LineHistory, s: string) =
-  if s == "":
+proc `[]`( q: Queue[string], pos: int): string =
+  var c = 0
+  for e in q.items:
+    if c == pos:
+      result = e
+      break
+    c.inc
+
+proc `[]=`( q: var Queue[string], pos: int, s: string) =
+  var c = 0
+  for e in q.mitems:
+    if c == pos:
+      e = s
+      break
+    c.inc
+
+proc add(h: var LineHistory, s: string, force=false) =
+  if s == "" and not force:
     return
   if h.queue.len >= h.max:
     discard h.queue.dequeue
-  h.queue.enqueue s
+  if h.tainted:
+    h.queue[h.queue.len-1] = s
+  else:
+    h.queue.enqueue s
 
-proc addToHistory(ed: var LineEditor) =
-  ed.history.add ed.line.text
+proc previous(h: var LineHistory): string =
+  if h.queue.len == 0 or h.position <= 0:
+    return nil
+  h.position.dec
+  result = h.queue[h.position]
 
+proc next(h: var LineHistory): string =
+  if h.queue.len == 0 or h.position >= h.queue.len-1:
+    return nil
+  h.position.inc
+  result = h.queue[h.position]
+
+proc historyInit*(size = 256): LineHistory =
+  result.queue = initQueue[string](size)
+  result.position = 0
+  result.tainted = false
+  result.max = size
+
+proc historyAdd*(ed: var LineEditor, force = false) =
+  ed.history.add ed.line.text, force
+
+proc historyPrevious*(ed: var LineEditor) =
+  let s = ed.history.previous
+  if s.isNil:
+    return
+  let pos = ed.history.position
+  var current: int
+  if ed.history.tainted:
+    current = ed.history.queue.len-2
+  else:
+    current = ed.history.queue.len-1
+  if pos == current and ed.history.queue[current] != ed.line.text:
+    ed.historyAdd(force = true)
+    ed.history.tainted = true
+  ed.changeLine(s)
+  
+proc historyNext*(ed: var LineEditor) =
+  let s = ed.history.next
+  if s.isNil:
+    return
+  ed.changeLine(s)
+
+proc historyFlush*(ed: var LineEditor) =
+  if ed.history.queue.len > 0:
+    ed.history.position = ed.history.queue.len
+    ed.history.tainted = false
+  
 proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
-  result.mode =mode
-  result.history = initHistory(historySize)
+  result.mode = mode
+  result.history = historyInit(historySize)
 
 
 # Character sets
@@ -193,9 +267,9 @@ KEYMAP["insert"] = proc(ed: var LineEditor) =
   else:
     ed.mode = mdInsert
 KEYMAP["down"] = proc(ed: var LineEditor) =
-  discard #TODO
+  ed.historyNext()
 KEYMAP["up"] = proc(ed: var LineEditor) =
-  discard #TODO
+  ed.historyPrevious()
 KEYMAP["left"] = proc(ed: var LineEditor) =
   ed.back()
 KEYMAP["right"] = proc(ed: var LineEditor) =
@@ -236,7 +310,8 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
     let c1 = getchar()
     if c1 in {10, 13}:
       termRestore(TERMSETTINGS)
-      ed.addToHistory()
+      ed.historyAdd()
+      ed.historyFlush()
       return ed.line.text
     elif c1 in {8, 127}:
       KEYMAP["backspace"](ed)
@@ -275,7 +350,6 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
             KEYMAP["delete"](ed)
     elif KEYMAP.hasKey(KEYNAMES[c1]):
       KEYMAP[KEYNAMES[c1]](ed)
-
  
 when isMainModule:
   var ed = initEditor()
