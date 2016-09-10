@@ -1,7 +1,9 @@
 import
   critbits,
   terminal,
-  queues
+  queues,
+  sequtils,
+  strutils
 
 # getch/putch implementations
 when defined(windows):
@@ -77,14 +79,14 @@ proc last(line: Line): int =
     raise LineError(msg: "Line is empty!")
   return line.text.len-1
 
-proc fromFirst(line: var Line): string =
+proc fromStart(line: Line): string =
   if line.empty:
-    raise LineError(msg: "Line is empty!")
+    return ""
   return line.text[line.first..line.position-1]
 
-proc toLast(line: var Line): string =
+proc toEnd(line: Line): string =
   if line.empty:
-    raise LineError(msg: "Line is empty!")
+    return ""
   return line.text[line.position..line.last]
 
 proc back*(ed: var LineEditor, n=1) =
@@ -147,21 +149,21 @@ proc deletePrevious*(ed: var LineEditor) =
       stdout.cursorBackward
       ed.line.text = ed.line.text[0..ed.line.last-1]
     else:
-      let rest = ed.line.toLast & " "
+      let rest = ed.line.toEnd & " "
       ed.back
       for i in rest:
         putchar i.ord
-      ed.line.text = ed.line.fromFirst & ed.line.text[ed.line.position+1..ed.line.last]
+      ed.line.text = ed.line.fromStart & ed.line.text[ed.line.position+1..ed.line.last]
       stdout.cursorBackward(rest.len)
   
 proc deleteNext*(ed: var LineEditor) =
   if not ed.line.empty:
     if not ed.line.full:
-      let rest = ed.line.toLast[1..^1] & " "
+      let rest = ed.line.toEnd[1..^1] & " "
       for c in rest:
         putchar c.ord
       stdout.cursorBackward(rest.len)
-      ed.line.text = ed.line.fromFirst & ed.line.toLast[1..^1]
+      ed.line.text = ed.line.fromStart & ed.line.toEnd[1..^1]
 
 proc printChar*(ed: var LineEditor, c: int) =  
   if ed.line.full:
@@ -171,7 +173,7 @@ proc printChar*(ed: var LineEditor, c: int) =
   else:
     if ed.mode == mdInsert:
       putchar(c.cint)
-      let rest = ed.line.toLast
+      let rest = ed.line.toEnd
       ed.line.text.insert($c.chr, ed.line.position)
       ed.line.position += 1
       for j in rest:
@@ -197,6 +199,18 @@ proc changeLine*(ed: var LineEditor, s: string) =
     for i in 0.countup(diff-1):
       putchar(32)
     stdout.cursorBackward(diff)
+
+proc changeLineToEnd(ed: var LineEditor, s: string) =
+  let fromStart = ed.line.fromStart
+  let toEnd = ed.line.toEnd
+  let diff = toEnd.len - s.len
+  for c in s:
+    ed.printChar(c.ord)
+  ed.printChar(32)
+  #if diff > 0:
+    #for i in 0.countup(diff-1):
+    #  putchar(32)
+    #stdout.cursorBackward(diff-1)
 
 proc historyInit*(size = 256): LineHistory =
   result.queue = initQueue[string](size)
@@ -232,6 +246,47 @@ proc historyFlush*(ed: var LineEditor) =
   if ed.history.queue.len > 0:
     ed.history.position = ed.history.queue.len
     ed.history.tainted = false
+
+var completionCallback* = proc (ed: LineEditor): seq[string] = 
+  return @["test1", "test2", "test3", "test4", "test31", "test32"]
+
+proc completeLine*(ed: var LineEditor): int =
+  let compl = completionCallback(ed)
+  let position = ed.line.position
+  let words = ed.line.fromStart.split(" ")
+  var word: string
+  if words.len > 0:
+    word = words[words.len-1]
+  else:
+    word = ed.line.fromStart
+  var rawmatches = compl.filterIt(it.startsWith word)
+  var matches: seq[string]
+  if ed.line.fromStart.len > 0:
+    matches = newSeq[string](0)
+    for s in rawmatches:
+      var s1 = s
+      s1.delete(0, word.len-1)
+      matches.add s1
+  else:
+    matches = rawmatches
+  var n = 0
+  if matches.len > 0:
+    ed.changeLineToEnd(matches[0])
+  else:
+    return -1
+  var ch = getchar()
+  while ch == 9:
+    n.inc
+    if n < matches.len:
+      let diff = ed.line.position - position
+      for i in 0.countup(diff-1):
+        ed.deletePrevious
+      ed.line.position = position
+      ed.changeLineToEnd(matches[n])
+      ch = getchar()
+    else:
+      n = -1
+  return ch
   
 proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
   termSetup()
@@ -281,6 +336,7 @@ KEYMAP["ctrl+c"] = proc(ed: var LineEditor) =
 # Key Names
 var KEYNAMES*: array[0..31, string]
 KEYNAMES[3] = "ctrl+c"
+KEYNAMES[9] = "tab"
 
 # Key Sequences
 var KEYSEQS*: CritBitTree[KeySeq]
@@ -304,8 +360,14 @@ else:
 proc readLine*(ed: var LineEditor, prompt=""): string =
   stdout.write(prompt)
   ed.line = Line(text: "", position: 0)
+  var c = -1 # Used to manage completions
   while true:
-    let c1 = getchar()
+    var c1: int
+    if c > 0:
+      c1 = c
+      c = -1
+    else:
+      c1 = getchar()
     if c1 in {10, 13}:
       stdout.write("\n")
       ed.historyAdd()
@@ -315,6 +377,8 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
       KEYMAP["backspace"](ed)
     elif c1 in PRINTABLE:
       ed.printChar(c1)
+    elif c1 == 9: # TAB
+      c = ed.completeLine()
     elif c1 in ESCAPES:
       var s = newSeq[Key](0)
       s.add(c1)
@@ -354,6 +418,17 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
       KEYMAP[KEYNAMES[c1]](ed)
  
 when isMainModule:
-  var ed = initEditor()
-  while true:
-    echo "\n---", ed.readLine("-> "), "---"
+  proc testChar() =
+    while true:
+      let a = getch().ord
+      echo "\n->", a
+      if a == 3:
+        termRestore()
+        quit(0)
+  proc testLineEditor() =
+    while true:
+      var ed = initEditor()
+      echo "---", ed.readLine("-> "), "---"
+
+  testLineEditor()
+
