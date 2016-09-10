@@ -247,8 +247,8 @@ proc historyFlush*(ed: var LineEditor) =
     ed.history.position = ed.history.queue.len
     ed.history.tainted = false
 
-var completionCallback* = proc (ed: LineEditor): seq[string] = 
-  return @["test1", "test2", "test3", "test4", "test31", "test32"]
+var completionCallback* = proc (ed: LineEditor): seq[string] {.closure.}= 
+  return @[]
 
 proc completeLine*(ed: var LineEditor): int =
   let compl = completionCallback(ed)
@@ -287,6 +287,9 @@ proc completeLine*(ed: var LineEditor): int =
     else:
       n = -1
   return ch
+
+proc lineText*(ed: LineEditor): string =
+  return ed.line.text
   
 proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
   termSetup()

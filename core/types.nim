@@ -106,7 +106,7 @@ proc isNotNil*[T](obj: T): bool =
 const version* = "1.0.0-dev"
 
 when defined(windows):
-  const HOME* = getenv("HOMEPATH")
+  const HOME* = getenv("USERPROFILE")
 when not defined(windows):
   const HOME* = getenv("HOME")
 

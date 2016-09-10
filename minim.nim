@@ -1,4 +1,4 @@
-import streams, critbits, parseopt2, strutils, os, json
+import streams, critbits, parseopt2, strutils, os, json, sequtils
 import 
   core/linedit,
   core/types,
@@ -16,8 +16,6 @@ import
   lib/min_sys,
   lib/min_crypto,
   lib/min_fs
-
-const USE_LINENOISE* = false
 
 var REPL = false
 var DEBUGGING = false
@@ -38,8 +36,6 @@ let usage* = "  MiNiM v" & version & " - a tiny concatenative programming langua
     -i, --interactive Start MiNiM Shell"""
 
 
-var CURRSCOPE*: ref MinScope
-
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
   let getFiles = proc(dir: string) =
@@ -51,66 +47,41 @@ proc getExecs(): seq[string] =
     getFiles(dir)
   return res
 
-when USE_LINENOISE:
-  # TODO: rewrite
-  proc completionCallback*(str: cstring, completions: ptr linenoiseCompletions) {.cdecl.}= 
-    var words = ($str).split(" ")
-    var w = if words.len > 0: words.pop else: ""
-    var sep = ""
-    if words.len > 0:
-      sep = " "
-    if w.startsWith("'"):
-      for s in CURRSCOPE.symbols.keys:
-        if startsWith("'$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "'" & s
-      return
-    if w.startsWith("~"):
-      for s in CURRSCOPE.symbols.keys:
-        if startsWith("~$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "~" & s
-      return
-    if w.startsWith("@"):
-      for s in CURRSCOPE.symbols.keys:
-        if startsWith("@$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "@" & s
-      return
-    if w.startsWith(">"):
-      for s in CURRSCOPE.symbols.keys:
-        if startsWith(">$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & ">" & s
-      return
-    if w.startsWith("<"):
-      for s, v in MINIMSYMBOLS.readFile.parseJson.pairs:
-        if startsWith("<$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "<" & s
-      return
-    if w.startsWith("*"):
-      for s in CURRSCOPE.symbols.keys:
-        if startsWith("*$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "*" & s
-      return
-    if w.startsWith("$"):
-      for s,v in envPairs():
-        if startsWith("$$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "$" & s
-      return
-    if w.startsWith("\""):
-      for c,s in walkDir(getCurrentDir(), true):
-        if startsWith("\"$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "\"" & s & "\""
-      return
-    let execs = getExecs()
-    if w.startsWith("!"):
-      for s in execs:
-        if startsWith("!$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "!" & s
-    if w.startsWith("&"):
-      for s in execs:
-        if startsWith("&$1"%s, w):
-          linenoiseAddCompletion completions, words.join(" ") & sep & "&" & s
-    for s in CURRSCOPE.symbols.keys:
-      if s.startsWith(w):
-        linenoiseAddCompletion completions, words.join(" ") & sep & s
+proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
+  var words = ed.lineText.split(" ")
+  var word: string
+  if words.len == 0:
+    word = ed.lineText
+  else:
+    word = words[words.len-1]
+  if word.startsWith("'"):
+    return symbols.mapIt("'" & $it)
+  elif word.startsWith("~"):
+    return symbols.mapIt("~" & $it)
+  if word.startsWith("@"):
+    return symbols.mapIt("@" & $it)
+  if word.startsWith(">"):
+    return symbols.mapIt(">" & $it)
+  if word.startsWith("*"):
+    return symbols.mapIt("*" & $it)
+  if word.startsWith("<"):
+    return toSeq(MINIMSYMBOLS.readFile.parseJson.pairs).mapIt(">" & $it[0])
+  if word.startsWith("$"):
+    return toSeq(envPairs()).mapIt("$" & $it[0])
+  if word.startsWith("!"):
+    return getExecs().mapIt("!" & $it[0])
+  if word.startsWith("&"):
+    return getExecs().mapIt("&" & $it[0])
+  if word.startsWith("\""):
+    var dir = word[1..^1]
+    if dir.dirExists:
+      dir = dir.replace("\\", "/")
+    else:
+      dir = getCurrentDir().replace("\\", "/")  
+    if not dir.endsWith("/"):
+      dir = dir & "/"
+    return toSeq(dir.walkDir).mapIt("\"$1\"" % it.path.replace("\\", "/"))
+  return symbols
 
 proc stdLib(i: In) =
   i.lang_module
@@ -167,14 +138,10 @@ proc minimRepl*(i: var MinInterpreter) =
   echo "-> Type 'exit' or 'quit' to exit."
   var ed = initEditor()
   while true:
-    #when USE_LINENOISE:
-      #CURRSCOPE = i.scope
-      #linenoiseSetCompletionCallback completionCallback
-      #discard linenoiseHistorySetMaxLen(1000)
-      #discard linenoiseHistoryLoad(MINIMHISTORY)
+    let symbols = toSeq(i.scope.symbols.keys)
+    completionCallback = proc(ed: LineEditor): seq[string] {.locks: 0.}=
+      return ed.getCompletions(symbols)
     line = ed.readLine(": ")
-    #if $line != "(null)":
-    #  discard linenoiseHistorySave(MINIMHISTORY)
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
