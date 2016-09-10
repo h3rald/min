@@ -73,14 +73,17 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   if word.startsWith("&"):
     return getExecs().mapIt("&" & $it[0])
   if word.startsWith("\""):
-    var dir = word[1..^1]
-    if dir.dirExists:
-      dir = dir.replace("\\", "/")
+    var f = word[1..^1]
+    if f == "":
+      f = getCurrentDir().replace("\\", "/")  
+      return toSeq(f.walkDir).mapIt("\"$1\"" % it.path.replace("\\", "/"))
+    elif f.dirExists:
+      f = f.replace("\\", "/")
+      return toSeq(f.walkDir).mapIt("\"$1\"" % it.path.replace("\\", "/"))
     else:
-      dir = getCurrentDir().replace("\\", "/")  
-    if not dir.endsWith("/"):
-      dir = dir & "/"
-    return toSeq(dir.walkDir).mapIt("\"$1\"" % it.path.replace("\\", "/"))
+      let dir = f.parentDir
+      if dir.existsDir:
+        return toSeq(dir.walkDir).filterIt(it.path.startsWith(f)).mapIt("\"$1\"" % it.path.replace("\\", "/"))
   return symbols
 
 proc stdLib(i: In) =
