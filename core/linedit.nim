@@ -3,7 +3,8 @@ import
   terminal,
   queues,
   sequtils,
-  strutils
+  strutils,
+  os
 
 # getch/putch implementations
 when defined(windows):
@@ -52,6 +53,7 @@ type
     text: string
     position: int
   LineHistory = object
+    file: string
     tainted: bool
     position: int
     queue: Queue[string]
@@ -200,26 +202,53 @@ proc changeLine*(ed: var LineEditor, s: string) =
       putchar(32)
     stdout.cursorBackward(diff)
 
-proc changeLineToEnd(ed: var LineEditor, s: string) =
+proc addToLineAtPosition(ed: var LineEditor, s: string) =
   let fromStart = ed.line.fromStart
   let toEnd = ed.line.toEnd
   let diff = toEnd.len - s.len
   for c in s:
     ed.printChar(c.ord)
   ed.printChar(32)
-  #if diff > 0:
-    #for i in 0.countup(diff-1):
-    #  putchar(32)
-    #stdout.cursorBackward(diff-1)
 
-proc historyInit*(size = 256): LineHistory =
+proc clearLine*(ed: var LineEditor) =
+  stdout.cursorBackward(ed.line.position)
+  for i in ed.line.text:
+    putchar(32)
+  stdout.cursorBackward(ed.line.text.len)
+  ed.line.position = 0
+  ed.line.text = ""
+
+proc goToStart*(ed: var LineEditor) =
+  stdout.cursorBackward(ed.line.position)
+  ed.line.position = 0
+
+proc goToEnd*(ed: var LineEditor) =
+  stdout.cursorForward(ed.line.text.len)
+  ed.line.position = ed.line.text.len
+
+proc historyInit*(size = 256, historyFile: string = nil): LineHistory =
+  result.file = historyFile
   result.queue = initQueue[string](size)
   result.position = 0
   result.tainted = false
   result.max = size
+  if historyFile.isNil:
+    return
+  if result.file.fileExists:
+    var line: string
+    let lines = result.file.readFile.split("\n")
+    for line in lines:
+      if line != "":
+        result.add line
+    result.position = lines.len
+  else:
+    result.file.writeFile("")
 
 proc historyAdd*(ed: var LineEditor, force = false) =
   ed.history.add ed.line.text, force
+  if ed.history.file.isNil:
+    return
+  ed.history.file.writeFile(toSeq(ed.history.queue.items).join("\n"))
 
 proc historyPrevious*(ed: var LineEditor) =
   let s = ed.history.previous
@@ -271,7 +300,7 @@ proc completeLine*(ed: var LineEditor): int =
     matches = rawmatches
   var n = 0
   if matches.len > 0:
-    ed.changeLineToEnd(matches[0])
+    ed.addToLineAtPosition(matches[0])
   else:
     return -1
   var ch = getchar()
@@ -282,7 +311,7 @@ proc completeLine*(ed: var LineEditor): int =
       for i in 0.countup(diff-1):
         ed.deletePrevious
       ed.line.position = position
-      ed.changeLineToEnd(matches[n])
+      ed.addToLineAtPosition(matches[n])
       ch = getchar()
     else:
       n = -1
@@ -291,10 +320,10 @@ proc completeLine*(ed: var LineEditor): int =
 proc lineText*(ed: LineEditor): string =
   return ed.line.text
   
-proc initEditor*(mode = mdInsert, historySize = 256): LineEditor =
+proc initEditor*(mode = mdInsert, historySize = 256, historyFile: string): LineEditor =
   termSetup()
   result.mode = mode
-  result.history = historyInit(historySize)
+  result.history = historyInit(historySize, historyFile)
 
 # Character sets
 const
@@ -335,11 +364,42 @@ KEYMAP["right"] = proc(ed: var LineEditor) =
 KEYMAP["ctrl+c"] = proc(ed: var LineEditor) =
   termRestore()
   quit(0)
+KEYMAP["ctrl+x"] = proc(ed: var LineEditor) =
+  ed.clearLine()
+KEYMAP["ctrl+b"] = proc(ed: var LineEditor) =
+  ed.goToStart()
+KEYMAP["ctrl+e"] = proc(ed: var LineEditor) =
+  ed.goToEnd()
 
 # Key Names
 var KEYNAMES*: array[0..31, string]
-KEYNAMES[3] = "ctrl+c"
-KEYNAMES[9] = "tab"
+KEYNAMES[1]    =    "ctrl+a"
+KEYNAMES[2]    =    "ctrl+b"
+KEYNAMES[3]    =    "ctrl+c"
+KEYNAMES[4]    =    "ctrl+d"
+KEYNAMES[5]    =    "ctrl+e"
+KEYNAMES[6]    =    "ctrl+f"
+KEYNAMES[7]    =    "ctrl+g"
+KEYNAMES[8]    =    "ctrl+h"
+KEYNAMES[9]    =    "ctrl+i"
+KEYNAMES[9]    =    "tab"
+KEYNAMES[10]   =    "ctrl+j"
+KEYNAMES[11]   =    "ctrl+k"
+KEYNAMES[12]   =    "ctrl+l"
+KEYNAMES[13]   =    "ctrl+m"
+KEYNAMES[14]   =    "ctrl+n"
+KEYNAMES[15]   =    "ctrl+o"
+KEYNAMES[16]   =    "ctrl+p"
+KEYNAMES[17]   =    "ctrl+q"
+KEYNAMES[18]   =    "ctrl+r"
+KEYNAMES[19]   =    "ctrl+s"
+KEYNAMES[20]   =    "ctrl+t"
+KEYNAMES[21]   =    "ctrl+u"
+KEYNAMES[22]   =    "ctrl+v"
+KEYNAMES[23]   =    "ctrl+w"
+KEYNAMES[24]   =    "ctrl+x"
+KEYNAMES[25]   =    "ctrl+y"
+KEYNAMES[26]   =    "ctrl+z"
 
 # Key Sequences
 var KEYSEQS*: CritBitTree[KeySeq]
@@ -430,8 +490,8 @@ when isMainModule:
         quit(0)
   proc testLineEditor() =
     while true:
-      var ed = initEditor()
+      var ed = initEditor(historyFile = nil)
       echo "---", ed.readLine("-> "), "---"
 
-  testLineEditor()
+  testChar()
 

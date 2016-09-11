@@ -139,7 +139,13 @@ proc minimRepl*(i: var MinInterpreter) =
   var line: string
   echo "MiNiM Shell v$1" % version
   echo "-> Type 'exit' or 'quit' to exit."
-  var ed = initEditor()
+  var ed = initEditor(historyFile = MINIMHISTORY)
+  KEYMAP["ctrl+s"] = proc (ed: var LineEditor) =
+    echo "hello"
+    when defined(windows):
+      discard execShellCmd("cls")
+    else:
+      discard execShellCmd("clear")
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
     completionCallback = proc(ed: LineEditor): seq[string] {.locks: 0.}=
