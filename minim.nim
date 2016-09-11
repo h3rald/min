@@ -7,7 +7,6 @@ import
   core/utils
 import 
   lib/min_lang, 
-  lib/min_stack, 
   lib/min_num,
   lib/min_str,
   lib/min_logic,
@@ -93,7 +92,6 @@ proc stdLib(i: In) =
   i.io_module
   i.logic_module
   i.num_module
-  i.stack_module
   i.str_module
   i.sys_module
   i.time_module

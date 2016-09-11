@@ -106,9 +106,6 @@ proc lang_module*(i: In) =
       i.reqQuotation code
       code.filename = i.filename
       i.unquote("<module>", code)
-      #let p = proc(i: In) =
-      #  i.push code
-      #i.scope.symbols[name.getString] = MinOperator(kind: minProcOp, prc: p)
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal)
   
     .symbol("import") do (i: In):
@@ -132,10 +129,6 @@ proc lang_module*(i: In) =
         if symbol.len == 1:
           if i.scope.hasSigil(symbol):
             raiseInvalid("Sigil '$1' already exists" % [symbol])
-          #let p = proc(i: In) =
-          #  i.evaluating = true
-          #  i.push q2.qVal
-          #  i.evaluating = false
           i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q2) 
         else:
           raiseInvalid("A sigil can only have one character")
@@ -227,8 +220,41 @@ proc lang_module*(i: In) =
       finally:
         if hasFinally:
           i.unquote("<try-finally>", final)
-  
+
     # Operations on the whole stack
+
+    .symbol("id") do (i: In):
+      discard
+    
+    .symbol("pop") do (i: In):
+      if i.stack.len < 1:
+        raiseEmptyStack()
+      discard i.pop
+    
+    .symbol("dup") do (i: In):
+      i.push i.peek
+    
+    .symbol("dip") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      let v = i.pop
+      i.unquote("<dip>", q)
+      i.push v
+    
+    .symbol("swap") do (i: In):
+      if i.stack.len < 2:
+        raiseEmptyStack()
+      let a = i.pop
+      let b = i.pop
+      i.push a
+      i.push b
+    
+    .symbol("sip") do (i: In):
+      var a, b: MinValue 
+      i.reqTwoQuotations a, b
+      i.push b
+      i.unquote("<sip>", a)
+      i.push b
   
     .symbol("clear-stack") do (i: In):
       while i.stack.len > 0:

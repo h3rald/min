@@ -3,7 +3,6 @@
 'io        import
 'logic     import
 'num       import
-'stack     import
 'sys       import
 'time      import
 'fs        import

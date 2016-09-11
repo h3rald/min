@@ -2,7 +2,6 @@
 'io      load
 'logic   load
 'num     load
-'stack   load
 'str     load
 'sys     load
 'time    load

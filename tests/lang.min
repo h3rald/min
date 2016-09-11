@@ -8,6 +8,16 @@
 
   (debug? false ==) assert
 
+  (1 id 1 ==) assert
+
+  (1 pop get-stack () ==) assert
+
+  (1 dup get-stack (1 1) ==) assert
+
+  (3 2 (1 +) dip + 6 ==) assert
+
+  ((1) (2 swap append) sip concat (1 2 1) ==) assert
+
   (2 'a define
     (3 a + (5 'a define a) -> +) -> a + 12 ==) assert
 
