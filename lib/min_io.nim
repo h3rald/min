@@ -18,6 +18,17 @@ proc io_module*(i: In) =
       let a = i.peek
       echo $$a
   
+    .symbol("tab-print") do (i: In):
+      var n, q: MinValue
+      i.reqIntAndQuotation n, q
+      var c = 0
+      for s in q.qVal:
+        c.inc
+        stdout.write $$s & spaces(max(0, 15 - ($$s).len))
+        if c mod n.intVal == 0:
+          echo ""
+      echo ""
+  
     .symbol("get") do (i: In):
       i.push newVal(stdin.readLine())
   
