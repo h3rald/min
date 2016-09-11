@@ -211,9 +211,10 @@ proc addToLineAtPosition(ed: var LineEditor, s: string) =
   ed.printChar(32)
 
 proc clearLine*(ed: var LineEditor) =
-  stdout.cursorBackward(ed.line.position)
+  stdout.cursorBackward(ed.line.position+1)
   for i in ed.line.text:
     putchar(32)
+  putchar(32)
   stdout.cursorBackward(ed.line.text.len)
   ed.line.position = 0
   ed.line.text = ""

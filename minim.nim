@@ -64,6 +64,8 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
     return symbols.mapIt(">" & $it)
   if word.startsWith("*"):
     return symbols.mapIt("*" & $it)
+  if word.startsWith("("):
+    return symbols.mapIt("(" & $it)
   if word.startsWith("<"):
     return toSeq(MINIMSYMBOLS.readFile.parseJson.pairs).mapIt(">" & $it[0])
   if word.startsWith("$"):

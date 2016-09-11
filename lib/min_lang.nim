@@ -329,11 +329,12 @@ proc lang_module*(i: In) =
       var prog, list: MinValue
       i.reqTwoQuotations prog, list
       i.push newVal(newSeq[MinValue](0))
+      var res = newSeq[MinValue](0)
       for litem in list.qVal:
         i.push litem
         i.unquote("<map-quotation>", prog)
-        i.apply("swap") 
-        i.apply("append") 
+        res.add i.pop
+      i.push res.newVal
     
     .symbol("times") do (i: In):
       var t, prog: MinValue
