@@ -408,10 +408,10 @@ proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   if not (a.isString and b.isString or a.isNumber and b.isNumber):
     raiseInvalid("Two numbers or two strings are required on the stack")
 
-proc reqStringAndNumber*(i: var MinInterpreter, a, b: var MinValue) =
+proc reqIntAndString*(i: var MinInterpreter, b, a: var MinValue) =
   b = i.pop
   a = i.pop
-  if not (a.isString and b.isNumber):
+  if not (a.isString and b.isInt):
     raiseInvalid("A string and a number are required on the stack")
 
 proc reqString*(i: var MinInterpreter, a: var MinValue) =

@@ -121,7 +121,7 @@ proc sys_module*(i: In)=
   
     .symbol("chmod") do (i: In):
       var s, perms: MinValue
-      i.reqStringAndNumber s, perms
+      i.reqIntAndString perms, s
       s.getString.setFilePermissions(perms.intVal.toFilePermissions)
 
     .symbol("symlink?") do (i: In):

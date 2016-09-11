@@ -33,6 +33,7 @@
 'filter       :select
 'cons         :prepend
 'size         :length
+'regex        :=~
 
 ; Mathematical Operators
 (1 +)           :succ

@@ -21,5 +21,47 @@
 
   ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
 
+  ("this is a test" uppercase "THIS IS A TEST" ==) assert
+
+  ("THIS IS A TEST" lowercase "this is a test" ==) assert
+
+  ("test" capitalize "Test" ==) assert
+
+  ("this is a test" titleize "This Is A Test" ==) assert
+
+  ("+" 3 repeat "+++" ==) assert
+
+  ("test" 4 indent "    test" ==) assert
+
+  ((1 3 "test") ", " join "1, 3, test" ==) assert
+
+  (3 string "3" ==) assert
+  
+  ("false" bool false ==) assert
+  
+  ("" bool false ==) assert
+  
+  (0 bool false ==) assert
+  
+  (false bool false ==) assert
+  
+  (0.0 bool false ==) assert
+  
+  ("something" bool true ==) assert
+
+  ("345" int 345 ==) assert
+
+  (true int 1 ==) assert
+
+  (3.5 int 3 ==) assert
+
+  (3.5 float 3.5 ==) assert
+
+  (3 float 3.0 ==) assert
+
+  (false float 0.0 ==) assert
+
+  ("3.678" float 3.678 ==) assert
+
   report
   clear-stack
