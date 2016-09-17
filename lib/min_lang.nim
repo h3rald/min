@@ -107,7 +107,15 @@ proc lang_module*(i: In) =
       code.filename = i.filename
       i.unquote("<module>", code)
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal)
-  
+
+    .symbol("scope?") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      if not q.scope.isNil:
+        i.push true.newVal
+      else:
+        i.push false.newVal
+
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
       var name: string
@@ -173,9 +181,12 @@ proc lang_module*(i: In) =
       var scope: MinValue
       i.reqQuotation scope
       var symbols = newSeq[MinValue](0)
-      for s in scope.scope.symbols.keys:
-        symbols.add s.newVal
-      i.push symbols.newVal
+      if scope.scope.isNil:
+        i.push symbols.newVal
+      else:
+        for s in scope.scope.symbols.keys:
+          symbols.add s.newVal
+        i.push symbols.newVal
   
     # ("SomeError" "message")
     .symbol("raise") do (i: In):

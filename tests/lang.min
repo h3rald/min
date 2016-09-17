@@ -37,6 +37,12 @@
   
   (defmod symbols "mymath" contains) assert
 
+  (defmod mymath scope?) assert
+
+  (() scope? false ==) assert 
+
+  (() inspect () ==) assert
+
   (defmod 'mymath import symbols "myplus" contains) assert
 
   (defmod 'mymath import 2 3 myplus 5 ==) assert
