@@ -21,4 +21,3 @@
   
   report
   clear-stack
-  "test.txt" rm

@@ -19,34 +19,34 @@ proc sys_module*(i: In)=
     
     .symbol("cd") do (i: In):
       var f: MinValue
-      i.reqString f
-      f.strVal.setCurrentDir
+      i.reqStringLike f
+      f.getString.setCurrentDir
     
     .symbol("ls") do (i: In):
       var a: MinValue
-      i.reqString a
+      i.reqStringLike a
       var list = newSeq[MinValue](0)
-      for i in walkDir(a.strVal):
+      for i in walkDir(a.getString):
         list.add newVal(i.path)
       i.push list.newVal
     
     .symbol("ls-r") do (i: In):
       var a: MinValue
-      i.reqString a
+      i.reqStringLike a
       var list = newSeq[MinValue](0)
-      for i in walkDirRec(a.strVal):
+      for i in walkDirRec(a.getString):
         list.add newVal(i)
       i.push list.newVal
   
     .symbol("system") do (i: In):
       var a: MinValue
-      i.reqString a
-      i.push execShellCmd(a.strVal).newVal
+      i.reqStringLike a
+      i.push execShellCmd(a.getString).newVal
     
     .symbol("run") do (i: In):
       var a: MinValue
-      i.reqString a
-      let words = a.strVal.split(" ")
+      i.reqStringLike a
+      let words = a.getString.split(" ")
       let cmd = words[0]
       var args = newSeq[string](0)
       if words.len > 1:
@@ -55,13 +55,13 @@ proc sys_module*(i: In)=
     
     .symbol("getenv") do (i: In):
       var a: MinValue
-      i.reqString a
-      i.push a.strVal.getEnv.newVal
+      i.reqStringLike a
+      i.push a.getString.getEnv.newVal
     
     .symbol("putenv") do (i: In):
       var key, value: MinValue
-      i.reqTwoStrings key, value
-      key.strVal.putEnv value.strVal
+      i.reqTwoStringLike key, value
+      key.getString.putEnv value.getString
     
     .symbol("env?") do (i: In):
       var s: MinValue
@@ -81,38 +81,59 @@ proc sys_module*(i: In)=
     
     .symbol("file?") do (i: In):
       var f: MinValue
-      i.reqString f
-      i.push f.strVal.fileExists.newVal
+      i.reqStringLike f
+      i.push f.getString.fileExists.newVal
     
     .symbol("dir?") do (i: In):
       var f: MinValue
-      i.reqString f
-      i.push f.strVal.dirExists.newVal
+      i.reqStringLike f
+      i.push f.getString.dirExists.newVal
     
     .symbol("rm") do (i: In):
-      var f: MinValue
-      i.reqString f
-      f.strVal.removeFile
+      var v: MinValue
+      i.reqStringLike v
+      let f = v.getString
+      if f.existsFile:
+        f.removeFile
+      elif f.existsDir:
+        f.removeDir
+      else:
+        raiseInvalid("File '$1' does not exist." % f)
     
     .symbol("cp") do (i: In):
       var a, b: MinValue
-      i.reqTwoStrings a, b
-      copyFile b.strVal, a.strVal
+      i.reqTwoStringLike a, b
+      let src = b.getString
+      var dest = a.getString
+      if src.dirExists:
+        copyDirWithPermissions src, dest
+      elif dest.dirExists:
+        if src.dirExists:
+          copyDirWithPermissions src, dest
+        else:
+          copyFileWithPermissions src, dest / src.extractFilename 
+      else:
+        copyFileWithPermissions src, dest 
+
     
     .symbol("mv") do (i: In):
       var a, b: MinValue
-      i.reqTwoStrings a, b
-      moveFile b.strVal, a.strVal
+      i.reqTwoStringLike a, b
+      let src = b.getString
+      var dest = a.getString
+      if dest.dirExists:
+        dest = dest / src.extractFilename 
+      moveFile src, dest
     
     .symbol("rmdir") do (i: In):
       var f: MinValue
-      i.reqString f
-      f.strVal.removeDir
+      i.reqStringLike f
+      f.getString.removeDir
     
     .symbol("mkdir") do (i: In):
       var f: MinValue
-      i.reqString f
-      f.strVal.createDir
+      i.reqStringLike f
+      f.getString.createDir
   
      .symbol("sleep") do (i: In):
        var ms: MinValue
@@ -131,12 +152,23 @@ proc sys_module*(i: In)=
 
     .symbol("symlink") do (i: In):
       var src, dest: MinValue
-      i.reqTwoStrings dest, src
+      i.reqTwoStringLike dest, src
       src.getString.createSymlink dest.getString
 
     .symbol("hardlink") do (i: In):
       var src, dest: MinValue
-      i.reqTwoStrings dest, src
+      i.reqTwoStringLike dest, src
       src.getString.createHardlink dest.getString
+
+    .symbol("filename") do (i: In):
+      var f: MinValue
+      i.reqStringLike f
+      i.push f.getString.extractFilename.newVal
+
+    .symbol("dirname") do (i: In):
+      var f: MinValue
+      i.reqStringLike f
+      i.push f.getString.parentDir.newVal
+
 
     .finalize()

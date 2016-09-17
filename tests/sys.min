@@ -3,6 +3,28 @@
 
 "sys" describe
 
+  ("dir1" mkdir "dir1" dir?) assert
+
+  ("dir1" "dir2" mv "dir2" dir?) assert
+
+  ("dir1" dir? false ==) assert
+
+  ("dir2" "dir1" cp "dir1" dir?) assert
+
+  ("..." "dir1/test.txt" fwrite "dir1/test.txt" file?) assert
+
+  ("dir1/test.txt" "dir2" mv "dir2/test.txt" file?)  assert
+
+  ("dir1/test.txt" file? false ==) assert
+
+  ("dir2/test.txt" "dir1" cp "dir1/test.txt" file?)  assert
+
+  ('dir1 ls 'filename map ("test.txt") ==) assert
+
+  ('dir2 ls 'dirname map ("dir2") ==) assert
+
+  ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) assert  
+
   ("systest" mkdir . ls . "/systest" concat  contains) assert
 
   ("systest" cd . "systest" match) assert
