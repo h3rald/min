@@ -64,3 +64,7 @@
 (put pop)                                                     :put!
 (:ms :q :check (check) (ms sleep q) while)                    :interval
 (call pop)                                                    :call!
+
+; Load all stored symbols
+
+stored-symbols 'load-symbol foreach

@@ -157,6 +157,8 @@
 
   ('sym1 remove-symbol stored-symbols "sym1" contains false ==) assert
 
+  (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) assert
+
   report
   ; Tidy up
   ~defmod

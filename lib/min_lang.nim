@@ -372,6 +372,13 @@ proc lang_module*(i: In) =
         i.unquote("<map-quotation>", prog)
         res.add i.pop
       i.push res.newVal
+
+    .symbol("foreach") do (i: In):
+      var prog, list: MinValue
+      i.reqTwoQuotations prog, list
+      for litem in list.qVal:
+        i.push litem
+        i.unquote("<foreach-quotation>", prog)
     
     .symbol("times") do (i: In):
       var t, prog: MinValue
