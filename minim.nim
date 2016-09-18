@@ -151,7 +151,7 @@ proc minimRepl*(i: var MinInterpreter) =
   var s = newStringStream("")
   i.open(s, "")
   var line: string
-  echo "$1 v$2" % [version, appname]
+  echo "$1 v$2" % [appname, version]
   echo "-> Type 'exit' or 'quit' to exit."
   var ed = initEditor(historyFile = MINIMHISTORY)
   KEYMAP["ctrl+s"] = proc (ed: var LineEditor) =
