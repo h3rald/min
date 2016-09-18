@@ -3,6 +3,7 @@ import
   core/linedit,
   core/consts,
   core/parser, 
+  core/value, 
   core/interpreter, 
   core/utils
 import 
@@ -164,7 +165,7 @@ proc minimRepl*(i: var MinInterpreter) =
     try:
       i.interpret()
     except:
-      warn getCurrentExceptionMsg()
+      stderr.writeLine getCurrentExceptionMsg()
     finally:
       if i.stack.len > 0:
         let last = i.stack[i.stack.len - 1]

@@ -2,6 +2,7 @@ import
   tables
 import 
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
   ../core/utils
 

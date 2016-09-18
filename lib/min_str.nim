@@ -4,6 +4,7 @@ import
   sequtils
 import 
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
   ../core/utils,
   ../core/regex

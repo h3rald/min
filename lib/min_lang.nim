@@ -6,10 +6,110 @@ import
 import 
   ../core/consts,
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
   ../core/utils,
   ../core/regex,
   ../core/linedit
+
+# Dictionary Methods
+
+proc dget*(q: MinValue, s: MinValue): MinValue =
+  # Assumes q is a dictionary
+  for v in q.qVal:
+    if v.qVal[0].getString == s.getString:
+      return v.qVal[1]
+  raiseInvalid("Key '$1' not found" % [s.getString])
+
+proc ddel*(q: var MinValue, s: MinValue): MinValue =
+  # Assumes q is a dictionary
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+    q.qVal.delete(c)
+  return q
+      
+proc dset*(q: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
+  # Assumes q is a dictionary
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+      q.qVal.delete(c)
+      q.qVal.insert(@[s.getString.newSym, m].newVal, c)
+  return q
+
+proc keys*(q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal
+  for v in q.qVal:
+    result.qVal.add v.qVal[0]
+
+proc values*(q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal
+  for v in q.qVal:
+    result.qVal.add v.qVal[1]
+
+# JSON interop
+
+proc `%`*(a: MinValue): JsonNode =
+  case a.kind:
+    of minBool:
+      return %a.boolVal
+    of minSymbol:
+      return %(";sym:$1" % [a.symVal])
+    of minString:
+      return %a.strVal
+    of minInt:
+      return %a.intVal
+    of minFloat:
+      return %a.floatVal
+    of minQuotation:
+      if a.isDictionary:
+        result = newJObject()
+        for i in a.qVal:
+          result[$i.qVal[0].symVal] = %i.qVal[1]
+      else:
+        result = newJArray()
+        for i in a.qVal:
+          result.add %i
+
+proc fromJson*(json: JsonNode): MinValue = 
+  case json.kind:
+    of JNull:
+      result = newSeq[MinValue](0).newVal
+    of JBool: 
+      result = json.getBVal.newVal
+    of JInt:
+      result = json.getNum.newVal
+    of JFloat:
+      result = json.getFNum.newVal
+    of JString:
+      let s = json.getStr
+      if s.match("^;sym:"):
+        result = regex.replace(s, "^;sym:", "").newSym
+      else:
+        result = json.getStr.newVal
+    of JObject:
+      var res = newSeq[MinValue](0)
+      for key, value in json.pairs:
+        res.add @[key.newSym, value.fromJson].newVal
+      return res.newVal
+    of JArray:
+      var res = newSeq[MinValue](0)
+      for value in json.items:
+        res.add value.fromJson
+      return res.newVal
 
 proc lang_module*(i: In) =
   i.scope
@@ -121,7 +221,7 @@ proc lang_module*(i: In) =
       var name: string
       i.reqStringLike rawName
       name = rawName.getString
-      i.execOp(i.scope.getSymbol(name))
+      i.apply(i.scope.getSymbol(name))
       i.reqQuotation mdl
       if not mdl.scope.isNil:
         for sym, val in mdl.scope.symbols.pairs:
@@ -175,7 +275,7 @@ proc lang_module*(i: In) =
       let origScope = i.scope
       i.scope = q.scope
       let sym = i.scope.getSymbol(s)
-      i.execOp(sym)
+      i.apply(sym)
       i.scope = origScope
   
     .symbol("inspect") do (i: In):

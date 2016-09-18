@@ -4,6 +4,7 @@ import
   critbits, 
   os
 import 
+  value,
   parser
 
 type
@@ -167,7 +168,7 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-proc execOp*(i: In, op: MinOperator) =
+proc apply*(i: In, op: MinOperator) =
   case op.kind
   of minProcOp:
     op.prc(i)
@@ -191,13 +192,13 @@ proc push*(i: In, val: MinValue) =
       if i.unsafe:
         let stack = i.copystack
         try:
-          i.execOp(sym)
+          i.apply(sym)
         except:
           i.stack = stack
           raise
       else:
         i.execute:
-          i.execOp(sym)
+          i.apply(sym)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
@@ -207,13 +208,13 @@ proc push*(i: In, val: MinValue) =
         if i.unsafe:
           let stack = i.copystack
           try:
-            i.execOp(sig) 
+            i.apply(sig) 
           except:
             i.stack = stack
             raise
         else:
           i.execute:
-            i.execOp(sig)
+            i.apply(sig)
       else:
         raiseUndefined("Undefined symbol: '"&val.symVal&"'")
   else:
@@ -274,7 +275,3 @@ proc load*(i: In, s: string) =
     stderr.writeLine getCurrentExceptionMsg()
   finally:
     i.filename = fn
-
-proc apply*(i: In, symbol: string) =
-  # TODO review
-  i.scope.getSymbol(symbol).prc(i)

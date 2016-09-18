@@ -5,8 +5,10 @@ import
   strutils
 import 
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
-  ../core/utils
+  ../core/utils,
+  ../core/fileutils
 
 proc sys_module*(i: In)=
   i.define("sys")

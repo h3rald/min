@@ -4,8 +4,10 @@ import
   times
 import 
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
-  ../core/utils
+  ../core/utils,
+  ../core/fileutils
 
 proc fs_module*(i: In) =
   i.define("fs")

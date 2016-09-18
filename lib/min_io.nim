@@ -4,6 +4,7 @@ import
 import 
   ../core/linedit,
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
   ../core/utils
 

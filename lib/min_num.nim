@@ -3,6 +3,7 @@ import
   random
 import 
   ../core/parser, 
+  ../core/value, 
   ../core/interpreter, 
   ../core/utils
 
