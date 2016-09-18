@@ -62,8 +62,10 @@
 (print pop)                                                   :print!
 (dprint pop)                                                  :dprint!
 (put pop)                                                     :put!
-(:ms :q :check (check) (ms sleep q) while)                    :interval
 (call pop)                                                    :call!
+(:ms :q :check (check) (ms sleep q) while)                    :interval
+(password aes encode)                                         :encrypt
+(decode password aes)                                         :decrypt
 
 ; Load all stored symbols
 

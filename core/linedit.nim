@@ -322,7 +322,7 @@ proc completeLine*(ed: var LineEditor): int =
 proc lineText*(ed: LineEditor): string =
   return ed.line.text
   
-proc initEditor*(mode = mdInsert, historySize = 256, historyFile: string): LineEditor =
+proc initEditor*(mode = mdInsert, historySize = 256, historyFile: string = nil): LineEditor =
   termSetup()
   result.mode = mode
   result.history = historyInit(historySize, historyFile)
@@ -422,7 +422,7 @@ else:
   KEYSEQS["delete"]     = @[27, 91, 51, 126]
 
 
-proc readLine*(ed: var LineEditor, prompt=""): string =
+proc readLine*(ed: var LineEditor, prompt="", hidechars = false): string =
   stdout.write(prompt)
   ed.line = Line(text: "", position: 0)
   var c = -1 # Used to manage completions
@@ -441,7 +441,12 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
     elif c1 in {8, 127}:
       KEYMAP["backspace"](ed)
     elif c1 in PRINTABLE:
-      ed.printChar(c1)
+      if hidechars:
+        putchar('*'.ord)
+        ed.line.text &= c1.chr
+        ed.line.position.inc
+      else:
+        ed.printChar(c1)
     elif c1 == 9: # TAB
       c = ed.completeLine()
     elif c1 in ESCAPES:
@@ -481,6 +486,9 @@ proc readLine*(ed: var LineEditor, prompt=""): string =
             KEYMAP["delete"](ed)
     elif KEYMAP.hasKey(KEYNAMES[c1]):
       KEYMAP[KEYNAMES[c1]](ed)
+
+proc password*(ed: var LineEditor, prompt=""): string =
+  return ed.readLine(prompt, true)
  
 when isMainModule:
   proc testChar() =

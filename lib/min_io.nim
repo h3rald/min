@@ -1,5 +1,6 @@
 import os, strutils
 import 
+  ../core/linedit,
   ../core/types,
   ../core/parser, 
   ../core/interpreter, 
@@ -18,7 +19,7 @@ proc io_module*(i: In) =
       let a = i.peek
       echo $$a
   
-    .symbol("tab-print") do (i: In):
+    .symbol("column-print") do (i: In):
       var n, q: MinValue
       i.reqIntAndQuotation n, q
       var c = 0
@@ -30,7 +31,11 @@ proc io_module*(i: In) =
       echo ""
   
     .symbol("get") do (i: In):
-      i.push newVal(stdin.readLine())
+      i.push stdin.readLine().newVal
+
+    .symbol("password") do (i: In):
+      var ed = initEditor()
+      i.push ed.password("Enter Password: ").newVal
   
     .symbol("print") do (i: In):
       let a = i.peek
@@ -53,5 +58,5 @@ proc io_module*(i: In) =
       discard f.open(a.strVal, fmAppend)
       f.write(b.strVal)
       f.close()
-  
+
     .finalize()
