@@ -67,4 +67,4 @@
 
 ; Load all stored symbols
 
-stored-symbols 'load-symbol foreach
+stored-symbols ('load-symbol ROOT with) foreach

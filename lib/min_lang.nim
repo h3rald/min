@@ -159,9 +159,14 @@ proc lang_module*(i: In) =
    .symbol("with") do (i: In):
      var qscope, qprog: Minvalue
      i.reqTwoQuotations qscope, qprog
-     i.unquote("<with-scope>", qscope)
-     i.withScope(qscope):
-       i.unquote("<with-program>", qprog)
+     if qscope.qVal.len > 0:
+       # System modules are empty quotes and don't need to be unquoted
+       i.unquote("<with-scope>", qscope)
+     let scope = i.scope
+     i.scope = qscope.scope
+     for v in qprog.qVal:
+      i.push v
+     i.scope = scope
   
     .symbol("call") do (i: In):
       var symbol, q: Minvalue
@@ -170,9 +175,6 @@ proc lang_module*(i: In) =
       let s = symbol.getString
       let origScope = i.scope
       i.scope = q.scope
-      #let sProc = i.scope.getSymbol(s).prc
-      # Restore original quotation
-      #sProc(i)
       let sym = i.scope.getSymbol(s)
       i.execOp(sym)
       i.scope = origScope
