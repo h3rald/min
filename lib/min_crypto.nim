@@ -7,7 +7,7 @@ import
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
-  ../core/utils,
+  ../core/utils
 import
   ../vendor/sha1,
   ../vendor/nimSHA2,
