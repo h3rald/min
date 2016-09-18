@@ -20,7 +20,7 @@ import
 var REPL = false
 var DEBUGGING = false
 const PRELUDE* = "prelude.min".slurp.strip
-let usage* = "  MiNiM v" & version & " - a tiny concatenative programming language" & """
+let usage* = "  " & appname & " v" & version & " - a tiny concatenative programming language" & """
 
   (c) 2014-2016 Fabio Cevasco
   
@@ -145,7 +145,7 @@ proc minimRepl*(i: var MinInterpreter) =
   var s = newStringStream("")
   i.open(s, "")
   var line: string
-  echo "MiNiM Shell v$1" % version
+  echo "$1 v$2" % [version, appname]
   echo "-> Type 'exit' or 'quit' to exit."
   var ed = initEditor(historyFile = MINIMHISTORY)
   KEYMAP["ctrl+s"] = proc (ed: var LineEditor) =
