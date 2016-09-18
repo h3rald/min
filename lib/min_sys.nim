@@ -8,9 +8,6 @@ import
   ../core/interpreter, 
   ../core/utils
 
-  # OS
-  
-
 proc sys_module*(i: In)=
   i.define("sys")
   

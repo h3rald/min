@@ -10,14 +10,8 @@ type
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 
-proc raiseUndefined(msg: string) =
-  raise MinUndefinedError(msg: msg)
-
-proc raiseEmptyStack() =
-  raise MinEmptyStackError(msg:"Insufficient items on the stack")
-
-proc raiseInvalid(msg: string) =
-  raise MinInvalidError(msg: msg)
+proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
+  raise MinRuntimeError(msg: msg, qVal: qVal)
 
 proc fullname*(scope: ref MinScope): string =
   result = scope.name

@@ -10,9 +10,7 @@ import
   parser, 
   interpreter
 
-type
-  MinOutOfBoundsError* = ref object of ValueError
-
+# Predicates
 
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
@@ -74,22 +72,7 @@ proc newSym*(s: string): MinValue =
 proc newQuotation*(): MinValue = 
   return MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
 
-# Error Helpers
-
-proc raiseInvalid*(msg: string) =
-  raise MinInvalidError(msg: msg)
-
-proc raiseUndefined*(msg: string) =
-  raise MinUndefinedError(msg: msg)
-
-proc raiseOutOfBounds*(msg: string) =
-  raise MinOutOfBoundsError(msg: msg)
-
-proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
-  raise MinRuntimeError(msg: msg, qVal: qVal)
-
-proc raiseEmptyStack*() =
-  raise MinEmptyStackError(msg: "Insufficient items on the stack")
+# Filetype and permissions
 
 proc filetype*(p: PathComponent): string =
   case p

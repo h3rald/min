@@ -101,6 +101,21 @@ type
   MinUndefinedError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
+  MinOutOfBoundsError* = ref object of ValueError
+
+# Error Helpers
+
+proc raiseInvalid*(msg: string) =
+  raise MinInvalidError(msg: msg)
+
+proc raiseUndefined*(msg: string) =
+  raise MinUndefinedError(msg: msg)
+
+proc raiseOutOfBounds*(msg: string) =
+  raise MinOutOfBoundsError(msg: msg)
+
+proc raiseEmptyStack*() =
+  raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
 
 const
