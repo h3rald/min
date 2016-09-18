@@ -2,7 +2,6 @@ import
   tables,
   random
 import 
-  ../core/types,
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils

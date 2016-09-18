@@ -1,7 +1,8 @@
-import os, strutils
+import 
+  os, 
+  strutils
 import 
   ../core/linedit,
-  ../core/types,
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils

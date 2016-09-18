@@ -1,7 +1,7 @@
 import streams, critbits, parseopt2, strutils, os, json, sequtils
 import 
   core/linedit,
-  core/types,
+  core/consts,
   core/parser, 
   core/interpreter, 
   core/utils

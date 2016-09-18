@@ -1,7 +1,14 @@
-import streams, strutils, critbits, os
 import 
-  types, 
+  streams, 
+  strutils, 
+  critbits, 
+  os
+import 
   parser
+
+type
+  MinRuntimeError* = ref object of SystemError
+    qVal*: seq[MinValue]
 
 proc raiseUndefined(msg: string) =
   raise MinUndefinedError(msg: msg)
@@ -14,13 +21,13 @@ proc raiseInvalid(msg: string) =
 
 proc fullname*(scope: ref MinScope): string =
   result = scope.name
-  if scope.parent.isNotNil:
+  if not scope.parent.isNil:
     result = scope.parent.fullname & ":" & result
 
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
-  elif scope.parent.isNotNil:
+  elif not scope.parent.isNil:
     return scope.parent.getSymbol(key)
   else:
     raiseUndefined("Symbol '$1' not found." % key)
@@ -28,7 +35,7 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
 proc hasSymbol*(scope: ref MinScope, key: string): bool =
   if scope.symbols.hasKey(key):
     return true
-  elif scope.parent.isNotNil:
+  elif not scope.parent.isNil:
     return scope.parent.hasSymbol(key)
   else:
     return false
@@ -44,20 +51,20 @@ proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.discardable.}=
   result = false
   # check if a symbol already exists in current scope
-  if scope.isNotNil and scope.symbols.hasKey(key):
+  if not scope.isNil and scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key) 
     scope.symbols[key] = value
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
-    if scope.parent.isNotNil:
+    if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value)
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
-  elif scope.parent.isNotNil:
+  elif not scope.parent.isNil:
     return scope.parent.getSigil(key)
   else:
     raiseUndefined("Sigil '$1' not found." % key)
@@ -65,7 +72,7 @@ proc getSigil*(scope: ref MinScope, key: string): MinOperator =
 proc hasSigil*(scope: ref MinScope, key: string): bool =
   if scope.sigils.hasKey(key):
     return true
-  elif scope.parent.isNotNil:
+  elif not scope.parent.isNil:
     return scope.parent.hasSigil(key)
   else:
     return false

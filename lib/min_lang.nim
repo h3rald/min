@@ -4,7 +4,7 @@ import
   os, 
   json
 import 
-  ../core/types,
+  ../core/consts,
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils,
@@ -20,7 +20,7 @@ proc lang_module*(i: In) =
     .symbol("symbols") do (i: In):
       var q = newSeq[MinValue](0)
       var scope = i.scope
-      while scope.isNotNil:
+      while not scope.isNil:
         for s in scope.symbols.keys:
           q.add s.newVal
         scope = scope.parent
@@ -29,7 +29,7 @@ proc lang_module*(i: In) =
     .symbol("sigils") do (i: In):
       var q = newSeq[MinValue](0)
       var scope = i.scope
-      while scope.isNotNil:
+      while not scope.isNil:
         for s in scope.sigils.keys:
           q.add s.newVal
         scope = scope.parent
@@ -121,10 +121,9 @@ proc lang_module*(i: In) =
       var name: string
       i.reqStringLike rawName
       name = rawName.getString
-      #i.scope.getSymbol(name).prc(i) 
       i.execOp(i.scope.getSymbol(name))
       i.reqQuotation mdl
-      if mdl.scope.isNotNil:
+      if not mdl.scope.isNil:
         for sym, val in mdl.scope.symbols.pairs:
           i.debug "[import] $1:$2" % [i.scope.name, sym]
           i.scope.symbols[sym] = val

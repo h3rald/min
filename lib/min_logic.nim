@@ -1,6 +1,6 @@
-import tables
 import 
-  ../core/types,
+  tables
+import 
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils

@@ -7,9 +7,12 @@ import
   os, 
   regex
 import 
-  types, 
   parser, 
   interpreter
+
+type
+  MinOutOfBoundsError* = ref object of ValueError
+
 
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol

@@ -1,6 +1,9 @@
-import tables, os, osproc, strutils
 import 
-  ../core/types,
+  tables, 
+  os, 
+  osproc, 
+  strutils
+import 
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils

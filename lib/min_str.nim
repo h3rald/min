@@ -1,6 +1,8 @@
-import tables, strutils, sequtils
 import 
-  ../core/types,
+  tables, 
+  strutils, 
+  sequtils
+import 
   ../core/parser, 
   ../core/interpreter, 
   ../core/utils,
