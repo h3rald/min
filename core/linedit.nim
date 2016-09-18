@@ -149,6 +149,7 @@ proc deletePrevious*(ed: var LineEditor) =
       stdout.cursorBackward
       putchar(32)
       stdout.cursorBackward
+      ed.line.position.dec
       ed.line.text = ed.line.text[0..ed.line.last-1]
     else:
       let rest = ed.line.toEnd & " "
@@ -208,7 +209,7 @@ proc addToLineAtPosition(ed: var LineEditor, s: string) =
   let diff = toEnd.len - s.len
   for c in s:
     ed.printChar(c.ord)
-  ed.printChar(32)
+  #ed.printChar(32)
 
 proc clearLine*(ed: var LineEditor) =
   stdout.cursorBackward(ed.line.position+1)

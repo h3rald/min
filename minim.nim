@@ -84,10 +84,14 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
         f = f & "/"
       return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace("\\", "/")])
     else:
-      let dir = f.parentDir
-      let file = f.extractFileName
-      if dir.existsDir:
+      var dir: string
+      if f.contains("/") or dir.contains("\\"):
+        dir = f.parentDir
+        let file = f.extractFileName
         return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(file)).mapIt("\"$1/$2\"" % [dir, it.path.replace("\\", "/")])
+      else:
+        dir = getCurrentDir()
+        return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(f)).mapIt("\"$1\"" % [it.path.replace("\\", "/")])
   return symbols
 
 proc stdLib(i: In) =
