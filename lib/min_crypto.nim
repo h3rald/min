@@ -8,6 +8,7 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
+import
   ../vendor/sha1,
   ../vendor/nimSHA2,
   ../vendor/nimAES

@@ -10,7 +10,7 @@ import
 
 proc previous(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
-    return scope #### was: ROOT
+    return scope 
   else:
     return scope.parent
 

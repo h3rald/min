@@ -1,4 +1,11 @@
-import streams, critbits, parseopt2, strutils, os, json, sequtils
+import 
+  streams, 
+  critbits, 
+  parseopt2, 
+  strutils, 
+  os, 
+  json, 
+  sequtils
 import 
   core/linedit,
   core/consts,
@@ -20,20 +27,19 @@ import
 var REPL = false
 var DEBUGGING = false
 const PRELUDE* = "prelude.min".slurp.strip
-let usage* = "  " & appname & " v" & version & " - a tiny concatenative programming language" & """
-
+let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
   (c) 2014-2016 Fabio Cevasco
   
   Usage:
     minim [options] [filename]
 
   Arguments:
-    filename  A minim file to interpret (default: STDIN).
+    filename  A $1 file to interpret (default: STDIN).
   Options:
-    -e, --evaluate    Evaluate a minim program inline
+    -e, --evaluate    Evaluate a $1 program inline
     -h, --help        Print this help
     -v, --version     Print the program version
-    -i, --interactive Start MiNiM Shell"""
+    -i, --interactive Start $1 shell""" % [appname, version]
 
 
 proc getExecs(): seq[string] =
@@ -67,7 +73,7 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   if word.startsWith("("):
     return symbols.mapIt("(" & $it)
   if word.startsWith("<"):
-    return toSeq(MINIMSYMBOLS.readFile.parseJson.pairs).mapIt(">" & $it[0])
+    return toSeq(MINIMSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
   if word.startsWith("!"):
@@ -78,21 +84,21 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
     var f = word[1..^1]
     if f == "":
       f = getCurrentDir().replace("\\", "/")  
-      return toSeq(walkDir(f, true)).mapIt("\"$1\"" % it.path.replace("\\", "/"))
+      return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
     elif f.dirExists:
       f = f.replace("\\", "/")
       if f[f.len-1] != '/':
         f = f & "/"
-      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace("\\", "/")])
+      return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
     else:
       var dir: string
       if f.contains("/") or dir.contains("\\"):
         dir = f.parentDir
         let file = f.extractFileName
-        return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(file)).mapIt("\"$1/$2\"" % [dir, it.path.replace("\\", "/")])
+        return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(file)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
       else:
         dir = getCurrentDir()
-        return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(f)).mapIt("\"$1\"" % [it.path.replace("\\", "/")])
+        return toSeq(walkDir(dir, true)).filterIt(it.path.startsWith(f)).mapIt("\"$1" % [it.path.replace("\\", "/")])
   return symbols
 
 proc stdLib(i: In) =
