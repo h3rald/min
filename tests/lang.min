@@ -159,6 +159,8 @@
 
   (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) assert
 
+  ('succ source (1 +) ==) assert
+
   report
   ; Tidy up
   ~defmod

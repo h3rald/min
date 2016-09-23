@@ -256,7 +256,7 @@ proc lang_module*(i: In) =
       i.load i.pwd.joinPath(file)
   
    .symbol("with") do (i: In):
-     var qscope, qprog: Minvalue
+     var qscope, qprog: MinValue
      i.reqTwoQuotations qscope, qprog
      if qscope.qVal.len > 0:
        # System modules are empty quotes and don't need to be unquoted
@@ -266,9 +266,19 @@ proc lang_module*(i: In) =
      for v in qprog.qVal:
       i.push v
      i.scope = scope
+
+    .symbol("source") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      let str = s.getString
+      let sym = i.scope.getSymbol(str)
+      if sym.kind == minValOp:
+        i.push sym.val
+      else:
+        raiseInvalid("No source available for native symbol '$1'." % str)
   
     .symbol("call") do (i: In):
-      var symbol, q: Minvalue
+      var symbol, q: MinValue
       i.reqStringLike symbol
       i.reqQuotation  q
       let s = symbol.getString
