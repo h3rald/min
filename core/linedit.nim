@@ -17,7 +17,7 @@ when defined(windows):
    proc termSave*(): string = 
      return ""
 
-   proc termRestore*(c: string) =
+   proc termRestore*() =
      discard
 else:
   import osproc
