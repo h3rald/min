@@ -5,7 +5,8 @@ import
   strutils, 
   os, 
   json, 
-  sequtils
+  sequtils,
+  algorithm
 import 
   core/linedit,
   core/consts,
@@ -51,6 +52,7 @@ proc getExecs(): seq[string] =
   getFiles(getCurrentDir())
   for dir in "PATH".getEnv.split(PathSep):
     getFiles(dir)
+  res.sort(system.cmp)
   return res
 
 proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
@@ -77,9 +79,9 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
   if word.startsWith("!"):
-    return getExecs().mapIt("!" & $it[0])
+    return getExecs().mapIt("!" & $it)
   if word.startsWith("&"):
-    return getExecs().mapIt("&" & $it[0])
+    return getExecs().mapIt("&" & $it)
   if word.startsWith("\""):
     var f = word[1..^1]
     if f == "":
