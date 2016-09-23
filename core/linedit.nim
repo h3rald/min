@@ -66,7 +66,7 @@ type
 # Internal Methods
 
 proc empty(line: Line): bool =
-  return line.text.len == 0
+  return line.text.len <= 0
 
 proc full(line: Line): bool =
   return line.position >= line.text.len
@@ -92,7 +92,7 @@ proc toEnd(line: Line): string =
   return line.text[line.position..line.last]
 
 proc back*(ed: var LineEditor, n=1) =
-  if ed.line.empty:
+  if ed.line.position <= 0:
     return
   stdout.cursorBackward(n)
   ed.line.position = ed.line.position - n
@@ -209,7 +209,6 @@ proc addToLineAtPosition(ed: var LineEditor, s: string) =
   let diff = toEnd.len - s.len
   for c in s:
     ed.printChar(c.ord)
-  #ed.printChar(32)
 
 proc clearLine*(ed: var LineEditor) =
   stdout.cursorBackward(ed.line.position+1)
@@ -265,7 +264,8 @@ proc historyPrevious*(ed: var LineEditor) =
   if pos == current and ed.history.queue[current] != ed.line.text:
     ed.historyAdd(force = true)
     ed.history.tainted = true
-  ed.changeLine(s)
+  if s != "":
+    ed.changeLine(s)
   
 proc historyNext*(ed: var LineEditor) =
   let s = ed.history.next
