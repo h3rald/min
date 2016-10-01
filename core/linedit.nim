@@ -8,8 +8,8 @@ import
 
 # getch/putch implementations
 when defined(windows):
-   proc getchar(): cint {.header: "<conio.h>", importc: "_getch".}
-   proc putchar(c: cint): cint {.discardable, header: "<conio.h>", importc: "_putch".}
+   proc getchar*(): cint {.header: "<conio.h>", importc: "_getch".}
+   proc putchar*(c: cint): cint {.discardable, header: "<conio.h>", importc: "_putch".}
 
    proc termSetup*() = 
      discard
@@ -33,10 +33,10 @@ else:
   proc termRestore*() =
     discard execCmd "stty </dev/tty " & TERMSETTINGS
 
-  proc getchar(): cint =
+  proc getchar*(): cint =
     return stdin.readChar().ord.cint
 
-  proc putchar(c: cint) =
+  proc putchar*(c: cint) =
     stdout.write(c.chr)
 
 # Types
@@ -46,6 +46,7 @@ type
   KeySeq* = seq[Key]
   KeyCallback* = proc(ed: var LineEditor)
   LineError* = ref Exception
+  LineEditorError* = ref Exception
   LineEditorMode = enum
     mdInsert
     mdReplace
@@ -59,6 +60,7 @@ type
     queue: Queue[string]
     max: int
   LineEditor* = object
+    completionCallback*: proc(ed: LineEditor): seq[string]
     history: LineHistory
     line: Line
     mode: LineEditorMode
@@ -204,9 +206,6 @@ proc changeLine*(ed: var LineEditor, s: string) =
     stdout.cursorBackward(diff)
 
 proc addToLineAtPosition(ed: var LineEditor, s: string) =
-  let fromStart = ed.line.fromStart
-  let toEnd = ed.line.toEnd
-  let diff = toEnd.len - s.len
   for c in s:
     ed.printChar(c.ord)
 
@@ -236,7 +235,6 @@ proc historyInit*(size = 256, historyFile: string = nil): LineHistory =
   if historyFile.isNil:
     return
   if result.file.fileExists:
-    var line: string
     let lines = result.file.readFile.split("\n")
     for line in lines:
       if line != "":
@@ -278,11 +276,10 @@ proc historyFlush*(ed: var LineEditor) =
     ed.history.position = ed.history.queue.len
     ed.history.tainted = false
 
-var completionCallback* = proc (ed: LineEditor): seq[string] {.closure.}= 
-  return @[]
-
 proc completeLine*(ed: var LineEditor): int =
-  let compl = completionCallback(ed)
+  if ed.completionCallback.isNil:
+    raise LineEditorError(msg: "Completion callback is not set")
+  let compl = ed.completionCallback(ed)
   let position = ed.line.position
   let words = ed.line.fromStart.split(" ")
   var word: string

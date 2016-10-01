@@ -27,7 +27,7 @@ proc time_module*(i: In)=
         time = t.intVal.fromSeconds
       else:
         time = t.floatVal.fromSeconds
-      let tinfo = time.timeToTimeInfo
+      let tinfo = time.getLocalTime
       var info = newSeq[MinValue](0).newVal
       info.qVal.add @["year".newSym, tinfo.year.newVal].newVal
       info.qVal.add @["month".newSym, (tinfo.month.int+1).newVal].newVal
@@ -47,7 +47,7 @@ proc time_module*(i: In)=
         time = t.intVal.fromSeconds
       else:
         time = t.floatVal.fromSeconds
-      i.push time.timeToTimeInfo.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
+      i.push time.getLocalTime.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
 
     .symbol("tformat") do (i: In):
       var t, s: MinValue
@@ -58,7 +58,7 @@ proc time_module*(i: In)=
         time = t.intVal.fromSeconds
       else:
         time = t.floatVal.fromSeconds
-      i.push time.timeToTimeInfo.format(s.getString).newVal
+      i.push time.getLocalTime.format(s.getString).newVal
     
     .finalize()
   

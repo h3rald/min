@@ -119,7 +119,7 @@ proc raiseEmptyStack*() =
 
 
 const
-  errorMessages: array [MinParserError, string] = [
+  errorMessages: array[MinParserError, string] = [
     "no error",
     "invalid token",
     "string expected",
@@ -129,7 +129,7 @@ const
     "EOF expected",
     "expression expected"
   ]
-  tokToStr: array [MinTokenKind, string] = [
+  tokToStr: array[MinTokenKind, string] = [
     "invalid token",
     "EOF",
     "string literal",

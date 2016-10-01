@@ -29,7 +29,7 @@ proc srx_Destroy*(R: ptr srx_Context): cint
 proc srx_DumpToStdout*(R: ptr srx_Context)
 proc srx_MatchExt*(R: ptr srx_Context; str: cstring; size: csize; 
                    offset: csize): cint
-template srx_Match*(R, str, off: expr): expr = 
+template srx_Match*(R: ptr srx_Context, str: cstring, off: csize): cint = 
   srx_MatchExt(R, str, RX_STRLENGTHFUNC(str), off)
 
 proc srx_GetCaptureCount*(R: ptr srx_Context): cint
@@ -39,7 +39,7 @@ proc srx_GetCapturedPtrs*(R: ptr srx_Context; which: cint;
                           pbeg: cstringArray; pend: cstringArray): cint
 proc srx_ReplaceExt*(R: ptr srx_Context; str: cstring; strsize: csize; 
                      rep: cstring; repsize: csize; outsize: ptr csize): cstring
-template srx_Replace*(R, str, rep: expr): expr = 
+template srx_Replace*(R: ptr srx_Context, str: cstring, rep: cstring): cstring = 
   srx_ReplaceExt(R, str, RX_STRLENGTHFUNC(str), rep, RX_STRLENGTHFUNC(rep), nil)
 
 proc srx_FreeReplaced*(R: ptr srx_Context; repstr: cstring)

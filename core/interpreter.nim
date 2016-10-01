@@ -91,7 +91,7 @@ proc newScope*(i: In, id: string, q: var MinValue) =
   q.scope.name = id
   q.scope.parent = i.scope
 
-template createScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immediate.} =
+template createScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
   q.scope = new MinScope
   q.scope.name = id
   q.scope.parent = i.scope
@@ -102,7 +102,7 @@ template createScope*(i: In, id: string, q: MinValue, body: stmt): stmt {.immedi
   #i.debug "[scope] " & scope.fullname
   i.scope = scope
 
-template withScope*(i: In, q: MinValue, body: stmt): stmt {.immediate.} =
+template withScope*(i: In, q: MinValue, body: untyped): untyped =
   #i.debug "[scope] " & q.scope.fullname
   let origScope = i.scope
   i.scope = q.scope
@@ -148,7 +148,7 @@ proc error(i: MinInterpreter, message: string) =
   else:
     stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
 
-template execute(i: In, body: stmt) {.immediate.}=
+template execute(i: In, body: untyped) =
   let stack = i.copystack
   try:
     body

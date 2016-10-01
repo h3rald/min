@@ -64,22 +64,22 @@ proc str_module*(i: In) =
   .symbol("lowercase") do (i: In):
     var s: MinValue
     i.reqStringLike s
-    i.push s.getString.toLower.newVal
+    i.push s.getString.toLowerAscii.newVal
 
   .symbol("uppercase") do (i: In):
     var s: MinValue
     i.reqStringLike s
-    i.push s.getString.toUpper.newVal
+    i.push s.getString.toUpperAscii.newVal
 
   .symbol("capitalize") do (i: In):
     var s: MinValue
     i.reqStringLike s
-    i.push s.getString.capitalize.newVal
+    i.push s.getString.capitalizeAscii.newVal
 
   .symbol("titleize") do (i: In):
     var s: MinValue
     i.reqStringLike s
-    i.push s.getString.split(" ").mapIt(it.capitalize).join(" ").newVal
+    i.push s.getString.split(" ").mapIt(it.capitalizeAscii).join(" ").newVal
 
   .symbol("repeat") do (i: In):
     var s, n: MinValue

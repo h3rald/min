@@ -164,7 +164,7 @@ proc minimRepl*(i: var MinInterpreter) =
       discard execShellCmd("clear")
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
-    completionCallback = proc(ed: LineEditor): seq[string] {.locks: 0.}=
+    ed.completionCallback = proc(ed: LineEditor): seq[string] =
       return ed.getCompletions(symbols)
     line = ed.readLine(": ")
     i.parser.buf = $i.parser.buf & $line

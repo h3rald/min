@@ -7,7 +7,7 @@
 
   (now 1464951736 >) assert
 
-  (1464951736 datetime "2016-06-03T12:02:16Z" ==) assert
+  (1464951736 datetime "2016-06-03T11:02:16Z" ==) assert
 
   (1464951736 "yy-MM-dd" tformat "16-06-03" ==) assert
 

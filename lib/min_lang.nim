@@ -155,7 +155,7 @@ proc lang_module*(i: In) =
     # Language constructs
   
     .symbol("define") do (i: In):
-      var sym, val: MinValue
+      var sym: MinValue
       i.reqStringLike sym
       var q1 = i.pop # existing (auto-quoted)
       var symbol: string
@@ -171,7 +171,7 @@ proc lang_module*(i: In) =
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
-      var sym, val: MinValue
+      var sym: MinValue
       i.reqStringLike sym
       var q1 = i.pop # existing (auto-quoted)
       var symbol: string
@@ -627,7 +627,6 @@ proc lang_module*(i: In) =
       i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val)
 
     .symbol("stored-symbols") do (i: In):
-      var s:MinValue
       var q = newSeq[MinValue](0)
       let json = MINIMSYMBOLS.readFile.parseJson
       for k,v in json.pairs:

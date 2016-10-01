@@ -7,4 +7,4 @@ license       = "MIT"
 bin           = "minim"
 
 [Deps]
-requires: "nimrod >= 0.14.2"
+requires: "nimrod >= 0.15.0"

@@ -27,7 +27,7 @@
 #
 
 ## Imports
-import unsigned, strutils, base64
+import strutils, base64
 
 ## Fields
 const sha_digest_size = 20
@@ -72,10 +72,10 @@ proc innerHash(state: var SHA1State, w: var SHA1Buffer) =
 
   var round = 0
 
-  template rot(value, bits: uint32): uint32 {.immediate.} =
+  template rot(value, bits: uint32): uint32 =
     (value shl bits) or (value shr (32 - bits))
 
-  template sha1(fun, val: uint32): stmt =
+  template sha1(fun, val: uint32): untyped =
     let t = rot(a, 5) + fun + e + val + w[round]
     e = d
     d = c
@@ -83,12 +83,12 @@ proc innerHash(state: var SHA1State, w: var SHA1Buffer) =
     b = a
     a = t
 
-  template process(body: stmt): stmt =
+  template process(body: untyped): untyped =
     w[round] = rot(w[round - 3] xor w[round - 8] xor w[round - 14] xor w[round - 16], 1)
     body
     inc(round)
 
-  template wrap(dest, value: expr): stmt {.immediate.} =
+  template wrap(dest, value: typed): untyped =
     let v = dest + value
     dest = v
 
@@ -118,7 +118,7 @@ proc innerHash(state: var SHA1State, w: var SHA1Buffer) =
   wrap state[3], d
   wrap state[4], e
 
-template computeInternal(src: expr): stmt {.immediate.} =
+template computeInternal(src: typed): untyped =
   #Initialize state
   var state: SHA1State
   init(state)
@@ -178,7 +178,7 @@ proc compute*(src: string) : SHA1Digest =
   ## Calculate SHA1 from input string
   computeInternal(src)
 
-proc compute*(src: openarray[TInteger|char]) : SHA1Digest =
+proc compute*(src: openarray[SomeInteger|char]) : SHA1Digest =
   ## Calculate SHA1 from input array
   computeInternal(src)
 

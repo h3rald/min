@@ -29,22 +29,22 @@ proc crypto_module*(i: In)=
     .symbol("sha224") do (i: In):
       var s: MinValue
       i.reqStringLike s
-      i.push computeSHA224(s.getString).hex.toLower.newVal
+      i.push computeSHA224(s.getString).hex.toLowerAscii.newVal
 
     .symbol("sha256") do (i: In):
       var s: MinValue
       i.reqStringLike s
-      i.push computeSHA256(s.getString).hex.toLower.newVal
+      i.push computeSHA256(s.getString).hex.toLowerAscii.newVal
 
     .symbol("sha384") do (i: In):
       var s: MinValue
       i.reqStringLike s
-      i.push computeSHA384(s.getString).hex.toLower.newVal
+      i.push computeSHA384(s.getString).hex.toLowerAscii.newVal
 
     .symbol("sha512") do (i: In):
       var s: MinValue
       i.reqStringLike s
-      i.push computeSHA512(s.getString).hex.toLower.newVal
+      i.push computeSHA512(s.getString).hex.toLowerAscii.newVal
 
     .symbol("encode") do (i: In):
       var s: MinValue
