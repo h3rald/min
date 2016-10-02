@@ -41,13 +41,18 @@ proc io_module*(i: In) =
       var ed = initEditor()
       i.push ed.password("Enter Password: ").newVal
 
+    .symbol("prompt") do (i: In):
+      var s: MinValue
+      var ed = initEditor()
+      i.reqString s
+      i.push ed.readLine(s.getString & " ").newVal
+
     .symbol("confirm") do (i: In):
       var s: MinValue
       var ed = initEditor()
       i.reqString s
-      stdout.write(s.getString & " [yes/no]: ")
       proc confirm(): bool =
-        let answer = ed.readLine()
+        let answer = ed.readLine(s.getString & " [yes/no]: ")
         if answer.match("^y(es)?$", "i"):
           return true
         elif answer.match("^no?$", "i"):
