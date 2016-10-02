@@ -45,7 +45,7 @@ proc io_module*(i: In) =
       var s: MinValue
       var ed = initEditor()
       i.reqString s
-      i.push ed.readLine(s.getString & " ").newVal
+      i.push ed.readLine(s.getString & ": ").newVal
 
     .symbol("confirm") do (i: In):
       var s: MinValue
@@ -61,7 +61,35 @@ proc io_module*(i: In) =
           stdout.write "Invalid answer. Please enter 'yes' or 'no': "
           return confirm()
       i.push confirm().newVal
-  
+
+    .symbol("choose") do (i: In):
+      var q, s: MinValue
+      var ed = initEditor()
+      i.reqStringLikeAndQuotation s, q
+      if q.qVal.len <= 0:
+        raiseInvalid("No choices to display")
+      stdout.writeLine(s.getString)
+      proc choose(): int =
+        var c = 0
+        for item in q.qVal:
+          if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[0].isString or not item.qVal[1].isQuotation:
+            raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
+          c.inc
+          echo "$1 - $2" % [$c, item.qVal[0].getString]
+        let answer = ed.readLine("Enter your choice ($1 - $2): " % ["1", $c])
+        var choice: int
+        try:
+          choice = answer.parseInt
+        except:
+          choice = 0
+        if choice <= 0 or choice > c:
+          echo "Invalid choice."
+          return choose()
+        else:
+          return choice
+      let choice = choose()
+      i.unquote("<choose>", q.qVal[choice-1].qVal[1])
+
     .symbol("print") do (i: In):
       let a = i.peek
       a.print

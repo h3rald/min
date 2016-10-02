@@ -19,7 +19,7 @@ proc dget*(q: MinValue, s: MinValue): MinValue =
   for v in q.qVal:
     if v.qVal[0].getString == s.getString:
       return v.qVal[1]
-  raiseInvalid("Key '$1' not found" % [s.getString])
+  raiseInvalid("Key '$1' not found" % s.getString)
 
 proc ddel*(q: var MinValue, s: MinValue): MinValue =
   # Assumes q is a dictionary
