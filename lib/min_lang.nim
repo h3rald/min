@@ -506,10 +506,42 @@ proc lang_module*(i: In) =
       i.unquote("<ifte-check>", check)
       let res = i.pop
       i.stack = stack
-      if res.isBool and res.boolVal == true:
+      if not res.isBool:
+        raiseInvalid("Result of check is not a boolean value")
+      if res.boolVal == true:
         i.unquote("<ifte-true>", tpath)
       else:
         i.unquote("<ifte-false>", fpath)
+
+    # 4 (
+    #   ((> 3) ("Greater than 3" put!))
+    #   ((< 3) ("Smaller than 3" put!))
+    #   ('true ("Exactly 3" put!))
+    # ) case
+    .symbol("case") do (i: In):
+      var cases: MinValue
+      i.reqQuotation cases
+      let last = cases.qVal.len-1
+      if last == 0:
+        raiseInvalid("Empty case operator")
+      var k = 0
+      let stack = i.stack
+      for c in cases.qVal:
+        i.stack = stack
+        if not c.isQuotation:
+          raiseInvalid("A quotation of quotations is required")
+        k.inc
+        if c.qVal.len != 2 or not c.qVal[0].isQuotation or not c.qVal[1].isQuotation:
+          raiseInvalid("Inner quotations in case operator must contain two quotations")
+        var q = c.qVal[0]
+        i.unquote("<case-$1-check>" % $k, q)
+        let res = i.pop
+        if not res.isBool():
+          raiseInvalid("Result of case #$1 is not a boolean value" % $k)
+        if res.boolVal == true:
+          var t = c.qVal[1]
+          i.unquote("<case-$1-true>" % $k, t)
+
     
     .symbol("while") do (i: In):
       var d, b: MinValue

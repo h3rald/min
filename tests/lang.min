@@ -161,6 +161,14 @@
 
   ('succ source (1 +) ==) assert
 
+  (6 
+    (
+      ((3 ==) (false))
+      ((3 <) (false))
+      ((3 >) (true))
+    ) case
+  ) assert
+
   report
   ; Tidy up
   ~defmod
