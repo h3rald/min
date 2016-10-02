@@ -18,7 +18,7 @@
 '<            :lt
 '>=           :gte
 '<=           :lte
-'put          :echo
+'puts         :echo
 'system       :!
 'run          :&
 'getenv       :$
@@ -61,7 +61,7 @@
 ; Other
 (print pop)                                                   :print!
 (dprint pop)                                                  :dprint!
-(put pop)                                                     :put!
+(puts pop)                                                    :puts!
 (call pop)                                                    :call!
 (:ms :q :check (check) (ms sleep q) while)                    :interval
 (password aes encode)                                         :encrypt

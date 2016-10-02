@@ -3,6 +3,7 @@ import
   strutils
 import 
   ../core/linedit,
+  ../core/regex,
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
@@ -17,7 +18,7 @@ proc io_module*(i: In) =
     .symbol("newline") do (i: In):
       echo ""
   
-    .symbol("put") do (i: In):
+    .symbol("puts") do (i: In):
       let a = i.peek
       echo $$a
   
@@ -32,12 +33,29 @@ proc io_module*(i: In) =
           echo ""
       echo ""
   
-    .symbol("get") do (i: In):
-      i.push stdin.readLine().newVal
+    .symbol("gets") do (i: In):
+      var ed = initEditor()
+      i.push ed.readLine().newVal
 
     .symbol("password") do (i: In):
       var ed = initEditor()
       i.push ed.password("Enter Password: ").newVal
+
+    .symbol("confirm") do (i: In):
+      var s: MinValue
+      var ed = initEditor()
+      i.reqString s
+      stdout.write(s.getString & " [yes/no]: ")
+      proc confirm(): bool =
+        let answer = ed.readLine()
+        if answer.match("^y(es)?$", "i"):
+          return true
+        elif answer.match("^no?$", "i"):
+          return false
+        else:
+          stdout.write "Invalid answer. Please enter 'yes' or 'no': "
+          return confirm()
+      i.push confirm().newVal
   
     .symbol("print") do (i: In):
       let a = i.peek
