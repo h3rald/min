@@ -1,5 +1,4 @@
-'test load
-'test import
+'test include
 
 "fs" describe
 
@@ -7,7 +6,7 @@
   
   ("test.txt" fsize 4 ==) assert
 
-  ("test.txt" fperms 644 ==) assert
+  ("test.txt" fperms 644 >=) assert
 
   ("test.txt" ftype "file" ==) assert
 

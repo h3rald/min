@@ -68,6 +68,7 @@
 (:ms :q :check (check) (ms sleep q) while)                    :interval
 (password aes encode)                                         :encrypt
 (decode password aes)                                         :decrypt
+(dup load import)                                             :include
 
 ; Prompt
 ("[$1]$$ " (.) %)                 :prompt
