@@ -41,7 +41,7 @@ proc io_module*(i: In) =
       var ed = initEditor()
       i.push ed.password("Enter Password: ").newVal
 
-    .symbol("prompt") do (i: In):
+    .symbol("ask") do (i: In):
       var s: MinValue
       var ed = initEditor()
       i.reqString s

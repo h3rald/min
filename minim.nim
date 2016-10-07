@@ -156,17 +156,16 @@ proc minimRepl*(i: var MinInterpreter) =
   echo "$1 v$2" % [appname, version]
   echo "-> Type 'exit' or 'quit' to exit."
   var ed = initEditor(historyFile = MINIMHISTORY)
-  KEYMAP["ctrl+s"] = proc (ed: var LineEditor) =
-    echo "hello"
-    when defined(windows):
-      discard execShellCmd("cls")
-    else:
-      discard execShellCmd("clear")
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
     ed.completionCallback = proc(ed: LineEditor): seq[string] =
       return ed.getCompletions(symbols)
-    line = ed.readLine(": ")
+    # evaluate prompt
+    i.apply(i.scope.getSymbol("prompt"))
+    var v: MinValue
+    i.reqString(v)
+    let prompt = v.getString()
+    line = ed.readLine(prompt)
     i.parser.buf = $i.parser.buf & $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
