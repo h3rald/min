@@ -710,7 +710,7 @@ proc lang_module*(i: In) =
     .sigil("=") do (i: In):
       i.push("module".newSym)
 
-    .sigil("%") do (i: In):
+    .sigil("^") do (i: In):
       i.push("call".newSym)
 
     .sigil("/") do (i: In):

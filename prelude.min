@@ -22,6 +22,8 @@
 'system       :!
 'run          :&
 'getenv       :$
+'call         :^
+'interpolate  :%
 'pop          :zap
 'quote        :unit
 'quote        :'

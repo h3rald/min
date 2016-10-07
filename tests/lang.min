@@ -3,8 +3,8 @@
 
 "lang" describe
 
-  "Total Symbols: " print! symbols size put!
-  "  Total Sigils: " print! sigils size put!
+  "Total Symbols: " print! symbols size puts!
+  "  Total Sigils: " print! sigils size puts!
 
   (debug? false ==) assert
 
@@ -51,7 +51,7 @@
   (defmod 
     ('mymath import 
      (-) :myminus) => @mymath 
-    5 2 mymath %myminus 3 ==) assert
+    5 2 mymath ^myminus 3 ==) assert
 
   (defmod mymath inspect ("myplus") ==) assert
 
@@ -62,7 +62,7 @@
   ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
   "tests/testload.min" rm
 
-  (defmod 2 2 mymath %myplus 4 ==) assert
+  (defmod 2 2 mymath ^myplus 4 ==) assert
   
   (1 2 3 4 get-stack (1 2 3 4) ==) assert
 
