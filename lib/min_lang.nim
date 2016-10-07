@@ -2,7 +2,8 @@ import
   critbits, 
   strutils, 
   os, 
-  json
+  json,
+  algorithm
 import 
   ../core/consts,
   ../core/parser, 
@@ -565,6 +566,26 @@ proc lang_module*(i: In) =
         if check.isBool and check.boolVal == true:
           res.add e
       i.push res.newVal
+
+    .symbol("sort") do (i: In):
+      var cmp, list: MinValue
+      i.reqTwoQuotations cmp, list
+      var i2 = i
+      var minCmp = proc(a, b: MinValue): int {.closure.}=
+        i2.push a
+        i2.push b
+        i2.unquote("<sort-cmp>", cmp)
+        let r = i2.pop
+        if r.isBool:
+          if r.boolVal == true:
+            return 1
+          else:
+            return -1
+        else:
+          raiseInvalid("Predicate quotation must return a boolean value")
+      var qList = list.qVal
+      sort[MinValue](qList, minCmp)
+      i.push qList.newVal
     
     .symbol("linrec") do (i: In):
       var r2, r1, t, p: MinValue
