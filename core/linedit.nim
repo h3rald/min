@@ -287,16 +287,10 @@ proc completeLine*(ed: var LineEditor): int =
     word = words[words.len-1]
   else:
     word = ed.line.fromStart
-  var rawmatches = compl.filterIt(it.startsWith word)
-  var matches: seq[string]
-  if ed.line.fromStart.len > 0:
-    matches = newSeq[string](0)
-    for s in rawmatches:
-      var s1 = s
-      s1.delete(0, word.len-1)
-      matches.add s1
-  else:
-    matches = rawmatches
+  var matches = compl.filterIt(it.toLowerAscii.startsWith(word.toLowerAscii))
+  if ed.line.fromStart.len > 0 and matches.len > 0:
+    for i in 0..word.len:
+      ed.deletePrevious
   var n = 0
   if matches.len > 0:
     ed.addToLineAtPosition(matches[0])
@@ -307,7 +301,7 @@ proc completeLine*(ed: var LineEditor): int =
     n.inc
     if n < matches.len:
       let diff = ed.line.position - position
-      for i in 0.countup(diff-1):
+      for i in 0.countup(diff-1 + word.len):
         ed.deletePrevious
       ed.line.position = position
       ed.addToLineAtPosition(matches[n])
