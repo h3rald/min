@@ -10,14 +10,17 @@ import
   ../core/utils,
   ../core/fileutils
 
+proc unix(s: string): string =
+  return s.replace("\\", "/")
+
 proc sys_module*(i: In)=
   i.define("sys")
   
     .symbol(".") do (i: In):
-      i.push newVal(getCurrentDir())
+      i.push newVal(getCurrentDir().unix)
     
     .symbol("..") do (i: In):
-      i.push newVal(getCurrentDir().parentDir)
+      i.push newVal(getCurrentDir().parentDir.unix)
     
     .symbol("cd") do (i: In):
       var f: MinValue
@@ -29,7 +32,7 @@ proc sys_module*(i: In)=
       i.reqStringLike a
       var list = newSeq[MinValue](0)
       for i in walkDir(a.getString):
-        list.add newVal(i.path)
+        list.add newVal(i.path.unix)
       i.push list.newVal
     
     .symbol("ls-r") do (i: In):
@@ -37,7 +40,7 @@ proc sys_module*(i: In)=
       i.reqStringLike a
       var list = newSeq[MinValue](0)
       for i in walkDirRec(a.getString):
-        list.add newVal(i)
+        list.add newVal(i.unix)
       i.push list.newVal
   
     .symbol("system") do (i: In):
@@ -46,14 +49,10 @@ proc sys_module*(i: In)=
       i.push execShellCmd(a.getString).newVal
     
     .symbol("run") do (i: In):
-      var a: MinValue
-      i.reqStringLike a
-      let words = a.getString.split(" ")
-      let cmd = words[0]
-      var args = newSeq[string](0)
-      if words.len > 1:
-        args = words[1..words.len-1]
-      i.push execProcess(cmd, args, nil, {poUsePath}).newVal
+      var cmd: MinValue
+      i.reqStringLike cmd
+      let res = execCmdEx(cmd.getString)
+      i.push @[@["output".newSym, res.output.newVal].newVal, @["code".newSym, res.exitCode.newVal].newVal].newVal
     
     .symbol("getenv") do (i: In):
       var a: MinValue
@@ -116,7 +115,6 @@ proc sys_module*(i: In)=
           copyFileWithPermissions src, dest / src.extractFilename 
       else:
         copyFileWithPermissions src, dest 
-
     
     .symbol("mv") do (i: In):
       var a, b: MinValue
@@ -165,12 +163,12 @@ proc sys_module*(i: In)=
     .symbol("filename") do (i: In):
       var f: MinValue
       i.reqStringLike f
-      i.push f.getString.extractFilename.newVal
+      i.push f.getString.extractFilename.unix.newVal
 
     .symbol("dirname") do (i: In):
       var f: MinValue
       i.reqStringLike f
-      i.push f.getString.parentDir.newVal
+      i.push f.getString.parentDir.unix.newVal
 
 
     .finalize()

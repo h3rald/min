@@ -24,12 +24,12 @@
 
   ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) assert  
 
-  ("systest" mkdir . ls . "/systest" concat  contains) assert
+  ("systest" mkdir . ls . "/systest" concat contains) assert
 
   ("systest" cd . "systest" match) assert
   .. cd
 
-  (&ls "\n" split "systest" contains) assert
+  ("minim -v" & 'output dget "\." match) assert
 
   ("PATH" env?) assert
 
