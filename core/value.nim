@@ -35,7 +35,7 @@ proc isDictionary*(q: MinValue): bool =
   if q.qVal.len == 0:
     return true
   for val in q.qVal:
-    if not val.isQuotation or val.qVal.len != 2 or not val.qVal[0].isSymbol:
+    if not val.isQuotation or val.qVal.len != 2 or not (val.qVal[0].isSymbol or val.qVal[0].isString):
       return false
   return true
 
