@@ -223,7 +223,8 @@ proc goToStart*(ed: var LineEditor) =
   ed.line.position = 0
 
 proc goToEnd*(ed: var LineEditor) =
-  stdout.cursorForward(ed.line.text.len)
+  let diff = ed.line.text.len - ed.line.position
+  stdout.cursorForward(diff)
   ed.line.position = ed.line.text.len
 
 proc historyInit*(size = 256, historyFile: string = nil): LineHistory =
