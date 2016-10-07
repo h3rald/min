@@ -37,13 +37,13 @@ else:
   quit(2)
 
 
+var HOME*: string
+if defined(windows):
+  HOME = getenv("USERPROFILE")
+if not defined(windows):
+  HOME = getenv("HOME")
 
-when defined(windows):
-  const HOME* = getenv("USERPROFILE")
-when not defined(windows):
-  const HOME* = getenv("HOME")
-
-const MINIMRC* = HOME / ".minimrc"
-const MINIMSYMBOLS* = HOME / ".minim_symbols"
-const MINIMHISTORY* = HOME / ".minim_history"
+let MINIMRC* = HOME / ".minimrc"
+let MINIMSYMBOLS* = HOME / ".minim_symbols"
+let MINIMHISTORY* = HOME / ".minim_history"
 

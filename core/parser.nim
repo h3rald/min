@@ -503,7 +503,7 @@ proc `$`*(a: MinValue): string =
     of minSymbol:
       return a.symVal
     of minString:
-      return "\""&a.strVal&"\""
+      return "\"$1\"" % a.strVal.replace("\"", "\\\"")
     of minInt:
       return $a.intVal
     of minFloat:
