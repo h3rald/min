@@ -9,8 +9,6 @@
 'crypto    import
 
 ; Aliases
-'define       ::
-'bind         :@
 'exit         :quit
 '==           :eq
 '!=           :noteq
@@ -19,24 +17,15 @@
 '>=           :gte
 '<=           :lte
 'puts         :echo
-'system       :!
-'run          :&
-'getenv       :$
-'call         :^
-'interpolate  :%
 'pop          :zap
 'quote        :unit
-'quote        :'
 'unquote      :i
 'unquote      :apply
-'unquote      :->
-'scope        :=>
 'filter       :select
 'cons         :prepend
 'size         :length
-'regex        :=~
 
-(': '@ 'quit 'eq 'noteq 'gt 'lt 'gte 'lte 'echo '! '& '$ '^ '% 'zap 'unit '' 'i 'apply '-> '=> 'select 'prepend 'length '=~) 'seal foreach
+('quit 'eq 'noteq 'gt 'lt 'gte 'lte 'echo 'zap 'unit 'i 'apply 'select 'prepend 'length) 'seal foreach
 
 ; Mathematical Operators
 (1 +)           :succ

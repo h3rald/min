@@ -163,6 +163,8 @@ proc lang_module*(i: In) =
       if not q1.isQuotation:
         q1 = @[q1].newVal
       symbol = sym.getString
+      if not symbol.match "^[a-zA-Z0-9+._-][a-zA-Z0-9/!?+*._-]*$":
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
       i.debug "[define] " & symbol & " = " & $q1
       #let p = proc(i: In) =
       #  i.push q1.qVal
@@ -745,5 +747,38 @@ proc lang_module*(i: In) =
 
     .sigil("*") do (i: In):
       i.push("seal".newSym)
+
+    .symbol(":") do (i: In):
+      i.push("define".newSym)
+
+    .symbol("@") do (i: In):
+      i.push("bind".newSym)
+
+    .symbol("!") do (i: In):
+      i.push("system".newSym)
+
+    .symbol("&") do (i: In):
+      i.push("run".newSym)
+
+    .symbol("$") do (i: In):
+      i.push("getenv".newSym)
+
+    .symbol("^") do (i: In):
+      i.push("call".newSym)
+
+    .symbol("%") do (i: In):
+      i.push("interpolate".newSym)
+
+    .symbol("'") do (i: In):
+      i.push("quote".newSym)
+
+    .symbol("->") do (i: In):
+      i.push("unquote".newSym)
+
+    .symbol("=>") do (i: In):
+      i.push("scope".newSym)
+
+    .symbol("=~") do (i: In):
+      i.push("regex".newSym)
 
     .finalize()
