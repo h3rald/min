@@ -36,12 +36,15 @@
 'size         :length
 'regex        :=~
 
+(': '@ 'quit 'eq 'noteq 'gt 'lt 'gte 'lte 'echo '! '& '$ '^ '% 'zap 'unit '' 'i 'apply '-> '=> 'select 'prepend 'length '=~) 'seal foreach
+
 ; Mathematical Operators
 (1 +)           :succ
 (1 -)           :pred
 (2 mod 0 ==)    :even?
 (even? not)     :odd?
 
+('succ 'pred 'even? 'odd?) 'seal foreach
 
 ; Stack Operators
 (swap cons)                       :swons
@@ -60,6 +63,8 @@
 ((() cons cons) dip swap i)       :bury2
 ((() cons cons cons) dip swap i)  :bury3
 
+('swons 'popd 'dupd 'swapd 'q 'k 'b 'c 'take 'dig1 'dig2 'dig3 'bury1 'bury2 'bury3) 'seal foreach
+
 ; Other
 (print pop)                                    :print!
 (dprint pop)                                   :dprint!
@@ -69,11 +74,15 @@
 (password aes encode)                          :encrypt
 (decode password aes)                          :decrypt
 (dup load import)                              :include
-()                                             :startup
 
-; Prompt
+('print! 'dprint! 'puts! 'call! 'interval 'encrypt 'decrypt 'include) 'seal foreach
+
+
+; Unsealed symbols
+()                                :startup
 ("[$1]$$ " (.) %)                 :prompt
 
 ; Load all stored symbols
 
 stored-symbols ('load-symbol ROOT with) foreach
+startup

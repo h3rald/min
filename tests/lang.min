@@ -55,7 +55,7 @@
 
   (defmod mymath inspect ("myplus") ==) assert
 
-  ((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
+  ;((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 
   ("3 4 +" eval 7 ==) assert
 

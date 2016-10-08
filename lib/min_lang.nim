@@ -229,19 +229,19 @@ proc lang_module*(i: In) =
           i.debug "[import] $1:$2" % [i.scope.name, sym]
           i.scope.symbols[sym] = val
     
-    .symbol("sigil") do (i: In):
-      var q1, q2: MinValue
-      i.reqTwoQuotations q1, q2
-      if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-        var symbol = q1.qVal[0].symVal
-        if symbol.len == 1:
-          if i.scope.hasSigil(symbol):
-            raiseInvalid("Sigil '$1' already exists" % [symbol])
-          i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q2) 
-        else:
-          raiseInvalid("A sigil can only have one character")
-      else:
-        raiseInvalid("The top quotation must contain only one symbol value")
+    #.symbol("sigil") do (i: In):
+    #  var q1, q2: MinValue
+    #  i.reqTwoQuotations q1, q2
+    #  if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
+    #    var symbol = q1.qVal[0].symVal
+    #    if symbol.len == 1:
+    #      if i.scope.hasSigil(symbol):
+    #        raiseInvalid("Sigil '$1' already exists" % [symbol])
+    #      i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q2) 
+    #    else:
+    #      raiseInvalid("A sigil can only have one character")
+    #  else:
+    #    raiseInvalid("The top quotation must contain only one symbol value")
   
     .symbol("eval") do (i: In):
       var s: MinValue

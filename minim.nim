@@ -154,9 +154,8 @@ proc minimRepl*(i: var MinInterpreter) =
   var s = newStringStream("")
   i.open(s, "")
   var line: string
-  echo "$1 v$2" % [appname, version]
+  #echo "$1 v$2" % [appname, version]
   var ed = initEditor(historyFile = MINIMHISTORY)
-  i.apply(i.scope.getSymbol("startup"))
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
     ed.completionCallback = proc(ed: LineEditor): seq[string] =

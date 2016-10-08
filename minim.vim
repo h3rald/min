@@ -8,12 +8,15 @@ if exists("b:current_syntax")
   finish
 endif
 
-setl iskeyword+=?,$,+,*,/,%,=,>,<,&,-,',.,:,@,~,^,!
+setl iskeyword+=?,$,+,*,/,%,=,>,<,&,-,',.,:,~,!
+setl iskeyword+=^
+setl iskeyword+=@
 
-syntax keyword          minimDefaultSymbol ! != $ & ' * + - % ^ -> . .. / : < <= == => =~ > >= @ ROOT aes and append apply ask at atime b bind bool bool? bury1 bury2 bury3 c call call! capitalize case cd chmod choose clear-stack column-print concat confirm cons contains cp cpu crypto ctime datetime ddel debug debug? decode decrypt define delete dget dictionary? dig1 dig2 dig3 dip dir? dirname div dprint dprint! dset dump-stack dup dupd echo encode encrypt env? eq eval even? exit fappend file? filename filter first float float? foreach fperms fread from-json fs fsize fstats ftype fwrite gets get-stack getenv gt gte hardlink hidden? i id ifte import include indent inspect int int? interpolate interval io join k keys length linrec load load-symbol logic lowercase ls ls-r lt lte map match md5 mkdir mod module mtime mv newline not noteq now num number? odd? or os password pop popd pred prepend print print! prompt puts puts! putenv q quit quotation? quote raise regex remove-symbol repeat replace rest rm rmdir run save-symbol scope scope? seal search select set-stack sha1 sha224 sha256 sha384 sha512 sigil sigils sip size sleep sort source split startup stored-symbols str string string? strip succ swap swapd swons symbols symlink symlink? sys system take tformat time timeinfo times timestamp titleize to-json try unit unquote uppercase unzip values version which while with xor zap zip 
+syntax keyword          minimDefaultSymbol ! != $ & ' * + - % ^ -> . .. / : < <= == => =~ > >= @ ROOT aes and append apply ask at atime b bind bool bool? bury1 bury2 bury3 c call call! capitalize case cd chmod choose clear-stack column-print concat confirm cons cp cpu crypto ctime datetime ddel debug debug? decode decrypt define define* delete dget dictionary? dig1 dig2 dig3 dip dir? dirname div dprint dprint! dset dump-stack dup dupd echo encode encrypt env? eq eval even? exit fappend file? filename filter first float float? foreach fperms fread from-json fs fsize fstats ftype fwrite gets get-stack getenv gt gte hardlink hidden? i id ifte import include indent inspect int int? interpolate interval io join k keys length linrec load load-symbol logic lowercase ls ls-r lt lte map match md5 mkdir mod module mtime mv newline not noteq now num number? odd? or os password pop popd pred prepend print print! prompt puts puts! putenv q quit quotation? quote raise regex remove-symbol repeat replace rest rm rmdir run save-symbol scope scope? seal search select set-stack sha1 sha224 sha256 sha384 sha512 sigils sip size sleep sort source split startup stored-symbols str string string? strip succ swap swapd swons symbols symlink symlink? sys system take tformat time timeinfo times timestamp titleize to-json try unit unquote uppercase unzip values version which while with xor zap zip contains
 
 
 syntax match            minimDefaultSigil     ;\<[:@'~!$%&$=<>^*]; contained
+syntax match            minimSpecialSymbols   ;[:@'~!$%&$=<>^*]; contained
 syntax match            minimQuote            ;\<['];
 syntax match            minimBinding          ;@;
 
