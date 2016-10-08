@@ -2,13 +2,15 @@ import
   tables, 
   os, 
   osproc, 
-  strutils
+  strutils,
+  sequtils
 import 
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/fileutils
+  ../core/fileutils,
+  ../core/zip
 
 proc unix(s: string): string =
   return s.replace("\\", "/")
@@ -170,5 +172,14 @@ proc sys_module*(i: In)=
       i.reqStringLike f
       i.push f.getString.parentDir.unix.newVal
 
+    .symbol("unzip") do (i: In):
+      var f, dir: MinValue
+      i.reqTwoStringLike dir, f
+      unzip(f.getString, dir.getString)
+
+    .symbol("zip") do (i: In):
+      var files, file: MinValue
+      i.reqStringLikeAndQuotation file, files
+      zip(files.qVal.mapIt(it.getString), file.getString)
 
     .finalize()

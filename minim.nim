@@ -13,7 +13,8 @@ import
   core/parser, 
   core/value, 
   core/interpreter, 
-  core/utils
+  core/utils,
+  core/zip
 import 
   lib/min_lang, 
   lib/min_num,

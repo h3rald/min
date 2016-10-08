@@ -1,4 +1,4 @@
-{.compile: "sgregex/libregex.c".}
+{.compile: "libregex.c".}
 const 
   RXSUCCESS* = 0
   RXEINMOD* = - 1

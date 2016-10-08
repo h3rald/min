@@ -80,6 +80,7 @@ proc dump*(i: MinInterpreter): string =
 
 proc debug*(i: In, value: MinValue) =
   if i.debugging: 
+    echo $value
     stderr.writeLine("-- " & i.dump & $value)
 
 proc debug*(i: In, value: string) =
