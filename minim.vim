@@ -30,7 +30,7 @@ syntax region           minimString           start=+"+ skip=+\\\\\|\\$"+  end=+
 syntax region           minimSigilSymbol      start=;\<[:@'~!$%&$=<>^*]; end=;\>; contains=minimDefaultSigil  
 syntax region           minimQuotedSymbol     start=;\<[']; end=;\>; contains=minimQuote
 syntax region           minimBoundSymbol      start=;@; end=;\>; contains=minimBinding
-syntax match            minimSymbol           ;[a-zA-Z_][a-zA-Z0-9/!?_-]*;
+syntax match            minimSymbol           ;[a-zA-Z0-9+._-][a-zA-Z0-9/!?+*._-]*;
 
 syntax match            minimParen            ;(\|); 
 
