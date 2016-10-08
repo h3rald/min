@@ -61,14 +61,15 @@
 ((() cons cons cons) dip swap i)  :bury3
 
 ; Other
-(print pop)                                                   :print!
-(dprint pop)                                                  :dprint!
-(puts pop)                                                    :puts!
-(call pop)                                                    :call!
-(:ms :q :check (check) (ms sleep q) while)                    :interval
-(password aes encode)                                         :encrypt
-(decode password aes)                                         :decrypt
-(dup load import)                                             :include
+(print pop)                                    :print!
+(dprint pop)                                   :dprint!
+(puts pop)                                     :puts!
+(call pop)                                     :call!
+(:ms :q :check (check) (ms sleep q) while)     :interval
+(password aes encode)                          :encrypt
+(decode password aes)                          :decrypt
+(dup load import)                              :include
+()                                             :startup
 
 ; Prompt
 ("[$1]$$ " (.) %)                 :prompt
