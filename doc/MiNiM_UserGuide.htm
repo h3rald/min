@@ -82,19 +82,24 @@
    <li><a href="#L.code.lang..code..Module"><code>lang</code> Module</a>
    <ul>
     <li><a href="#bind">bind</a></li>
+    <li><a href="#call">call</a></li>
     <li><a href="#debug">debug</a></li>
     <li><a href="#debug.">debug?</a></li>
     <li><a href="#define">define</a></li>
     <li><a href="#delete">delete</a></li>
+    <li><a href="#eval">eval</a></li>
     <li><a href="#exit">exit</a></li>
     <li><a href="#from-json">from-json</a></li>
     <li><a href="#import">import</a></li>
+    <li><a href="#load">load</a></li>
     <li><a href="#module">module</a></li>
     <li><a href="#scope">scope</a></li>
     <li><a href="#scope.">scope?</a></li>
     <li><a href="#sigils">sigils</a></li>
+    <li><a href="#source">source</a></li>
     <li><a href="#symbols">symbols</a></li>
     <li><a href="#to-json">to-json</a></li>
+    <li><a href="#with">with</a></li>
    </ul>
    </li>
    <li><a href="#L.code.io..code..Module"><code>io</code> Module</a></li>
@@ -126,6 +131,12 @@
 
 <p>Binds the specified value (auto-quoted) to an existing symbol <span class="kwd">§</span>.</p>
 
+<h4 id="call">call<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> (*) § <strong>&rArr;</strong> *?</span></p>
+
+<p>Calls operator <span class="kwd">§</span> defined in scope <span class="kwd">(*)</span>.</p>
+
 <h4 id="debug">debug<a href="#document-top" title="Go to top"></a></h4>
 
 <p><em>Signature:</em> <span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
@@ -150,6 +161,12 @@
 
 <p>Deletes the specified symbol <span class="kwd">§</span>.</p>
 
+<h4 id="eval">eval<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> S <strong>&rArr;</strong> *?</span></p>
+
+<p>Parses and interprets <span class="kwd">S</span>.</p>
+
 <h4 id="exit">exit<a href="#document-top" title="Go to top"></a></h4>
 
 <p><em>Signature:</em> <span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
@@ -167,6 +184,12 @@
 <p><em>Signature:</em> <span class="kwd"> § <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Imports the a previously-loaded module <span class="kwd">§</span>, defining all its symbols in the current scope.</p>
+
+<h4 id="load">load<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> S <strong>&rArr;</strong> *?</span></p>
+
+<p>Parses and interprets the specified MiNiM file <span class="kwd">S</span>, adding <span class="ext">.min</span> if not specified.</p>
 
 <h4 id="module">module<a href="#document-top" title="Go to top"></a></h4>
 
@@ -192,6 +215,12 @@
 
 <p>Returns a list of all sigils defined in the <span class="kwd">ROOT</span> scope.</p>
 
+<h4 id="source">source<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> § <strong>&rArr;</strong> (*)</span></p>
+
+<p>Display the source code of symbol <span class="kwd">§</span> (if it has been implemented a MiNiM quotation).</p>
+
 <h4 id="symbols">symbols<a href="#document-top" title="Go to top"></a></h4>
 
 <p><em>Signature:</em> <span class="kwd"> &#x2205; <strong>&rArr;</strong> (S+)</span></p>
@@ -202,7 +231,13 @@
 
 <p><em>Signature:</em> <span class="kwd"> (*) <strong>&rArr;</strong> S</span></p>
 
-<p>Converts a quotation into a JSON string.</p>
+<p>Converts a quotation into a JSON string <span class="kwd">S</span>.</p>
+
+<h4 id="with">with<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> (2) (1) <strong>&rArr;</strong> *?</span></p>
+
+<p>Applies quotation <span class="kwd">(2)</span> within the scope of <span class="kwd">(1)</span>.</p>
 
 <h3 id="L.code.io..code..Module"><code>io</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
