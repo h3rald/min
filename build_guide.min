@@ -1,0 +1,27 @@
+"doc" cd
+
+(
+  "overview.md"
+  "usage.md"
+  "reference.md"
+) ' :files
+
+"" :doc
+
+"Reading files..." puts!
+
+
+("- Reading: $1" swap ' % puts!) :echofile
+"MiNiM_UserGuide.md" :fname
+
+files (dup echofile fread doc swap concat @doc) foreach
+
+doc fname fwrite
+
+"Generating: $1" 'fname % puts!
+
+"hastyscribe $1" (fname) % !
+
+.. cd
+
+"Done." puts!
