@@ -74,4 +74,4 @@
 ; Load all stored symbols
 
 stored-symbols ('load-symbol ROOT with) foreach
-startup
+'startup ROOT with

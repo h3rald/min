@@ -96,11 +96,9 @@ template createScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
   q.scope = new MinScope
   q.scope.name = id
   q.scope.parent = i.scope
-  #i.debug "[scope] " & q.scope.fullname
   let scope = i.scope
   i.scope = q.scope
   body
-  #i.debug "[scope] " & scope.fullname
   i.scope = scope
 
 template withScope*(i: In, q: MinValue, body: untyped): untyped =
@@ -110,6 +108,17 @@ template withScope*(i: In, q: MinValue, body: untyped): untyped =
   body
   #i.debug "[scope] " & scope.fullname
   i.scope = origScope
+
+template addScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
+  var added = new MinScope
+  added.name = id
+  if q.scope.isNil:
+    q.scope = i.scope
+  added.parent = q.scope
+  let scope = i.scope
+  i.scope = added
+  body
+  i.scope = scope
 
 proc copystack*(i: MinInterpreter): MinStack =
   return i.stack
@@ -169,14 +178,17 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-proc apply*(i: In, op: MinOperator) =
+proc apply*(i: In, op: MinOperator, name="apply") =
   case op.kind
   of minProcOp:
     op.prc(i)
   of minValOp:
     if op.val.kind == minQuotation:
-      for e in op.val.qVal:
-        i.push e
+      var q = op.val
+      i.addScope("apply", q):
+        #echo "a1: ", i.scope.fullname
+        for e in q.qVal:
+          i.push e
     else:
       i.push(op.val)
 
@@ -193,13 +205,13 @@ proc push*(i: In, val: MinValue) =
       if i.unsafe:
         let stack = i.copystack
         try:
-          i.apply(sym)
+          i.apply(sym, "symbol:" & symbol)
         except:
           i.stack = stack
           raise
       else:
         i.execute:
-          i.apply(sym)
+          i.apply(sym, "symbol:" & symbol)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
@@ -209,15 +221,15 @@ proc push*(i: In, val: MinValue) =
         if i.unsafe:
           let stack = i.copystack
           try:
-            i.apply(sig) 
+            i.apply(sig,"sigil:" & sym) 
           except:
             i.stack = stack
             raise
         else:
           i.execute:
-            i.apply(sig)
+            i.apply(sig, "sigil:" & sym)
       else:
-        raiseUndefined("Undefined symbol: '"&val.symVal&"'")
+        raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
   else:
     i.stack.add(val)
 

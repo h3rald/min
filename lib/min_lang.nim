@@ -3,7 +3,8 @@ import
   strutils, 
   os, 
   json,
-  algorithm
+  algorithm,
+  oids
 import 
   ../core/consts,
   ../core/parser, 
@@ -163,14 +164,12 @@ proc lang_module*(i: In) =
       if not q1.isQuotation:
         q1 = @[q1].newVal
       symbol = sym.getString
-      if not symbol.match "^[a-zA-Z0-9+._-][a-zA-Z0-9/!?+*._-]*$":
+      if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-      i.debug "[define] " & symbol & " = " & $q1
-      #let p = proc(i: In) =
-      #  i.push q1.qVal
-      #i.scope.symbols[symbol] = MinOperator(kind: minProcOp, prc: p)
+      i.debug "[define] (scope: $1) $2 = $3" % [i.scope.name, symbol, $q1]
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-        raiseUndefined("Attempting to redefined sealed symbol '$1'" % symbol)
+        raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
+      i.newScope("$1#$2" % [symbol, $genOid()], q1)
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
@@ -269,6 +268,15 @@ proc lang_module*(i: In) =
      for v in qprog.qVal:
       i.push v
      i.scope = scope
+
+    .symbol("publish") do (i: In):
+      var qscope, str: MinValue
+      i.reqQuotationAndStringLike qscope, str
+      let sym = str.getString
+      #TODO Check for sealed
+      if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, qscope.scope.name])
+      qscope.scope.symbols[sym] = i.scope.getSymbol(sym)
 
     .symbol("source") do (i: In):
       var s: MinValue
@@ -479,7 +487,7 @@ proc lang_module*(i: In) =
     .symbol("map") do (i: In):
       var prog, list: MinValue
       i.reqTwoQuotations prog, list
-      i.push newVal(newSeq[MinValue](0))
+      #i.push newVal(newSeq[MinValue](0))
       var res = newSeq[MinValue](0)
       for litem in list.qVal:
         i.push litem
@@ -607,7 +615,7 @@ proc lang_module*(i: In) =
       var d, k: MinValue
       i.reqStringLike k
       i.reqDictionary d
-      i.push d
+      #i.push d
       i.push d.dget(k)
       
     .symbol("dset") do (i: In):
@@ -628,18 +636,18 @@ proc lang_module*(i: In) =
       i.reqDictionary d
       for v in d.qVal:
         echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
-      i.push d
+      #i.push d
 
     .symbol("keys") do (i: In):
       var d: MinValue
       i.reqDictionary d
-      i.push d
+      #i.push d
       i.push d.keys
 
     .symbol("values") do (i: In):
       var d: MinValue
       i.reqDictionary d
-      i.push d
+      #i.push d
       i.push d.values
 
     .symbol("interpolate") do (i: In):
