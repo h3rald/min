@@ -174,6 +174,7 @@ proc minimRepl*(i: var MinInterpreter) =
     except:
       stderr.writeLine getCurrentExceptionMsg()
     finally:
+      i.halt = false
       if i.stack.len > 0:
         let last = i.stack[i.stack.len - 1]
         let n = $i.stack.len

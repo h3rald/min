@@ -140,6 +140,7 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     scope: scope,
     debugging: debugging, 
     unsafe: false,
+    halt: false,
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
   )
   return i
@@ -165,9 +166,11 @@ template execute(i: In, body: untyped) =
   except MinRuntimeError:
     i.stack = stack
     stderr.writeLine("$1 [$2,$3]: $4" % [i.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+    i.halt = true
   except:
     i.stack = stack
     i.error(getCurrentExceptionMsg())
+    i.halt = true
 
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
@@ -251,7 +254,7 @@ proc peek*(i: MinInterpreter): MinValue =
 
 proc interpret*(i: In) {.gcsafe.}= 
   var val: MinValue
-  while i.parser.token != tkEof: 
+  while i.parser.token != tkEof and not i.halt: 
     i.execute:
       val = i.parser.parseMinValue
     i.push val
