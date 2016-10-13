@@ -59,6 +59,7 @@ type
     line*: int
     column*: int
     filename*: string
+    #parent*: MinValue
     case kind*: MinKind
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat

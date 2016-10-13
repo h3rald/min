@@ -146,6 +146,8 @@ proc next(h: var LineHistory): string =
 # Public API
 
 proc deletePrevious*(ed: var LineEditor) =
+  if ed.line.position <= 0:
+    return
   if not ed.line.empty:
     if ed.line.full:
       stdout.cursorBackward

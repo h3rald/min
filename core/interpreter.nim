@@ -157,7 +157,7 @@ proc error(i: MinInterpreter, message: string) =
   if i.currSym.filename == "":
     stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
+    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
 
 template execute(i: In, body: untyped) =
   let stack = i.copystack
@@ -165,7 +165,7 @@ template execute(i: In, body: untyped) =
     body
   except MinRuntimeError:
     i.stack = stack
-    stderr.writeLine("$1 [$2,$3]: $4" % [i.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+    stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
     i.halt = true
   except:
     i.stack = stack
@@ -188,7 +188,7 @@ proc apply*(i: In, op: MinOperator, name="apply") =
   of minValOp:
     if op.val.kind == minQuotation:
       var q = op.val
-      i.addScope("apply", q):
+      i.addScope(name, q):
         #echo "a1: ", i.scope.fullname
         for e in q.qVal:
           i.push e
@@ -196,9 +196,12 @@ proc apply*(i: In, op: MinOperator, name="apply") =
       i.push(op.val)
 
 proc push*(i: In, val: MinValue) = 
+  if i.halt:
+    return
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
+      #val.parent = i.currSym
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
@@ -208,13 +211,13 @@ proc push*(i: In, val: MinValue) =
       if i.unsafe:
         let stack = i.copystack
         try:
-          i.apply(sym, "symbol:" & symbol)
+          i.apply(sym) 
         except:
           i.stack = stack
           raise
       else:
         i.execute:
-          i.apply(sym, "symbol:" & symbol)
+          i.apply(sym)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
@@ -224,13 +227,13 @@ proc push*(i: In, val: MinValue) =
         if i.unsafe:
           let stack = i.copystack
           try:
-            i.apply(sig,"sigil:" & sym) 
+            i.apply(sig)
           except:
             i.stack = stack
             raise
         else:
           i.execute:
-            i.apply(sig, "sigil:" & sym)
+            i.apply(sig)
       else:
         raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
   else:
@@ -257,18 +260,18 @@ proc interpret*(i: In) {.gcsafe.}=
   while i.parser.token != tkEof and not i.halt: 
     i.execute:
       val = i.parser.parseMinValue
-    i.push val
+      i.push val
 
 proc unquote*(i: In, name: string, q: var MinValue) =
   i.createScope(name, q): 
     for v in q.qVal:
       i.push v
 
-proc eval*(i: In, s: string) =
+proc eval*(i: In, s: string, name="<eval>") =
   let fn = i.filename
   try:
-    var i2 = i.copy("eval")
-    i2.open(newStringStream(s), "eval")
+    var i2 = i.copy(name)
+    i2.open(newStringStream(s), name)
     discard i2.parser.getToken() 
     i2.interpret()
     i.stack = i2.stack

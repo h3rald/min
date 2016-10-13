@@ -114,7 +114,7 @@ proc stdLib(i: In) =
   i.time_module
   i.fs_module
   i.crypto_module
-  i.eval PRELUDE
+  i.eval PRELUDE, "<prelude>"
   if not MINIMSYMBOLS.fileExists:
     MINIMSYMBOLS.writeFile("{}")
   if not MINIMHISTORY.fileExists:
