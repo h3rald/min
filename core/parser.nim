@@ -55,11 +55,12 @@ type
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
-  MinValue* = object
+  MinValue* = ref MinValueObject
+  MinValueObject* = object
     line*: int
     column*: int
     filename*: string
-    #parent*: MinValue
+    parent*: MinValue
     case kind*: MinKind
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat

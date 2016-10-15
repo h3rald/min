@@ -153,11 +153,14 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
-proc error(i: MinInterpreter, message: string) =
+proc error(i: In, message: string) =
   if i.currSym.filename.isNil or i.currSym.filename == "":
-    stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
+    stderr.writeLine("`$1`: $2" % [i.currSym.symVal, message])
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
+    stderr.writeLine("$1 [$2,$3] `$4`: $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
+  #if not i.currSym.parent.isNil:
+  #  i.currSym = i.currSym.parent
+  #  i.error("...")
 
 template execute(i: In, body: untyped) =
   let stack = i.copystack
@@ -201,7 +204,7 @@ proc push*(i: In, val: MinValue) =
   i.debug val
   if val.kind == minSymbol:
     if not i.evaluating:
-      #val.parent = i.currSym
+      val.parent = i.currSym
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
