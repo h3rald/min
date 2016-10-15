@@ -154,7 +154,7 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
 proc error(i: MinInterpreter, message: string) =
-  if i.currSym.filename == "":
+  if i.currSym.filename.isNil or i.currSym.filename == "":
     stderr.writeLine("`$1`: Error - $2" % [i.currSym.symVal, message])
   else:
     stderr.writeLine("$1 [$2,$3] `$4`: Error - $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])

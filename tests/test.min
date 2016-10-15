@@ -15,7 +15,13 @@
  (
   ' :check      ; save the check quotation to validate
   ' :results    ; save the result symbol to update
-  (check -> true ==)
+  (
+    (
+      (check -> true ==)
+      (1 at :err "\nError: $1" (err) % puts false)
+    ) try
+    
+  )
   ( 
     ok results append quote @results 
     "." print!

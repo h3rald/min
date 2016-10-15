@@ -30,30 +30,29 @@
   (symbols "five" contains false  ==) assert
 
   (
-    (
-      (+) :myplus
-    ) =mymath
-  ) :defmod
-  
-  (defmod symbols "mymath" contains) assert
+    (+) :myplus
+  ) =mymath
 
-  (defmod mymath scope?) assert
+  (symbols "mymath" contains) assert
+  
+
+  (mymath scope?) assert
 
   (() scope? false ==) assert 
 
   (() inspect () ==) assert
 
-  (defmod 'mymath import symbols "myplus" contains) assert
+  ('mymath import symbols "myplus" contains) assert
 
-  (defmod 'mymath import 2 3 myplus 5 ==) assert
+  ('mymath import 2 3 myplus 5 ==) assert
 
   ; Extend an existing scope
-  (defmod 
+  (
     ('mymath import 
      (-) :myminus) => @mymath 
     5 2 mymath ^myminus 3 ==) assert
 
-  (defmod mymath inspect ("myplus") ==) assert
+  (mymath inspect ("myminus" "myplus") ==) assert
 
   ;((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 
@@ -62,7 +61,7 @@
   ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
   "tests/testload.min" rm
 
-  (defmod 2 2 mymath ^myplus 4 ==) assert
+  (2 2 mymath ^myplus 4 ==) assert
   
   (1 2 3 4 get-stack (1 2 3 4) ==) assert
 
@@ -110,7 +109,7 @@
     ("Caught a " swap concat)
     ) try "Caught a MinEmptyStackError" ==) assert 
 
-  ("aaaa" :. . "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
+  ("aaaa" :cd cd "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
 
   (((2 :a1 *a1 3 :a1) ("failed")) try "failed" ==) assert
 
@@ -175,5 +174,4 @@
 
   report
   ; Tidy up
-  ~defmod
   clear-stack

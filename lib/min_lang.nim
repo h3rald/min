@@ -255,7 +255,10 @@ proc lang_module*(i: In) =
       var file = s.getString
       if not file.endsWith(".min"):
         file = file & ".min"
-      i.load i.pwd.joinPath(file)
+      file = i.pwd.joinPath(file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exists." % file)
+      i.load file
   
    .symbol("with") do (i: In):
      var qscope, qprog: MinValue
