@@ -170,6 +170,9 @@ proc lang_module*(i: In) =
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
       i.newScope("$1#$2" % [symbol, $genOid()], q1)
+      # TODO remove
+      #if symbol == "total":
+      #  echo "[define] (scope: $1) $2 -> $3" % [i.scope.fullname, symbol, $q1, $q1.qVal[0]]
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
@@ -181,6 +184,9 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal
       symbol = sym.getString
       i.debug "[bind] " & symbol & " = " & $q1
+      # TODO remove
+      #if symbol == "total":
+      #  echo "[bind] (scope: $1) $2 " % [i.scope.fullname, symbol, $q1]
       #let p = proc (i: In) =
       #  i.push q1.qVal
       #let res = i.scope.setSymbol(symbol, MinOperator(kind: minProcOp, prc: p))

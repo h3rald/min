@@ -54,6 +54,7 @@
     ifte
   )
   map
+  pop ;Remove results accomulator from stack
  ) :report
 
 ) =test

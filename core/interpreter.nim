@@ -2,7 +2,8 @@ import
   streams, 
   strutils, 
   critbits, 
-  os
+  os,
+  oids
 import 
   value,
   parser
@@ -50,6 +51,9 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key) 
     scope.symbols[key] = value
+    # TODO remove
+    #if key == "total":
+    #  echo "[bind] (scope: $1) $2 -> $3" % [scope.fullname, key, $value]
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
@@ -191,7 +195,7 @@ proc apply*(i: In, op: MinOperator, name="apply") =
   of minValOp:
     if op.val.kind == minQuotation:
       var q = op.val
-      i.addScope(name, q):
+      i.addScope(name & "#" & $genOid(), q):
         #echo "a1: ", i.scope.fullname
         for e in q.qVal:
           i.push e
