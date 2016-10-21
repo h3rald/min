@@ -3,7 +3,8 @@ import
   strutils, 
   critbits, 
   os,
-  oids
+  oids,
+  algorithm
 import 
   value,
   parser
@@ -51,9 +52,6 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.di
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key) 
     scope.symbols[key] = value
-    # TODO remove
-    #if key == "total":
-    #  echo "[bind] (scope: $1) $2 -> $3" % [scope.fullname, key, $value]
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
@@ -124,15 +122,10 @@ template addScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
   body
   i.scope = scope
 
-proc copystack*(i: MinInterpreter): MinStack =
-  return i.stack
-  #var s = newSeq[MinValue](0)
-  #for i in i.stack:
-  #  s.add i
-  #return s
-
 proc newMinInterpreter*(debugging = false): MinInterpreter =
-  var st:MinStack = newSeq[MinValue](0)
+  var stack:MinStack = newSeq[MinValue](0)
+  var trace:MinStack = newSeq[MinValue](0)
+  var stackcopy:MinStack = newSeq[MinValue](0)
   var pr:MinParser
   var scope = new MinScope
   scope.name = "ROOT"
@@ -140,7 +133,9 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     filename: "input", 
     pwd: "",
     parser: pr, 
-    stack: st,
+    stack: stack,
+    trace: trace,
+    stackcopy: stackcopy,
     scope: scope,
     debugging: debugging, 
     unsafe: false,
@@ -153,30 +148,48 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result = newMinInterpreter(debugging = i.debugging)
   result.filename = filename
   result.pwd =  filename.parentDir
-  result.stack = i.copystack
+  result.stack = i.stack
+  result.trace = i.trace
+  result.stackcopy = i.stackcopy
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
-proc error(i: In, message: string) =
-  if i.currSym.filename.isNil or i.currSym.filename == "":
-    stderr.writeLine("`$1`: $2" % [i.currSym.symVal, message])
+proc formatError(sym: MinValue, message: string): string =
+  if sym.filename.isNil or sym.filename == "":
+    return "(!) `$1`: $2" % [sym.symVal, message]
   else:
-    stderr.writeLine("$1 [$2,$3] `$4`: $5" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, i.currSym.symVal, message])
-  #if not i.currSym.parent.isNil:
-  #  i.currSym = i.currSym.parent
-  #  i.error("...")
+    return "(!) $1:$2,$3 `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+
+proc formatTrace(sym: MinValue): string =
+  if sym.filename.isNil or sym.filename == "":
+    return "    - [native] in symbol: $1" % [sym.symVal]
+  else:
+    return "    - $1:$2,$3 in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+
+proc stackTrace(i: In) =
+  var trace = i.trace
+  trace.reverse()
+  for sym in trace:
+    stderr.writeLine sym.formatTrace
+
+proc error(i: In, message: string) =
+  stderr.writeLine i.currSym.formatError(message)
 
 template execute(i: In, body: untyped) =
-  let stack = i.copystack
+  var stack: MinStack
+  if i.trace.len == 0:
+    i.stackcopy = i.stack
   try:
     body
   except MinRuntimeError:
-    i.stack = stack
-    stderr.writeLine("$1 [$2,$3]: $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+    i.stack = i.stackcopy
+    stderr.writeLine("(!) $1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
+    i.stackTrace
     i.halt = true
   except:
-    i.stack = stack
+    i.stack = i.stackcopy
     i.error(getCurrentExceptionMsg())
+    i.stackTrace
     i.halt = true
 
 proc open*(i: In, stream:Stream, filename: string) =
@@ -207,8 +220,8 @@ proc push*(i: In, val: MinValue) =
     return
   i.debug val
   if val.kind == minSymbol:
+    i.trace.add val
     if not i.evaluating:
-      val.parent = i.currSym
       i.currSym = val
     let symbol = val.symVal
     let sigil = "" & symbol[0]
@@ -216,7 +229,7 @@ proc push*(i: In, val: MinValue) =
     if found:
       let sym = i.scope.getSymbol(symbol) 
       if i.unsafe:
-        let stack = i.copystack
+        let stack = i.stack
         try:
           i.apply(sym) 
         except:
@@ -232,7 +245,7 @@ proc push*(i: In, val: MinValue) =
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
         if i.unsafe:
-          let stack = i.copystack
+          let stack = i.stack
           try:
             i.apply(sig)
           except:
@@ -243,6 +256,7 @@ proc push*(i: In, val: MinValue) =
             i.apply(sig)
       else:
         raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
+    discard i.trace.pop
   else:
     i.stack.add(val)
 
@@ -281,6 +295,8 @@ proc eval*(i: In, s: string, name="<eval>") =
     i2.open(newStringStream(s), name)
     discard i2.parser.getToken() 
     i2.interpret()
+    i.trace = i2.trace
+    i.stackcopy = i2.stackcopy
     i.stack = i2.stack
     i.scope = i2.scope
   except:
@@ -295,6 +311,8 @@ proc load*(i: In, s: string) =
     i2.open(newStringStream(s.readFile), s)
     discard i2.parser.getToken() 
     i2.interpret()
+    i.trace = i2.trace
+    i.stackcopy = i2.stackcopy
     i.stack = i2.stack
     i.scope = i2.scope
   except:

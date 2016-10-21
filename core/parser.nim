@@ -60,7 +60,6 @@ type
     line*: int
     column*: int
     filename*: string
-    parent*: MinValue
     case kind*: MinKind
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
@@ -91,6 +90,8 @@ type
   In* = var MinInterpreter
   MinInterpreter* = object
     stack*: MinStack
+    trace*: MinStack
+    stackcopy*: MinStack
     pwd*: string
     scope*: ref MinScope
     parser*: MinParser

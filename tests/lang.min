@@ -1,10 +1,14 @@
 'test load
 'test import
 
-"lang" describe
+newline 
+symbols size :total-symbols
+sigils size :total-sigils
+"Total Symbols: $1" (total-symbols) % puts! 
+"Total Sigils: $1" (total-sigils) % puts!
+newline 
 
-  "Total Symbols: " print! symbols size puts!
-  "  Total Sigils: " print! sigils size puts!
+"lang" describe
 
   (debug? false ==) assert
   (1 id 1 ==) assert
@@ -119,7 +123,7 @@
     ) try "Test Message" ==) assert
 
   (
-   (("test" (1 2) :)) try get-stack ("test" (1 2)) ==) assert
+   (("test" (1 2) :)) try get-stack ("test") ==) assert
 
   (
    (
