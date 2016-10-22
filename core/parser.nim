@@ -99,7 +99,6 @@ type
     filename*: string
     debugging*: bool 
     evaluating*: bool 
-    unsafe*: bool
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError

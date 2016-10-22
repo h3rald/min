@@ -139,7 +139,6 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     stackcopy: stackcopy,
     scope: scope,
     debugging: debugging, 
-    unsafe: false,
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
   )
   return i
@@ -175,8 +174,6 @@ proc stackTrace(i: In) =
 proc error(i: In, message: string) =
   stderr.writeLine i.currSym.formatError(message)
 
-#template execute(i: In, body: untyped) =
-
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
@@ -211,35 +208,13 @@ proc push*(i: In, val: MinValue) =
     let found = i.scope.hasSymbol(symbol)
     if found:
       let sym = i.scope.getSymbol(symbol) 
-      if i.unsafe:
-        i.apply(sym)
-      #if i.unsafe:
-        #let stack = i.stack
-        #try:
-        #  i.apply(sym) 
-        #except:
-        #  echo "yeah!"
-        #  i.stack = stack
-        #  raise
-      else:
-        #i.execute:
-        i.apply(sym)
+      i.apply(sym)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
         let sig = i.scope.getSigil(sigil) 
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
-        #if i.unsafe:
-          #let stack = i.stack
-          #try:
-          #  i.apply(sig)
-          #except:
-          #  echo "yup!"
-          #  i.stack = stack
-          #  raise
-        #else:
-          #i.execute:
         i.apply(sig)
       else:
         raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
@@ -263,7 +238,7 @@ proc peek*(i: MinInterpreter): MinValue =
   else:
     raiseEmptyStack()
 
-proc interpret*(i: In) {.gcsafe.}= 
+proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
   var val: MinValue
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
@@ -285,6 +260,8 @@ proc interpret*(i: In) {.gcsafe.}=
       i.error(msg)
       i.stackTrace
       raise MinTrappedException(msg: msg)
+  if i.stack.len > 0:
+    return i.stack[i.stack.len - 1]
 
 proc unquote*(i: In, name: string, q: var MinValue) =
   i.createScope(name, q): 
@@ -292,35 +269,21 @@ proc unquote*(i: In, name: string, q: var MinValue) =
       i.push v
 
 proc eval*(i: In, s: string, name="<eval>") =
-  #let fn = i.filename
-  #try:
-    var i2 = i.copy(name)
-    i2.open(newStringStream(s), name)
-    discard i2.parser.getToken() 
-    i2.interpret()
-    i.trace = i2.trace
-    i.stackcopy = i2.stackcopy
-    i.stack = i2.stack
-    i.scope = i2.scope
-  #except:
-  #  stderr.writeLine getCurrentExceptionMsg()
-  #  raise
-  #finally:
-  #  i.filename = fn
+  var i2 = i.copy(name)
+  i2.open(newStringStream(s), name)
+  discard i2.parser.getToken() 
+  i2.interpret()
+  i.trace = i2.trace
+  i.stackcopy = i2.stackcopy
+  i.stack = i2.stack
+  i.scope = i2.scope
 
 proc load*(i: In, s: string) =
-  #let fn = i.filename
-  #try:
-    var i2 = i.copy(s)
-    i2.open(newStringStream(s.readFile), s)
-    discard i2.parser.getToken() 
-    i2.interpret()
-    i.trace = i2.trace
-    i.stackcopy = i2.stackcopy
-    i.stack = i2.stack
-    i.scope = i2.scope
-  #except:
-  #  stderr.writeLine getCurrentExceptionMsg()
-  #  raise
-  #finally:
-  #  i.filename = fn
+  var i2 = i.copy(s)
+  i2.open(newStringStream(s.readFile), s)
+  discard i2.parser.getToken() 
+  i2.interpret()
+  i.trace = i2.trace
+  i.stackcopy = i2.stackcopy
+  i.stack = i2.stack
+  i.scope = i2.scope

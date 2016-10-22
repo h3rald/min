@@ -280,7 +280,6 @@ proc lang_module*(i: In) =
       var qscope, str: MinValue
       i.reqQuotationAndStringLike qscope, str
       let sym = str.getString
-      #TODO Check for sealed
       if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, qscope.scope.name])
       qscope.scope.symbols[sym] = i.scope.getSymbol(sym)
@@ -317,12 +316,10 @@ proc lang_module*(i: In) =
           symbols.add s.newVal
         i.push symbols.newVal
   
-    # ("SomeError" "message")
     .symbol("raise") do (i: In):
       var err: MinValue
       i.reqDictionary err
       if err.dhas("error".newSym) and err.dhas("message".newSym):
-        # TODO rewrite as dictionary!
         raiseRuntime("($1) $2" % [err.dget("error".newVal).getString, err.dget("message".newVal).getString], err.qVal)
       else:
         raiseInvalid("Invalid error dictionary")
@@ -367,20 +364,17 @@ proc lang_module*(i: In) =
         hasFinally = true
       if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
         raiseInvalid("Quotation must contain at one quotation")
-      i.unsafe = true
       try:
         i.unquote("<try-code>", code)
       except MinRuntimeError:
         if not hasCatch:
           return
-        i.unsafe = false
         let e = (MinRuntimeError)getCurrentException()
         i.push e.qVal.newVal
         i.unquote("<try-catch>", catch)
       except:
         if not hasCatch:
           return
-        i.unsafe = false
         let e = getCurrentException()
         var res = newSeq[MinValue](0)
         let err = regex.replace($e.name, ":.+$", "")

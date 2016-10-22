@@ -153,6 +153,19 @@ proc minimFile*(file: File, filename="stdin", debugging = false) =
     stderr.flushFile()
   minimStream(stream, filename, debugging)
 
+proc printResult(i: In, res: MinValue) =
+  if res.isNil:
+    return
+  if i.stack.len > 0:
+    let n = $i.stack.len
+    if res.isQuotation and res.qVal.len > 1:
+      echo "{$1} -> (" % n
+      for item in res.qVal:
+        echo  "         " & $item
+      echo " ".repeat(n.len) & "      )"
+    else:
+      echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
+
 proc minimRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
@@ -174,23 +187,9 @@ proc minimRepl*(i: var MinInterpreter) =
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
     try:
-      i.interpret()
+      i.printResult i.interpret()
     except:
       discard
-      #stderr.writeLine getCurrentExceptionMsg()
-    finally:
-      if i.stack.len > 0:
-        let last = i.stack[i.stack.len - 1]
-        let n = $i.stack.len
-        if last.isQuotation and last.qVal.len > 1:
-          echo "{$1} -> (" % n
-          for item in last.qVal:
-            echo  "         " & $item
-          echo " ".repeat(n.len) & "      )"
-        else:
-          echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
-      else:
-        echo "{0} --"
 
 proc minimRepl*(debugging = false) = 
   var i = newMinInterpreter(debugging)

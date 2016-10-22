@@ -62,9 +62,8 @@
 (:ms :q :check (check) (ms sleep q) while)     :interval
 (password aes encode)                          :encrypt
 (decode password aes)                          :decrypt
-(dup load import)                              :include
 
-('print! 'dprint! 'puts! 'call! 'interval 'encrypt 'decrypt 'include) 'seal foreach
+('print! 'dprint! 'puts! 'call! 'interval 'encrypt 'decrypt) 'seal foreach
 
 
 ; Unsealed symbols
