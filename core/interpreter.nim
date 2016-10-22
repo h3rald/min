@@ -10,6 +10,7 @@ import
   parser
 
 type
+  MinTrappedException* = ref object of SystemError
   MinRuntimeError* = ref object of SystemError
     qVal*: seq[MinValue]
 
@@ -139,7 +140,6 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
     scope: scope,
     debugging: debugging, 
     unsafe: false,
-    halt: false,
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
   )
   return i
@@ -158,13 +158,13 @@ proc formatError(sym: MinValue, message: string): string =
   if sym.filename.isNil or sym.filename == "":
     return "(!) `$1`: $2" % [sym.symVal, message]
   else:
-    return "(!) $1:$2,$3 `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+    return "(!) $1($2,$3) `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
 
 proc formatTrace(sym: MinValue): string =
   if sym.filename.isNil or sym.filename == "":
     return "    - [native] in symbol: $1" % [sym.symVal]
   else:
-    return "    - $1:$2,$3 in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+    return "    - $1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
 
 proc stackTrace(i: In) =
   var trace = i.trace
@@ -175,22 +175,7 @@ proc stackTrace(i: In) =
 proc error(i: In, message: string) =
   stderr.writeLine i.currSym.formatError(message)
 
-template execute(i: In, body: untyped) =
-  var stack: MinStack
-  if i.trace.len == 0:
-    i.stackcopy = i.stack
-  try:
-    body
-  except MinRuntimeError:
-    i.stack = i.stackcopy
-    stderr.writeLine("(!) $1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, getCurrentExceptionMsg()])
-    i.stackTrace
-    i.halt = true
-  except:
-    i.stack = i.stackcopy
-    i.error(getCurrentExceptionMsg())
-    i.stackTrace
-    i.halt = true
+#template execute(i: In, body: untyped) =
 
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
@@ -216,8 +201,6 @@ proc apply*(i: In, op: MinOperator, name="apply") =
       i.push(op.val)
 
 proc push*(i: In, val: MinValue) = 
-  if i.halt:
-    return
   i.debug val
   if val.kind == minSymbol:
     i.trace.add val
@@ -229,31 +212,35 @@ proc push*(i: In, val: MinValue) =
     if found:
       let sym = i.scope.getSymbol(symbol) 
       if i.unsafe:
-        let stack = i.stack
-        try:
-          i.apply(sym) 
-        except:
-          i.stack = stack
-          raise
+        i.apply(sym)
+      #if i.unsafe:
+        #let stack = i.stack
+        #try:
+        #  i.apply(sym) 
+        #except:
+        #  echo "yeah!"
+        #  i.stack = stack
+        #  raise
       else:
-        i.execute:
-          i.apply(sym)
+        #i.execute:
+        i.apply(sym)
     else:
       let found = i.scope.hasSigil(sigil)
       if symbol.len > 1 and found:
         let sig = i.scope.getSigil(sigil) 
         let sym = symbol[1..symbol.len-1]
         i.stack.add(MinValue(kind: minString, strVal: sym))
-        if i.unsafe:
-          let stack = i.stack
-          try:
-            i.apply(sig)
-          except:
-            i.stack = stack
-            raise
-        else:
-          i.execute:
-            i.apply(sig)
+        #if i.unsafe:
+          #let stack = i.stack
+          #try:
+          #  i.apply(sig)
+          #except:
+          #  echo "yup!"
+          #  i.stack = stack
+          #  raise
+        #else:
+          #i.execute:
+        i.apply(sig)
       else:
         raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
     discard i.trace.pop
@@ -278,10 +265,26 @@ proc peek*(i: MinInterpreter): MinValue =
 
 proc interpret*(i: In) {.gcsafe.}= 
   var val: MinValue
-  while i.parser.token != tkEof and not i.halt: 
-    i.execute:
+  while i.parser.token != tkEof: 
+    if i.trace.len == 0:
+      i.stackcopy = i.stack
+    try:
       val = i.parser.parseMinValue
       i.push val
+    except MinRuntimeError:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      stderr.writeLine("(!) $1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+      i.stackTrace
+      raise MinTrappedException(msg: msg)
+    except MinTrappedException:
+      raise
+    except:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      i.error(msg)
+      i.stackTrace
+      raise MinTrappedException(msg: msg)
 
 proc unquote*(i: In, name: string, q: var MinValue) =
   i.createScope(name, q): 
@@ -289,8 +292,8 @@ proc unquote*(i: In, name: string, q: var MinValue) =
       i.push v
 
 proc eval*(i: In, s: string, name="<eval>") =
-  let fn = i.filename
-  try:
+  #let fn = i.filename
+  #try:
     var i2 = i.copy(name)
     i2.open(newStringStream(s), name)
     discard i2.parser.getToken() 
@@ -299,14 +302,15 @@ proc eval*(i: In, s: string, name="<eval>") =
     i.stackcopy = i2.stackcopy
     i.stack = i2.stack
     i.scope = i2.scope
-  except:
-    stderr.writeLine getCurrentExceptionMsg()
-  finally:
-    i.filename = fn
+  #except:
+  #  stderr.writeLine getCurrentExceptionMsg()
+  #  raise
+  #finally:
+  #  i.filename = fn
 
 proc load*(i: In, s: string) =
-  let fn = i.filename
-  try:
+  #let fn = i.filename
+  #try:
     var i2 = i.copy(s)
     i2.open(newStringStream(s.readFile), s)
     discard i2.parser.getToken() 
@@ -315,7 +319,8 @@ proc load*(i: In, s: string) =
     i.stackcopy = i2.stackcopy
     i.stack = i2.stack
     i.scope = i2.scope
-  except:
-    stderr.writeLine getCurrentExceptionMsg()
-  finally:
-    i.filename = fn
+  #except:
+  #  stderr.writeLine getCurrentExceptionMsg()
+  #  raise
+  #finally:
+  #  i.filename = fn

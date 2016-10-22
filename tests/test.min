@@ -18,7 +18,7 @@
   (
     (
       (check -> true ==)
-      (1 at :err "\nError: $1" (err) % puts false)
+      (format-error puts! false)
     ) try
     
   )

@@ -129,8 +129,12 @@ proc minimStream(s: Stream, filename: string, debugging = false) =
   i.stdLib()
   i.open(s, filename)
   discard i.parser.getToken() 
-  i.interpret()
+  try:
+    i.interpret()
+  except:
+    discard
   i.close()
+  quit()
 
 proc minimString*(buffer: string, debugging = false) =
   minimStream(newStringStream(buffer), "input", debugging)
@@ -172,9 +176,9 @@ proc minimRepl*(i: var MinInterpreter) =
     try:
       i.interpret()
     except:
-      stderr.writeLine getCurrentExceptionMsg()
+      discard
+      #stderr.writeLine getCurrentExceptionMsg()
     finally:
-      i.halt = false
       if i.stack.len > 0:
         let last = i.stack[i.stack.len - 1]
         let n = $i.stack.len

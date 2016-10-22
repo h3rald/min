@@ -23,6 +23,13 @@ proc dget*(q: MinValue, s: MinValue): MinValue =
       return v.qVal[1]
   raiseInvalid("Key '$1' not found" % s.getString)
 
+proc dhas*(q: MinValue, s: MinValue): bool =
+  # Assumes q is a dictionary
+  for v in q.qVal:
+    if v.qVal[0].getString == s.getString:
+      return true
+  return false
+
 proc ddel*(q: var MinValue, s: MinValue): MinValue =
   # Assumes q is a dictionary
   var found = false
@@ -313,9 +320,36 @@ proc lang_module*(i: In) =
     # ("SomeError" "message")
     .symbol("raise") do (i: In):
       var err: MinValue
-      i.reqQuotation err
-      raiseRuntime("($1) $2" % [err.qVal[0].getString, err.qVal[1].getString], err.qVal)
+      i.reqDictionary err
+      if err.dhas("error".newSym) and err.dhas("message".newSym):
+        # TODO rewrite as dictionary!
+        raiseRuntime("($1) $2" % [err.dget("error".newVal).getString, err.dget("message".newVal).getString], err.qVal)
+      else:
+        raiseInvalid("Invalid error dictionary")
   
+    .symbol("format-error") do (i: In):
+      var err: MinValue
+      i.reqDictionary err
+      if err.dhas("error".newSym) and err.dhas("message".newSym):
+        var msg: string
+        var list = newSeq[MinValue]()
+        list.add err.dget("message".newVal)
+        if err.qVal.contains("symbol".newVal):
+          list.add err.dget("symbol".newVal)
+        if err.qVal.contains("filename".newVal):
+          list.add err.dget("filename".newVal)
+        if err.qVal.contains("line".newVal):
+          list.add err.dget("line".newVal)
+        if err.qVal.contains("column".newVal):
+          list.add err.dget("column".newVal)
+        if list.len <= 1:
+          msg = "(!) $1" % $$list[0]
+        else:
+          msg = "(!) $3($4,$5) `$2`: $1" % [$$list[0], $$list[1], $$list[2], $$list[3], $$list[4]]
+        i.push msg.newVal
+      else:
+        raiseInvalid("Invalid error dictionary")
+
     .symbol("try") do (i: In):
       var prog: MinValue
       i.reqQuotation prog
@@ -348,7 +382,15 @@ proc lang_module*(i: In) =
           return
         i.unsafe = false
         let e = getCurrentException()
-        i.push @[regex.replace($e.name, ":.+$", "").newVal, e.msg.newVal].newVal
+        var res = newSeq[MinValue](0)
+        let err = regex.replace($e.name, ":.+$", "")
+        res.add @["error".newSym, err.newVal].newVal
+        res.add @["message".newSym, e.msg.newVal].newVal
+        res.add @["symbol".newSym, i.currSym].newVal
+        res.add @["filename".newSym, i.currSym.filename.newVal].newVal
+        res.add @["line".newSym, i.currSym.line.newVal].newVal
+        res.add @["column".newSym, i.currSym.column.newVal].newVal
+        i.push res.newVal
         i.unquote("<try-catch>", catch)
       finally:
         if hasFinally:
@@ -611,11 +653,16 @@ proc lang_module*(i: In) =
           i.unquote("<linrec-r2>", r2)
       i.linrec(p, t, r1, r2)
 
+    .symbol("dhas?") do (i: In):
+      var d, k: MinValue
+      i.reqStringLike k
+      i.reqDictionary d
+      i.push d.dhas(k).newVal
+
     .symbol("dget") do (i: In):
       var d, k: MinValue
       i.reqStringLike k
       i.reqDictionary d
-      #i.push d
       i.push d.dget(k)
       
     .symbol("dset") do (i: In):

@@ -100,7 +100,6 @@ type
     debugging*: bool 
     evaluating*: bool 
     unsafe*: bool
-    halt*: bool
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError

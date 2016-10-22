@@ -105,12 +105,13 @@ newline
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
 
+
   (
    (
     (pop) 
-    (first) 
-    ("Caught a " swap concat)
-    ) try "Caught a MinEmptyStackError" ==) assert 
+    ('error dget) 
+    ("finally")
+    ) try get-stack ("MinEmptyStackError" "finally") ==) assert 
 
   ("aaaa" :cd cd "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
 
@@ -118,9 +119,9 @@ newline
 
   (
    (
-    (("TestError" "Test Message") raise) 
-    (1 at)
-    ) try "Test Message" ==) assert
+    (((error "TestError")(message "Test Message")) raise) 
+    ('error dget)
+    ) try "TestError" ==) assert
 
   (
    (("test" (1 2) :)) try get-stack ("test") ==) assert
