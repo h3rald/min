@@ -1,8 +1,8 @@
 [Package]
 name          = "minim"
-version       = "1.0.0"
+version       = "0.1.0"
 author        = "Fabio Cevasco"
-description   = "A tiny concatenative shell and programming language."
+description   = "A tiny concatenative programming language and shell."
 license       = "MIT"
 bin           = "minim"
 

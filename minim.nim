@@ -104,7 +104,7 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
         return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
   return symbols
 
-proc stdLib(i: In) =
+proc stdLib*(i: In) =
   i.lang_module
   i.io_module
   i.logic_module
@@ -134,7 +134,6 @@ proc minimStream(s: Stream, filename: string, debugging = false) =
   except:
     discard
   i.close()
-  quit()
 
 proc minimString*(buffer: string, debugging = false) =
   minimStream(newStringStream(buffer), "input", debugging)
@@ -198,37 +197,39 @@ proc minimRepl*(debugging = false) =
     
 ###
 
-var file, s: string = ""
-
-for kind, key, val in getopt():
-  case kind:
-    of cmdArgument:
-      file = key
-    of cmdLongOption, cmdShortOption:
-      case key:
-        of "debug", "d":
-          DEBUGGING = true
-        of "evaluate", "e":
-          s = val
-        of "help", "h":
-          echo usage
-          quit(0)
-        of "version", "v":
-          echo version
-          quit(0)
-        of "interactive", "i":
-          REPL = true
-        else:
-          discard
-    else:
-      discard
-
-if s != "":
-  minimString(s, DEBUGGING)
-elif file != "":
-  minimFile file, DEBUGGING
-elif REPL:
-  minimRepl DEBUGGING
-  quit(0)
-else:
-  minimFile stdin, "stdin", DEBUGGING
+when isMainModule:
+  
+  var file, s: string = ""
+  
+  for kind, key, val in getopt():
+    case kind:
+      of cmdArgument:
+        file = key
+      of cmdLongOption, cmdShortOption:
+        case key:
+          of "debug", "d":
+            DEBUGGING = true
+          of "evaluate", "e":
+            s = val
+          of "help", "h":
+            echo usage
+            quit(0)
+          of "version", "v":
+            echo version
+            quit(0)
+          of "interactive", "i":
+            REPL = true
+          else:
+            discard
+      else:
+        discard
+  
+  if s != "":
+    minimString(s, DEBUGGING)
+  elif file != "":
+    minimFile file, DEBUGGING
+  elif REPL:
+    minimRepl DEBUGGING
+    quit(0)
+  else:
+    minimFile stdin, "stdin", DEBUGGING
