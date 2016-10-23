@@ -1,4 +1,4 @@
-minim
+MiNiM
 =====
 
-A tiny concatenative programming language
+A tiny concatenative programming language and shell.
