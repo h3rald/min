@@ -7,6 +7,7 @@ import
   algorithm
 import 
   value,
+  scope,
   parser
 
 type
@@ -16,64 +17,6 @@ type
 
 proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) =
   raise MinRuntimeError(msg: msg, qVal: qVal)
-
-proc fullname*(scope: ref MinScope): string =
-  result = scope.name
-  if not scope.parent.isNil:
-    result = scope.parent.fullname & ":" & result
-
-proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
-  if scope.symbols.hasKey(key):
-    return scope.symbols[key]
-  elif not scope.parent.isNil:
-    return scope.parent.getSymbol(key)
-  else:
-    raiseUndefined("Symbol '$1' not found." % key)
-
-proc hasSymbol*(scope: ref MinScope, key: string): bool =
-  if scope.symbols.hasKey(key):
-    return true
-  elif not scope.parent.isNil:
-    return scope.parent.hasSymbol(key)
-  else:
-    return false
-
-proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
-  if scope.symbols.hasKey(key):
-    if scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed." % key) 
-    scope.symbols.excl(key)
-    return true
-  return false
-
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator): bool {.discardable.}=
-  result = false
-  # check if a symbol already exists in current scope
-  if not scope.isNil and scope.symbols.hasKey(key):
-    if scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed." % key) 
-    scope.symbols[key] = value
-    result = true
-  else:
-    # Go up the scope chain and attempt to find the symbol
-    if not scope.parent.isNil:
-      result = scope.parent.setSymbol(key, value)
-
-proc getSigil*(scope: ref MinScope, key: string): MinOperator =
-  if scope.sigils.hasKey(key):
-    return scope.sigils[key]
-  elif not scope.parent.isNil:
-    return scope.parent.getSigil(key)
-  else:
-    raiseUndefined("Sigil '$1' not found." % key)
-
-proc hasSigil*(scope: ref MinScope, key: string): bool =
-  if scope.sigils.hasKey(key):
-    return true
-  elif not scope.parent.isNil:
-    return scope.parent.hasSigil(key)
-  else:
-    return false
 
 proc dump*(i: MinInterpreter): string =
   var s = ""
@@ -90,38 +33,51 @@ proc debug*(i: In, value: string) =
   if i.debugging: 
     stderr.writeLine("-- " & value)
 
-proc newScope*(i: In, id: string, q: var MinValue) =
-  q.scope = new MinScope
-  q.scope.name = id
-  q.scope.parent = i.scope
-
-template createScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
-  q.scope = new MinScope
-  q.scope.name = id
-  q.scope.parent = i.scope
-  let scope = i.scope
-  i.scope = q.scope
-  body
-  i.scope = scope
-
 template withScope*(i: In, q: MinValue, body: untyped): untyped =
   #i.debug "[scope] " & q.scope.fullname
   let origScope = i.scope
+  # TODO verify
+  if q.scope.parent.isNil:
+    q.scope.parent = i.scope
   i.scope = q.scope
   body
   #i.debug "[scope] " & scope.fullname
   i.scope = origScope
 
-template addScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
-  var added = new MinScope
-  added.name = id
-  if q.scope.isNil:
-    q.scope = i.scope
-  added.parent = q.scope
-  let scope = i.scope
-  i.scope = added
-  body
-  i.scope = scope
+when false:
+  # TODO Remove
+  proc newScope*(i: In, id: string, q: var MinValue) =
+    q.scope = new MinScope
+    q.scope.name = id
+    q.scope.parent = i.scope
+
+  template createScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
+    q.scope = new MinScope
+    q.scope.name = id
+    q.scope.parent = i.scope
+    let scope = i.scope
+    i.scope = q.scope
+    body
+    i.scope = scope
+
+  template withScope*(i: In, q: MinValue, body: untyped): untyped =
+    #i.debug "[scope] " & q.scope.fullname
+    let origScope = i.scope
+    i.scope = q.scope
+    body
+    #i.debug "[scope] " & scope.fullname
+    i.scope = origScope
+
+  template addScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
+    var added = new MinScope
+    added.name = id
+    if q.scope.isNil:
+      q.scope = i.scope
+    added.parent = q.scope
+    let scope = i.scope
+    i.scope = added
+    body
+    i.scope = scope
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var stack:MinStack = newSeq[MinValue](0)
@@ -190,7 +146,7 @@ proc apply*(i: In, op: MinOperator, name="apply") =
   of minValOp:
     if op.val.kind == minQuotation:
       var q = op.val
-      i.addScope(name & "#" & $genOid(), q):
+      i.withScope(q):
         #echo "a1: ", i.scope.fullname
         for e in q.qVal:
           i.push e
@@ -244,7 +200,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
     if i.trace.len == 0:
       i.stackcopy = i.stack
     try:
-      val = i.parser.parseMinValue
+      val = i.parser.parseMinValue(i.scope)
       i.push val
     except MinRuntimeError:
       let msg = getCurrentExceptionMsg()
@@ -264,7 +220,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
     return i.stack[i.stack.len - 1]
 
 proc unquote*(i: In, name: string, q: var MinValue) =
-  i.createScope(name, q): 
+  i.withScope(q): 
     for v in q.qVal:
       i.push v
 

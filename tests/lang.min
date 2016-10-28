@@ -39,10 +39,6 @@ newline
   (symbols "mymath" contains) assert
   
 
-  (mymath scope?) assert
-
-  (() scope? false ==) assert 
-
   (() inspect () ==) assert
 
   ('mymath import symbols "myplus" contains) assert
@@ -50,12 +46,12 @@ newline
   ('mymath import 2 3 myplus 5 ==) assert
 
   ; Extend an existing scope
-  (
-    ('mymath import 
-     (-) :myminus) => @mymath 
-    5 2 mymath ^myminus 3 ==) assert
-
-  (mymath inspect ("myminus" "myplus") ==) assert
+  ;(
+  ;  ('mymath import 
+  ;   (-) :myminus) => @mymath 
+  ;  5 2 mymath ^myminus 3 ==) assert
+  ;
+  ;(mymath inspect ("myminus" "myplus") ==) assert
 
   ;((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
 

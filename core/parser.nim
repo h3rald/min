@@ -5,7 +5,8 @@ import
   streams, 
   unicode, 
   tables,
-  critbits
+  critbits,
+  oids
 
 type
   MinTokenKind* = enum
@@ -143,6 +144,13 @@ const
     "true",
     "false"
   ]
+
+proc newScope*(parent: ref MinScope, name="scope"): MinScope =
+  result = MinScope(name: "<$1:$2>" % [name, $genOid()], parent: parent)
+
+proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
+  new(result)
+  result[] = newScope(parent, name)
 
 proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
@@ -464,7 +472,7 @@ proc eat(p: var MinParser, token: MinTokenKind) =
   if p.token == token: discard getToken(p)
   else: raiseParsing(p, tokToStr[token])
 
-proc parseMinValue*(p: var MinParser): MinValue =
+proc parseMinValue*(p: var MinParser, parentScope: ref MinScope): MinValue =
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
@@ -485,11 +493,12 @@ proc parseMinValue*(p: var MinParser): MinValue =
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[MinValue](0)
+    var scope = newScopeRef(parentScope, "quotation")
     discard getToken(p)
     while p.token != tkBracketRi: 
-      q.add parseMinValue(p)
+      q.add p.parseMinValue(scope)
     eat(p, tkBracketRi)
-    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber)
+    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: scope)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""

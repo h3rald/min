@@ -12,6 +12,7 @@ import
   core/consts,
   core/parser, 
   core/value, 
+  core/scope,
   core/interpreter, 
   core/utils,
   core/zip

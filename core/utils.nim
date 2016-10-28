@@ -4,15 +4,14 @@ import
 import 
   parser, 
   value,
+  scope,
   interpreter
 
 # Library methods
 
-proc previous(scope: ref MinScope): ref MinScope =
-  if scope.parent.isNil:
-    return scope 
-  else:
-    return scope.parent
+proc printKeys(syms: CritBitTree[MinOperator]) =
+  for key, value in syms.pairs:
+    echo " - $1" % key
 
 proc define*(i: In, name: string): ref MinScope =
   var scope = new MinScope
@@ -29,21 +28,30 @@ proc symbol*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
   return scope
 
 proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc): ref MinScope =
-  scope.previous.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
+  scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
   return scope
 
 proc sigil*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
-  scope.previous.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
+  scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
   return scope
 
 proc finalize*(scope: ref MinScope) =
-  var mdl = newSeq[MinValue](0).newVal
+  # TODO verify scope
+  var mdl = newSeq[MinValue](0).newVal(nil)
   mdl.scope = scope
   let op = proc(i: In) {.gcsafe, closure.} =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
-  mdl.scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
+  #echo scope.previous.fullname, " - ", scope.name
+  #echo scope.previous.symbols.len, " - ", scope.symbols.len
+  #scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
+  # TODO echos 
+  #echo "Finalizing: $1" % scope.name
+  #echo scope.previous.fullname, " - ", scope.previous.symbols.len
+  #scope.previous.symbols.printKeys
+  scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
+  #echo scope.previous.symbols.len, " - ", scope.symbols.len
 
 # Validators
 

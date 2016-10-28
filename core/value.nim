@@ -1,7 +1,8 @@
 import
   critbits
 import
-  parser
+  parser,
+  scope
 
 # Predicates
 
@@ -47,8 +48,8 @@ proc newVal*(s: string): MinValue =
 proc newVal*(s: cstring): MinValue =
   return MinValue(kind: minString, strVal: $s)
 
-proc newVal*(q: seq[MinValue]): MinValue =
-  return MinValue(kind: minQuotation, qVal: q)
+proc newVal*(q: seq[MinValue], parentScope: ref MinScope): MinValue =
+  return MinValue(kind: minQuotation, qVal: q, scope: newScopeRef(parentScope))
 
 proc newVal*(s: BiggestInt): MinValue =
   return MinValue(kind: minInt, intVal: s)
@@ -61,9 +62,6 @@ proc newVal*(s: bool): MinValue =
 
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
-
-proc newQuotation*(): MinValue = 
-  return MinValue(kind: minQuotation, qVal: newSeq[MinValue](0))
 
 # Get string value from string or quoted symbol
 

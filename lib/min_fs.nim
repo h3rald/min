@@ -40,17 +40,17 @@ proc fs_module*(i: In) =
       var s: MinValue
       i.reqStringLike s
       let fi = s.getString.getFileInfo
-      var info = newSeq[MinValue](0).newVal
-      info.qVal.add @["name".newSym, s].newVal
-      info.qVal.add @["device".newSym, fi.id.device.newVal].newVal
-      info.qVal.add @["file".newSym, fi.id.file.newVal].newVal
-      info.qVal.add @["type".newSym, fi.kind.filetype.newVal].newVal
-      info.qVal.add @["size".newSym, fi.size.newVal].newVal
-      info.qVal.add @["permissions".newSym, fi.permissions.unixPermissions.newVal].newVal
-      info.qVal.add @["nlinks".newSym, fi.linkCount.newVal].newVal
-      info.qVal.add @["ctime".newSym, fi.creationTime.toSeconds.newVal].newVal
-      info.qVal.add @["atime".newSym, fi.lastAccessTime.toSeconds.newVal].newVal
-      info.qVal.add @["mtime".newSym, fi.lastWriteTime.toSeconds.newVal].newVal
+      var info = newSeq[MinValue](0).newVal(i.scope)
+      info.qVal.add @["name".newSym, s].newVal(i.scope)
+      info.qVal.add @["device".newSym, fi.id.device.newVal].newVal(i.scope)
+      info.qVal.add @["file".newSym, fi.id.file.newVal].newVal(i.scope)
+      info.qVal.add @["type".newSym, fi.kind.filetype.newVal].newVal(i.scope)
+      info.qVal.add @["size".newSym, fi.size.newVal].newVal(i.scope)
+      info.qVal.add @["permissions".newSym, fi.permissions.unixPermissions.newVal].newVal(i.scope)
+      info.qVal.add @["nlinks".newSym, fi.linkCount.newVal].newVal(i.scope)
+      info.qVal.add @["ctime".newSym, fi.creationTime.toSeconds.newVal].newVal(i.scope)
+      info.qVal.add @["atime".newSym, fi.lastAccessTime.toSeconds.newVal].newVal(i.scope)
+      info.qVal.add @["mtime".newSym, fi.lastWriteTime.toSeconds.newVal].newVal(i.scope)
       i.push info
 
     .symbol("ftype") do (i: In):

@@ -12,7 +12,8 @@ import
   ../core/interpreter, 
   ../core/utils,
   ../core/regex,
-  ../core/linedit
+  ../core/linedit,
+  ../core/scope
 
 # Dictionary Methods
 
@@ -43,7 +44,7 @@ proc ddel*(q: var MinValue, s: MinValue): MinValue =
     q.qVal.delete(c)
   return q
       
-proc dset*(q: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
+proc dset*(i: In, q: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
   # Assumes q is a dictionary
   var found = false
   var c = -1
@@ -54,18 +55,18 @@ proc dset*(q: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
       break
   if found:
       q.qVal.delete(c)
-      q.qVal.insert(@[s.getString.newSym, m].newVal, c)
+      q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
   return q
 
-proc keys*(q: MinValue): MinValue =
+proc keys*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal
+  result = newSeq[MinValue](0).newVal(i.scope)
   for v in q.qVal:
     result.qVal.add v.qVal[0]
 
-proc values*(q: MinValue): MinValue =
+proc values*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal
+  result = newSeq[MinValue](0).newVal(i.scope)
   for v in q.qVal:
     result.qVal.add v.qVal[1]
 
@@ -93,10 +94,10 @@ proc `%`*(a: MinValue): JsonNode =
         for i in a.qVal:
           result.add %i
 
-proc fromJson*(json: JsonNode): MinValue = 
+proc fromJson*(i: In, json: JsonNode): MinValue = 
   case json.kind:
     of JNull:
-      result = newSeq[MinValue](0).newVal
+      result = newSeq[MinValue](0).newVal(i.scope)
     of JBool: 
       result = json.getBVal.newVal
     of JInt:
@@ -112,13 +113,13 @@ proc fromJson*(json: JsonNode): MinValue =
     of JObject:
       var res = newSeq[MinValue](0)
       for key, value in json.pairs:
-        res.add @[key.newSym, value.fromJson].newVal
-      return res.newVal
+        res.add @[key.newSym, i.fromJson(value)].newVal(i.scope)
+      return res.newVal(i.scope)
     of JArray:
       var res = newSeq[MinValue](0)
       for value in json.items:
-        res.add value.fromJson
-      return res.newVal
+        res.add i.fromJson(value)
+      return res.newVal(i.scope)
 
 proc lang_module*(i: In) =
   i.scope
@@ -133,7 +134,7 @@ proc lang_module*(i: In) =
         for s in scope.symbols.keys:
           q.add s.newVal
         scope = scope.parent
-      i.push q.newVal
+      i.push q.newVal(i.scope)
   
     .symbol("sigils") do (i: In):
       var q = newSeq[MinValue](0)
@@ -142,12 +143,12 @@ proc lang_module*(i: In) =
         for s in scope.sigils.keys:
           q.add s.newVal
         scope = scope.parent
-      i.push q.newVal
+      i.push q.newVal(i.scope)
   
     .symbol("from-json") do (i: In):
       var s: MinValue
       i.reqString s
-      i.push s.getString.parseJson.fromJson
+      i.push i.fromJson(s.getString.parseJson)
 
     .symbol("to-json") do (i: In):
       var q: MinValue
@@ -169,14 +170,14 @@ proc lang_module*(i: In) =
       var q1 = i.pop # existing (auto-quoted)
       var symbol: string
       if not q1.isQuotation:
-        q1 = @[q1].newVal
+        q1 = @[q1].newVal(i.scope)
       symbol = sym.getString
       if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
       i.debug "[define] (scope: $1) $2 = $3" % [i.scope.name, symbol, $q1]
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
-      i.newScope("$1#$2" % [symbol, $genOid()], q1)
+      #i.newScope("$1#$2" % [symbol, $genOid()], q1)
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
@@ -185,7 +186,7 @@ proc lang_module*(i: In) =
       var q1 = i.pop # existing (auto-quoted)
       var symbol: string
       if not q1.isQuotation:
-        q1 = @[q1].newVal
+        q1 = @[q1].newVal(i.scope)
       symbol = sym.getString
       i.debug "[bind] " & symbol & " = " & $q1
       let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
@@ -199,12 +200,17 @@ proc lang_module*(i: In) =
       if not res:
         raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
   
-    .symbol("scope") do (i: In):
+    #.symbol("scope") do (i: In):
+    #  var code: MinValue
+    #  i.reqQuotation code
+    #  code.filename = i.filename
+    #  i.unquote("<scope>", code)
+    #  i.push @[code].newVal(i.scope)
+  
+    .symbol("current-scope") do (i: In):
       var code: MinValue
       i.reqQuotation code
-      code.filename = i.filename
-      i.unquote("<scope>", code)
-      i.push @[code].newVal
+      i.push code.scope.fullname.newVal
   
     .symbol("module") do (i: In):
       var code, name: MinValue
@@ -212,15 +218,15 @@ proc lang_module*(i: In) =
       i.reqQuotation code
       code.filename = i.filename
       i.unquote("<module>", code)
-      i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal)
+      i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
-    .symbol("scope?") do (i: In):
-      var q: MinValue
-      i.reqQuotation q
-      if not q.scope.isNil:
-        i.push true.newVal
-      else:
-        i.push false.newVal
+    #.symbol("scope?") do (i: In):
+    #  var q: MinValue
+    #  i.reqQuotation q
+    #  if not q.scope.isNil:
+    #    i.push true.newVal
+    #  else:
+    #    i.push false.newVal
 
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
@@ -229,10 +235,12 @@ proc lang_module*(i: In) =
       name = rawName.getString
       i.apply(i.scope.getSymbol(name))
       i.reqQuotation mdl
-      if not mdl.scope.isNil:
-        for sym, val in mdl.scope.symbols.pairs:
-          i.debug "[import] $1:$2" % [i.scope.name, sym]
-          i.scope.symbols[sym] = val
+      # TODO Remove echos
+      #echo name, " - ", mdl.scope.symbols.len
+      for sym, val in mdl.scope.symbols.pairs:
+        i.debug "[import] $1:$2" % [i.scope.name, sym]
+        #echo "[import] $1:$2" % [i.scope.name, sym]
+        i.scope.symbols[sym] = val
     
     #.symbol("sigil") do (i: In):
     #  var q1, q2: MinValue
@@ -310,11 +318,11 @@ proc lang_module*(i: In) =
       i.reqQuotation scope
       var symbols = newSeq[MinValue](0)
       if scope.scope.isNil:
-        i.push symbols.newVal
+        i.push symbols.newVal(i.scope)
       else:
         for s in scope.scope.symbols.keys:
           symbols.add s.newVal
-        i.push symbols.newVal
+        i.push symbols.newVal(i.scope)
   
     .symbol("raise") do (i: In):
       var err: MinValue
@@ -370,7 +378,7 @@ proc lang_module*(i: In) =
         if not hasCatch:
           return
         let e = (MinRuntimeError)getCurrentException()
-        i.push e.qVal.newVal
+        i.push e.qVal.newVal(i.scope)
         i.unquote("<try-catch>", catch)
       except:
         if not hasCatch:
@@ -378,13 +386,13 @@ proc lang_module*(i: In) =
         let e = getCurrentException()
         var res = newSeq[MinValue](0)
         let err = regex.replace($e.name, ":.+$", "")
-        res.add @["error".newSym, err.newVal].newVal
-        res.add @["message".newSym, e.msg.newVal].newVal
-        res.add @["symbol".newSym, i.currSym].newVal
-        res.add @["filename".newSym, i.currSym.filename.newVal].newVal
-        res.add @["line".newSym, i.currSym.line.newVal].newVal
-        res.add @["column".newSym, i.currSym.column.newVal].newVal
-        i.push res.newVal
+        res.add @["error".newSym, err.newVal].newVal(i.scope)
+        res.add @["message".newSym, e.msg.newVal].newVal(i.scope)
+        res.add @["symbol".newSym, i.currSym].newVal(i.scope)
+        res.add @["filename".newSym, i.currSym.filename.newVal].newVal(i.scope)
+        res.add @["line".newSym, i.currSym.line.newVal].newVal(i.scope)
+        res.add @["column".newSym, i.currSym.column.newVal].newVal(i.scope)
+        i.push res.newVal(i.scope)
         i.unquote("<try-catch>", catch)
       finally:
         if hasFinally:
@@ -433,7 +441,7 @@ proc lang_module*(i: In) =
       echo i.dump
   
     .symbol("get-stack") do (i: In):
-      i.push i.stack.newVal
+      i.push i.stack.newVal(i.scope)
   
     .symbol("set-stack") do (i: In):
       var q: MinValue
@@ -450,7 +458,7 @@ proc lang_module*(i: In) =
         i.push newVal(s)
       else:
         let q = q2.qVal & q1.qVal
-        i.push newVal(q)
+        i.push q.newVal(i.scope)
   
     .symbol("first") do (i: In):
       var q: MinValue
@@ -470,7 +478,7 @@ proc lang_module*(i: In) =
       if q.isQuotation:
         if q.qVal.len == 0:
           raiseOutOfBounds("Quotation is empty")
-        i.push newVal(q.qVal[1..q.qVal.len-1])
+        i.push q.qVal[1..q.qVal.len-1].newVal(i.scope)
       elif q.isString:
         if q.strVal.len == 0:
           raiseOutOfBounds("String is empty")
@@ -478,7 +486,7 @@ proc lang_module*(i: In) =
   
     .symbol("quote") do (i: In):
       let a = i.pop
-      i.push MinValue(kind: minQuotation, qVal: @[a])
+      i.push @[a].newVal(i.scope)
     
     .symbol("unquote") do (i: In):
       var q: MinValue
@@ -529,7 +537,7 @@ proc lang_module*(i: In) =
         i.push litem
         i.unquote("<map-quotation>", prog)
         res.add i.pop
-      i.push res.newVal
+      i.push res.newVal(i.scope)
 
     .symbol("foreach") do (i: In):
       var prog, list: MinValue
@@ -611,7 +619,7 @@ proc lang_module*(i: In) =
         var check = i.pop
         if check.isBool and check.boolVal == true:
           res.add e
-      i.push res.newVal
+      i.push res.newVal(i.scope)
 
     .symbol("sort") do (i: In):
       var cmp, list: MinValue
@@ -631,7 +639,7 @@ proc lang_module*(i: In) =
           raiseInvalid("Predicate quotation must return a boolean value")
       var qList = list.qVal
       sort[MinValue](qList, minCmp)
-      i.push qList.newVal
+      i.push qList.newVal(i.scope)
     
     .symbol("linrec") do (i: In):
       var r2, r1, t, p: MinValue
@@ -664,7 +672,7 @@ proc lang_module*(i: In) =
       let m = i.pop
       i.reqStringLike k
       i.reqDictionary d
-      i.push d.dset(k, m) 
+      i.push i.dset(d, k, m) 
 
     .symbol("ddel") do (i: In):
       var d, k: MinValue
@@ -683,13 +691,13 @@ proc lang_module*(i: In) =
       var d: MinValue
       i.reqDictionary d
       #i.push d
-      i.push d.keys
+      i.push i.keys(d)
 
     .symbol("values") do (i: In):
       var d: MinValue
       i.reqDictionary d
       #i.push d
-      i.push d.values
+      i.push i.values(d)
 
     .symbol("interpolate") do (i: In):
       var s, q: MinValue
@@ -727,7 +735,7 @@ proc lang_module*(i: In) =
       let json = MINIMSYMBOLS.readFile.parseJson
       if not json.hasKey(sym):
         raiseUndefined("Symbol '$1' not found." % sym)
-      let val = json[sym].fromJson
+      let val = i.fromJson(json[sym])
       i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val)
 
     .symbol("stored-symbols") do (i: In):
@@ -735,7 +743,7 @@ proc lang_module*(i: In) =
       let json = MINIMSYMBOLS.readFile.parseJson
       for k,v in json.pairs:
         q.add k.newVal
-      i.push q.newVal
+      i.push q.newVal(i.scope)
 
     .symbol("remove-symbol") do (i: In):
       var s:MinValue
@@ -759,7 +767,7 @@ proc lang_module*(i: In) =
     .sigil("'") do (i: In):
       var s: MinValue
       i.reqString s
-      i.push(@[s.strVal.newSym].newVal)
+      i.push(@[s.strVal.newSym].newVal(i.scope))
 
     .sigil(":") do (i: In):
       i.push("define".newSym)
@@ -824,8 +832,8 @@ proc lang_module*(i: In) =
     .symbol("->") do (i: In):
       i.push("unquote".newSym)
 
-    .symbol("=>") do (i: In):
-      i.push("scope".newSym)
+    #.symbol("=>") do (i: In):
+    #  i.push("scope".newSym)
 
     .symbol("=~") do (i: In):
       i.push("regex".newSym)

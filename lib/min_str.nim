@@ -23,7 +23,7 @@ proc str_module*(i: In) =
     var q = newSeq[MinValue](0)
     for e in s.strVal.split(sep.strVal):
       q.add e.newVal
-    i.push q.newVal
+    i.push q.newVal(i.scope)
 
   .symbol("join") do (i: In):
     var q, s: MinValue
@@ -37,7 +37,7 @@ proc str_module*(i: In) =
     var res = newSeq[MinValue](matches.len)
     for i in 0..matches.len-1:
       res[i] = matches[i].newVal
-    i.push res.newVal
+    i.push res.newVal(i.scope)
 
   .symbol("match") do (i: In):
     var reg, str: MinValue
@@ -59,7 +59,7 @@ proc str_module*(i: In) =
     var res = newSeq[MinValue](0)
     for r in results:
       res.add(r.newVal)
-    i.push res.newVal
+    i.push res.newVal(i.scope)
 
   .symbol("lowercase") do (i: In):
     var s: MinValue

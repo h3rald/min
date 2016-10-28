@@ -35,7 +35,7 @@ proc sys_module*(i: In)=
       var list = newSeq[MinValue](0)
       for i in walkDir(a.getString):
         list.add newVal(i.path.unix)
-      i.push list.newVal
+      i.push list.newVal(i.scope)
     
     .symbol("ls-r") do (i: In):
       var a: MinValue
@@ -43,7 +43,7 @@ proc sys_module*(i: In)=
       var list = newSeq[MinValue](0)
       for i in walkDirRec(a.getString):
         list.add newVal(i.unix)
-      i.push list.newVal
+      i.push list.newVal(i.scope)
   
     .symbol("system") do (i: In):
       var a: MinValue
@@ -54,7 +54,7 @@ proc sys_module*(i: In)=
       var cmd: MinValue
       i.reqStringLike cmd
       let res = execCmdEx(cmd.getString)
-      i.push @[@["output".newSym, res.output.newVal].newVal, @["code".newSym, res.exitCode.newVal].newVal].newVal
+      i.push @[@["output".newSym, res.output.newVal].newVal(i.scope), @["code".newSym, res.exitCode.newVal].newVal(i.scope)].newVal(i.scope)
     
     .symbol("getenv") do (i: In):
       var a: MinValue
