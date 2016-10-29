@@ -152,6 +152,11 @@ proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
   new(result)
   result[] = newScope(parent, name)
 
+proc fullname*(scope: ref MinScope): string =
+  result = scope.name
+  if not scope.parent.isNil:
+    result = scope.parent.fullname & ":" & result
+
 proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
   my.filename = filename
@@ -472,7 +477,7 @@ proc eat(p: var MinParser, token: MinTokenKind) =
   if p.token == token: discard getToken(p)
   else: raiseParsing(p, tokToStr[token])
 
-proc parseMinValue*(p: var MinParser, parentScope: ref MinScope): MinValue =
+proc parseMinValue*(p: var MinParser, i: In): MinValue =
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
@@ -493,12 +498,15 @@ proc parseMinValue*(p: var MinParser, parentScope: ref MinScope): MinValue =
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[MinValue](0)
-    var scope = newScopeRef(parentScope, "quotation")
+    var oldscope = i.scope
+    var newscope = newScopeRef(i.scope, "quotation")
+    i.scope = newscope
     discard getToken(p)
     while p.token != tkBracketRi: 
-      q.add p.parseMinValue(scope)
+      q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
-    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: scope)
+    i.scope = oldscope
+    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber)
     p.a = ""

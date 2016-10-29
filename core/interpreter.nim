@@ -33,51 +33,19 @@ proc debug*(i: In, value: string) =
   if i.debugging: 
     stderr.writeLine("-- " & value)
 
-template withScope*(i: In, q: MinValue, body: untyped): untyped =
+template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untyped =
   #i.debug "[scope] " & q.scope.fullname
   let origScope = i.scope
-  # TODO verify
-  if q.scope.parent.isNil:
-    q.scope.parent = i.scope
-  i.scope = q.scope
+  i.scope = q.scope.copy
+  i.scope.parent = origScope
   body
-  #i.debug "[scope] " & scope.fullname
+  res = i.scope
   i.scope = origScope
 
-when false:
-  # TODO Remove
-  proc newScope*(i: In, id: string, q: var MinValue) =
-    q.scope = new MinScope
-    q.scope.name = id
-    q.scope.parent = i.scope
-
-  template createScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
-    q.scope = new MinScope
-    q.scope.name = id
-    q.scope.parent = i.scope
-    let scope = i.scope
-    i.scope = q.scope
+template withScope*(i: In, q: MinValue, body: untyped): untyped =
+  var scope = newScopeRef(i.scope)
+  i.withScope(q, scope):
     body
-    i.scope = scope
-
-  template withScope*(i: In, q: MinValue, body: untyped): untyped =
-    #i.debug "[scope] " & q.scope.fullname
-    let origScope = i.scope
-    i.scope = q.scope
-    body
-    #i.debug "[scope] " & scope.fullname
-    i.scope = origScope
-
-  template addScope*(i: In, id: string, q: MinValue, body: untyped): untyped =
-    var added = new MinScope
-    added.name = id
-    if q.scope.isNil:
-      q.scope = i.scope
-    added.parent = q.scope
-    let scope = i.scope
-    i.scope = added
-    body
-    i.scope = scope
 
 proc newMinInterpreter*(debugging = false): MinInterpreter =
   var stack:MinStack = newSeq[MinValue](0)
@@ -139,22 +107,26 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-proc apply*(i: In, op: MinOperator, name="apply") =
+
+proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
   case op.kind
   of minProcOp:
     op.prc(i)
   of minValOp:
     if op.val.kind == minQuotation:
       var q = op.val
-      i.withScope(q):
+      i.withScope(q, s):
         #echo "a1: ", i.scope.fullname
         for e in q.qVal:
           i.push e
     else:
       i.push(op.val)
 
+proc apply*(i: In, op: MinOperator, name="apply") =
+  var scope = newScopeRef(i.scope)
+  i.apply(op, scope)
+
 proc push*(i: In, val: MinValue) = 
-  i.debug val
   if val.kind == minSymbol:
     i.trace.add val
     if not i.evaluating:
@@ -200,7 +172,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
     if i.trace.len == 0:
       i.stackcopy = i.stack
     try:
-      val = i.parser.parseMinValue(i.scope)
+      val = i.parser.parseMinValue(i)
       i.push val
     except MinRuntimeError:
       let msg = getCurrentExceptionMsg()
@@ -219,10 +191,15 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
 
-proc unquote*(i: In, name: string, q: var MinValue) =
-  i.withScope(q): 
+proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
+  i.withScope(q, scope): 
     for v in q.qVal:
       i.push v
+
+
+proc unquote*(i: In, name: string, q: var MinValue) =
+  var scope = newScopeRef(i.scope)
+  i.unquote(name, q, scope)
 
 proc eval*(i: In, s: string, name="<eval>") =
   var i2 = i.copy(name)

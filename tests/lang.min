@@ -28,6 +28,23 @@ newline
   
   5 :five
   (symbols "five" contains) assert
+
+  (
+    ((1 2 3 4 5 6)) :test-data
+
+    (
+      :item
+      "_$1" (item) % :namesym
+      (item dup *) namesym define
+      namesym ROOT publish
+    ) :def
+
+    test-data (def) foreach
+
+    _2 _5 _1 + +
+    30 ==
+  ) assert
+  
   
   ~five
   (symbols "five" contains false  ==) assert
@@ -45,12 +62,14 @@ newline
 
   ('mymath import 2 3 myplus 5 ==) assert
 
+  (2 3 mymath ^myplus 5 ==) assert
+
   ; Extend an existing scope
   ;(
   ;  ('mymath import 
-  ;   (-) :myminus) => @mymath 
-  ;  5 2 mymath ^myminus 3 ==) assert
-  ;
+  ;   (-) :myminus
+  ;  ) @mymath 5 2 mymath ^myminus 3 ==) assert
+  ; 
   ;(mymath inspect ("myminus" "myplus") ==) assert
 
   ;((":mysigil" concat) ', sigil ,test "test:mysigil" ==) assert
@@ -128,7 +147,7 @@ newline
     (1)
     ) try 1 ==) assert
 
-  ((a b +) (4 :a 5 :b) with 9 ==) assert
+  ;((a b +) (4 :a 5 :b) with 9 ==) assert
 
   ("{\"a\": 1, \"b\": 2.3}" from-json ((a 1) (b 2.3)) ==) assert
 

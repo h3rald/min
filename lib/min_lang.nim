@@ -174,7 +174,7 @@ proc lang_module*(i: In) =
       symbol = sym.getString
       if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-      i.debug "[define] (scope: $1) $2 = $3" % [i.scope.name, symbol, $q1]
+      i.debug "[define] (scope: $1) $2 = $3" % [i.scope.fullname, symbol, $q1]
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
       #i.newScope("$1#$2" % [symbol, $genOid()], q1)
@@ -208,16 +208,15 @@ proc lang_module*(i: In) =
     #  i.push @[code].newVal(i.scope)
   
     .symbol("current-scope") do (i: In):
-      var code: MinValue
-      i.reqQuotation code
-      i.push code.scope.fullname.newVal
+      i.push i.scope.fullname.newVal
   
     .symbol("module") do (i: In):
       var code, name: MinValue
       i.reqStringLike name
       i.reqQuotation code
       code.filename = i.filename
-      i.unquote("<module>", code)
+      i.unquote("<module>", code, code.scope)
+      i.debug("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
     #.symbol("scope?") do (i: In):
@@ -228,17 +227,21 @@ proc lang_module*(i: In) =
     #  else:
     #    i.push false.newVal
 
+
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
       var name: string
       i.reqStringLike rawName
       name = rawName.getString
-      i.apply(i.scope.getSymbol(name))
+      var op = i.scope.getSymbol(name)
+      i.apply(op)
       i.reqQuotation mdl
+      #echo "Import: $1" % name
+      #echo ">>", mdl, "<<"
       # TODO Remove echos
-      #echo name, " - ", mdl.scope.symbols.len
+      i.debug("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
       for sym, val in mdl.scope.symbols.pairs:
-        i.debug "[import] $1:$2" % [i.scope.name, sym]
+        i.debug "[import] $1:$2" % [i.scope.fullname, sym]
         #echo "[import] $1:$2" % [i.scope.name, sym]
         i.scope.symbols[sym] = val
     
@@ -278,11 +281,9 @@ proc lang_module*(i: In) =
      if qscope.qVal.len > 0:
        # System modules are empty quotes and don't need to be unquoted
        i.unquote("<with-scope>", qscope)
-     let scope = i.scope
-     i.scope = qscope.scope
-     for v in qprog.qVal:
-      i.push v
-     i.scope = scope
+     i.withScope(qscope):
+      for v in qprog.qVal:
+        i.push v
 
     .symbol("publish") do (i: In):
       var qscope, str: MinValue
@@ -290,7 +291,16 @@ proc lang_module*(i: In) =
       let sym = str.getString
       if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, qscope.scope.name])
-      qscope.scope.symbols[sym] = i.scope.getSymbol(sym)
+      let scope = i.scope
+      i.debug("[publish] (scope: $1) -> $2" % [i.scope.fullname, sym])
+      let op = proc(i: In) {.gcsafe, closure.} =
+        let origscope = i.scope 
+        i.scope = scope
+        i.evaluating = true
+        i.push sym.newSym
+        i.evaluating = false
+        i.scope = origscope
+      qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
 
     .symbol("source") do (i: In):
       var s: MinValue
@@ -544,6 +554,7 @@ proc lang_module*(i: In) =
       i.reqTwoQuotations prog, list
       for litem in list.qVal:
         i.push litem
+        #i.debug("[foreach] $1" % prog.scope.fullname)
         i.unquote("<foreach-quotation>", prog)
     
     .symbol("times") do (i: In):
@@ -807,9 +818,6 @@ proc lang_module*(i: In) =
 
     .symbol(":") do (i: In):
       i.push("define".newSym)
-
-    .symbol("@") do (i: In):
-      i.push("bind".newSym)
 
     .symbol("!") do (i: In):
       i.push("system".newSym)

@@ -9,7 +9,7 @@ import
 
 # Library methods
 
-proc printKeys(syms: CritBitTree[MinOperator]) =
+proc printKeys*(syms: CritBitTree[MinOperator]) =
   for key, value in syms.pairs:
     echo " - $1" % key
 
