@@ -177,7 +177,6 @@ proc lang_module*(i: In) =
       i.debug "[define] (scope: $1) $2 = $3" % [i.scope.fullname, symbol, $q1]
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
-      #i.newScope("$1#$2" % [symbol, $genOid()], q1)
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
@@ -200,16 +199,6 @@ proc lang_module*(i: In) =
       if not res:
         raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
   
-    #.symbol("scope") do (i: In):
-    #  var code: MinValue
-    #  i.reqQuotation code
-    #  code.filename = i.filename
-    #  i.unquote("<scope>", code)
-    #  i.push @[code].newVal(i.scope)
-  
-    .symbol("current-scope") do (i: In):
-      i.push i.scope.fullname.newVal
-  
     .symbol("module") do (i: In):
       var code, name: MinValue
       i.reqStringLike name
@@ -219,15 +208,6 @@ proc lang_module*(i: In) =
       i.debug("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
-    #.symbol("scope?") do (i: In):
-    #  var q: MinValue
-    #  i.reqQuotation q
-    #  if not q.scope.isNil:
-    #    i.push true.newVal
-    #  else:
-    #    i.push false.newVal
-
-
     .symbol("import") do (i: In):
       var mdl, rawName: MinValue
       var name: string
@@ -236,13 +216,9 @@ proc lang_module*(i: In) =
       var op = i.scope.getSymbol(name)
       i.apply(op)
       i.reqQuotation mdl
-      #echo "Import: $1" % name
-      #echo ">>", mdl, "<<"
-      # TODO Remove echos
       i.debug("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
       for sym, val in mdl.scope.symbols.pairs:
         i.debug "[import] $1:$2" % [i.scope.fullname, sym]
-        #echo "[import] $1:$2" % [i.scope.name, sym]
         i.scope.symbols[sym] = val
     
     #.symbol("sigil") do (i: In):
@@ -280,7 +256,7 @@ proc lang_module*(i: In) =
      i.reqTwoQuotations qscope, qprog
      if qscope.qVal.len > 0:
        # System modules are empty quotes and don't need to be unquoted
-       i.unquote("<with-scope>", qscope)
+       i.unquote("<with-scope>", qscope, qscope.scope)
      i.withScope(qscope):
       for v in qprog.qVal:
         i.push v

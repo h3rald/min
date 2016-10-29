@@ -34,7 +34,6 @@ proc debug*(i: In, value: string) =
     stderr.writeLine("-- " & value)
 
 template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untyped =
-  #i.debug "[scope] " & q.scope.fullname
   let origScope = i.scope
   i.scope = q.scope.copy
   i.scope.parent = origScope
@@ -116,7 +115,6 @@ proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
     if op.val.kind == minQuotation:
       var q = op.val
       i.withScope(q, s):
-        #echo "a1: ", i.scope.fullname
         for e in q.qVal:
           i.push e
     else:

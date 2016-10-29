@@ -9,10 +9,6 @@ import
 
 # Library methods
 
-proc printKeys*(syms: CritBitTree[MinOperator]) =
-  for key, value in syms.pairs:
-    echo " - $1" % key
-
 proc define*(i: In, name: string): ref MinScope =
   var scope = new MinScope
   scope.name = name
@@ -36,22 +32,13 @@ proc sigil*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
   return scope
 
 proc finalize*(scope: ref MinScope) =
-  # TODO verify scope
   var mdl = newSeq[MinValue](0).newVal(nil)
   mdl.scope = scope
   let op = proc(i: In) {.gcsafe, closure.} =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
-  #echo scope.previous.fullname, " - ", scope.name
-  #echo scope.previous.symbols.len, " - ", scope.symbols.len
-  #scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
-  # TODO echos 
-  #echo "Finalizing: $1" % scope.name
-  #echo scope.previous.fullname, " - ", scope.previous.symbols.len
-  #scope.previous.symbols.printKeys
   scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
-  #echo scope.previous.symbols.len, " - ", scope.symbols.len
 
 # Validators
 
