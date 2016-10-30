@@ -79,6 +79,7 @@
   <li><a href="#Usage">Usage</a></li>
   <li><a href="#Reference">Reference</a>
   <ul>
+   <li><a href="#Notation">Notation</a></li>
    <li><a href="#L.code.lang..code..Module"><code>lang</code> Module</a>
    <ul>
     <li><a href="#bind">bind</a></li>
@@ -89,12 +90,14 @@
     <li><a href="#delete">delete</a></li>
     <li><a href="#eval">eval</a></li>
     <li><a href="#exit">exit</a></li>
+    <li><a href="#format-error">format-error</a></li>
     <li><a href="#from-json">from-json</a></li>
     <li><a href="#import">import</a></li>
+    <li><a href="#inspect">inspect</a></li>
     <li><a href="#load">load</a></li>
     <li><a href="#module">module</a></li>
-    <li><a href="#scope">scope</a></li>
-    <li><a href="#scope.">scope?</a></li>
+    <li><a href="#publish">publish</a></li>
+    <li><a href="#raise">raise</a></li>
     <li><a href="#sigils">sigils</a></li>
     <li><a href="#source">source</a></li>
     <li><a href="#symbols">symbols</a></li>
@@ -122,6 +125,44 @@
 <h2 id="Usage">Usage<a href="#document-top" title="Go to top"></a></h2>
 
 <h2 id="Reference">Reference<a href="#document-top" title="Go to top"></a></h2>
+
+<h3 id="Notation">Notation<a href="#document-top" title="Go to top"></a></h3>
+
+<dl>
+<dt>*</dt>
+<dd>Any value.</dd>
+<dt>B</dt>
+<dd>A boolean value.</dd>
+<dt><span class="kwd">(*)</span></dt>
+<dd>A quotation.</dd>
+<dt><span class="kwd">(1)</span></dt>
+<dd>The first quotation on the stack.</dd>
+<dt><span class="kwd">(2)</span></dt>
+<dd>The second quotation on the stack.</dd>
+<dt><span class="kwd">(E)</span></dt>
+<dd>An error dictionary:
+<pre><code>(
+  (error &ldquo;MyError&rdquo;)
+  (message &ldquo;An error occurred&rdquo;)
+  (symbol &ldquo;symbol1&rdquo;)            ;Optional
+  (filename &ldquo;dir1/file1.min&rdquo;)   ;Optional
+  (line 3)                      ;Optional
+  (column 13)                   ;Optional
+)
+</code></pre></dd>
+<dt><span class="kwd">S</span></dt>
+<dd>A string value.</dd>
+<dt>S+</dt>
+<dd>One or more string values.</dd>
+<dt><span class="kwd">§</span></dt>
+<dd>String-like (a string or quoted sumbol).</dd>
+<dt><span class="kwd">false</span> </dt>
+<dd>false (boolean type).</dd>
+<dt><span class="kwd">true</span></dt>
+<dd>true (boolean type).</dd>
+<dt>&#x2205;</dt>
+<dd>No value.</dd>
+</dl>
 
 <h3 id="L.code.lang..code..Module"><code>lang</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
@@ -173,6 +214,20 @@
 
 <p>Exits the program or shell.</p>
 
+<h4 id="format-error">format-error<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> (E) <strong>&rArr;</strong> S</span></p>
+
+<p>Formats the error <span class="kwd">(E)</span> as a string.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following:</p>
+
+<p><code>((error "MyError") (message "This is a test error")) format-error</code></p>
+
+<p>produces: <code>"(!) This is a test error"</code></p></div>
+
 <h4 id="from-json">from-json<a href="#document-top" title="Go to top"></a></h4>
 
 <p><em>Signature:</em> <span class="kwd"> S <strong>&rArr;</strong> *</span></p>
@@ -184,6 +239,12 @@
 <p><em>Signature:</em> <span class="kwd"> § <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Imports the a previously-loaded module <span class="kwd">§</span>, defining all its symbols in the current scope.</p>
+
+<h4 id="inspect">inspect<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> (*) <strong>&rArr;</strong> (S+)</span></p>
+
+<p>Returns a list of symbols published on <span class="kwd">(*)</span>&rsquo;s scope.</p>
 
 <h4 id="load">load<a href="#document-top" title="Go to top"></a></h4>
 
@@ -197,17 +258,22 @@
 
 <p>Creates a new module <span class="kwd">§</span> based on quotation <span class="kwd">(*)</span>.</p>
 
-<h4 id="scope">scope<a href="#document-top" title="Go to top"></a></h4>
+<h4 id="publish">publish<a href="#document-top" title="Go to top"></a></h4>
 
-<p><em>Signature:</em> <span class="kwd"> (*) <strong>&rArr;</strong> (*)</span></p>
+<p><em>Signature:</em> <span class="kwd"> § (*) <strong>&rArr;</strong> &#x2205;</span></p>
 
-<p>Unquotes <span class="kwd">(*)</span> creating a new scope and pushes a new copy of <span class="kwd">(*)</span> on the stack.</p>
+<p>Publishes symbol <span class="kwd">§</span> to the scope of <span class="kwd">(*)</span>.</p>
 
-<h4 id="scope.">scope?<a href="#document-top" title="Go to top"></a></h4>
+<div class="sidebar"><p>Example</p>
 
-<p><em>Signature:</em> <span class="kwd"> (*) <strong>&rArr;</strong> (B)</span></p>
+<p>Publish symbol <span class="kwd">my-local-symbol</span> to <span class="kwd">ROOT</span> scope:
+<code>'my-local-symbol ROOT publish</code></p></div>
 
-<p>Returnes <span class="kwd">true</span> if <span class="kwd">(*)</span> defines a scope, <span class="kwd">false</span> otherwise.</p>
+<h4 id="raise">raise<a href="#document-top" title="Go to top"></a></h4>
+
+<p><em>Signature:</em> <span class="kwd"> (E) <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Raises the error specified via the dictionary <span class="kwd">(E)</span>.</p>
 
 <h4 id="sigils">sigils<a href="#document-top" title="Go to top"></a></h4>
 
@@ -256,7 +322,7 @@
 <h3 id="L.code.crypto..code..Module"><code>crypto</code> Module<a href="#document-top" title="Go to top"></a></h3>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; October 22, 2016</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; October 30, 2016</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
