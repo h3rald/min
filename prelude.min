@@ -8,25 +8,6 @@
 'fs        import
 'crypto    import
 
-; Aliases
-'exit         :quit
-'==           :eq
-'!=           :noteq
-'>            :gt
-'<            :lt
-'>=           :gte
-'<=           :lte
-'puts         :echo
-'pop          :zap
-'quote        :unit
-'unquote      :i
-'unquote      :apply
-'filter       :select
-'cons         :prepend
-'size         :length
-
-('quit 'eq 'noteq 'gt 'lt 'gte 'lte 'echo 'zap 'unit 'i 'apply 'select 'prepend 'length) 'seal foreach
-
 ; Mathematical Operators
 (1 +)           :succ
 (1 -)           :pred

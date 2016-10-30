@@ -4,6 +4,11 @@ import
 import
   parser
 
+proc fullname*(scope: ref MinScope): string =
+  result = scope.name
+  if not scope.parent.isNil:
+    result = scope.parent.fullname & ":" & result
+
 proc copy*(s: ref MinScope): ref MinScope =
   var scope = newScope(s.parent, "copy($1)" % s.name)
   scope.symbols = s.symbols

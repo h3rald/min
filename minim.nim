@@ -27,23 +27,7 @@ import
   lib/min_crypto,
   lib/min_fs
 
-var REPL = false
-var DEBUGGING = false
 const PRELUDE* = "prelude.min".slurp.strip
-let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
-  (c) 2014-2016 Fabio Cevasco
-  
-  Usage:
-    minim [options] [filename]
-
-  Arguments:
-    filename  A $1 file to interpret (default: STDIN).
-  Options:
-    -e, --evaluate    Evaluate a $1 program inline
-    -h, --help        Print this help
-    -v, --version     Print the program version
-    -i, --interactive Start $1 shell""" % [appname, version]
-
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
@@ -194,12 +178,26 @@ proc minimRepl*(i: var MinInterpreter) =
 proc minimRepl*(debugging = false) = 
   var i = newMinInterpreter(debugging)
   i.minimRepl
-
     
-###
-
 when isMainModule:
+
+  var REPL = false
+  var DEBUGGING = false
+
+  let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
+  (c) 2014-2016 Fabio Cevasco
   
+  Usage:
+    minim [options] [filename]
+
+  Arguments:
+    filename  A $1 file to interpret (default: STDIN).
+  Options:
+    -e, --evaluate    Evaluate a $1 program inline
+    -h, --help        Print this help
+    -v, --version     Print the program version
+    -i, --interactive Start $1 shell""" % [appname, version]
+
   var file, s: string = ""
   
   for kind, key, val in getopt():

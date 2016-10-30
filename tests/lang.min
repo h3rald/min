@@ -2,8 +2,8 @@
 'test import
 
 newline 
-symbols size :total-symbols
-sigils size :total-sigils
+symbols length :total-symbols
+sigils length :total-sigils
 "Total Symbols: $1" (total-symbols) % puts! 
 "Total Sigils: $1" (total-sigils) % puts!
 newline 
@@ -98,7 +98,7 @@ newline
   (1 (2 3) cons (1 2 3) ==) assert
 
   ((1 2 3 4) 2 at 3 ==) assert
-  ((1 2 3) size 3 ==) assert
+  ((1 2 3) length 3 ==) assert
 
   ((1 2 3 4) 5 contains false ==) assert
   ((1 2 3 4) 2 contains) assert

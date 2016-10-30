@@ -106,7 +106,6 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-
 proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
   case op.kind
   of minProcOp:
@@ -147,10 +146,6 @@ proc push*(i: In, val: MinValue) =
     discard i.trace.pop
   else:
     i.stack.add(val)
-
-proc push*(i: In, q: seq[MinValue]) =
-  for e in q:
-    i.push e
 
 proc pop*(i: In): MinValue =
   if i.stack.len > 0:
@@ -193,7 +188,6 @@ proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
   i.withScope(q, scope): 
     for v in q.qVal:
       i.push v
-
 
 proc unquote*(i: In, name: string, q: var MinValue) =
   var scope = newScopeRef(i.scope)

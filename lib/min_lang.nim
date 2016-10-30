@@ -221,20 +221,6 @@ proc lang_module*(i: In) =
         i.debug "[import] $1:$2" % [i.scope.fullname, sym]
         i.scope.symbols[sym] = val
     
-    #.symbol("sigil") do (i: In):
-    #  var q1, q2: MinValue
-    #  i.reqTwoQuotations q1, q2
-    #  if q1.qVal.len == 1 and q1.qVal[0].kind == minSymbol:
-    #    var symbol = q1.qVal[0].symVal
-    #    if symbol.len == 1:
-    #      if i.scope.hasSigil(symbol):
-    #        raiseInvalid("Sigil '$1' already exists" % [symbol])
-    #      i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q2) 
-    #    else:
-    #      raiseInvalid("A sigil can only have one character")
-    #  else:
-    #    raiseInvalid("The top quotation must contain only one symbol value")
-  
     .symbol("eval") do (i: In):
       var s: MinValue
       i.reqString s
@@ -500,7 +486,7 @@ proc lang_module*(i: In) =
         raiseOutOfBounds("Insufficient items in quotation")
       i.push q.qVal[index.intVal.int]
   
-    .symbol("size") do (i: In):
+    .symbol("length") do (i: In):
       var q: MinValue
       i.reqStringOrQuotation q
       if q.isQuotation:
@@ -558,7 +544,7 @@ proc lang_module*(i: In) =
     # 4 (
     #   ((> 3) ("Greater than 3" put!))
     #   ((< 3) ("Smaller than 3" put!))
-    #   ('true ("Exactly 3" put!))
+    #   ((true) ("Exactly 3" put!))
     # ) case
     .symbol("case") do (i: In):
       var cases: MinValue
@@ -588,7 +574,8 @@ proc lang_module*(i: In) =
     .symbol("while") do (i: In):
       var d, b: MinValue
       i.reqTwoQuotations d, b
-      i.push b.qVal
+      for e in b.qVal:
+        i.push e
       i.unquote("<while-check>", b)
       var check = i.pop
       while check.isBool and check.boolVal == true:

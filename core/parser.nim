@@ -152,11 +152,6 @@ proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
   new(result)
   result[] = newScope(parent, name)
 
-proc fullname*(scope: ref MinScope): string =
-  result = scope.name
-  if not scope.parent.isNil:
-    result = scope.parent.fullname & ":" & result
-
 proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
   my.filename = filename
