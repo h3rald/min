@@ -27,6 +27,13 @@ import
   lib/min_crypto,
   lib/min_fs
 
+export 
+  parser,
+  interpreter,
+  utils,
+  value,
+  min_lang
+
 const PRELUDE* = "prelude.min".slurp.strip
 
 proc getExecs(): seq[string] =
