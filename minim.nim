@@ -32,6 +32,7 @@ export
   interpreter,
   utils,
   value,
+  scope,
   min_lang
 
 const PRELUDE* = "prelude.min".slurp.strip
