@@ -31,7 +31,7 @@ proc dhas*(q: MinValue, s: MinValue): bool =
       return true
   return false
 
-proc ddel*(q: var MinValue, s: MinValue): MinValue =
+proc ddel*(q: var MinValue, s: MinValue): MinValue {.discardable.} =
   # Assumes q is a dictionary
   var found = false
   var c = -1
@@ -646,13 +646,13 @@ proc lang_module*(i: In) =
       let m = i.pop
       i.reqStringLike k
       i.reqDictionary d
-      i.push i.dset(d, k, m) 
+      i.dset(d, k, m) 
 
     .symbol("ddel") do (i: In):
       var d, k: MinValue
       i.reqStringLike k
       i.reqDictionary d
-      i.push d.ddel(k)
+      d.ddel(k)
 
     .symbol("dprint") do (i: In):
       var d: MinValue

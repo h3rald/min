@@ -157,9 +157,9 @@ newline
 
   (((a 1)(b 2)(c 3)) 'b dget 2 ==) assert
 
-  (((a 1)(b 2)(c 3)) 'b  5 dset ((a 1)(b 5)(c 3)) ==) assert
+  (((a 1)(b 2)(c 3)) ' :dict dict 'b  5 dset dict ((a 1)(b 5)(c 3)) ==) assert
 
-  (((a 1)(b 2)(c 3)) 'b ddel ((a 1)(c 3)) ==) assert
+  (((a 1)(b 2)(c 3)) ' :dict dict 'b ddel dict ((a 1)(c 3)) ==) assert
 
   (((a 1)(b 2)(c 3)) keys (a b c) ==) assert
 
