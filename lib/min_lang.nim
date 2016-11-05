@@ -31,8 +31,9 @@ proc dhas*(q: MinValue, s: MinValue): bool =
       return true
   return false
 
-proc ddel*(q: var MinValue, s: MinValue): MinValue {.discardable.} =
+proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable.} =
   # Assumes q is a dictionary
+  var q = newVal(p.qVal, i.scope)
   var found = false
   var c = -1
   for v in q.qVal:
@@ -44,8 +45,9 @@ proc ddel*(q: var MinValue, s: MinValue): MinValue {.discardable.} =
     q.qVal.delete(c)
   return q
       
-proc dset*(i: In, q: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
+proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
   # Assumes q is a dictionary
+  var q = newVal(p.qVal, i.scope)
   var found = false
   var c = -1
   for v in q.qVal:
@@ -646,13 +648,13 @@ proc lang_module*(i: In) =
       let m = i.pop
       i.reqStringLike k
       i.reqDictionary d
-      i.dset(d, k, m) 
+      i.push i.dset(d, k, m) 
 
     .symbol("ddel") do (i: In):
       var d, k: MinValue
       i.reqStringLike k
       i.reqDictionary d
-      d.ddel(k)
+      i.push i.ddel(d, k)
 
     .symbol("dprint") do (i: In):
       var d: MinValue
