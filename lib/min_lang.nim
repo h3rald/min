@@ -551,8 +551,7 @@ proc lang_module*(i: In) =
     .symbol("case") do (i: In):
       var cases: MinValue
       i.reqQuotation cases
-      let last = cases.qVal.len-1
-      if last == 0:
+      if cases.qVal.len == 0:
         raiseInvalid("Empty case operator")
       var k = 0
       let stack = i.stack
