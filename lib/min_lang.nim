@@ -644,8 +644,8 @@ proc lang_module*(i: In) =
       
     .symbol("dset") do (i: In):
       var d, k: MinValue
-      let m = i.pop
       i.reqStringLike k
+      let m = i.pop
       i.reqDictionary d
       i.push i.dset(d, k, m) 
 
