@@ -56,8 +56,10 @@ proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable
       found = true
       break
   if found:
-      q.qVal.delete(c)
-      q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
+    q.qVal.delete(c)
+    q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
+  else:
+    q.qVal.add(@[s.getString.newSym, m].newVal(i.scope))
   return q
 
 proc keys*(i: In, q: MinValue): MinValue =
@@ -803,9 +805,6 @@ proc lang_module*(i: In) =
 
     .symbol("->") do (i: In):
       i.push("unquote".newSym)
-
-    #.symbol("=>") do (i: In):
-    #  i.push("scope".newSym)
 
     .symbol("=~") do (i: In):
       i.push("regex".newSym)
