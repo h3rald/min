@@ -116,10 +116,11 @@ proc stdLib*(i: In) =
     MINIMRC.writeFile("")
   i.eval MINIMRC.readFile()
 
-proc minimStream(s: Stream, filename: string, debugging = false) =
+proc minimStream(s: Stream, filename: string, debugging = false, init = proc(i: In) = discard) = 
   var i = newMinInterpreter(debugging)
   i.pwd = filename.parentDir
   i.stdLib()
+  i.init()
   i.open(s, filename)
   discard i.parser.getToken() 
   try:
@@ -128,22 +129,22 @@ proc minimStream(s: Stream, filename: string, debugging = false) =
     discard
   i.close()
 
-proc minimString*(buffer: string, debugging = false) =
-  minimStream(newStringStream(buffer), "input", debugging)
+proc minimString*(buffer: string, debugging = false, init = proc(i: In) = discard) =
+  minimStream(newStringStream(buffer), "input", debugging, init)
 
-proc minimFile*(filename: string, debugging = false) =
+proc minimFile*(filename: string, debugging = false, init = proc(i: In) = discard) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from file: "& filename)
     stderr.flushFile()
-  minimStream(stream, filename, debugging)
+  minimStream(stream, filename, debugging, init)
 
-proc minimFile*(file: File, filename="stdin", debugging = false) =
+proc minimFile*(file: File, filename="stdin", debugging = false, init = proc(i: In) = discard) =
   var stream = newFileStream(stdin)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from "& filename)
     stderr.flushFile()
-  minimStream(stream, filename, debugging)
+  minimStream(stream, filename, debugging, init)
 
 proc printResult(i: In, res: MinValue) =
   if res.isNil:
