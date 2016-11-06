@@ -572,6 +572,7 @@ proc lang_module*(i: In) =
         if res.boolVal == true:
           var t = c.qVal[1]
           i.unquote("<case-$1-true>" % $k, t)
+          break
 
     
     .symbol("while") do (i: In):
