@@ -46,7 +46,7 @@ template withScope*(i: In, q: MinValue, body: untyped): untyped =
   i.withScope(q, scope):
     body
 
-proc newMinInterpreter*(debugging = false): MinInterpreter =
+proc newMinInterpreter*(debugging = false, filename = "input", pwd = ""): MinInterpreter =
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -54,8 +54,8 @@ proc newMinInterpreter*(debugging = false): MinInterpreter =
   var scope = new MinScope
   scope.name = "ROOT"
   var i:MinInterpreter = MinInterpreter(
-    filename: "input", 
-    pwd: "",
+    filename: filename, 
+    pwd: pwd,
     parser: pr, 
     stack: stack,
     trace: trace,
