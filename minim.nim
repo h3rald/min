@@ -98,6 +98,12 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   return symbols
 
 proc stdLib*(i: In) =
+  if not MINIMSYMBOLS.fileExists:
+    MINIMSYMBOLS.writeFile("{}")
+  if not MINIMHISTORY.fileExists:
+    MINIMHISTORY.writeFile("")
+  if not MINIMRC.fileExists:
+    MINIMRC.writeFile("")
   i.lang_module
   i.io_module
   i.logic_module
@@ -108,12 +114,6 @@ proc stdLib*(i: In) =
   i.fs_module
   i.crypto_module
   i.eval PRELUDE, "<prelude>"
-  if not MINIMSYMBOLS.fileExists:
-    MINIMSYMBOLS.writeFile("{}")
-  if not MINIMHISTORY.fileExists:
-    MINIMHISTORY.writeFile("")
-  if not MINIMRC.fileExists:
-    MINIMRC.writeFile("")
   i.eval MINIMRC.readFile()
 
 proc minimStream(s: Stream, filename: string, debugging = false) = 
