@@ -6,7 +6,8 @@ import
   unicode, 
   tables,
   critbits,
-  oids
+  oids,
+  logging
 
 type
   MinTokenKind* = enum
@@ -98,7 +99,6 @@ type
     parser*: MinParser
     currSym*: MinValue
     filename*: string
-    debugging*: bool 
     evaluating*: bool 
   MinParsingError* = ref object of ValueError 
   MinUndefinedError* = ref object of ValueError

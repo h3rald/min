@@ -4,7 +4,8 @@ import
   critbits, 
   os,
   oids,
-  algorithm
+  algorithm,
+  logging
 import 
   value,
   scope,
@@ -25,13 +26,10 @@ proc dump*(i: MinInterpreter): string =
   return s
 
 proc debug*(i: In, value: MinValue) =
-  if i.debugging: 
-    echo $value
-    stderr.writeLine("-- " & i.dump & $value)
+  debug(i.dump & $value)
 
 proc debug*(i: In, value: string) =
-  if i.debugging: 
-    stderr.writeLine("-- " & value)
+  debug(value)
 
 template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untyped =
   let origScope = i.scope
@@ -46,7 +44,7 @@ template withScope*(i: In, q: MinValue, body: untyped): untyped =
   i.withScope(q, scope):
     body
 
-proc newMinInterpreter*(debugging = false, filename = "input", pwd = ""): MinInterpreter =
+proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -61,13 +59,12 @@ proc newMinInterpreter*(debugging = false, filename = "input", pwd = ""): MinInt
     trace: trace,
     stackcopy: stackcopy,
     scope: scope,
-    debugging: debugging, 
     currSym: MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
   )
   return i
 
 proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
-  result = newMinInterpreter(debugging = i.debugging)
+  result = newMinInterpreter()
   result.filename = filename
   result.pwd =  filename.parentDir
   result.stack = i.stack
@@ -78,9 +75,9 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
 
 proc formatError(sym: MinValue, message: string): string =
   if sym.filename.isNil or sym.filename == "":
-    return "(!) `$1`: $2" % [sym.symVal, message]
+    return "$1`: $2" % [sym.symVal, message]
   else:
-    return "(!) $1($2,$3) `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+    return "$1($2,$3) `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
 
 proc formatTrace(sym: MinValue): string =
   if sym.filename.isNil or sym.filename == "":
@@ -95,7 +92,7 @@ proc stackTrace(i: In) =
     stderr.writeLine sym.formatTrace
 
 proc error(i: In, message: string) =
-  stderr.writeLine i.currSym.formatError(message)
+  error(i.currSym.formatError(message))
 
 proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename

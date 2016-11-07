@@ -158,13 +158,12 @@ proc lang_module*(i: In) =
       var q: MinValue
       i.reqQuotation q
       i.push(($(%q)).newVal)
-
-    .symbol("debug?") do (i: In):
-      i.push i.debugging.newVal
   
-    .symbol("debug") do (i: In):
-      i.debugging = not i.debugging 
-      echo "Debugging: $1" % [$i.debugging]
+    .symbol("loglevel") do (i: In):
+      var s: MinValue
+      i.reqStringLike s
+      var str = s.getString
+      echo "Log level: ", logLevel(str)
   
     # Language constructs
   

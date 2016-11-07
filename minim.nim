@@ -6,7 +6,8 @@ import
   os, 
   json, 
   sequtils,
-  algorithm
+  algorithm,
+  logging
 import 
   core/linedit,
   core/consts,
@@ -36,6 +37,9 @@ export
   min_lang
 
 const PRELUDE* = "prelude.min".slurp.strip
+
+var LOGGER* = newConsoleLogger()
+LOGGER.addHandler()
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
@@ -116,18 +120,6 @@ proc stdLib*(i: In) =
   i.eval PRELUDE, "<prelude>"
   i.eval MINIMRC.readFile()
 
-proc minimStream(s: Stream, filename: string, debugging = false) = 
-  var i = newMinInterpreter(debugging)
-  i.pwd = filename.parentDir
-  i.stdLib()
-  i.open(s, filename)
-  discard i.parser.getToken() 
-  try:
-    i.interpret()
-  except:
-    discard
-  i.close()
-
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
   i.open(s, i.filename)
@@ -138,22 +130,27 @@ proc interpret*(i: In, s: Stream) =
     discard
   i.close()
 
-proc minimString*(buffer: string, debugging = false) =
-  minimStream(newStringStream(buffer), "input", debugging)
+proc minimStream(s: Stream, filename: string) = 
+  var i = newMinInterpreter()
+  i.pwd = filename.parentDir
+  i.interpret(s)
 
-proc minimFile*(filename: string, debugging = false) =
+proc minimString*(buffer: string) =
+  minimStream(newStringStream(buffer), "input")
+
+proc minimFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from file: "& filename)
     stderr.flushFile()
-  minimStream(stream, filename, debugging)
+  minimStream(stream, filename)
 
-proc minimFile*(file: File, filename="stdin", debugging = false) =
+proc minimFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
     stderr.writeLine("Error - Cannot read from "& filename)
     stderr.flushFile()
-  minimStream(stream, filename, debugging)
+  minimStream(stream, filename)
 
 proc printResult(i: In, res: MinValue) =
   if res.isNil:
@@ -193,14 +190,13 @@ proc minimRepl*(i: var MinInterpreter) =
     except:
       discard
 
-proc minimRepl*(debugging = false) = 
-  var i = newMinInterpreter(debugging)
+proc minimRepl*() = 
+  var i = newMinInterpreter()
   i.minimRepl
     
 when isMainModule:
 
   var REPL = false
-  var DEBUGGING = false
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
   (c) 2014-2016 Fabio Cevasco
@@ -217,6 +213,7 @@ when isMainModule:
     -i, --interactive Start $1 shell""" % [appname, version]
 
   var file, s: string = ""
+  setLogFilter(lvlWarn)
   
   for kind, key, val in getopt():
     case kind:
@@ -224,8 +221,9 @@ when isMainModule:
         file = key
       of cmdLongOption, cmdShortOption:
         case key:
-          of "debug", "d":
-            DEBUGGING = true
+          of "log", "l":
+            var val = val
+            logLevel(val)
           of "evaluate", "e":
             s = val
           of "help", "h":
@@ -242,11 +240,11 @@ when isMainModule:
         discard
   
   if s != "":
-    minimString(s, DEBUGGING)
+    minimString(s)
   elif file != "":
-    minimFile file, DEBUGGING
+    minimFile file
   elif REPL:
-    minimRepl DEBUGGING
+    minimRepl()
     quit(0)
   else:
-    minimFile stdin, "stdin", DEBUGGING
+    minimFile stdin, "stdin"

@@ -10,7 +10,6 @@ newline
 
 "lang" describe
 
-  (debug? false ==) assert
   (1 id 1 ==) assert
 
   (1 pop get-stack () ==) assert

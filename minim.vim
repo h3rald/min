@@ -8,15 +8,15 @@ if exists("b:current_syntax")
   finish
 endif
 
-setl iskeyword+=?,$,+,*,/,%,=,>,<,&,-,',.,:,~,!
+setl iskeyword+=?,$,+,#,*,/,%,=,>,<,&,-,',.,:,~,!
 setl iskeyword+=^
 setl iskeyword+=@
 
-syntax keyword          minimDefaultSymbol ! != $ & ' * + - % ^ -> . .. / : < <= == => =~ > >= @ ROOT aes and append ask at atime b bind bool bool? bury1 bury2 bury3 c call call! capitalize case cd chmod choose clear-stack column-print concat confirm cons cp cpu crypto ctime datetime ddel debug debug? decode decrypt define delete dget dictionary? dig1 dig2 dig3 dip dir? dirname div dprint dprint! dset dump-stack dup dupd encode encrypt env? eval even? exit fappend file? filename filter first float float? foreach fperms fread from-json format-error fs fsize fstats ftype fwrite gets get-stack getenv hardlink hidden? ifte import indent inspect int int? interpolate interval io join k keys length linrec load load-symbol logic lowercase ls ls-r map match md5 mkdir mod module mtime mv newline not now num number? odd? os password pop popd pred print print! prompt publish puts puts! putenv q quotation? quote raise regex remove-symbol repeat replace rest rm rmdir run save-symbol scope scope? seal search set-stack sha1 sha224 sha256 sha384 sha512 sigils sip sleep sort source split startup stored-symbols str string string? strip succ swap swapd swons symbols symlink symlink? sys system take tformat time timeinfo times timestamp titleize to-json try unquote uppercase unzip values version which while with xor zip contains
+syntax keyword          minimDefaultSymbol ! != $ & ' * + # - % ^ -> . .. / : < <= == => =~ > >= @ ROOT aes and append ask at atime b bind bool bool? bury1 bury2 bury3 c call call! capitalize case cd chmod choose clear-stack column-print concat confirm cons cp cpu crypto ctime datetime ddel decode decrypt define delete dget dictionary? dig1 dig2 dig3 dip dir? dirname div dprint dprint! dset dump-stack dup dupd encode encrypt env? eval even? exit fappend file? filename filter first float float? foreach fperms fread from-json format-error fs fsize fstats ftype fwrite gets get-stack getenv hardlink hidden? ifte import indent inspect int int? interpolate interval io join k keys length linrec load load-symbol logic loglevel lowercase ls ls-r map match md5 mkdir mod module mtime mv newline not now num number? odd? os password pop popd pred print print! prompt publish puts puts! putenv q quotation? quote quote-bind quote-define raise regex remove-symbol repeat replace rest rm rmdir run save-symbol scope scope? seal search set-stack sha1 sha224 sha256 sha384 sha512 sigils sip sleep sort source split startup stored-symbols str string string? strip succ swap swapd swons symbols symlink symlink? sys system take tformat time timeinfo times timestamp titleize to-json try unquote uppercase unzip values version which while with xor zip contains
 
 
-syntax match            minimDefaultSigil     ;\<[:@'~!$%&$=<>^*]; contained
-syntax match            minimSpecialSymbols   ;[:@'~!$%&$=<>^*]; contained
+syntax match            minimDefaultSigil     ;\<[:@'~!$%&$=<>^*#]; contained
+syntax match            minimSpecialSymbols   ;[:@'~!$%&$=<>^*#]; contained
 syntax match            minimQuote            ;\<['];
 syntax match            minimBinding          ;@;
 

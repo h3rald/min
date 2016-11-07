@@ -1,6 +1,7 @@
 import 
   strutils, 
-  critbits 
+  critbits,
+  logging 
 import 
   parser, 
   value,
@@ -8,6 +9,29 @@ import
   interpreter
 
 # Library methods
+
+proc logLevel*(val: var string): string {.discardable.} =
+  var lvl: Level
+  case val:
+    of "debug":
+      lvl = lvlDebug
+    of "info":
+      lvl = lvlInfo
+    of "notice":
+      lvl = lvlNotice
+    of "warn":
+      lvl = lvlWarn
+    of "error":
+      lvl = lvlError
+    of "fatal":
+      lvl = lvlFatal
+    of "none":
+      lvl = lvlNone
+    else:
+      val = "warn"
+      lvl = lvlWarn
+  setLogFilter(lvl)
+  return val
 
 proc define*(i: In, name: string): ref MinScope =
   var scope = new MinScope
