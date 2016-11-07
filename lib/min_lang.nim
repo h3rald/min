@@ -740,6 +740,22 @@ proc lang_module*(i: In) =
       s.sealed = true
       i.scope.setSymbol(sym.getString, s)
 
+    .symbol("quote-bind") do (i: In):
+      var s, m: MinValue
+      i.reqString(s)
+      m = i.pop
+      i.push @[m].newVal(i.scope)
+      i.push s
+      i.push "bind".newSym
+
+    .symbol("quote-define") do (i: In):
+      var s, m: MinValue
+      i.reqString(s)
+      m = i.pop
+      i.push @[m].newVal(i.scope)
+      i.push s
+      i.push "define".newSym
+
     # Sigils
 
     .sigil("'") do (i: In):
@@ -765,7 +781,7 @@ proc lang_module*(i: In) =
     .sigil("@") do (i: In):
       i.push("bind".newSym)
 
-    .sigil("=") do (i: In):
+    .sigil("+") do (i: In):
       i.push("module".newSym)
 
     .sigil("^") do (i: In):
@@ -782,6 +798,14 @@ proc lang_module*(i: In) =
 
     .sigil("*") do (i: In):
       i.push("seal".newSym)
+
+    .sigil("#") do (i: In):
+      i.push("quote-bind".newSym)
+
+    .sigil("=") do (i: In):
+      i.push("quote-define".newSym)
+
+    # Shorthand symbol aliases
 
     .symbol(":") do (i: In):
       i.push("define".newSym)

@@ -1,6 +1,6 @@
 ;; test module
 (
- 'OK ' :ok
+ 'OK =ok
  ("  " print!) :padding
 
  ;; describe
@@ -46,7 +46,7 @@
   ) map
   padding total print! " tests executed - " print! failed print! " failed." puts!
   (
-    ' :result
+    =result
     result
     (ok !=)
     (padding "FAILED: " print! result puts!)
@@ -57,4 +57,4 @@
   pop ;Remove results accomulator from stack
  ) :report
 
-) =test
+) +test
