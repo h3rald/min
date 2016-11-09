@@ -4,7 +4,8 @@ import
   os, 
   json,
   algorithm,
-  oids
+  oids,
+  logging
 import 
   ../core/consts,
   ../core/parser, 
@@ -22,7 +23,7 @@ proc dget*(q: MinValue, s: MinValue): MinValue =
   for v in q.qVal:
     if v.qVal[0].getString == s.getString:
       return v.qVal[1]
-  raiseInvalid("Key '$1' not found" % s.getString)
+  raiseInvalid("Dictionary key '$1' not found" % s.getString)
 
 proc dhas*(q: MinValue, s: MinValue): bool =
   # Assumes q is a dictionary
@@ -177,7 +178,8 @@ proc lang_module*(i: In) =
       symbol = sym.getString
       if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-      i.debug "[define] (scope: $1) $2 = $3" % [i.scope.fullname, symbol, $q1]
+      info "[define] $1 = $2" % [symbol, $q1]
+      debug("[define] Scope: $1" % i.scope.fullname)
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
@@ -190,7 +192,8 @@ proc lang_module*(i: In) =
       if not q1.isQuotation:
         q1 = @[q1].newVal(i.scope)
       symbol = sym.getString
-      i.debug "[bind] " & symbol & " = " & $q1
+      info "[bind] $1 = $2" % [symbol, $q1]
+      debug("[bind] Scope: $1" % i.scope.fullname)
       let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
       if not res:
         raiseUndefined("Attempting to bind undefined symbol: " & symbol)
@@ -208,7 +211,7 @@ proc lang_module*(i: In) =
       i.reqQuotation code
       code.filename = i.filename
       i.unquote("<module>", code, code.scope)
-      i.debug("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
+      info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
     .symbol("import") do (i: In):
@@ -219,7 +222,8 @@ proc lang_module*(i: In) =
       var op = i.scope.getSymbol(name)
       i.apply(op)
       i.reqQuotation mdl
-      i.debug("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
+      info("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
+      debug("[import] Scope: $1" % i.scope.fullname)
       for sym, val in mdl.scope.symbols.pairs:
         i.debug "[import] $1:$2" % [i.scope.fullname, sym]
         i.scope.symbols[sym] = val
@@ -257,7 +261,8 @@ proc lang_module*(i: In) =
       if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, qscope.scope.name])
       let scope = i.scope
-      i.debug("[publish] (scope: $1) -> $2" % [i.scope.fullname, sym])
+      info("[publish] Symbol: $2" % [sym])
+      debug("[publish] $1 -> $2" % [i.scope.fullname, qscope.scope.fullname])
       let op = proc(i: In) {.gcsafe, closure.} =
         let origscope = i.scope 
         i.scope = scope
@@ -506,7 +511,6 @@ proc lang_module*(i: In) =
     .symbol("map") do (i: In):
       var prog, list: MinValue
       i.reqTwoQuotations prog, list
-      #i.push newVal(newSeq[MinValue](0))
       var res = newSeq[MinValue](0)
       for litem in list.qVal:
         i.push litem
@@ -519,7 +523,6 @@ proc lang_module*(i: In) =
       i.reqTwoQuotations prog, list
       for litem in list.qVal:
         i.push litem
-        #i.debug("[foreach] $1" % prog.scope.fullname)
         i.unquote("<foreach-quotation>", prog)
     
     .symbol("times") do (i: In):
@@ -662,18 +665,15 @@ proc lang_module*(i: In) =
       i.reqDictionary d
       for v in d.qVal:
         echo "$1: $2" % [$v.qVal[0], $v.qVal[1]]
-      #i.push d
 
     .symbol("keys") do (i: In):
       var d: MinValue
       i.reqDictionary d
-      #i.push d
       i.push i.keys(d)
 
     .symbol("values") do (i: In):
       var d: MinValue
       i.reqDictionary d
-      #i.push d
       i.push i.values(d)
 
     .symbol("interpolate") do (i: In):
