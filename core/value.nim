@@ -78,4 +78,3 @@ proc getString*(v: MinValue): string =
       return sym.symVal
     else:
       raiseInvalid("Quotation is not a quoted symbol")
-

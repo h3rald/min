@@ -323,9 +323,9 @@ proc lang_module*(i: In) =
         if err.qVal.contains("column".newVal):
           list.add err.dget("column".newVal)
         if list.len <= 1:
-          msg = "(!) $1" % $$list[0]
+          msg = "$1" % $$list[0]
         else:
-          msg = "(!) $3($4,$5) `$2`: $1" % [$$list[0], $$list[1], $$list[2], $$list[3], $$list[4]]
+          msg = "$3($4,$5) `$2`: $1" % [$$list[0], $$list[1], $$list[2], $$list[3], $$list[4]]
         i.push msg.newVal
       else:
         raiseInvalid("Invalid error dictionary")

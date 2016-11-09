@@ -75,5 +75,3 @@ when isMainModule:
   "Hello".tsearch("HELLO", "i")
   "Hello\nWorld!".tsearch("HELLO.WORLD", "mis")
   "Testing".toperator("s/test/eat/i")
-  
-

@@ -10,7 +10,7 @@ proc fullname*(scope: ref MinScope): string =
     result = scope.parent.fullname & ":" & result
 
 proc copy*(s: ref MinScope): ref MinScope =
-  var scope = newScope(s.parent, "copy($1)" % s.name)
+  var scope = newScope(s.parent, "copy/$1" % s.name)
   scope.symbols = s.symbols
   new(result)
   result[] = scope

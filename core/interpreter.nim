@@ -40,7 +40,7 @@ template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untype
   i.scope = origScope
 
 template withScope*(i: In, q: MinValue, body: untyped): untyped =
-  var scope = newScopeRef(i.scope)
+  var scope = newScopeRef(i.scope, "with")
   i.withScope(q, scope):
     body
 
@@ -89,7 +89,7 @@ proc stackTrace(i: In) =
   var trace = i.trace
   trace.reverse()
   for sym in trace:
-    stderr.writeLine sym.formatTrace
+    info sym.formatTrace
 
 proc error(i: In, message: string) =
   error(i.currSym.formatError(message))
@@ -117,7 +117,7 @@ proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
       i.push(op.val)
 
 proc apply*(i: In, op: MinOperator, name="apply") =
-  var scope = newScopeRef(i.scope)
+  var scope = newScopeRef(i.scope, name)
   i.apply(op, scope)
 
 proc push*(i: In, val: MinValue) = 
@@ -167,7 +167,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
     except MinRuntimeError:
       let msg = getCurrentExceptionMsg()
       i.stack = i.stackcopy
-      stderr.writeLine("(!) $1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
       i.stackTrace
       raise MinTrappedException(msg: msg)
     except MinTrappedException:
@@ -187,7 +187,7 @@ proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
       i.push v
 
 proc unquote*(i: In, name: string, q: var MinValue) =
-  var scope = newScopeRef(i.scope)
+  var scope = newScopeRef(i.scope, "unquote")
   i.unquote(name, q, scope)
 
 proc eval*(i: In, s: string, name="<eval>") =

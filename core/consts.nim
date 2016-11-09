@@ -2,7 +2,8 @@ import
   os,
   parsecfg,
   streams,
-  strutils
+  strutils,
+  logging
 
 const
   cfgfile   = "../minim.nimble".slurp
@@ -27,13 +28,13 @@ if f != nil:
         else:
           discard
     of cfgError:
-      stderr.writeLine("Configuration error.")
+      error("Configuration error.")
       quit(1)
     else: 
       discard
   close(p)
 else:
-  stderr.writeLine("Cannot process configuration file.")
+  error("Cannot process configuration file.")
   quit(2)
 
 
@@ -46,4 +47,3 @@ if not defined(windows):
 let MINIMRC* = HOME / ".minimrc"
 let MINIMSYMBOLS* = HOME / ".minim_symbols"
 let MINIMHISTORY* = HOME / ".minim_history"
-

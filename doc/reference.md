@@ -81,7 +81,7 @@ Formats the error {{e}} as a string.
 > 
 > `((error "MyError") (message "This is a test error")) format-error`
 > 
-> produces: `"(!) This is a test error"`
+> produces: `"This is a test error"`
 #}
 
 {#op||from-json||S||\*||

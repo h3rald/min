@@ -146,7 +146,7 @@ const
   ]
 
 proc newScope*(parent: ref MinScope, name="scope"): MinScope =
-  result = MinScope(name: "<$1:$2>" % [name, $genOid()], parent: parent)
+  result = MinScope(name: "$1/$2" % [name, $genOid()], parent: parent)
 
 proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
   new(result)

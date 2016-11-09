@@ -497,4 +497,3 @@ when isMainModule:
       echo "---", ed.readLine("-> "), "---"
 
   testChar()
-

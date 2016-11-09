@@ -98,4 +98,3 @@ proc toFilePermissions*(p: BiggestInt): set[FilePermission] =
     result.incl fpOthersRead
     result.incl fpOthersWrite
     result.incl fpOthersExec
-

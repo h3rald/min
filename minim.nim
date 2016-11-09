@@ -141,15 +141,15 @@ proc minimString*(buffer: string) =
 proc minimFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
-    stderr.writeLine("Error - Cannot read from file: "& filename)
-    stderr.flushFile()
+    error("Cannot read from file: "& filename)
+    quit(100)
   minimStream(stream, filename)
 
 proc minimFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
-    stderr.writeLine("Error - Cannot read from "& filename)
-    stderr.flushFile()
+    error("Cannot read from file: "& filename)
+    quit(100)
   minimStream(stream, filename)
 
 proc printResult(i: In, res: MinValue) =
