@@ -47,3 +47,4 @@ if not defined(windows):
 let MINIMRC* = HOME / ".minimrc"
 let MINIMSYMBOLS* = HOME / ".minim_symbols"
 let MINIMHISTORY* = HOME / ".minim_history"
+let MINIMLOG* = HOME / "minim.log"

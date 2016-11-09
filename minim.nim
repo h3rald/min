@@ -38,8 +38,8 @@ export
 
 const PRELUDE* = "prelude.min".slurp.strip
 
-var LOGGER* = newConsoleLogger()
-LOGGER.addHandler()
+newConsoleLogger().addHandler()
+newRollingFileLogger(MINIMLOG, fmtStr = verboseFmtStr).addHandler()
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)

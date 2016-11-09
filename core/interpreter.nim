@@ -75,13 +75,13 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
 
 proc formatError(sym: MinValue, message: string): string =
   if sym.filename.isNil or sym.filename == "":
-    return "$1`: $2" % [sym.symVal, message]
+    return "[$1]: $2" % [sym.symVal, message]
   else:
-    return "$1($2,$3) `$4`: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+    return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
 
 proc formatTrace(sym: MinValue): string =
   if sym.filename.isNil or sym.filename == "":
-    return "    - [native] in symbol: $1" % [sym.symVal]
+    return "    - <native> in symbol: $1" % [sym.symVal]
   else:
     return "    - $1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
 
