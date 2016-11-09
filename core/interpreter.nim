@@ -26,7 +26,7 @@ proc dump*(i: MinInterpreter): string =
   return s
 
 proc debug*(i: In, value: MinValue) =
-  debug(i.dump & $value)
+  debug("{" & i.dump & $value & "}")
 
 proc debug*(i: In, value: string) =
   debug(value)
@@ -81,15 +81,15 @@ proc formatError(sym: MinValue, message: string): string =
 
 proc formatTrace(sym: MinValue): string =
   if sym.filename.isNil or sym.filename == "":
-    return "    - <native> in symbol: $1" % [sym.symVal]
+    return "  <native> in symbol: $1" % [sym.symVal]
   else:
-    return "    - $1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+    return "  $1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
 
 proc stackTrace(i: In) =
   var trace = i.trace
   trace.reverse()
   for sym in trace:
-    info sym.formatTrace
+    notice sym.formatTrace
 
 proc error(i: In, message: string) =
   error(i.currSym.formatError(message))
@@ -122,6 +122,7 @@ proc apply*(i: In, op: MinOperator, name="apply") =
 
 proc push*(i: In, val: MinValue) = 
   if val.kind == minSymbol:
+    i.debug(val)
     i.trace.add val
     if not i.evaluating:
       i.currSym = val

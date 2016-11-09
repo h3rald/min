@@ -1,7 +1,8 @@
 import 
   strutils, 
   critbits,
-  logging 
+  logging,
+  terminal
 import 
   parser, 
   value,
@@ -9,6 +10,48 @@ import
   interpreter
 
 # Library methods
+
+system.addQuitProc(resetAttributes)
+
+type  
+  StyledConsoleLogger* = ref object of Logger
+
+proc logPrefix*(level: Level): tuple[msg: string, color: ForegroundColor] =
+  case level:
+    of lvlDebug:
+      return ("---", fgCyan)
+    of lvlInfo:
+      return ("(i) ", fgCyan)
+    of lvlNotice:
+      return ("---", fgMagenta)
+    of lvlWarn:
+      return ("(!)", fgYellow)
+    of lvlError:
+      return ("(!)", fgRed)
+    of lvlFatal:
+      return ("(x)", fgRed)
+    else:
+      return ("", fgWhite)
+
+method log*(logger: StyledConsoleLogger; level: Level; args: varargs[string, `$`]) =
+  var f = stdout
+  if level >= getLogFilter() and level >= logger.levelThreshold:
+    if level >= lvlWarn: 
+      f = stderr
+    let ln = substituteLog(logger.fmtStr, level, args)
+    let prefix = level.logPrefix()
+    f.setForegroundColor(prefix.color)
+    f.write(prefix.msg)
+    #resetAttributes()
+    f.write(ln)
+    f.write("\n")
+    resetAttributes()
+    if level in {lvlError, lvlFatal}: flushFile(f)
+
+proc newStyledConsoleLogger*(levelThreshold = lvlAll; fmtStr = " "): StyledConsoleLogger =
+  new result
+  result.fmtStr = fmtStr
+  result.levelThreshold = levelThreshold
 
 proc logLevel*(val: var string): string {.discardable.} =
   var lvl: Level
