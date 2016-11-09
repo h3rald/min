@@ -66,6 +66,8 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
     return symbols.mapIt("~" & $it)
   if word.startsWith("@"):
     return symbols.mapIt("@" & $it)
+  if word.startsWith("#"):
+    return symbols.mapIt("#" & $it)
   if word.startsWith(">"):
     return symbols.mapIt(">" & $it)
   if word.startsWith("*"):
@@ -141,15 +143,15 @@ proc minimString*(buffer: string) =
 proc minimFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
-    error("Cannot read from file: "& filename)
-    quit(100)
+    fatal("Cannot read from file: "& filename)
+    quit(3)
   minimStream(stream, filename)
 
 proc minimFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
-    error("Cannot read from file: "& filename)
-    quit(100)
+    fatal("Cannot read from file: "& filename)
+    quit(3)
   minimStream(stream, filename)
 
 proc printResult(i: In, res: MinValue) =

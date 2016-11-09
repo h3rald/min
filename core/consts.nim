@@ -28,13 +28,13 @@ if f != nil:
         else:
           discard
     of cfgError:
-      error("Configuration error.")
+      fatal("Configuration error.")
       quit(1)
     else: 
       discard
   close(p)
 else:
-  error("Cannot process configuration file.")
+  fatal("Cannot process configuration file.")
   quit(2)
 
 

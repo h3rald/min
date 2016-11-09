@@ -240,6 +240,7 @@ proc lang_module*(i: In) =
       if not file.endsWith(".min"):
         file = file & ".min"
       file = i.pwd.joinPath(file)
+      info("[load] File: ", file)
       if not file.fileExists:
         raiseInvalid("File '$1' does not exists." % file)
       i.load file
