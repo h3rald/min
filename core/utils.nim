@@ -53,7 +53,10 @@ proc newStyledConsoleLogger*(levelThreshold = lvlAll; fmtStr = " "): StyledConso
   result.fmtStr = fmtStr
   result.levelThreshold = levelThreshold
 
-proc logLevel*(val: var string): string {.discardable.} =
+proc getLogLevel*(): string =
+  return LevelNames[getLogFilter()].toLowerAscii
+
+proc setLogLevel*(val: var string): string {.discardable.} =
   var lvl: Level
   case val:
     of "debug":

@@ -164,7 +164,10 @@ proc lang_module*(i: In) =
       var s: MinValue
       i.reqStringLike s
       var str = s.getString
-      echo "Log level: ", logLevel(str)
+      notice "Log level: ", setLogLevel(str)
+  
+    .symbol("loglevel?") do (i: In):
+      notice "Log level: ", getLogLevel()
   
     # Language constructs
   

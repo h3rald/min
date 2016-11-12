@@ -215,7 +215,7 @@ when isMainModule:
     -i, --interactive Start $1 shell""" % [appname, version]
 
   var file, s: string = ""
-  setLogFilter(lvlWarn)
+  setLogFilter(lvlNotice)
   
   for kind, key, val in getopt():
     case kind:
@@ -225,7 +225,7 @@ when isMainModule:
         case key:
           of "log", "l":
             var val = val
-            logLevel(val)
+            setLogLevel(val)
           of "evaluate", "e":
             s = val
           of "help", "h":
