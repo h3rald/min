@@ -19,11 +19,11 @@ type
 proc logPrefix*(level: Level): tuple[msg: string, color: ForegroundColor] =
   case level:
     of lvlDebug:
-      return ("---", fgCyan)
-    of lvlInfo:
-      return ("(i) ", fgGreen)
-    of lvlNotice:
       return ("---", fgMagenta)
+    of lvlInfo:
+      return ("(i) ", fgCyan)
+    of lvlNotice:
+      return ("---", fgGreen)
     of lvlWarn:
       return ("(!)", fgYellow)
     of lvlError:

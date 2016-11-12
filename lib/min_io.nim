@@ -1,6 +1,7 @@
 import 
   os, 
-  strutils
+  strutils,
+  logging
 import 
   ../core/linedit,
   ../core/regex,
@@ -22,6 +23,32 @@ proc io_module*(i: In) =
       let a = i.peek
       echo $$a
   
+    .symbol("notice") do (i: In):
+      let a = i.peek
+      notice $$a
+
+    .symbol("info") do (i: In):
+      let a = i.peek
+      info $$a
+
+    .symbol("error") do (i: In):
+      let a = i.peek
+      error $$a
+
+    .symbol("warn") do (i: In):
+      let a = i.peek
+      warn $$a
+
+    .symbol("debug") do (i: In):
+      let a = i.peek
+      debug $$a
+
+    .symbol("fatal") do (i: In):
+      let a = i.peek
+      fatal $$a
+      termRestore()
+      quit(100)
+
     .symbol("column-print") do (i: In):
       var n, q: MinValue
       i.reqIntAndQuotation n, q
