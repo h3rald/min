@@ -12,7 +12,7 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/regex,
+  ../packages/nim-sgregex/sgregex,
   ../core/linedit,
   ../core/scope
 
@@ -112,7 +112,7 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
     of JString:
       let s = json.getStr
       if s.match("^;sym:"):
-        result = regex.replace(s, "^;sym:", "").newSym
+        result = sgregex.replace(s, "^;sym:", "").newSym
       else:
         result = json.getStr.newVal
     of JObject:
@@ -369,7 +369,7 @@ proc lang_module*(i: In) =
           return
         let e = getCurrentException()
         var res = newSeq[MinValue](0)
-        let err = regex.replace($e.name, ":.+$", "")
+        let err = sgregex.replace($e.name, ":.+$", "")
         res.add @["error".newSym, err.newVal].newVal(i.scope)
         res.add @["message".newSym, e.msg.newVal].newVal(i.scope)
         res.add @["symbol".newSym, i.currSym].newVal(i.scope)

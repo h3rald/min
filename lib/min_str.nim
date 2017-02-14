@@ -7,7 +7,7 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../core/regex
+  ../packages/nim-sgregex/sgregex
 
 proc str_module*(i: In) = 
   i.define("str")
@@ -50,7 +50,7 @@ proc str_module*(i: In) =
   .symbol("replace") do (i: In):
     var s_replace, reg, s_find: MinValue
     i.reqThreeStrings s_replace, reg, s_find
-    i.push regex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
+    i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
 
   .symbol("regex") do (i: In):
     var reg, str: MinValue

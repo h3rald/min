@@ -15,8 +15,7 @@ import
   core/value, 
   core/scope,
   core/interpreter, 
-  core/utils,
-  core/zip
+  core/utils
 import 
   lib/min_lang, 
   lib/min_num,

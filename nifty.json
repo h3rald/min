@@ -1,0 +1,58 @@
+{
+  "storage": "packages", 
+  "commands": 
+  {
+    "install": 
+    {
+      "git+src": 
+      {
+        "cmd": "git clone {{src}} --depth 1"
+      }, 
+      "git+src+tag": 
+      {
+        "cmd": "git clone --branch {{tag}} {{src}} --depth 1"
+      }
+    }, 
+    "update": 
+    {
+      "git+name": 
+      {
+        "cmd": "git pull", 
+        "pwd": "{{name}}"
+      }
+    }
+  }, 
+  "packages": 
+  {
+    "nim-sgregex": 
+    {
+      "name": "nim-sgregex", 
+      "src": "https://github.com/h3rald/nim-sgregex.git", 
+      "git": true
+    }, 
+    "nim-miniz": 
+    {
+      "name": "nim-miniz", 
+      "src": "https://github.com/h3rald/nim-miniz.git", 
+      "git": true
+    }, 
+    "nimAES": 
+    {
+      "name": "nimAES", 
+      "src": "https://github.com/jangko/nimAES.git", 
+      "git": true
+    }, 
+    "nimSHA2": 
+    {
+      "name": "nimSHA2", 
+      "src": "https://github.com/jangko/nimSHA2.git", 
+      "git": true
+    }, 
+    "sha1": 
+    {
+      "name": "sha1", 
+      "src": "https://github.com/onionhammer/sha1.git", 
+      "git": true
+    }
+  }
+}

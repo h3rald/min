@@ -9,9 +9,9 @@ import
   ../core/interpreter, 
   ../core/utils
 import
-  ../vendor/sha1,
-  ../vendor/nimSHA2,
-  ../vendor/nimAES
+  ../packages/sha1/sha1,
+  ../packages/nimSHA2/nimSHA2,
+  ../packages/nimAES/nimAES
 
 proc crypto_module*(i: In)=
   i.define("crypto")

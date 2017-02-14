@@ -10,7 +10,7 @@ import
   ../core/interpreter, 
   ../core/utils,
   ../core/fileutils,
-  ../core/zip
+  ../packages/nim-miniz/miniz
 
 proc unix(s: string): string =
   return s.replace("\\", "/")
@@ -175,11 +175,11 @@ proc sys_module*(i: In)=
     .symbol("unzip") do (i: In):
       var f, dir: MinValue
       i.reqTwoStringLike dir, f
-      unzip(f.getString, dir.getString)
+      miniz.unzip(f.getString, dir.getString)
 
     .symbol("zip") do (i: In):
       var files, file: MinValue
       i.reqStringLikeAndQuotation file, files
-      zip(files.qVal.mapIt(it.getString), file.getString)
+      miniz.zip(files.qVal.mapIt(it.getString), file.getString)
 
     .finalize()

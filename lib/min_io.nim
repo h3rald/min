@@ -4,7 +4,7 @@ import
   logging
 import 
   ../core/linedit,
-  ../core/regex,
+  ../packages/nim-sgregex/sgregex,
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
