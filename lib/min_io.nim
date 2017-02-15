@@ -3,7 +3,7 @@ import
   strutils,
   logging
 import 
-  ../core/linedit,
+  ../packages/nimline/nimline,
   ../packages/nim-sgregex/sgregex,
   ../core/parser, 
   ../core/value, 

@@ -13,7 +13,7 @@ import
   ../core/interpreter, 
   ../core/utils,
   ../packages/nim-sgregex/sgregex,
-  ../core/linedit,
+  ../packages/nimline/nimline,
   ../core/scope
 
 # Dictionary Methods

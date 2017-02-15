@@ -9,7 +9,7 @@ import
   algorithm,
   logging
 import 
-  core/linedit,
+  packages/nimline/nimline,
   core/consts,
   core/parser, 
   core/value, 
