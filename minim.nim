@@ -10,6 +10,7 @@ import
   logging
 import 
   packages/nimline/nimline,
+  packages/styled_console_logger,
   core/consts,
   core/parser, 
   core/value, 
@@ -31,6 +32,7 @@ export
   parser,
   interpreter,
   utils,
+  styled_console_logger,
   value,
   scope,
   min_lang

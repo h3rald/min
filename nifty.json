@@ -2,6 +2,13 @@
   "storage": "packages", 
   "commands": 
   {
+    "get": 
+    {
+      "curl+src+name": 
+      {
+        "cmd": "curl {{src}} -o {{name}}"
+      }
+    }, 
     "install": 
     {
       "git+src": 
@@ -59,6 +66,12 @@
       "name": "nimline", 
       "src": "https://github.com/h3rald/nimline.git", 
       "git": true
+    }, 
+    "styled_console_logger.nim": 
+    {
+      "name": "styled_console_logger.nim", 
+      "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/styled_console_logger.nim", 
+      "curl": true
     }
   }
 }

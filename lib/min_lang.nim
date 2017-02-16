@@ -12,6 +12,7 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
+  ../packages/styled_console_logger,
   ../packages/nim-sgregex/sgregex,
   ../packages/nimline/nimline,
   ../core/scope
@@ -164,10 +165,10 @@ proc lang_module*(i: In) =
       var s: MinValue
       i.reqStringLike s
       var str = s.getString
-      notice "Log level: ", setLogLevel(str)
+      echo "Log level: ", setLogLevel(str)
   
     .symbol("loglevel?") do (i: In):
-      notice "Log level: ", getLogLevel()
+      echo "Log level: ", getLogLevel()
   
     # Language constructs
   
