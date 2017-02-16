@@ -2,13 +2,6 @@
   "storage": "packages", 
   "commands": 
   {
-    "get": 
-    {
-      "curl+src+name": 
-      {
-        "cmd": "curl {{src}} -o {{name}}"
-      }
-    }, 
     "install": 
     {
       "git+src": 
@@ -18,6 +11,10 @@
       "git+src+tag": 
       {
         "cmd": "git clone --branch {{tag}} {{src}} --depth 1"
+      },
+      "curl+src+name": 
+      {
+        "cmd": "curl {{src}} -o {{name}}"
       }
     }, 
     "update": 
@@ -26,6 +23,10 @@
       {
         "cmd": "git pull", 
         "pwd": "{{name}}"
+      },
+      "curl+src+name": 
+      {
+        "cmd": "curl {{src}} -o {{name}}"
       }
     }
   }, 
