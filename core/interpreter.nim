@@ -3,7 +3,6 @@ import
   strutils, 
   critbits, 
   os,
-  oids,
   algorithm,
   logging
 import 
@@ -98,16 +97,15 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-#proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
 proc apply*(i: In, op: MinOperator) =
-  var s = newScopeRef(i.scope, "apply")
+  var newscope = newScopeRef(i.scope, "apply")
   case op.kind
   of minProcOp:
     op.prc(i)
   of minValOp:
     if op.val.kind == minQuotation:
       var q = op.val
-      i.withScope(q, s):
+      i.withScope(q, newscope):
         for e in q.qVal:
           i.push e
     else:
