@@ -257,7 +257,7 @@ proc lang_module*(i: In) =
      if qscope.qVal.len > 0:
        # System modules are empty quotes and don't need to be unquoted
        i.unquote("<with-scope>", qscope, qscope.scope)
-     i.withScope(qscope):
+     i.withScope(qscope, qscope.scope):
       for v in qprog.qVal:
         i.push v
 

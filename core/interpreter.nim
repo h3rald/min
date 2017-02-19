@@ -39,11 +39,6 @@ template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untype
   res = i.scope
   i.scope = origScope
 
-template withScope*(i: In, q: MinValue, body: untyped): untyped =
-  var scope = newScopeRef(i.scope, "with")
-  i.withScope(q, scope):
-    body
-
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
@@ -103,7 +98,9 @@ proc close*(i: In) =
 
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
-proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
+#proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
+proc apply*(i: In, op: MinOperator) =
+  var s = newScopeRef(i.scope, "apply")
   case op.kind
   of minProcOp:
     op.prc(i)
@@ -116,9 +113,18 @@ proc apply*(i: In, op: MinOperator, s: var ref MinScope, name="apply") =
     else:
       i.push(op.val)
 
-proc apply*(i: In, op: MinOperator, name="apply") =
-  var scope = newScopeRef(i.scope, name)
-  i.apply(op, scope)
+#proc apply*(i: In, op: MinOperator, name="apply") =
+#  var scope = newScopeRef(i.scope, name)
+#  i.apply(op, scope)
+
+proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
+  i.withScope(q, scope): 
+    for v in q.qVal:
+      i.push v
+
+proc unquote*(i: In, name: string, q: var MinValue) =
+  var scope = newScopeRef(i.scope, "unquote")
+  i.unquote(name, q, scope)
 
 proc push*(i: In, val: MinValue) = 
   if val.kind == minSymbol:
@@ -181,15 +187,6 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
       raise MinTrappedException(msg: msg)
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
-
-proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
-  i.withScope(q, scope): 
-    for v in q.qVal:
-      i.push v
-
-proc unquote*(i: In, name: string, q: var MinValue) =
-  var scope = newScopeRef(i.scope, "unquote")
-  i.unquote(name, q, scope)
 
 proc eval*(i: In, s: string, name="<eval>") =
   var i2 = i.copy(name)
