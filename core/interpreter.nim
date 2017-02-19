@@ -113,18 +113,10 @@ proc apply*(i: In, op: MinOperator) =
     else:
       i.push(op.val)
 
-#proc apply*(i: In, op: MinOperator, name="apply") =
-#  var scope = newScopeRef(i.scope, name)
-#  i.apply(op, scope)
-
-proc unquote*(i: In, name: string, q: var MinValue, scope: var ref MinScope) =
-  i.withScope(q, scope): 
+proc unquote*(i: In, name: string, q: var MinValue) =
+  i.withScope(q, q.scope): 
     for v in q.qVal:
       i.push v
-
-proc unquote*(i: In, name: string, q: var MinValue) =
-  var scope = newScopeRef(i.scope, "unquote")
-  i.unquote(name, q, scope)
 
 proc push*(i: In, val: MinValue) = 
   if val.kind == minSymbol:
