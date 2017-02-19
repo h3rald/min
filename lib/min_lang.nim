@@ -229,6 +229,8 @@ proc lang_module*(i: In) =
       info("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
       debug("[import] Scope: $1" % i.scope.fullname)
       for sym, val in mdl.scope.symbols.pairs:
+        if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
+          raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, i.scope.name])
         i.debug "[import] $1:$2" % [i.scope.fullname, sym]
         i.scope.symbols[sym] = val
     

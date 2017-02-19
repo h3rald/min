@@ -11,7 +11,7 @@
       "git+src+tag": 
       {
         "cmd": "git clone --branch {{tag}} {{src}} --depth 1"
-      },
+      }, 
       "curl+src+name": 
       {
         "cmd": "curl {{src}} -o {{name}}"
@@ -23,7 +23,7 @@
       {
         "cmd": "git pull", 
         "pwd": "{{name}}"
-      },
+      }, 
       "curl+src+name": 
       {
         "cmd": "curl {{src}} -o {{name}}"
@@ -73,6 +73,6 @@
       "name": "styled_console_logger.nim", 
       "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/styled_console_logger.nim", 
       "curl": true
-    }
+    } 
   }
 }

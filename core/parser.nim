@@ -1,12 +1,13 @@
 # Adapted from: https://github.com/Araq/Nimrod/blob/v0.9.6/lib/pure/json.nim
 import 
   lexbase, 
+  sequtils,
   strutils, 
   streams, 
   unicode, 
   tables,
   critbits,
-  oids,
+  math,
   logging
 
 type
@@ -145,8 +146,21 @@ const
     "false"
   ]
 
+var SCOPES = 0
+
+proc b64(n: int): string =
+  let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+  var residual = n
+  result = ""
+  while true:
+    result = alphabet[residual mod 64] & result
+    residual = residual div 64
+    if residual == 0:
+      break
+
 proc newScope*(parent: ref MinScope, name="scope"): MinScope =
-  result = MinScope(name: "$1/$2" % [name, $genOid()], parent: parent)
+  let id = atomicInc(SCOPES).b64
+  result = MinScope(name: "$1-$2" % [name, id], parent: parent)
 
 proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
   new(result)
@@ -494,7 +508,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   of tkBracketLe:
     var q = newSeq[MinValue](0)
     var oldscope = i.scope
-    var newscope = newScopeRef(i.scope, "quotation")
+    var newscope = newScopeRef(i.scope, "q")
     i.scope = newscope
     discard getToken(p)
     while p.token != tkBracketRi: 
