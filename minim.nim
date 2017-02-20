@@ -202,7 +202,7 @@ when isMainModule:
   var REPL = false
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
-  (c) 2014-2016 Fabio Cevasco
+  (c) 2014-2017 Fabio Cevasco
   
   Usage:
     minim [options] [filename]

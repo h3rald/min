@@ -795,14 +795,14 @@ proc lang_module*(i: In) =
     .sigil("/") do (i: In):
       i.push("dget".newSym)
 
+    .sigil("%") do (i: In):
+      i.push("dset".newSym)
+
     .sigil(">") do (i: In):
       i.push("save-symbol".newSym)
 
     .sigil("<") do (i: In):
       i.push("load-symbol".newSym)
-
-    .sigil("*") do (i: In):
-      i.push("seal".newSym)
 
     .sigil("#") do (i: In):
       i.push("quote-bind".newSym)

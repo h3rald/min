@@ -127,7 +127,7 @@ newline
 
   ("aaaa" :cd cd "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
 
-  (((2 :a1 *a1 3 :a1) ("failed")) try "failed" ==) assert
+  (((2 :a1 'a1 seal 3 :a1) ("failed")) try "failed" ==) assert
 
   (
    (
@@ -156,7 +156,7 @@ newline
 
   (((a 1)(b 2)(c 3)) 'b dget 2 ==) assert
 
-  (((a 1)(b 2)(c 3)) ' :dict dict 5 'b dset 7 'd dset =newdict newdict ((a 1)(b 5)(c 3)(d 7)) ==  dict ((a 1)(b 2)(c 3)) == and) assert
+  (((a 1)(b 2)(c 3)) ' :dict dict 5 'b dset 7 %d =newdict newdict ((a 1)(b 5)(c 3)(d 7)) ==  dict ((a 1)(b 2)(c 3)) == and) assert
 
   (((a 1)(b 2)(c 3)) ' :dict dict 'b ddel =newdict newdict ((a 1)(c 3)) == dict ((a 1)(b 2)(c 3)) == and) assert
 
