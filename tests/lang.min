@@ -130,6 +130,13 @@ newline
   (((2 :a1 'a1 seal 3 :a1) ("failed")) try "failed" ==) assert
 
   (
+    1 :a1
+    'a1 seal
+    'a1 unseal
+    2 :a1
+    2 a1 ==) assert
+
+  (
    (
     (((error "TestError")(message "Test Message")) raise) 
     ('error dget)

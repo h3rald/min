@@ -745,6 +745,13 @@ proc lang_module*(i: In) =
       s.sealed = true
       i.scope.setSymbol(sym.getString, s)
 
+    .symbol("unseal") do (i: In):
+      var sym: MinValue 
+      i.reqStringLike sym
+      var s = i.scope.getSymbol(sym.getString) 
+      s.sealed = false
+      i.scope.setSymbol(sym.getString, s, true)
+
     .symbol("quote-bind") do (i: In):
       var s, m: MinValue
       i.reqString(s)
