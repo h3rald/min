@@ -68,11 +68,11 @@
       "src": "https://github.com/h3rald/nimline.git", 
       "git": true
     }, 
-    "styled_console_logger.nim": 
+    "niftylogger.nim": 
     {
-      "name": "styled_console_logger.nim", 
-      "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/styled_console_logger.nim", 
+      "name": "niftylogger.nim", 
+      "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/niftylogger.nim",
       "curl": true
-    } 
+    }
   }
 }

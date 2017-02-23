@@ -10,7 +10,7 @@ import
   logging
 import 
   packages/nimline/nimline,
-  packages/styled_console_logger,
+  packages/niftylogger,
   core/consts,
   core/parser, 
   core/value, 
@@ -32,14 +32,14 @@ export
   parser,
   interpreter,
   utils,
-  styled_console_logger,
+  niftylogger,
   value,
   scope,
   min_lang
 
 const PRELUDE* = "prelude.min".slurp.strip
 
-newStyledConsoleLogger().addHandler()
+newNiftyLogger().addHandler()
 newRollingFileLogger(MINIMLOG, fmtStr = verboseFmtStr).addHandler()
 
 proc getExecs(): seq[string] =

@@ -11,7 +11,7 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../packages/styled_console_logger,
+  ../packages/niftylogger,
   ../packages/nim-sgregex/sgregex,
   ../packages/nimline/nimline,
   ../core/scope
