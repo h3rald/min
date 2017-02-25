@@ -6,16 +6,16 @@ import
   logging
 
 const
-  cfgfile   = "../minim.nimble".slurp
+  cfgfile   = "../min.nimble".slurp
 
 var
-  appname*  = "MiNiM"
+  appname*  = "min"
   version*: string
   f = newStringStream(cfgfile)
 
 if f != nil:
   var p: CfgParser
-  open(p, f, "../minim.nimble")
+  open(p, f, "../min.nimble")
   while true:
     var e = next(p)
     case e.kind
@@ -44,7 +44,7 @@ if defined(windows):
 if not defined(windows):
   HOME = getenv("HOME")
 
-let MINIMRC* = HOME / ".minimrc"
-let MINIMSYMBOLS* = HOME / ".minim_symbols"
-let MINIMHISTORY* = HOME / ".minim_history"
-let MINIMLOG* = HOME / "minim.log"
+let MINIMRC* = HOME / ".minrc"
+let MINIMSYMBOLS* = HOME / ".min_symbols"
+let MINIMHISTORY* = HOME / ".min_history"
+let MINIMLOG* = HOME / "min.log"

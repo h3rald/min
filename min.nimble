@@ -1,10 +1,10 @@
 [Package]
-name          = "minim"
+name          = "min"
 version       = "0.3.0"
 author        = "Fabio Cevasco"
 description   = "A tiny concatenative programming language and shell."
 license       = "MIT"
-bin           = "minim"
+bin           = "min"
 
 [Deps]
 requires: "nim >= 0.15.0"

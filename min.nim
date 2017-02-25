@@ -133,27 +133,27 @@ proc interpret*(i: In, s: Stream) =
     discard
   i.close()
 
-proc minimStream(s: Stream, filename: string) = 
+proc minStream(s: Stream, filename: string) = 
   var i = newMinInterpreter()
   i.pwd = filename.parentDir
   i.interpret(s)
 
-proc minimString*(buffer: string) =
-  minimStream(newStringStream(buffer), "input")
+proc minString*(buffer: string) =
+  minStream(newStringStream(buffer), "input")
 
-proc minimFile*(filename: string) =
+proc minFile*(filename: string) =
   var stream = newFileStream(filename, fmRead)
   if stream == nil:
     fatal("Cannot read from file: "& filename)
     quit(3)
-  minimStream(stream, filename)
+  minStream(stream, filename)
 
-proc minimFile*(file: File, filename="stdin") =
+proc minFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
     fatal("Cannot read from file: "& filename)
     quit(3)
-  minimStream(stream, filename)
+  minStream(stream, filename)
 
 proc printResult(i: In, res: MinValue) =
   if res.isNil:
@@ -168,7 +168,7 @@ proc printResult(i: In, res: MinValue) =
     else:
       echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
 
-proc minimRepl*(i: var MinInterpreter) =
+proc minRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
   i.open(s, "")
@@ -193,9 +193,9 @@ proc minimRepl*(i: var MinInterpreter) =
     except:
       discard
 
-proc minimRepl*() = 
+proc minRepl*() = 
   var i = newMinInterpreter()
-  i.minimRepl
+  i.minRepl
     
 when isMainModule:
 
@@ -205,7 +205,7 @@ when isMainModule:
   (c) 2014-2017 Fabio Cevasco
   
   Usage:
-    minim [options] [filename]
+    min [options] [filename]
 
   Arguments:
     filename  A $1 file to interpret (default: STDIN).
@@ -243,11 +243,11 @@ when isMainModule:
         discard
   
   if s != "":
-    minimString(s)
+    minString(s)
   elif file != "":
-    minimFile file
+    minFile file
   elif REPL:
-    minimRepl()
+    minRepl()
     quit(0)
   else:
-    minimFile stdin, "stdin"
+    minFile stdin, "stdin"

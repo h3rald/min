@@ -1,7 +1,7 @@
 nimcache/
 build/
-minim.exe
-minim
+min.exe
+min
 nakefile
 nimsuggest.log
 *.zip
