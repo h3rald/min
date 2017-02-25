@@ -158,7 +158,7 @@ proc lang_module*(i: In) =
     .symbol("to-json") do (i: In):
       var q: MinValue
       i.reqQuotation q
-      i.push(($(%q)).newVal)
+      i.push(($((%q).pretty)).newVal)
   
     .symbol("loglevel") do (i: In):
       var s: MinValue
