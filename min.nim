@@ -134,7 +134,7 @@ proc interpret*(i: In, s: Stream) =
   i.close()
 
 proc minStream(s: Stream, filename: string) = 
-  var i = newMinInterpreter()
+  var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDir
   i.interpret(s)
 
@@ -171,7 +171,7 @@ proc printResult(i: In, res: MinValue) =
 proc minRepl*(i: var MinInterpreter) =
   i.stdLib()
   var s = newStringStream("")
-  i.open(s, "")
+  i.open(s, "<repl>")
   var line: string
   #echo "$1 v$2" % [appname, version]
   var ed = initEditor(historyFile = MINIMHISTORY)
@@ -194,7 +194,7 @@ proc minRepl*(i: var MinInterpreter) =
       discard
 
 proc minRepl*() = 
-  var i = newMinInterpreter()
+  var i = newMinInterpreter(filename = "<repl>")
   i.minRepl
     
 when isMainModule:
