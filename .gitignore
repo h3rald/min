@@ -6,3 +6,5 @@ nakefile
 nimsuggest.log
 *.zip
 packages/
+site/output/
+site/temp/

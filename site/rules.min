@@ -1,0 +1,57 @@
+'hastysite import
+;Routing
+(
+  =meta
+  meta /id :id
+  meta /ext :ext
+  (
+    ((id "home" ==) (
+      meta "index" %id #meta
+      meta ".html" %ext #meta
+    ))
+    ((ext ".md" ==) (
+      meta ".html" %ext #meta
+      meta "$1/index" (id) % %id #meta
+    ))
+  ) case
+  meta
+) :set-destination
+
+;Processing operators
+(
+  :tpl
+  =meta
+  meta /path :path
+  " - Processing $1: $2" (tpl path) % notice
+  meta input-fread :contents
+  contents meta markdown @contents
+  meta settings /title %site #meta
+  meta contents %contents #meta
+  tpl meta mustache :page
+  meta page %contents #meta
+  meta
+) :process-md-with-template
+
+(
+  =meta
+  meta /content-type :ct
+  meta ct process-md-with-template
+) :process-md-content
+
+(
+  =meta
+  meta /ext :ext
+  meta
+  (
+    ((".md" ext ==) (process-md-content))
+  ) case
+) :process-content
+
+;Main
+modified (
+  dup
+  (
+    ((asset?) (copy2output))
+    ((content?) (process-content set-destination output-fwrite)) 
+  ) case
+) foreach

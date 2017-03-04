@@ -1,0 +1,36 @@
+body {
+  background-color: #FEFEFE;
+  color: #212121;
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+	font-feature-settings: "kern";
+	font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+}
+
+main {
+  margin-top: 40px;  
+  padding: 1em;
+}
+
+b, strong {
+  font-weight: 400;
+}
+
+code, pre {
+  font-family: 'Inconsolata',  monospace;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+}
+
+h1.title {
+  margin: 0;  
+}
+
+h2.subtitle {
+  margin: 0.2em 0;
+  font-size: 1em;
+  font-style: italic;
+}

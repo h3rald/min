@@ -1,0 +1,9 @@
+{
+  "contents": "contents", 
+  "assets": "assets", 
+  "templates": "templates", 
+  "temp": "temp", 
+  "output": "output", 
+  "title": "min", 
+  "rules": "rules.min" 
+}
