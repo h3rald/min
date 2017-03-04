@@ -75,9 +75,9 @@ proc formatError(sym: MinValue, message: string): string =
 
 proc formatTrace(sym: MinValue): string =
   if sym.filename.isNil or sym.filename == "":
-    return "  <native> in symbol: $1" % [sym.symVal]
+    return "<native> in symbol: $1" % [sym.symVal]
   else:
-    return "  $1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+    return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
 
 proc stackTrace(i: In) =
   var trace = i.trace
