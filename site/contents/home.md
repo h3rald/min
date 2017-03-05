@@ -9,7 +9,7 @@ title: Welcome to min
     REPL. All packed in less than 1MB.
   </section>
   <section class="centered pure-u-1 pure-u-md-1-3">
-    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min</a>
+    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v0.4.0</a>
     <br>
     <small><a href="/learn/">Learn more...</a></small>
   </section>
