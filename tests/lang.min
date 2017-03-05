@@ -155,7 +155,7 @@ newline
 
   ("{\"a\": 1, \"b\": 2.3}" from-json ((a 1) (b 2.3)) ==) assert
 
-  ((1 2 3 "aaa" 'q q true) to-json "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
+  ((1 2 3 "aaa" 'q q true) to-json "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) assert
 

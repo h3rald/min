@@ -822,6 +822,9 @@ proc lang_module*(i: In) =
     .symbol(":") do (i: In):
       i.push("define".newSym)
 
+    .symbol("@") do (i: In):
+      i.push("define".newSym)
+
     .symbol("!") do (i: In):
       i.push("system".newSym)
 
