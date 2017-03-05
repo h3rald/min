@@ -1,16 +1,40 @@
 body {
   background-color: #FEFEFE;
   color: #212121;
-  font-family: 'Lato', sans-serif;
   font-weight: 300;
 	font-feature-settings: "kern";
 	font-kerning: normal;
   font-variant-ligatures: common-ligatures;
 }
+html, 
+button, 
+input, 
+select, 
+textarea,
+.pure-g [class *= "pure-u"] {
+  font-family: 'Lato', sans-serif;
+} 
+
+header .luxbar-menu i {
+  vertical-align: text-bottom;  
+}
 
 main {
   margin-top: 40px;  
-  padding: 1em;
+}
+
+
+.pure-g > section {
+  box-sizing: border-box;  
+}
+
+article, section {
+  padding: 1em;    
+}
+
+.centered {
+  text-align: center;
+  margin: auto;
 }
 
 b, strong {
@@ -25,12 +49,6 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
 
-h1.title {
-  margin: 0;  
-}
-
-h2.subtitle {
-  margin: 0.2em 0;
-  font-size: 1em;
-  font-style: italic;
+.pitch {
+  font-size: 1.2em;  
 }

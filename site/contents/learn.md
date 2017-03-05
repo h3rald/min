@@ -1,5 +1,5 @@
 -----
 content-type: page
-title: About
+title: Learn
 -----
 Coming soon...

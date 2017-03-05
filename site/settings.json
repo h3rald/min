@@ -4,6 +4,6 @@
   "templates": "templates", 
   "temp": "temp", 
   "output": "output", 
-  "title": "min", 
+  "title": "min language", 
   "rules": "rules.min" 
 }
