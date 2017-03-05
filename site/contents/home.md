@@ -2,12 +2,18 @@
 content-type: page
 title: Welcome to min
 -----
-
-> %pitch%
-> *min* is a functional, concatenative programming language 
-> with a minimalist syntax, a small but practical standard library, and an advanced 
-> REPL. All packed in less than 1MB.
-
+<div class="pure-g">
+  <section class="pitch pure-u-1 pure-u-md-2-3">
+    <em>min</em> is a functional, concatenative programming language 
+    with a minimalist syntax, a small but practical standard library, and an advanced 
+    REPL. All packed in less than 1MB.
+  </section>
+  <section class="centered pure-u-1 pure-u-md-1-3">
+    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min</a>
+    <br>
+    <small><a href="/learn/">Learn more...</a></small>
+  </section>
+</div>
 <div class="pure-g">
   <section class="pure-u-1 pure-u-md-1-2">
     <h2>Features</h2>
@@ -43,8 +49,3 @@ title: Welcome to min
     </pre>
   </section>
 </div>
-<section class="centered">
-    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min</a>
-    <br>
-    <small><a href="/learn/">Learn more...</a></small>
-</section>
