@@ -41,11 +41,11 @@ b, strong {
   font-weight: 400;
 }
 
-code, pre, .kwd {
+code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd {
   font-family: 'Inconsolata',  monospace;
 }
 
-.kwd {
+.kwd, .kwd, .cmd, .file, .dir, kbd, .kbd {
   font-weight: bold;  
 }
 

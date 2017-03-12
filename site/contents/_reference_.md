@@ -1,6 +1,27 @@
-# Notation
-
 {@ _defs_.md || 0 @}
+
+## Modules
+
+{#link-module||lang#}
+: ...
+{#link-module||io#}
+: ...
+{#link-module||fs#}
+: ...
+{#link-module||logic#}
+: ...
+{#link-module||str#}
+: ...
+{#link-module||sys#}
+: ...
+{#link-module||num#}
+: ...
+{#link-module||time#}
+: ...
+{#link-module||crypto#}
+: ...
+
+## Notation
 
 \*
 : Any value.
@@ -25,7 +46,7 @@ B
   </code></pre>
 {{s}}
 : A string value.
-S+
+{{sp}}
 : One or more string values.
 {{sl}}
 : String-like (a string or quoted sumbol).
