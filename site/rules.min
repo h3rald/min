@@ -51,6 +51,7 @@
 modified (
   dup
   (
+    ((/id "^_" match) ()) ;Ignore files starting with underscore.
     ((asset?) (copy2output))
     ((content?) (process-content set-destination output-fwrite)) 
   ) case

@@ -41,8 +41,12 @@ b, strong {
   font-weight: 400;
 }
 
-code, pre {
+code, pre, .kwd {
   font-family: 'Inconsolata',  monospace;
+}
+
+.kwd {
+  font-weight: bold;  
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -51,4 +55,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .pitch {
   font-size: 1.2em;  
+}
+
+.operator {
+  margin-left: 2em;  
+}
+
+dl {
+  margin-left: 1em;  
 }
