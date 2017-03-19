@@ -2,4 +2,4 @@
 content-type: page
 title: lang Module
 -----
-{@ _reference-lang_.md || 1 @}
+{@ _includes/_reference-lang_.md || 1 @}

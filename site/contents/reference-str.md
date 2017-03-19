@@ -2,4 +2,4 @@
 content-type: page
 title: str Module
 -----
-{@ _reference-str_.md || 1 @}
+{@ _includes/_reference-str_.md || 1 @}

@@ -6,7 +6,6 @@
 > _Signature:_ [ $2 **&rArr;** $3](class:kwd)
 > 
 > $4
-
  #}
 
 {# link-module => [`$1` Module](/reference-$1/) #}
