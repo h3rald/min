@@ -185,7 +185,8 @@ proc minRepl*(i: var MinInterpreter) =
     i.reqString(v)
     let prompt = v.getString()
     line = ed.readLine(prompt)
-    i.parser.buf = $i.parser.buf & $line
+    i.parser.bufpos = 0
+    i.parser.buf = $line
     i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
     try:

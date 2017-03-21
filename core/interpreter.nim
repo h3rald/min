@@ -166,6 +166,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
       i.stack = i.stackcopy
       error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
       i.stackTrace
+      i.trace = @[]
       raise MinTrappedException(msg: msg)
     except MinTrappedException:
       raise
@@ -174,6 +175,7 @@ proc interpret*(i: In): MinValue {.gcsafe, discardable.} =
       i.stack = i.stackcopy
       i.error(msg)
       i.stackTrace
+      i.trace = @[]
       raise MinTrappedException(msg: msg)
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
