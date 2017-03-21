@@ -23,6 +23,9 @@ proc io_module*(i: In) =
       let a = i.peek
       echo $$a
   
+    .symbol("puts!") do (i: In):
+      echo $$i.pop
+
     .symbol("notice") do (i: In):
       let a = i.peek
       notice $$a
@@ -121,6 +124,9 @@ proc io_module*(i: In) =
       let a = i.peek
       a.print
   
+    .symbol("print!") do (i: In):
+      i.pop.print
+
     .symbol("fread") do (i: In):
       var a: MinValue
       i.reqString a

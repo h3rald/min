@@ -35,18 +35,6 @@
 
 ('swons 'popd 'dupd 'swapd 'q 'k 'b 'c 'take 'dig1 'dig2 'dig3 'bury1 'bury2 'bury3) 'seal foreach
 
-; Other
-(print pop)                                    :print!
-(dprint pop)                                   :dprint!
-(puts pop)                                     :puts!
-(call pop)                                     :call!
-(:ms :q :check (check) (ms sleep q) while)     :interval
-(password aes encode)                          :encrypt
-(decode password aes)                          :decrypt
-
-('print! 'dprint! 'puts! 'call! 'interval 'encrypt 'decrypt) 'seal foreach
-
-
 ; Unsealed symbols
 ()                                :startup
 ("[$1]$$ " (.) %)                 :prompt
