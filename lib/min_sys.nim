@@ -182,4 +182,22 @@ proc sys_module*(i: In)=
       i.reqStringLikeAndQuotation file, files
       miniz.zip(files.qVal.mapIt(it.getString), file.getString)
 
+    .symbol("$") do (i: In):
+      i.push("getenv".newSym)
+
+    .symbol("!") do (i: In):
+      i.push("system".newSym)
+
+    .symbol("&") do (i: In):
+      i.push("run".newSym)
+
+    .sigil("$") do (i: In):
+      i.push("getenv".newSym)
+
+    .sigil("!") do (i: In):
+      i.push("system".newSym)
+
+    .sigil("&") do (i: In):
+      i.push("run".newSym)
+
     .finalize()

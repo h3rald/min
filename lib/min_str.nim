@@ -139,4 +139,7 @@ proc str_module*(i: In) =
     else:
       raiseInvalid("Cannot convert a quotation to float.")
 
+  .symbol("=~") do (i: In):
+    i.push("regex".newSym)
+
   .finalize()

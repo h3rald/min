@@ -225,13 +225,18 @@ proc lang_module*(i: In) =
       var op = i.scope.getSymbol(name)
       i.apply(op)
       i.reqQuotation mdl
-      info("[import] Importing: $1 ($2 symbols)" % [name, $mdl.scope.symbols.len])
+      info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.scope.symbols.len, $mdl.scope.sigils.len])
       debug("[import] Scope: $1" % i.scope.fullname)
       for sym, val in mdl.scope.symbols.pairs:
         if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
           raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, i.scope.name])
         i.debug "[import] $1:$2" % [i.scope.fullname, sym]
         i.scope.symbols[sym] = val
+      for sig, val in mdl.scope.sigils.pairs:
+        if i.scope.sigils.hasKey(sig) and i.scope.sigils[sig].sealed:
+          raiseUndefined("Attempting to redefine sealed sigil '$1' on scope '$2'" % [sig, i.scope.name])
+        i.debug "[import] $1:$2" % [i.scope.fullname, sig]
+        i.scope.sigils[sig] = val
     
     .symbol("eval") do (i: In):
       var s: MinValue
@@ -775,15 +780,6 @@ proc lang_module*(i: In) =
     .sigil("~") do (i: In):
       i.push("delete".newSym)
 
-    .sigil("$") do (i: In):
-      i.push("getenv".newSym)
-
-    .sigil("!") do (i: In):
-      i.push("system".newSym)
-
-    .sigil("&") do (i: In):
-      i.push("run".newSym)
-
     .sigil("@") do (i: In):
       i.push("bind".newSym)
 
@@ -819,15 +815,6 @@ proc lang_module*(i: In) =
     .symbol("@") do (i: In):
       i.push("define".newSym)
 
-    .symbol("!") do (i: In):
-      i.push("system".newSym)
-
-    .symbol("&") do (i: In):
-      i.push("run".newSym)
-
-    .symbol("$") do (i: In):
-      i.push("getenv".newSym)
-
     .symbol("^") do (i: In):
       i.push("call".newSym)
 
@@ -839,8 +826,5 @@ proc lang_module*(i: In) =
 
     .symbol("->") do (i: In):
       i.push("unquote".newSym)
-
-    .symbol("=~") do (i: In):
-      i.push("regex".newSym)
 
     .finalize()
