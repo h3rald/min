@@ -79,4 +79,24 @@ proc num_module*(i: In)=
       i.reqTwoInts b, a
       i.push(newVal(a.intVal mod b.intVal))
 
+    .symbol("succ") do (i: In):
+      var n: MinValue
+      i.reqInt n
+      i.push newVal(n.intVal + 1)
+
+    .symbol("pred") do (i: In):
+      var n: MinValue
+      i.reqInt n
+      i.push newVal(n.intVal - 1)
+  
+    .symbol("even?") do (i: In):
+      var n: MinValue
+      i.reqInt n
+      i.push newVal(n.intVal mod 2 == 0)
+
+    .symbol("odd?") do (i: In):
+      var n: MinValue
+      i.reqInt n
+      i.push newVal(n.intVal mod 2 != 0)
+
     .finalize()

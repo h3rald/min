@@ -8,14 +8,6 @@
 'fs        import
 'crypto    import
 
-; Mathematical Operators
-(1 +)           :succ
-(1 -)           :pred
-(2 mod 0 ==)    :even?
-(even? not)     :odd?
-
-('succ 'pred 'even? 'odd?) 'seal foreach
-
 ; Stack Operators
 (swap cons)                       :swons
 ((pop) dip)                       :popd
