@@ -19,6 +19,7 @@ import
   core/utils
 import 
   lib/min_lang, 
+  lib/min_stack, 
   lib/min_num,
   lib/min_str,
   lib/min_logic,
@@ -112,6 +113,7 @@ proc stdLib*(i: In) =
   if not MINIMRC.fileExists:
     MINIMRC.writeFile("")
   i.lang_module
+  i.stack_module
   i.io_module
   i.logic_module
   i.num_module
