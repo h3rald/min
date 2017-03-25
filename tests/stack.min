@@ -1,0 +1,23 @@
+'test load
+'test import
+
+"stack" describe
+
+  (1 id 1 ==) assert
+
+  (2 (2 +) i 4 ==) assert
+
+  (2 id 2 ==) assert
+
+  (2 pop get-stack () ==) assert
+
+  (1 dup get-stack (1 1) ==) assert
+
+  (3 2 (1 +) dip + 6 ==) assert
+
+  ((1) (2 swap append) sip concat (1 2 1 2) ==) assert
+
+  (1 (2 3) cons (1 2 3) ==) assert
+
+  report
+  clear-stack

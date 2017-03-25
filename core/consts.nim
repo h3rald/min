@@ -44,7 +44,7 @@ if defined(windows):
 if not defined(windows):
   HOME = getenv("HOME")
 
-let MINIMRC* = HOME / ".minrc"
-let MINIMSYMBOLS* = HOME / ".min_symbols"
-let MINIMHISTORY* = HOME / ".min_history"
-let MINIMLOG* = HOME / "min.log"
+let MINRC* = HOME / ".minrc"
+let MINSYMBOLS* = HOME / ".min_symbols"
+let MINHISTORY* = HOME / ".min_history"
+let MINLOG* = HOME / "min.log"

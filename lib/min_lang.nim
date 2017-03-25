@@ -501,6 +501,18 @@ proc lang_module*(i: In) =
       else:
         i.unquote("<ifte-false>", fpath)
 
+    .symbol("ift") do (i: In):
+      var fpath, tpath, check: MinValue
+      i.reqTwoQuotations tpath, check
+      var stack = i.stack
+      i.unquote("<ift-check>", check)
+      let res = i.pop
+      i.stack = stack
+      if not res.isBool:
+        raiseInvalid("Result of check is not a boolean value")
+      if res.boolVal == true:
+        i.unquote("<ift-true>", tpath)
+
     # 4 (
     #   ((> 3) ("Greater than 3" put!))
     #   ((< 3) ("Smaller than 3" put!))
@@ -649,15 +661,15 @@ proc lang_module*(i: In) =
       let op = i.scope.getSymbol(sym)
       if op.kind == minProcOp:
         raiseInvalid("Symbol '$1' cannot be serialized." % sym)
-      let json = MINIMSYMBOLS.readFile.parseJson
+      let json = MINSYMBOLS.readFile.parseJson
       json[sym] = %op.val
-      MINIMSYMBOLS.writeFile(json.pretty)
+      MINSYMBOLS.writeFile(json.pretty)
 
     .symbol("load-symbol") do (i: In):
       var s:MinValue
       i.reqStringLike s
       let sym = s.getString
-      let json = MINIMSYMBOLS.readFile.parseJson
+      let json = MINSYMBOLS.readFile.parseJson
       if not json.hasKey(sym):
         raiseUndefined("Symbol '$1' not found." % sym)
       let val = i.fromJson(json[sym])
@@ -665,7 +677,7 @@ proc lang_module*(i: In) =
 
     .symbol("stored-symbols") do (i: In):
       var q = newSeq[MinValue](0)
-      let json = MINIMSYMBOLS.readFile.parseJson
+      let json = MINSYMBOLS.readFile.parseJson
       for k,v in json.pairs:
         q.add k.newVal
       i.push q.newVal(i.scope)
@@ -674,11 +686,11 @@ proc lang_module*(i: In) =
       var s:MinValue
       i.reqStringLike s
       let sym = s.getString
-      var json = MINIMSYMBOLS.readFile.parseJson
+      var json = MINSYMBOLS.readFile.parseJson
       if not json.hasKey(sym):
         raiseUndefined("Symbol '$1' not found." % sym)
       json.delete(sym)
-      MINIMSYMBOLS.writeFile(json.pretty)
+      MINSYMBOLS.writeFile(json.pretty)
 
     .symbol("seal") do (i: In):
       var sym: MinValue 
@@ -709,6 +721,21 @@ proc lang_module*(i: In) =
       i.push @[m].newVal(i.scope)
       i.push s
       i.push "define".newSym
+
+    .symbol("clear-stack") do (i: In):
+      while i.stack.len > 0:
+        discard i.pop
+  
+    .symbol("dump-stack") do (i: In):
+      echo i.dump
+  
+    .symbol("get-stack") do (i: In):
+      i.push i.stack.newVal(i.scope)
+  
+    .symbol("set-stack") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      i.stack = q.qVal
 
     # Sigils
 

@@ -12,9 +12,3 @@
 ; Unsealed symbols
 ()                                :startup
 ("[$1]$$ " (.) %)                 :prompt
-
-; Load all stored symbols
-stored-symbols ('load-symbol ROOT with) foreach
-
-; Execute startup symbol within ROOT scope
-'startup ROOT with

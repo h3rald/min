@@ -41,7 +41,7 @@ export
 const PRELUDE* = "prelude.min".slurp.strip
 
 newNiftyLogger().addHandler()
-newRollingFileLogger(MINIMLOG, fmtStr = verboseFmtStr).addHandler()
+newRollingFileLogger(MINLOG, fmtStr = verboseFmtStr).addHandler()
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
@@ -77,7 +77,7 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   if word.startsWith("("):
     return symbols.mapIt("(" & $it)
   if word.startsWith("<"):
-    return toSeq(MINIMSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
+    return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
   if word.startsWith("!"):
@@ -106,12 +106,19 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   return symbols
 
 proc stdLib*(i: In) =
-  if not MINIMSYMBOLS.fileExists:
-    MINIMSYMBOLS.writeFile("{}")
-  if not MINIMHISTORY.fileExists:
-    MINIMHISTORY.writeFile("")
-  if not MINIMRC.fileExists:
-    MINIMRC.writeFile("")
+  if not MINSYMBOLS.fileExists:
+    MINSYMBOLS.writeFile("{}")
+  if not MINHISTORY.fileExists:
+    MINHISTORY.writeFile("")
+  if not MINRC.fileExists:
+    let minrc = """
+; Load all stored symbols
+stored-symbols ('load-symbol ROOT with) foreach
+
+; Execute startup symbol within ROOT scope
+'startup ROOT with
+"""
+    MINRC.writeFile(minrc)
   i.lang_module
   i.stack_module
   i.io_module
@@ -123,7 +130,7 @@ proc stdLib*(i: In) =
   i.fs_module
   i.crypto_module
   i.eval PRELUDE, "<prelude>"
-  i.eval MINIMRC.readFile()
+  i.eval MINRC.readFile()
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
@@ -176,7 +183,7 @@ proc minRepl*(i: var MinInterpreter) =
   i.open(s, "<repl>")
   var line: string
   #echo "$1 v$2" % [appname, version]
-  var ed = initEditor(historyFile = MINIMHISTORY)
+  var ed = initEditor(historyFile = MINHISTORY)
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
     ed.completionCallback = proc(ed: LineEditor): seq[string] =

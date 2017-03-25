@@ -140,20 +140,4 @@ proc stack_module*(i: In)=
       i.unquote("<sip>", a)
       i.push b
   
-    .symbol("clear-stack") do (i: In):
-      while i.stack.len > 0:
-        discard i.pop
-  
-    .symbol("dump-stack") do (i: In):
-      echo i.dump
-  
-    .symbol("get-stack") do (i: In):
-      i.push i.stack.newVal(i.scope)
-  
-    .symbol("set-stack") do (i: In):
-      var q: MinValue
-      i.reqQuotation q
-      i.stack = q.qVal
-  
-
     .finalize()

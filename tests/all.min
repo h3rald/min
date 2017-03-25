@@ -1,5 +1,5 @@
 'lang    load
-;'stack   load
+'stack   load
 'io      load
 'logic   load
 'num     load
