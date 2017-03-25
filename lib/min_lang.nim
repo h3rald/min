@@ -94,7 +94,7 @@ proc lang_module*(i: In) =
       if not q1.isQuotation:
         q1 = @[q1].newVal(i.scope)
       symbol = sym.getString
-      if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
+      if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
       info "[define] $1 = $2" % [symbol, $q1]
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
