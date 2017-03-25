@@ -44,6 +44,8 @@
 
   ("TEST" "test.txt" fwrite "test.txt" file?) assert
 
+  ("systest" exists?) assert
+
   ("systest" dir?) assert
 
   ("test.txt" "test2.txt" cp "test2.txt" file?) assert

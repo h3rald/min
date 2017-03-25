@@ -84,6 +84,11 @@ proc sys_module*(i: In)=
   .symbol("cpu") do (i: In):
     i.push hostCPU.newVal
   
+  .symbol("exists?") do (i: In):
+    var f: MinValue
+    i.reqStringLike f
+    i.push newVal(f.getString.fileExists or f.getString.dirExists)
+    
   .symbol("file?") do (i: In):
     var f: MinValue
     i.reqStringLike f

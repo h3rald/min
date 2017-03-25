@@ -5,8 +5,6 @@
 
   (1 id 1 ==) assert
 
-  (2 (2 +) i 4 ==) assert
-
   (2 id 2 ==) assert
 
   (2 pop get-stack () ==) assert

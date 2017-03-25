@@ -352,6 +352,13 @@ proc lang_module*(i: In) =
       q.qVal.add v
       i.push q
     
+    .symbol("prepend") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      let v = i.pop
+      q.qVal = v & q.qVal
+      i.push q
+    
     .symbol("at") do (i: In):
       var index, q: MinValue
       i.reqIntAndQuotation index, q

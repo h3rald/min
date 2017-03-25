@@ -12,9 +12,6 @@ proc stack_module*(i: In)=
 
   i.define()
     
-    .symbol("i") do (i: In):
-      i.push "unquote".newSym
-    
     .symbol("id") do (i: In):
       discard
     
@@ -28,11 +25,11 @@ proc stack_module*(i: In)=
       i.push newVal(@["pop".newSym], i.scope)
       i.push "dip".newSym
 
-    # ((pop) dip i)     
+    # ((pop) dip unquote)     
     .symbol("k") do (i: In):
       i.push newVal(@["pop".newSym], i.scope)
       i.push "dip".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
 
     .symbol("dup") do (i: In):
       i.push i.peek
@@ -42,11 +39,11 @@ proc stack_module*(i: In)=
       i.push newVal(@["dup".newSym], i.scope)
       i.push "dip".newSym
 
-    #((dup) dip i)
+    #((dup) dip unquote)
     .symbol("q") do (i: In):
       i.push newVal(@["dup".newSym], i.scope)
       i.push "dip".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
 
     .symbol("dip") do (i: In):
       var q: MinValue
@@ -74,11 +71,11 @@ proc stack_module*(i: In)=
       i.push newVal(@["swap".newSym], i.scope)
       i.push "dip".newSym
     
-    # ((cons) dip i)            
+    # ((swap) dip unquote)            
     .symbol("c") do (i: In):
       i.push newVal(@["swap".newSym], i.scope)
       i.push "dip".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
     
     .symbol("cons") do (i: In):
       var q: MinValue
@@ -108,26 +105,26 @@ proc stack_module*(i: In)=
       i.push "cons".newSym
       i.push "dip".newSym
 
-    # ((() cons) dip swap i)
+    # ((() cons) dip swap unquote)
     .symbol("bury1") do (i: In):
       i.push newVal(@[newVal(@[], i.scope), "cons".newSym], i.scope)
       i.push "dip".newSym
       i.push "swap".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
     
-    # ((() cons cons) dip swap i)
+    # ((() cons cons) dip swap unquote)
     .symbol("bury2") do (i: In):
       i.push newVal(@[newVal(@[], i.scope), "cons".newSym, "cons".newSym], i.scope)
       i.push "dip".newSym
       i.push "swap".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
 
-    # ((() cons cons cons) dip swap i)
+    # ((() cons cons cons) dip swap unquote)
     .symbol("bury3") do (i: In):
       i.push newVal(@[newVal(@[], i.scope), "cons".newSym, "cons".newSym, "cons".newSym], i.scope)
       i.push "dip".newSym
       i.push "swap".newSym
-      i.push "i".newSym
+      i.push "unquote".newSym
 
     .symbol("swons") do (i: In):
       i.push "swap".newSym

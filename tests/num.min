@@ -28,5 +28,7 @@
   (4 2 mod 0 ==) assert
   (-3 2 mod -1 ==) assert
 
+  (1000 random 1000 <) assert
+
   report
   clear-stack

@@ -69,6 +69,11 @@ proc num_module*(i: In)=
         else:
           i.push newVal(b.intVal.float / a.floatVal) 
     
+    .symbol("random") do (i: In):
+      var n: MinValue
+      i.reqInt n
+      i.push n.intVal.int.random.newVal
+
     .symbol("div") do (i: In):
       var a, b: MinValue
       i.reqTwoInts b, a

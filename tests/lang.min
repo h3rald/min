@@ -84,6 +84,8 @@ newline
 
   (4 (1 2 3) append (1 2 3 4) ==) assert
 
+  (0 (1 2 3) prepend (0 1 2 3) ==) assert
+
   ((1 2 3 4) 2 at 3 ==) assert
   ((1 2 3) length 3 ==) assert
 
