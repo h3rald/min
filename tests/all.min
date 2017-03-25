@@ -1,3 +1,10 @@
+; Import optional module
+'stack     import
+'time      import
+'fs        import
+'crypto    import
+
+; Load test files
 'lang    load
 'stack   load
 'io      load

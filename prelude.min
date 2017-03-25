@@ -1,13 +1,13 @@
 ; Imports
-'stack     import
 'str       import
 'io        import
 'logic     import
 'num       import
 'sys       import
-'time      import
-'fs        import
-'crypto    import
+;'stack     import
+;'time      import
+;'fs        import
+;'crypto    import
 
 ; Unsealed symbols
 ()                                :startup

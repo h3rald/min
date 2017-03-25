@@ -1,8 +1,8 @@
 import 
   critbits, 
   strutils, 
-  os, 
   json,
+  os, 
   algorithm,
   logging
 import 
@@ -11,120 +11,10 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../packages/niftylogger,
   ../packages/nim-sgregex/sgregex,
+  ../packages/niftylogger,
   ../packages/nimline/nimline,
   ../core/scope
-
-# Dictionary Methods
-
-proc dget*(q: MinValue, s: MinValue): MinValue =
-  # Assumes q is a dictionary
-  for v in q.qVal:
-    if v.qVal[0].getString == s.getString:
-      return v.qVal[1]
-  raiseInvalid("Dictionary key '$1' not found" % s.getString)
-
-proc dhas*(q: MinValue, s: MinValue): bool =
-  # Assumes q is a dictionary
-  for v in q.qVal:
-    if v.qVal[0].getString == s.getString:
-      return true
-  return false
-
-proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable.} =
-  # Assumes q is a dictionary
-  var q = newVal(p.qVal, i.scope)
-  var found = false
-  var c = -1
-  for v in q.qVal:
-    c.inc
-    if v.qVal[0].getString == s.getString:
-      found = true
-      break
-  if found:
-    q.qVal.delete(c)
-  return q
-      
-proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
-  # Assumes q is a dictionary
-  var q = newVal(p.qVal, i.scope)
-  var found = false
-  var c = -1
-  for v in q.qVal:
-    c.inc
-    if v.qVal[0].getString == s.getString:
-      found = true
-      break
-  if found:
-    q.qVal.delete(c)
-    q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
-  else:
-    q.qVal.add(@[s.getString.newSym, m].newVal(i.scope))
-  return q
-
-proc keys*(i: In, q: MinValue): MinValue =
-  # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal(i.scope)
-  for v in q.qVal:
-    result.qVal.add v.qVal[0]
-
-proc values*(i: In, q: MinValue): MinValue =
-  # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal(i.scope)
-  for v in q.qVal:
-    result.qVal.add v.qVal[1]
-
-# JSON interop
-
-proc `%`*(a: MinValue): JsonNode =
-  case a.kind:
-    of minBool:
-      return %a.boolVal
-    of minSymbol:
-      return %(";sym:$1" % [a.symVal])
-    of minString:
-      return %a.strVal
-    of minInt:
-      return %a.intVal
-    of minFloat:
-      return %a.floatVal
-    of minQuotation:
-      if a.isDictionary:
-        result = newJObject()
-        for i in a.qVal:
-          result[$i.qVal[0].symVal] = %i.qVal[1]
-      else:
-        result = newJArray()
-        for i in a.qVal:
-          result.add %i
-
-proc fromJson*(i: In, json: JsonNode): MinValue = 
-  case json.kind:
-    of JNull:
-      result = newSeq[MinValue](0).newVal(i.scope)
-    of JBool: 
-      result = json.getBVal.newVal
-    of JInt:
-      result = json.getNum.newVal
-    of JFloat:
-      result = json.getFNum.newVal
-    of JString:
-      let s = json.getStr
-      if s.match("^;sym:"):
-        result = sgregex.replace(s, "^;sym:", "").newSym
-      else:
-        result = json.getStr.newVal
-    of JObject:
-      var res = newSeq[MinValue](0)
-      for key, value in json.pairs:
-        res.add @[key.newSym, i.fromJson(value)].newVal(i.scope)
-      return res.newVal(i.scope)
-    of JArray:
-      var res = newSeq[MinValue](0)
-      for value in json.items:
-        res.add i.fromJson(value)
-      return res.newVal(i.scope)
 
 proc lang_module*(i: In) =
   i.scope
@@ -139,6 +29,31 @@ proc lang_module*(i: In) =
         for s in scope.symbols.keys:
           q.add s.newVal
         scope = scope.parent
+      i.push q.newVal(i.scope)
+
+    .symbol("sigils") do (i: In):
+      var q = newSeq[MinValue](0)
+      var scope = i.scope
+      while not scope.isNil:
+        for s in scope.sigils.keys:
+          q.add s.newVal
+        scope = scope.parent
+      i.push q.newVal(i.scope)
+
+    .symbol("module-symbols") do (i: In):
+      var m: MinValue
+      i.reqQuotation m
+      var q = newSeq[MinValue](0)
+      for s in m.scope.symbols.keys:
+        q.add s.newVal
+      i.push q.newVal(i.scope)
+  
+    .symbol("module-sigils") do (i: In):
+      var m: MinValue
+      i.reqQuotation m
+      var q = newSeq[MinValue](0)
+      for s in m.scope.sigils.keys:
+        q.add s.newVal
       i.push q.newVal(i.scope)
   
     .symbol("sigils") do (i: In):
@@ -498,7 +413,7 @@ proc lang_module*(i: In) =
         i.unquote(fpath)
 
     .symbol("ift") do (i: In):
-      var fpath, tpath, check: MinValue
+      var tpath, check: MinValue
       i.reqTwoQuotations tpath, check
       var stack = i.stack
       i.unquote(check)

@@ -1,8 +1,10 @@
 import 
   strutils, 
   critbits,
+  json,
   terminal
 import 
+  ../packages/nim-sgregex/sgregex,
   parser, 
   value,
   scope,
@@ -40,6 +42,116 @@ proc finalize*(scope: ref MinScope, name: string = "") =
     i.evaluating = false
   if name != "":
     scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
+
+# Dictionary Methods
+
+proc dget*(q: MinValue, s: MinValue): MinValue =
+  # Assumes q is a dictionary
+  for v in q.qVal:
+    if v.qVal[0].getString == s.getString:
+      return v.qVal[1]
+  raiseInvalid("Dictionary key '$1' not found" % s.getString)
+
+proc dhas*(q: MinValue, s: MinValue): bool =
+  # Assumes q is a dictionary
+  for v in q.qVal:
+    if v.qVal[0].getString == s.getString:
+      return true
+  return false
+
+proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable.} =
+  # Assumes q is a dictionary
+  var q = newVal(p.qVal, i.scope)
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+    q.qVal.delete(c)
+  return q
+      
+proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
+  # Assumes q is a dictionary
+  var q = newVal(p.qVal, i.scope)
+  var found = false
+  var c = -1
+  for v in q.qVal:
+    c.inc
+    if v.qVal[0].getString == s.getString:
+      found = true
+      break
+  if found:
+    q.qVal.delete(c)
+    q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
+  else:
+    q.qVal.add(@[s.getString.newSym, m].newVal(i.scope))
+  return q
+
+proc keys*(i: In, q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal(i.scope)
+  for v in q.qVal:
+    result.qVal.add v.qVal[0]
+
+proc values*(i: In, q: MinValue): MinValue =
+  # Assumes q is a dictionary
+  result = newSeq[MinValue](0).newVal(i.scope)
+  for v in q.qVal:
+    result.qVal.add v.qVal[1]
+
+# JSON interop
+
+proc `%`*(a: MinValue): JsonNode =
+  case a.kind:
+    of minBool:
+      return %a.boolVal
+    of minSymbol:
+      return %(";sym:$1" % [a.symVal])
+    of minString:
+      return %a.strVal
+    of minInt:
+      return %a.intVal
+    of minFloat:
+      return %a.floatVal
+    of minQuotation:
+      if a.isDictionary:
+        result = newJObject()
+        for i in a.qVal:
+          result[$i.qVal[0].symVal] = %i.qVal[1]
+      else:
+        result = newJArray()
+        for i in a.qVal:
+          result.add %i
+
+proc fromJson*(i: In, json: JsonNode): MinValue = 
+  case json.kind:
+    of JNull:
+      result = newSeq[MinValue](0).newVal(i.scope)
+    of JBool: 
+      result = json.getBVal.newVal
+    of JInt:
+      result = json.getNum.newVal
+    of JFloat:
+      result = json.getFNum.newVal
+    of JString:
+      let s = json.getStr
+      if s.match("^;sym:"):
+        result = sgregex.replace(s, "^;sym:", "").newSym
+      else:
+        result = json.getStr.newVal
+    of JObject:
+      var res = newSeq[MinValue](0)
+      for key, value in json.pairs:
+        res.add @[key.newSym, i.fromJson(value)].newVal(i.scope)
+      return res.newVal(i.scope)
+    of JArray:
+      var res = newSeq[MinValue](0)
+      for value in json.items:
+        res.add i.fromJson(value)
+      return res.newVal(i.scope)
 
 # Validators
 

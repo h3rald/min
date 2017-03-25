@@ -26,8 +26,10 @@ import
   lib/min_time, 
   lib/min_io,
   lib/min_sys,
-  lib/min_crypto,
   lib/min_fs
+
+when not defined(lite):
+  import lib/min_crypto
 
 export 
   parser,
@@ -128,7 +130,8 @@ stored-symbols ('load-symbol ROOT with) foreach
   i.sys_module
   i.time_module
   i.fs_module
-  i.crypto_module
+  when not defined(lite):
+    i.crypto_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
 
