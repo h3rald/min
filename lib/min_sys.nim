@@ -16,7 +16,7 @@ proc unix(s: string): string =
   return s.replace("\\", "/")
 
 proc sys_module*(i: In)=
-  i.define("sys")
+  i.define()
   
     .symbol(".") do (i: In):
       i.push newVal(getCurrentDir().unix)
@@ -200,4 +200,4 @@ proc sys_module*(i: In)=
     .sigil("&") do (i: In):
       i.push("run".newSym)
 
-    .finalize()
+    .finalize("sys")

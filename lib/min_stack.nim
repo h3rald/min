@@ -10,7 +10,7 @@ import
 # Operations on the whole stack
 proc stack_module*(i: In)=
 
-  i.define("stack")
+  i.define()
     
     .symbol("i") do (i: In):
       i.push "unquote".newSym
@@ -52,7 +52,7 @@ proc stack_module*(i: In)=
       var q: MinValue
       i.reqQuotation q
       let v = i.pop
-      i.unquote("<dip>", q)
+      i.unquote(q)
       i.push v
     
     # ((dip) cons cons)       
@@ -137,7 +137,7 @@ proc stack_module*(i: In)=
       var a, b: MinValue 
       i.reqTwoQuotations a, b
       i.push b
-      i.unquote("<sip>", a)
+      i.unquote(a)
       i.push b
   
-    .finalize()
+    .finalize("stack")

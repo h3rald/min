@@ -10,7 +10,7 @@ import
   ../packages/nim-sgregex/sgregex
 
 proc str_module*(i: In) = 
-  i.define("str")
+  i.define()
 
   .symbol("strip") do (i: In):
     var s: MinValue
@@ -142,4 +142,4 @@ proc str_module*(i: In) =
   .symbol("=~") do (i: In):
     i.push("regex".newSym)
 
-  .finalize()
+  .finalize("str")

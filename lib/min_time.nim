@@ -11,7 +11,7 @@ import
 
 
 proc time_module*(i: In)=
-  i.define("time")
+  i.define()
   
     .symbol("timestamp") do (i: In):
       i.push getTime().int.newVal
@@ -60,5 +60,4 @@ proc time_module*(i: In)=
         time = t.floatVal.fromSeconds
       i.push time.getLocalTime.format(s.getString).newVal
     
-    .finalize()
-  
+    .finalize("time")

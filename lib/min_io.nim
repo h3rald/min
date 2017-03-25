@@ -14,7 +14,7 @@ import
 
 
 proc io_module*(i: In) =
-  i.define("io")
+  i.define()
     
     .symbol("newline") do (i: In):
       echo ""
@@ -118,7 +118,7 @@ proc io_module*(i: In) =
         else:
           return choice
       let choice = choose()
-      i.unquote("<choose>", q.qVal[choice-1].qVal[1])
+      i.unquote(q.qVal[choice-1].qVal[1])
 
     .symbol("print") do (i: In):
       let a = i.peek
@@ -145,4 +145,4 @@ proc io_module*(i: In) =
       f.write(b.strVal)
       f.close()
 
-    .finalize()
+    .finalize("io")

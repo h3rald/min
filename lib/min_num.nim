@@ -11,7 +11,7 @@ import
   
 proc num_module*(i: In)=
 
-  i.define("num")
+  i.define()
   
     .symbol("+") do (i: In):
       var a, b: MinValue
@@ -99,4 +99,4 @@ proc num_module*(i: In)=
       i.reqInt n
       i.push newVal(n.intVal mod 2 != 0)
 
-    .finalize()
+    .finalize("num")

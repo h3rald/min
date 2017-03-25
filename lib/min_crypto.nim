@@ -14,7 +14,7 @@ import
   ../packages/nimAES/nimAES
 
 proc crypto_module*(i: In)=
-  i.define("crypto")
+  i.define()
 
     .symbol("md5") do (i: In):
       var s: MinValue
@@ -70,4 +70,4 @@ proc crypto_module*(i: In)=
       var nonce = key[0..15]
       i.push ctx.cryptOFB(nonce, text).newVal
 
-    .finalize()
+    .finalize("crypto")

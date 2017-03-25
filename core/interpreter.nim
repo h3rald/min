@@ -44,7 +44,6 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var stackcopy:MinStack = newSeq[MinValue](0)
   var pr:MinParser
   var scope = new MinScope
-  scope.name = "ROOT"
   var i:MinInterpreter = MinInterpreter(
     filename: filename, 
     pwd: pwd,
@@ -98,7 +97,7 @@ proc close*(i: In) =
 proc push*(i: In, val: MinValue) {.gcsafe.}
 
 proc apply*(i: In, op: MinOperator) =
-  var newscope = newScopeRef(i.scope, "apply")
+  var newscope = newScopeRef(i.scope)
   case op.kind
   of minProcOp:
     op.prc(i)
@@ -111,7 +110,7 @@ proc apply*(i: In, op: MinOperator) =
     else:
       i.push(op.val)
 
-proc unquote*(i: In, name: string, q: var MinValue) =
+proc unquote*(i: In, q: var MinValue) =
   i.withScope(q, q.scope): 
     for v in q.qVal:
       i.push v
@@ -136,7 +135,7 @@ proc push*(i: In, val: MinValue) =
         i.stack.add(MinValue(kind: minString, strVal: sym))
         i.apply(sig)
       else:
-        raiseUndefined("Undefined symbol '$1' in scope '$2'" % [val.symVal, i.scope.fullname])
+        raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
     i.stack.add(val)

@@ -10,7 +10,7 @@ import
 
 
 proc logic_module*(i: In)=
-  i.define("logic")
+  i.define()
   
     .symbol(">") do (i: In):
       var n2, n1: MinValue
@@ -146,4 +146,4 @@ proc logic_module*(i: In)=
       else:
         i.push false.newVal
   
-    .finalize()
+    .finalize("logic")

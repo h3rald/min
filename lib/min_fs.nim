@@ -10,7 +10,7 @@ import
   ../core/fileutils
 
 proc fs_module*(i: In) =
-  i.define("fs")
+  i.define()
     .symbol("mtime") do (i: In):
       var s: MinValue
       i.reqStringLike s
@@ -63,4 +63,4 @@ proc fs_module*(i: In) =
       i.reqStringLike s
       i.push s.getString.getFilePermissions.unixPermissions.newVal
 
-    .finalize()
+    .finalize("fs")

@@ -146,25 +146,12 @@ const
     "false"
   ]
 
-var SCOPES = 0
+proc newScope*(parent: ref MinScope): MinScope =
+  result = MinScope(parent: parent)
 
-proc b64(n: int): string =
-  let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-  var residual = n
-  result = ""
-  while true:
-    result = alphabet[residual mod 64] & result
-    residual = residual div 64
-    if residual == 0:
-      break
-
-proc newScope*(parent: ref MinScope, name="scope"): MinScope =
-  let id = atomicInc(SCOPES).b64
-  result = MinScope(name: "$1-$2" % [name, id], parent: parent)
-
-proc newScopeRef*(parent: ref MinScope, name="scope"): ref MinScope =
+proc newScopeRef*(parent: ref MinScope): ref MinScope =
   new(result)
-  result[] = newScope(parent, name)
+  result[] = newScope(parent)
 
 proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
@@ -508,7 +495,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   of tkBracketLe:
     var q = newSeq[MinValue](0)
     var oldscope = i.scope
-    var newscope = newScopeRef(i.scope, "q")
+    var newscope = newScopeRef(i.scope)
     i.scope = newscope
     discard getToken(p)
     while p.token != tkBracketRi: 

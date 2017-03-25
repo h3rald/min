@@ -10,9 +10,8 @@ import
 
 # Library methods
 
-proc define*(i: In, name: string): ref MinScope =
+proc define*(i: In): ref MinScope =
   var scope = new MinScope
-  scope.name = name
   scope.parent = i.scope
   return scope
 
@@ -32,14 +31,15 @@ proc sigil*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
   scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
   return scope
 
-proc finalize*(scope: ref MinScope) =
+proc finalize*(scope: ref MinScope, name: string = "") =
   var mdl = newSeq[MinValue](0).newVal(nil)
   mdl.scope = scope
   let op = proc(i: In) {.gcsafe, closure.} =
     i.evaluating = true
     i.push mdl
     i.evaluating = false
-  scope.previous.symbols[scope.name] = MinOperator(kind: minProcOp, prc: op)
+  if name != "":
+    scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
 
 # Validators
 

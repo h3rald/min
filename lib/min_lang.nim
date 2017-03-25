@@ -182,9 +182,8 @@ proc lang_module*(i: In) =
       if not symbol.match "^[a-zA-Z0-9_][a-zA-Z0-9/!?+*._-]*$":
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
       info "[define] $1 = $2" % [symbol, $q1]
-      debug("[define] Scope: $1" % i.scope.fullname)
       if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-        raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [symbol, i.scope.name])
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
       i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
   
     .symbol("bind") do (i: In):
@@ -196,7 +195,6 @@ proc lang_module*(i: In) =
         q1 = @[q1].newVal(i.scope)
       symbol = sym.getString
       info "[bind] $1 = $2" % [symbol, $q1]
-      debug("[bind] Scope: $1" % i.scope.fullname)
       let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
       if not res:
         raiseUndefined("Attempting to bind undefined symbol: " & symbol)
@@ -213,7 +211,7 @@ proc lang_module*(i: In) =
       i.reqStringLike name
       i.reqQuotation code
       code.filename = i.filename
-      i.unquote("<module>", code)
+      i.unquote(code)
       info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
       i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
@@ -226,16 +224,15 @@ proc lang_module*(i: In) =
       i.apply(op)
       i.reqQuotation mdl
       info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.scope.symbols.len, $mdl.scope.sigils.len])
-      debug("[import] Scope: $1" % i.scope.fullname)
       for sym, val in mdl.scope.symbols.pairs:
         if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
-          raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, i.scope.name])
-        i.debug "[import] $1:$2" % [i.scope.fullname, sym]
+          raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+        i.debug "[import] $1" % [sym]
         i.scope.symbols[sym] = val
       for sig, val in mdl.scope.sigils.pairs:
         if i.scope.sigils.hasKey(sig) and i.scope.sigils[sig].sealed:
-          raiseUndefined("Attempting to redefine sealed sigil '$1' on scope '$2'" % [sig, i.scope.name])
-        i.debug "[import] $1:$2" % [i.scope.fullname, sig]
+          raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sig])
+        i.debug "[import] $1" % [sig]
         i.scope.sigils[sig] = val
     
     .symbol("eval") do (i: In):
@@ -260,7 +257,7 @@ proc lang_module*(i: In) =
      i.reqTwoQuotations qscope, qprog
      if qscope.qVal.len > 0:
        # System modules are empty quotes and don't need to be unquoted
-       i.unquote("<with-scope>", qscope)
+       i.unquote(qscope)
      i.withScope(qscope, qscope.scope):
       for v in qprog.qVal:
         i.push v
@@ -270,10 +267,9 @@ proc lang_module*(i: In) =
       i.reqQuotationAndStringLike qscope, str
       let sym = str.getString
       if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
-        raiseUndefined("Attempting to redefine sealed symbol '$1' on scope '$2'" % [sym, qscope.scope.name])
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
       let scope = i.scope
       info("[publish] Symbol: $2" % [sym])
-      debug("[publish] $1 -> $2" % [i.scope.fullname, qscope.scope.fullname])
       let op = proc(i: In) {.gcsafe, closure.} =
         let origscope = i.scope 
         i.scope = scope
@@ -364,13 +360,13 @@ proc lang_module*(i: In) =
       if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
         raiseInvalid("Quotation must contain at one quotation")
       try:
-        i.unquote("<try-code>", code)
+        i.unquote(code)
       except MinRuntimeError:
         if not hasCatch:
           return
         let e = (MinRuntimeError)getCurrentException()
         i.push e.qVal.newVal(i.scope)
-        i.unquote("<try-catch>", catch)
+        i.unquote(catch)
       except:
         if not hasCatch:
           return
@@ -384,10 +380,10 @@ proc lang_module*(i: In) =
         res.add @["line".newSym, i.currSym.line.newVal].newVal(i.scope)
         res.add @["column".newSym, i.currSym.column.newVal].newVal(i.scope)
         i.push res.newVal(i.scope)
-        i.unquote("<try-catch>", catch)
+        i.unquote(catch)
       finally:
         if hasFinally:
-          i.unquote("<try-finally>", final)
+          i.unquote(final)
 
     # Operations on quotations or strings
   
@@ -432,7 +428,7 @@ proc lang_module*(i: In) =
     .symbol("unquote") do (i: In):
       var q: MinValue
       i.reqQuotation q
-      i.unquote("<unquote>", q)
+      i.unquote(q)
     
     .symbol("append") do (i: In):
       var q: MinValue
@@ -468,7 +464,7 @@ proc lang_module*(i: In) =
       var res = newSeq[MinValue](0)
       for litem in list.qVal:
         i.push litem
-        i.unquote("<map-quotation>", prog)
+        i.unquote(prog)
         res.add i.pop
       i.push res.newVal(i.scope)
 
@@ -477,7 +473,7 @@ proc lang_module*(i: In) =
       i.reqTwoQuotations prog, list
       for litem in list.qVal:
         i.push litem
-        i.unquote("<foreach-quotation>", prog)
+        i.unquote(prog)
     
     .symbol("times") do (i: In):
       var t, prog: MinValue
@@ -485,33 +481,33 @@ proc lang_module*(i: In) =
       if t.intVal < 1:
         raiseInvalid("A non-zero natural number is required")
       for c in 1..t.intVal:
-        i.unquote("<times-quotation>", prog)
+        i.unquote(prog)
     
     .symbol("ifte") do (i: In):
       var fpath, tpath, check: MinValue
       i.reqThreeQuotations fpath, tpath, check
       var stack = i.stack
-      i.unquote("<ifte-check>", check)
+      i.unquote(check)
       let res = i.pop
       i.stack = stack
       if not res.isBool:
         raiseInvalid("Result of check is not a boolean value")
       if res.boolVal == true:
-        i.unquote("<ifte-true>", tpath)
+        i.unquote(tpath)
       else:
-        i.unquote("<ifte-false>", fpath)
+        i.unquote(fpath)
 
     .symbol("ift") do (i: In):
       var fpath, tpath, check: MinValue
       i.reqTwoQuotations tpath, check
       var stack = i.stack
-      i.unquote("<ift-check>", check)
+      i.unquote(check)
       let res = i.pop
       i.stack = stack
       if not res.isBool:
         raiseInvalid("Result of check is not a boolean value")
       if res.boolVal == true:
-        i.unquote("<ift-true>", tpath)
+        i.unquote(tpath)
 
     # 4 (
     #   ((> 3) ("Greater than 3" put!))
@@ -533,13 +529,13 @@ proc lang_module*(i: In) =
         if c.qVal.len != 2 or not c.qVal[0].isQuotation or not c.qVal[1].isQuotation:
           raiseInvalid("Inner quotations in case operator must contain two quotations")
         var q = c.qVal[0]
-        i.unquote("<case-$1-check>" % $k, q)
+        i.unquote(q)
         let res = i.pop
         if not res.isBool():
           raiseInvalid("Result of case #$1 is not a boolean value" % $k)
         if res.boolVal == true:
           var t = c.qVal[1]
-          i.unquote("<case-$1-true>" % $k, t)
+          i.unquote(t)
           break
 
     
@@ -548,11 +544,11 @@ proc lang_module*(i: In) =
       i.reqTwoQuotations d, b
       for e in b.qVal:
         i.push e
-      i.unquote("<while-check>", b)
+      i.unquote(b)
       var check = i.pop
       while check.isBool and check.boolVal == true:
-        i.unquote("<while-quotation>", d)
-        i.unquote("<while-check>", b)
+        i.unquote(d)
+        i.unquote(b)
         check = i.pop
     
     .symbol("filter") do (i: In):
@@ -561,7 +557,7 @@ proc lang_module*(i: In) =
       var res = newSeq[MinValue](0)
       for e in list.qVal:
         i.push e
-        i.unquote("<filter-check>", filter)
+        i.unquote(filter)
         var check = i.pop
         if check.isBool and check.boolVal == true:
           res.add e
@@ -574,7 +570,7 @@ proc lang_module*(i: In) =
       var minCmp = proc(a, b: MinValue): int {.closure.}=
         i2.push a
         i2.push b
-        i2.unquote("<sort-cmp>", cmp)
+        i2.unquote(cmp)
         let r = i2.pop
         if r.isBool:
           if r.boolVal == true:
@@ -591,14 +587,14 @@ proc lang_module*(i: In) =
       var r2, r1, t, p: MinValue
       i.reqFourQuotations r2, r1, t, p
       proc linrec(i: In, p, t, r1, r2: var MinValue) =
-        i.unquote("<linrec-predicate>", p)
+        i.unquote(p)
         var check = i.pop
         if check.isBool and check.boolVal == true:
-          i.unquote("<linrec-true>", t)
+          i.unquote(t)
         else:
-          i.unquote("<linrec-r1>", r1)
+          i.unquote(r1)
           i.linrec(p, t, r1, r2)
-          i.unquote("<linrec-r2>", r2)
+          i.unquote(r2)
       i.linrec(p, t, r1, r2)
 
     .symbol("dhas?") do (i: In):
@@ -797,4 +793,4 @@ proc lang_module*(i: In) =
     .symbol("->") do (i: In):
       i.push("unquote".newSym)
 
-    .finalize()
+    .finalize("ROOT")
