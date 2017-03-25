@@ -9,30 +9,12 @@
 'fs        import
 'crypto    import
 
-; Stack Operators
-(swap cons)                       :swons
-((pop) dip)                       :popd
-((dup) dip)                       :dupd
-((swap) dip)                      :swapd
-((dup) dip i)                     :q
-((pop) dip i)                     :k
-((cons) dip i)                    :b
-((swap) dip i)                    :c
-((dip) cons cons)                 :take
-(() cons dip)                     :dig1
-(() cons cons dip)                :dig2
-(() cons cons cons dip)           :dig3
-((() cons) dip swap i)            :bury1
-((() cons cons) dip swap i)       :bury2
-((() cons cons cons) dip swap i)  :bury3
-
-('swons 'popd 'dupd 'swapd 'q 'k 'b 'c 'take 'dig1 'dig2 'dig3 'bury1 'bury2 'bury3) 'seal foreach
-
 ; Unsealed symbols
 ()                                :startup
 ("[$1]$$ " (.) %)                 :prompt
 
 ; Load all stored symbols
-
 stored-symbols ('load-symbol ROOT with) foreach
+
+; Execute startup symbol within ROOT scope
 'startup ROOT with
