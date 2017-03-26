@@ -27,8 +27,14 @@ Removes the second element from the stack.#}
 {#op||popop||2 1||{{null}}||
 Removes the first two elements from the stack.#}
 
+{#op||rollup||3 2 1||1 2 3||
+ Moves the third and second element into second and third position and moves the first element into third position.#}
+
 {#op||stack||{{null}}||(\*)||
 Returns a quotation containing the contents of the stack.#}
+
+{#op||swap||2 1||1 2||
+Swaps the first two elements on the stack. #}
 
 {#op||unstack||(\*)||\*?||
 Substitute the existing stack with the contents of {{q}}.#}

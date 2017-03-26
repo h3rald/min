@@ -70,12 +70,6 @@ proc stack_module*(i: In)=
       i.unquote(q)
       i.push v
     
-    # ((dip) cons cons)       
-    .symbol("take") do (i: In):
-      i.push newVal(@["dip".newSym], i.scope)
-      i.push "cons".newSym
-      i.push "cons".newSym
-
     .symbol("swap") do (i: In):
       if i.stack.len < 2:
         raiseEmptyStack()
