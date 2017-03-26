@@ -32,6 +32,12 @@ proc stack_module*(i: In)=
         raiseEmptyStack()
       discard i.pop
     
+    .symbol("popop") do (i: In):
+      if i.stack.len < 2:
+        raiseEmptyStack()
+      discard i.pop
+      discard i.pop
+    
     # (pop) dip
     .symbol("popd") do (i: In):
       i.push newVal(@["pop".newSym], i.scope)
@@ -77,6 +83,26 @@ proc stack_module*(i: In)=
       let b = i.pop
       i.push a
       i.push b
+
+    .symbol("rollup") do (i: In):
+      if i.stack.len < 3:
+        raiseEmptyStack()
+      let first = i.pop
+      let second = i.pop
+      let third = i.pop
+      i.push first
+      i.push second
+      i.push third
+
+    .symbol("rolldown") do (i: In):
+      if i.stack.len < 3:
+        raiseEmptyStack()
+      let first = i.pop
+      let second = i.pop
+      let third = i.pop
+      i.push second
+      i.push first
+      i.push third
 
     # (swap) dip
     .symbol("swapd") do (i: In):
