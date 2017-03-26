@@ -24,7 +24,7 @@
   :tpl
   =meta
   meta /path :path
-  " - Processing $1: $2" (tpl path) % notice
+  " - Processing $1: $2" (tpl path) => % notice
   meta input-fread :contents
   meta settings /title %site #meta
   meta settings /version %version #meta
