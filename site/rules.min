@@ -1,4 +1,6 @@
 'hastysite import
+'stack import
+
 ;Routing
 (
   =meta
@@ -24,8 +26,9 @@
   meta /path :path
   " - Processing $1: $2" (tpl path) % notice
   meta input-fread :contents
-  contents meta markdown @contents
   meta settings /title %site #meta
+  meta settings /version %version #meta
+  contents meta markdown @contents
   meta contents %contents #meta
   tpl meta mustache :page
   meta page %contents #meta

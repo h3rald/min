@@ -1,10 +1,19 @@
 {@ _defs_.md || 0 @}
 
+{#op||append||\* (\*)||(\*)||
+Returns a new quotation containing the contents of {{q}} with [\*](class:kwd) appended. #}
+
+{#op||at||(\*) I||\*||
+Returns the {{i}}^th element of {{q}}.#}
+
 {#op||bind||\* §||{{null}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
 {#op||call||(\*) §||\*?||
 Calls operator {{sl}} defined in scope {{q}}. #}
+
+{#op||concat||(2) (1)||(\*)||
+Concatenates {{2}} with {{1}}. #}
 
 {#op||debug||{{null}}||{{null}}||
 Toggles debug mode. #}
@@ -23,6 +32,9 @@ Parses and interprets {{s}}. #}
 
 {#op||exit||{{null}}||{{null}}||
 Exits the program or shell. #}
+
+{#op||first||(\*)||\*||
+Returns the first element of {{q}}. #}
 
 {#op||format-error||(E)||S||
 Formats the error {{e}} as a string.
@@ -67,6 +79,15 @@ Sets the current logging level to {{sl}}. {{sl}} must be one of the following st
 {#op||module||(\*) §||{{null}}||
 Creates a new module {{sl}} based on quotation {{q}}. #}
 
+{#op||module-sigils||(\*)||(S+)||
+Returns a list of all sigils defined in module {{q}}.#}
+
+{#op||module-symbols||(\*)||(S+)||
+Returns a list of all symbols defined in module {{q}}.#}
+
+{#op||prepend||\* (\*)||(\*)||
+Returns a new quotation containing the contents of {{q}} with [\*](class:kwd) prepended. #}
+
 {#op||publish||§ (*)||{{null}}||
 Publishes symbol {{sl}} to the scope of [(\*)](class:kwd).
 > 
@@ -76,8 +97,14 @@ Publishes symbol {{sl}} to the scope of [(\*)](class:kwd).
 > Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
 > > `'my-local-symbol ROOT publish` #}
 
+{#op||quote||\*||(\*)||
+Wraps [\*](class:kwd) in a quotation. #}
+
 {#op||raise||(E)||{{null}}||
 Raises the error specified via the dictionary {{e}}.#}
+
+{#op||rest||(\*)||(\*)||
+Returns a new quotation containing all elements of the input quotation except for the first. #}
 
 {#op||sigils||{{null}}||(S+)||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
@@ -111,6 +138,9 @@ Evaluates quotation {{q}} as a try/catch/finally block.
 >>         (format-error puts)
 >>         (0)
 >>       ) try #}
+
+{#op||unquote||(\*)||\*||
+Pushes the contents of quotation {{q}} on the stack. #}
 
 {#op||with||(2) (1)||\*?||
 Applies quotation {{2}} within the scope of {{1}}. #}

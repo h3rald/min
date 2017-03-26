@@ -4,11 +4,11 @@ title: Download
 -----
 You can download one of the following pre-built min binaries:
 
-* {#release||0.4.0||osx||macOS||x64#}
-* {#release||0.4.0||windows||Windows||x64#}
-* {#release||0.4.0||linux||Linux||x64#}
-* {#release||0.4.0||linux||Linux||x86#}
-* {#release||0.4.0||linux||Linux||arm#}
+* {#release||{{$version}}||osx||macOS||x64#}
+* {#release||{{$version}}||windows||Windows||x64#}
+* {#release||{{$version}}||linux||Linux||x64#}
+* {#release||{{$version}}||linux||Linux||x86#}
+* {#release||{{$version}}||linux||Linux||arm#}
 
 
 {#release -> [min v$1 for $3 ($4)](https://github.com/h3rald/min/releases/download/v$1/min\_v$1\_$2\_$4.zip) #}

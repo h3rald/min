@@ -4,6 +4,8 @@ min includes a small but powerful standard library organized into the following 
 
 {#link-module||lang#}
 : Defines the basic language constructs, such as control flow, symbol definition and binding, exception handling, basic stack operators, etc.
+{#link-module||stack#}
+: Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.
 {#link-module||io#}
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
@@ -46,8 +48,16 @@ B
     (column 13)                   ;Optional
   )
   </code></pre>
+{{i}}
+: An integer value.
+{{n}}
+: A numeric value.
 {{s}}
 : A string value.
+{{s1}}
+: The first string on the stack.
+{{s2}}
+: The second string on the stack.
 {{sp}}
 : One or more string values.
 {{sl}}
