@@ -4,8 +4,8 @@
 newline 
 symbols size :total-symbols
 sigils size :total-sigils
-"Total Symbols: $1" (total-symbols) % puts! 
-"Total Sigils: $1" (total-sigils) % puts!
+"Total Symbols: $1" (total-symbols) => % puts! 
+"Total Sigils: $1" (total-sigils) => % puts!
 newline 
 
 "lang" describe
@@ -111,6 +111,8 @@ newline
   ((1 2 3 4 5) (even?) any?) assert
 
   ((2 4 6 8) (even?) all?) assert
+
+  ((5 4 3 2 1) reverse (1 2 3 4 5) ==) assert
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
 

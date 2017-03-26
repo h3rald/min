@@ -436,8 +436,15 @@ proc lang_module*(i: In) =
           var t = c.qVal[1]
           i.unquote(t)
           break
-
     
+    .symbol("reverse") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      var res = newSeq[MinValue](0)
+      for c in countdown(q.qVal.len-1, 0):
+        res.add q.qVal[c]
+      i.push res.newVal(i.scope)
+
     .symbol("while") do (i: In):
       var d, b: MinValue
       i.reqTwoQuotations d, b
