@@ -110,6 +110,14 @@ proc apply*(i: In, op: MinOperator) =
     else:
       i.push(op.val)
 
+proc apply*(i: In, q: MinValue) =
+  var i2 = newMinInterpreter("<apply>")
+  i2.scope = i.scope
+  i2.withScope(q, q.scope): 
+    for v in q.qVal:
+      i2.push v
+  i.push i2.stack.newVal(i.scope)
+
 proc unquote*(i: In, q: var MinValue) =
   i.withScope(q, q.scope): 
     for v in q.qVal:

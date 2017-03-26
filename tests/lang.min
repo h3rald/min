@@ -2,8 +2,8 @@
 'test import
 
 newline 
-symbols length :total-symbols
-sigils length :total-sigils
+symbols size :total-symbols
+sigils size :total-sigils
 "Total Symbols: $1" (total-symbols) % puts! 
 "Total Sigils: $1" (total-sigils) % puts!
 newline 
@@ -23,7 +23,7 @@ newline
 
     (
       :item
-      "_$1" (item) % :namesym
+      "_$1" (item) => % :namesym
       (item dup *) namesym define
       namesym ROOT publish
     ) :def
@@ -87,7 +87,7 @@ newline
   (0 (1 2 3) prepend (0 1 2 3) ==) assert
 
   ((1 2 3 4) 2 at 3 ==) assert
-  ((1 2 3) length 3 ==) assert
+  ((1 2 3) size 3 ==) assert
 
   ((1 2 3 4) 5 contains false ==) assert
   ((1 2 3 4) 2 contains) assert

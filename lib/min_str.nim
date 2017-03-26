@@ -31,6 +31,11 @@ proc str_module*(i: In) =
     i.reqStringLikeAndQuotation s, q
     i.push q.qVal.mapIt($$it).join(s.getString).newVal 
 
+  .symbol("length") do (i: In):
+    var s: MinValue
+    i.reqStringLike s
+    i.push s.getString.len.newVal
+  
   .symbol("lowercase") do (i: In):
     var s: MinValue
     i.reqStringLike s

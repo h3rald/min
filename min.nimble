@@ -1,6 +1,6 @@
 [Package]
 name          = "min"
-version       = "0.4.0"
+version       = "0.5.0"
 author        = "Fabio Cevasco"
 description   = "A tiny concatenative programming language and shell."
 license       = "MIT"

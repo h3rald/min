@@ -56,15 +56,6 @@ proc lang_module*(i: In) =
         q.add s.newVal
       i.push q.newVal(i.scope)
   
-    .symbol("sigils") do (i: In):
-      var q = newSeq[MinValue](0)
-      var scope = i.scope
-      while not scope.isNil:
-        for s in scope.sigils.keys:
-          q.add s.newVal
-        scope = scope.parent
-      i.push q.newVal(i.scope)
-  
     .symbol("from-json") do (i: In):
       var s: MinValue
       i.reqString s
@@ -300,41 +291,27 @@ proc lang_module*(i: In) =
         if hasFinally:
           i.unquote(final)
 
-    # Operations on quotations or strings
+    # Operations on quotations
   
     .symbol("concat") do (i: In):
       var q1, q2: MinValue 
-      i.reqTwoQuotationsOrStrings q1, q2
-      if q1.isString and q2.isString:
-        let s = q2.strVal & q1.strVal
-        i.push newVal(s)
-      else:
-        let q = q2.qVal & q1.qVal
-        i.push q.newVal(i.scope)
+      i.reqTwoQuotations q1, q2
+      let q = q2.qVal & q1.qVal
+      i.push q.newVal(i.scope)
   
     .symbol("first") do (i: In):
       var q: MinValue
-      i.reqStringOrQuotation q
-      if q.isQuotation:
-        if q.qVal.len == 0:
-          raiseOutOfBounds("Quotation is empty")
-        i.push q.qVal[0]
-      elif q.isString:
-        if q.strVal.len == 0:
-          raiseOutOfBounds("String is empty")
-        i.push newVal($q.strVal[0])
+      i.reqQuotation q
+      if q.qVal.len == 0:
+        raiseOutOfBounds("Quotation is empty")
+      i.push q.qVal[0]
   
     .symbol("rest") do (i: In):
       var q: MinValue
-      i.reqStringOrQuotation q
-      if q.isQuotation:
-        if q.qVal.len == 0:
-          raiseOutOfBounds("Quotation is empty")
-        i.push q.qVal[1..q.qVal.len-1].newVal(i.scope)
-      elif q.isString:
-        if q.strVal.len == 0:
-          raiseOutOfBounds("String is empty")
-        i.push newVal(q.strVal[1..q.strVal.len-1])
+      i.reqQuotation q
+      if q.qVal.len == 0:
+        raiseOutOfBounds("Quotation is empty")
+      i.push q.qVal[1..q.qVal.len-1].newVal(i.scope)
   
     .symbol("quote") do (i: In):
       let a = i.pop
@@ -349,15 +326,13 @@ proc lang_module*(i: In) =
       var q: MinValue
       i.reqQuotation q
       let v = i.pop
-      q.qVal.add v
-      i.push q
+      i.push newVal(q.qVal & v, i.scope)
     
     .symbol("prepend") do (i: In):
       var q: MinValue
       i.reqQuotation q
       let v = i.pop
-      q.qVal = v & q.qVal
-      i.push q
+      i.push newVal(v & q.qVal, i.scope)
     
     .symbol("at") do (i: In):
       var index, q: MinValue
@@ -366,13 +341,10 @@ proc lang_module*(i: In) =
         raiseOutOfBounds("Insufficient items in quotation")
       i.push q.qVal[index.intVal.int]
   
-    .symbol("length") do (i: In):
+    .symbol("size") do (i: In):
       var q: MinValue
-      i.reqStringOrQuotation q
-      if q.isQuotation:
-        i.push q.qVal.len.newVal
-      elif q.isString:
-        i.push q.strVal.len.newVal
+      i.reqQuotation q
+      i.push q.qVal.len.newVal
   
     .symbol("contains") do (i: In):
       let v = i.pop
@@ -389,6 +361,11 @@ proc lang_module*(i: In) =
         i.unquote(prog)
         res.add i.pop
       i.push res.newVal(i.scope)
+
+    .symbol("apply") do (i: In):
+      var prog: MinValue
+      i.reqQuotation prog
+      i.apply prog
 
     .symbol("foreach") do (i: In):
       var prog, list: MinValue
@@ -559,11 +536,7 @@ proc lang_module*(i: In) =
       i.reqQuotationAndString q, s
       var strings = newSeq[string](0)
       for el in q.qVal:
-        if el.isSymbol:
-          i.push el
-          strings.add $$i.pop
-        else:
-          strings.add $$el
+        strings.add $$el
       let res = s.strVal % strings
       i.push res.newVal
 
@@ -714,5 +687,8 @@ proc lang_module*(i: In) =
 
     .symbol("->") do (i: In):
       i.push("unquote".newSym)
+
+    .symbol("=>") do (i: In):
+      i.push("apply".newSym)
 
     .finalize("ROOT")

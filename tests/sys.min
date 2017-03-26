@@ -25,7 +25,7 @@
 
   ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) assert  
 
-  ("systest" mkdir . ls . "/systest" concat contains) assert
+  ("systest" mkdir . ls (. "systest") => "/" join contains) assert
 
   ("systest" cd . "systest" match) assert
   .. cd
@@ -52,14 +52,14 @@
 
   ("test.txt" "test1.txt" mv "test1.txt" file?) assert
 
-  ("test2.txt" rm "test1.txt" rm . ls . "/test1.txt" concat contains :t1 . ls "test2" contains t1 and false ==) assert
+  ("test2.txt" rm "test1.txt" rm . ls (. "test1.txt") => "/" join contains :t1 . ls "test2" contains t1 and false ==) assert
 
   ("systest" cd 
    "TEST" "test.txt" fwrite
    "TEST1" "test1.txt" fwrite
    "TEST2" "test2.txt" fwrite
    "TEST3" "test3.txt" fwrite
-   . ls "test.zip" zip . ls . "/test.zip" concat contains) assert
+   . ls "test.zip" zip . ls (. "test.zip") => "/" join contains) assert
 
    ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" contains) assert
 
@@ -67,7 +67,7 @@
   . ls 'rm foreach
   .. cd 
 
-  ("systest" rmdir . ls . "/systest" concat contains false ==) assert
+  ("systest" rmdir . ls (. "systest") => "/" join contains false ==) assert
 
   
 
