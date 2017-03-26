@@ -11,4 +11,4 @@
 
 ; Unsealed symbols
 ()                                :startup
-("[$1]$$ " (.) %)                 :prompt
+("[$1]$$ " (.) => %)                 :prompt

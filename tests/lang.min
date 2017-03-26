@@ -108,6 +108,10 @@ newline
 
   ((1 2 3 4 5) (even?) filter (2 4) ==) assert
 
+  ((1 2 3 4 5) (even?) any?) assert
+
+  ((2 4 6 8) (even?) all?) assert
+
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
 
 

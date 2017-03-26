@@ -462,6 +462,30 @@ proc lang_module*(i: In) =
           res.add e
       i.push res.newVal(i.scope)
 
+    .symbol("any?") do (i: In):
+      var filter, list: MinValue
+      i.reqTwoQuotations filter, list
+      for e in list.qVal:
+        i.push e
+        i.unquote(filter)
+        var check = i.pop
+        if check.isBool and check.boolVal == true:
+          i.push true.newVal
+          return
+      i.push false.newVal
+
+    .symbol("all?") do (i: In):
+      var filter, list: MinValue
+      i.reqTwoQuotations filter, list
+      for e in list.qVal:
+        i.push e
+        i.unquote(filter)
+        var check = i.pop
+        if check.isBool and check.boolVal == false:
+          i.push false.newVal
+          break
+      i.push true.newVal
+
     .symbol("sort") do (i: In):
       var cmp, list: MinValue
       i.reqTwoQuotations cmp, list
