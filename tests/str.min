@@ -68,4 +68,4 @@
   ("3.678" float 3.678 ==) assert
 
   report
-  clear-stack
+  newstack

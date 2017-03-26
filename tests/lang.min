@@ -68,9 +68,9 @@ newline
 
   (2 2 mymath ^myplus 4 ==) assert
   
-  (1 2 3 4 get-stack (1 2 3 4) ==) assert
+  (1 2 3 4 stack (1 2 3 4) ==) assert
 
-  ((1 2 3) set-stack get-stack (1 2 3) ==) assert
+  ((1 2 3) unstack stack (1 2 3) ==) assert
 
   ((1 2) (3 4) concat (1 2 3 4) ==) assert
 
@@ -80,7 +80,7 @@ newline
 
   (2 quote (2) ==) assert
 
-  ((2 3) unquote get-stack (2 3) ==) assert
+  ((2 3) unquote stack (2 3) ==) assert
 
   (4 (1 2 3) append (1 2 3 4) ==) assert
 
@@ -116,7 +116,7 @@ newline
     (pop) 
     ('error dget) 
     ("finally")
-    ) try get-stack ("MinEmptyStackError" "finally") ==) assert 
+    ) try stack ("MinEmptyStackError" "finally") ==) assert 
 
   ("aaaa" :cd cd "aaaa" ==) assert ;It is possible to shadow sealed symbols in child scopes
 
@@ -136,7 +136,7 @@ newline
     ) try "TestError" ==) assert
 
   (
-   (("test" (1 2) :)) try get-stack ("test") ==) assert
+   (("test" (1 2) :)) try stack ("test") ==) assert
 
   (
    (
@@ -192,4 +192,4 @@ newline
 
   report
   ; Tidy up
-  clear-stack
+  newstack

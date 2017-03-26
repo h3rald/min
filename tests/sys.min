@@ -72,5 +72,5 @@
   
 
   report
-  clear-stack
+  newstack
   "systest" rmdir

@@ -11,6 +11,18 @@ import
 proc stack_module*(i: In)=
 
   i.define()
+
+    .symbol("newstack") do (i: In):
+      while i.stack.len > 0:
+        discard i.pop
+  
+    .symbol("stack") do (i: In):
+      i.push i.stack.newVal(i.scope)
+  
+    .symbol("unstack") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      i.stack = q.qVal
     
     .symbol("id") do (i: In):
       discard

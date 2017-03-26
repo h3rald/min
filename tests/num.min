@@ -31,4 +31,4 @@
   (1000 random 1000 <) assert
 
   report
-  clear-stack
+  newstack

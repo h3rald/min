@@ -133,4 +133,4 @@
   (("a" 2 c) quotation?) assert
 
   report
-  clear-stack
+  newstack
