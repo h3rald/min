@@ -164,8 +164,6 @@ newline
 
   (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 
-  ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
-
   (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" contains) assert
 
   (<sym1 symbols "sym1" contains) assert

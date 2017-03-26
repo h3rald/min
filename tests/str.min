@@ -3,6 +3,8 @@
 
 "str" describe
   
+  ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
+
   (" test   " strip "test" ==) assert
 
   ("test" length 4 ==) assert

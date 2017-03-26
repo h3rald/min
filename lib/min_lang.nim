@@ -531,15 +531,6 @@ proc lang_module*(i: In) =
       i.reqDictionary d
       i.push i.values(d)
 
-    .symbol("interpolate") do (i: In):
-      var s, q: MinValue
-      i.reqQuotationAndString q, s
-      var strings = newSeq[string](0)
-      for el in q.qVal:
-        strings.add $$el
-      let res = s.strVal % strings
-      i.push res.newVal
-
     .symbol("version") do (i: In):
       i.push version.newVal
 
