@@ -35,6 +35,10 @@ B
 : A boolean value.
 {{q}}
 : A quotation.
+{{1e}}
+: The first element on the stack.
+{{2e}}
+: The second element on the stack.
 {{1}}
 : The first quotation on the stack.
 {{2}}

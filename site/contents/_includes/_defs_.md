@@ -30,6 +30,8 @@
 {# link-module => [`$1` Module](/reference-$1/) #}
 
 {{q => [(\*)](class:kwd)}}
+{{1e => [1](class:kwd)}}
+{{2e => [2](class:kwd)}}
 {{1 => [(1)](class:kwd)}}
 {{2 => [(2)](class:kwd)}}
 {{3 => [(3)](class:kwd)}}

@@ -51,14 +51,14 @@ proc stack_module*(i: In)=
 
     .symbol("dup") do (i: In):
       i.push i.peek
-    
+
     # (dup) dip
     .symbol("dupd") do (i: In):
       i.push newVal(@["dup".newSym], i.scope)
       i.push "dip".newSym
 
     #((dup) dip unquote)
-    .symbol("q") do (i: In):
+    .symbol("w") do (i: In):
       i.push newVal(@["dup".newSym], i.scope)
       i.push "dip".newSym
       i.push "unquote".newSym
