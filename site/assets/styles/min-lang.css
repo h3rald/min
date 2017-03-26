@@ -19,13 +19,19 @@ header .luxbar-menu i {
   vertical-align: text-bottom;  
 }
 
-main {
-  margin-top: 40px;  
-}
-
-
 .pure-g > section {
   box-sizing: border-box;  
+}
+
+article {
+  margin-top: 40px; 
+}
+
+:target:before {
+  content:"";
+  display:block;
+  height:60px; 
+  margin:-60px 0 0; 
 }
 
 article, section {
@@ -204,4 +210,37 @@ dl {
 .tip p, .warning p, .note p, .sidebar p {
   margin: 0 auto;
   line-height: 1.7em;
+}
+
+.sigil {
+  color: #009926;
+}
+.sigil:before {
+  color: #009926;
+  background-color: #d8f5cd;
+  padding: 0 3px 0;
+  display: inline-block;
+  width: auto;
+  margin: 1px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  padding: 1px 1px 1px 1px;
+  line-height: 95%;
+  width: 70px;
+  text-align: center;
+  margin-right: 3px;
+  box-shadow: none;
+  font-size: 90%;
+  font-variant: small-caps;
+  font-weight: bold;
+  content: "sigil";
 }

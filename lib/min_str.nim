@@ -157,4 +157,7 @@ proc str_module*(i: In) =
   .symbol("=~") do (i: In):
     i.push("regex".newSym)
 
+  .symbol("%") do (i: In):
+    i.push("interpolate".newSym)
+
   .finalize("str")

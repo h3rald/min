@@ -206,17 +206,6 @@ proc lang_module*(i: In) =
       i.apply(sym)
       i.scope = origScope
   
-    .symbol("inspect") do (i: In):
-      var scope: MinValue
-      i.reqQuotation scope
-      var symbols = newSeq[MinValue](0)
-      if scope.scope.isNil:
-        i.push symbols.newVal(i.scope)
-      else:
-        for s in scope.scope.symbols.keys:
-          symbols.add s.newVal
-        i.push symbols.newVal(i.scope)
-  
     .symbol("raise") do (i: In):
       var err: MinValue
       i.reqDictionary err
@@ -346,7 +335,8 @@ proc lang_module*(i: In) =
       i.reqQuotation q
       i.push q.qVal.len.newVal
   
-    .symbol("contains") do (i: In):
+    .symbol("in?") do (i: In):
+      i.reqStackSize(2)
       let v = i.pop
       var q: MinValue
       i.reqQuotation q
@@ -456,6 +446,7 @@ proc lang_module*(i: In) =
         i.unquote(d)
         i.unquote(b)
         check = i.pop
+      discard i.pop
     
     .symbol("filter") do (i: In):
       var filter, list: MinValue
@@ -681,13 +672,10 @@ proc lang_module*(i: In) =
       i.push("define".newSym)
 
     .symbol("@") do (i: In):
-      i.push("define".newSym)
+      i.push("bind".newSym)
 
     .symbol("^") do (i: In):
       i.push("call".newSym)
-
-    .symbol("%") do (i: In):
-      i.push("interpolate".newSym)
 
     .symbol("'") do (i: In):
       i.push("quote".newSym)

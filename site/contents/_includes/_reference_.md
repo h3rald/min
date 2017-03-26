@@ -27,8 +27,10 @@ min includes a small but powerful standard library organized into the following 
 
 The following notation is used in the signature of all min operators:
 
-\*
+{{any}}
 : Any value.
+[\*?](class:kwd)
+: Zero or more values of any type.
 B
 : A boolean value.
 {{q}}
@@ -37,6 +39,12 @@ B
 : The first quotation on the stack.
 {{2}}
 : The second quotation on the stack.
+{{3}}
+: The third quotation on the stack.
+{{4}}
+: The fourth quotation on the stack.
+{{d}}
+: A dictionary quotation.
 {{e}}
 : An error dictionary:
   <pre><code>(

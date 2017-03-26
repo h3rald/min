@@ -13,10 +13,10 @@ newline
   (2 'a define
     (3 a + (5 'a define a) -> +) -> a + 12 ==) assert
 
-  (symbols "a" contains false ==) assert
+  (symbols "a" in? false ==) assert
   
   5 :five
-  (symbols "five" contains) assert
+  (symbols "five" in?) assert
 
   (
     ((1 2 3 4 5 6)) :test-data
@@ -36,18 +36,15 @@ newline
   
   
   ~five
-  (symbols "five" contains false  ==) assert
+  (symbols "five" in? false  ==) assert
 
   (
     (+) :myplus
   ) +mymath
 
-  (symbols "mymath" contains) assert
+  (symbols "mymath" in?) assert
   
-
-  (() inspect () ==) assert
-
-  ('mymath import symbols "myplus" contains) assert
+  ('mymath import symbols "myplus" in?) assert
 
   ('mymath import 2 3 myplus 5 ==) assert
 
@@ -89,8 +86,8 @@ newline
   ((1 2 3 4) 2 at 3 ==) assert
   ((1 2 3) size 3 ==) assert
 
-  ((1 2 3 4) 5 contains false ==) assert
-  ((1 2 3 4) 2 contains) assert
+  ((1 2 3 4) 5 in? false ==) assert
+  ((1 2 3 4) 2 in?) assert
 
   ((1 2 3 4) (2 +) map (3 4 5 6) ==) assert
 
@@ -170,11 +167,11 @@ newline
 
   (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 
-  (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" contains) assert
+  (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" in?) assert
 
-  (<sym1 symbols "sym1" contains) assert
+  (<sym1 symbols "sym1" in?) assert
 
-  ('sym1 remove-symbol stored-symbols "sym1" contains false ==) assert
+  ('sym1 remove-symbol stored-symbols "sym1" in? false ==) assert
 
   (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) assert
 

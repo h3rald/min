@@ -155,6 +155,10 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 
 # Validators
 
+proc reqStackSize*(i: var MinInterpreter, n: int) = 
+  if i.stack.len < n:
+    raiseEmptyStack()
+
 proc reqBool*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isBool:
