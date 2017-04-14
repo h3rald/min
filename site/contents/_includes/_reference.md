@@ -3,9 +3,11 @@
 min includes a small but powerful standard library organized into the following _modules_:
 
 {#link-module||lang#}
-: Defines the basic language constructs, such as control flow, symbol definition and binding, exception handling, basic stack operators, etc.
+: Defines the basic language constructs, such as control flow, symbol definition and binding, exception handling,  etc.
 {#link-module||stack#}
 : Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.
+{#link-module||seq#}
+: Defines operators for quotations and dictionaries, like map, filter, reduce, etc.
 {#link-module||io#}
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
@@ -27,56 +29,59 @@ min includes a small but powerful standard library organized into the following 
 
 The following notation is used in the signature of all min operators:
 
+### Types and Values
+
+{{null}}
+: No value.
 {{any}}
-: Any value.
-[\*?](class:kwd)
-: Zero or more values of any type.
-B
-: A boolean value.
-{{q}}
-: A quotation.
-{{1e}}
-: The first element on the stack.
-{{2e}}
-: The second element on the stack.
-{{1}}
-: The first quotation on the stack.
-{{2}}
-: The second quotation on the stack.
-{{3}}
-: The third quotation on the stack.
-{{4}}
-: The fourth quotation on the stack.
-{{d}}
-: A dictionary quotation.
-{{e}}
-: An error dictionary:
-  <pre><code>(
-    (error "MyError")
-    (message "An error occurred")
-    (symbol "symbol1")            ;Optional
-    (filename "dir1/file1.min")   ;Optional
-    (line 3)                      ;Optional
-    (column 13)                   ;Optional
-  )
-  </code></pre>
+: A value of any type.
+{{b}}
+: A boolean value
 {{i}}
 : An integer value.
 {{n}}
 : A numeric value.
 {{s}}
 : A string value.
-{{s1}}
-: The first string on the stack.
-{{s2}}
-: The second string on the stack.
-{{sp}}
-: One or more string values.
 {{sl}}
-: String-like (a string or quoted sumbol).
-{{f}}
-: false (boolean type).
+: A string-like value (string or quoted symbol).
+{{q}}
+: A quotation (also expressed as parenthesis enclosing other values).
+{{qq}}
+: Quotation of quotations.
+{{d}}
+: A dictionary value.
+{{e}}
+: An error dictionary:
+  <pre><code>(
+    (error "MyError")
+    (message "An error occurred")
+    (symbol "symbol1")            
+    (filename "dir1/file1.min")   
+    (line 3)                      
+    (column 13)                   
+  )
+  </code></pre>
 {{t}}
 : true (boolean type).
-{{null}}
-: No value.
+{{f}}
+: false (boolean type)
+
+### Suffixes
+
+The following suffixes can be placed at the end of a value or type to indicate ordering or quantities.
+
+{{1}}
+: The first value of the specified type.
+{{2}}
+: The second value of the specified type.
+{{3}}
+: The third value of the specified type.
+{{4}}
+: The fourth value of the specified type.
+{{01}}
+: Zero or one.
+{{0p}}
+: Zero more.
+{{1p}}
+: One or more

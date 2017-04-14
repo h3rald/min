@@ -1,8 +1,8 @@
 {@ _defs_.md || 0 @}
 
-{#sig||'||quote#}
+{#sig||&apos;||quote#}
 
-{#alias||'||quote#}
+{#alias||&apos;||quote#}
 
 {#sig||:||define#}
 
@@ -36,19 +36,19 @@
 
 {#sig||=||quote-bind#}
 
-{#op||bind||\* §||{{null}}||
+{#op||bind||{{any}} {{sl}}||{{null}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
-{#op||call||(\*) §||\*?||
+{#op||call||{{q}} {{sl}}||{{a0p}}||
 Calls operator {{sl}} defined in scope {{q}}. #}
 
-{#op||case||(1)||\*?||
-> {{1}} is a quotation containing _n_ different conditional branches. 
+{#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
+> This operator takes a quotation containing _n_ different conditional branches. 
 > 
 > Each branch must be a quotation containing two quotations, and it is processed as follows:
 > 
->   * if the first quotation evaluates to {{t}}, then the second quotation is executed.
->   * if the first quotation evaluates to {{f}}, then the following branch is processed (if any).
+>   * if {{q1}} evaluates to {{t}}, then the {{q2}} is executed.
+>   * if {{q1}} evaluates to {{f}}, then the following branch is processed (if any).
 > 
 > > %sidebar%
 > > Example
@@ -64,25 +64,25 @@ Calls operator {{sl}} defined in scope {{q}}. #}
 {#op||debug||{{null}}||{{null}}||
 Toggles debug mode. #}
 
-{#op||debug?||{{null}}||B||
+{#op||debug?||{{null}}||{{b}}||
 Returns {{t}} if debug mode is on, {{f}} otherwise. #}
 
-{#op||define||\* §||{{null}}||
-Defines a new symbol {{sl}}, containing the specified value (auto-quoted).#}
+{#op||define||{{any}} {{sl}}||{{null}}||
+Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
-{#op||delete||§||{{null}}||
+{#op||delete||{{sl}}||{{null}}||
 Deletes the specified symbol {{sl}}.#}
 
-{#op||eval||S||\*?||
+{#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
 
 {#op||exit||{{null}}||{{null}}||
 Exits the program or shell. #}
 
-{#op||foreach||(2) (1)||\*?||
-Applies the quotation {{1}} to each element of {{2}}.#}
+{#op||foreach||{{q1}} {{q2}}||{{a0p}}||
+Applies the quotation {{q2}} to each element of {{q1}}.#}
 
-{#op||format-error||(E)||S||
+{#op||format-error||{{e}}||{{s}}||
 Formats the error {{e}} as a string.
 
 > %sidebar%
@@ -94,22 +94,22 @@ Formats the error {{e}} as a string.
 > 
 > produces: `"This is a test error"`#}
 
-{#op||from-json||S||\*||
-Converts a JSON string into {{M -> min}} data.#}
+{#op||from-json||{{s}}||{{a0p}}||
+Converts a JSON string into {{m}} data.#}
 
-{#op||if||(3) (2) (1)||\*?||
-If {{3}} evaluates to {{t}} then evaluates {{2}}, otherwise evaluates {{1}}.#}
+{#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
+If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
 
-{#op||import||§||{{null}}||
+{#op||import||{{sl}}||{{null}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
 
-{#op||linrec||(4) (3) (2) (1)||\*?||
+{#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:
 > 
->   1. Evaluates {{4}}.
->     * If {{4}} evaluates to {{t}}, then it evaluates {{3}}.
->     * Otherwises it executes {{2}} and recurses using the same four quotations.
->   2. Finally, it executes {{1}}.
+>   1. Evaluates {{q1}}.
+>     * If {{q1}} evaluates to {{t}}, then it evaluates {{q2}}.
+>     * Otherwises it executes {{q3}} and recurses using the same four quotations.
+>   2. Finally, it executes {{q4}}.
 > 
 > > %sidebar%
 > > Example
@@ -119,13 +119,13 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > >     (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
-{#op||load||S||\*?||
-Parses and interprets the specified {{M}} file {{s}}, adding [.min](class:ext) if not specified. #}
+{#op||load||{{sl}}||{{a0p}}||
+Parses and interprets the specified {{m}} file, adding [.min](class:ext) if not specified. #}
 
-{#op||load-symbol||§||\*||
+{#op||load-symbol||{{sl}}||{{a0p}}||
 Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||loglevel||§||{{null}}||
+{#op||loglevel||{{sl}}||{{null}}||
 > Sets the current logging level to {{sl}}. {{sl}} must be one of the following strings or quoted symbols:
 > 
 >   * debug
@@ -140,17 +140,17 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > 
 > > The default logging level is _notice_.#}
 
-{#op||module||(\*) §||{{null}}||
+{#op||module||{{q}} {{sl}}||{{null}}||
 Creates a new module {{sl}} based on quotation {{q}}. #}
 
-{#op||module-sigils||(\*)||(S+)||
+{#op||module-sigils||{{q}}||({{s0p}})||
 Returns a list of all sigils defined in module {{q}}.#}
 
-{#op||module-symbols||(\*)||(S+)||
+{#op||module-symbols||{{q}}||({{s0p}})||
 Returns a list of all symbols defined in module {{q}}.#}
 
-{#op||publish||§ (*)||{{null}}||
-Publishes symbol {{sl}} to the scope of [(\*)](class:kwd).
+{#op||publish||{{sl}} {{q}}||{{null}}||
+Publishes symbol {{sl}} to the scope of {{q}}.
 > 
 > > %sidebar%
 > > Example
@@ -158,53 +158,53 @@ Publishes symbol {{sl}} to the scope of [(\*)](class:kwd).
 > Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
 > > `'my-local-symbol ROOT publish` #}
 
-{#op||quote||\*||(\*)||
-Wraps [\*](class:kwd) in a quotation. #}
+{#op||quote||{{any}}||({{any}})||
+Wraps {{any}} in a quotation. #}
 
-{#op||quote-bind||\* §||{{null}}||
+{#op||quote-bind||{{any}} {{sl}}||{{null}}||
 Quotes {{any}} and binds the quotation to the existing symbol {{sl}}. #}
 
-{#op||quote-define||\* §||{{null}}||
+{#op||quote-define||{{any}} {{sl}}||{{null}}||
 Quotes {{any}} and assigns the quotation to the symbol {{sl}}, creating it if not already defined. #}
 
-{#op||raise||(E)||{{null}}||
+{#op||raise||{{e}}||{{null}}||
 Raises the error specified via the dictionary {{e}}.#}
 
-{#op||remove-symbol||§||{{null}}||
+{#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||save-symbol||§||{{null}}||
+{#op||save-symbol||{{sl}}||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
-{#op||seal||§||{{null}}||
+{#op||seal||{{sl}}||{{null}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 
-{#op||sigils||{{null}}||(S+)||
+{#op||sigils||{{null}}||({{s0p}})||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
 
-{#op||source||§||(\*)||
-Display the source code of symbol {{sl}} (if it has been implemented a {{M}} quotation). #}
+{#op||source||{{sl}}||{{q}}||
+Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
 
-{#op||stored-symbols||{{null}}||(S+)||
+{#op||stored-symbols||{{null}}||({{s0p}})||
 Returns a quotation containing all symbols stored in the [.min\_symbols](class:file) file. #}
 
-{#op||symbols||{{null}}||(S+)||
+{#op||symbols||{{null}}||({{s0p}})||
 Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 
-{#op||times||(\*) I||\*?||
+{#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
 
-{#op||to-json||(\*)||S||
-Converts a quotation into a JSON string {{s}}.#}
+{#op||to-json||{{q}}||{{s}}||
+Converts {{q}} into a JSON string {{s}}.#}
 
-{#op||try||(\*)||\*?||
-Evaluates quotation {{q}} as a try/catch/finally block. 
+{#op||try||({{q1}} {{q}}{{2}}{{01}} {{q}}{{3}}{{01}})||{{a0p}}||
+Evaluates a quotation as a try/catch/finally block. 
 > 
-> {{q}} must contain the following elements:
+> The must contain the following elements:
 > 
-> 1. A quotation containing the code to be evaluated (_try_ block).
-> 1. _(optional)_ A quotation containing the code to execute in case of error (_catch_ block).
-> 1. _(optional)_ A quotation containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).
+> 1. A quotation {{q1}} containing the code to be evaluated (_try_ block).
+> 1. _(optional)_ A quotation {{q2}} containing the code to execute in case of error (_catch_ block).
+> 1. _(optional)_ A quotation {{q3}} containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).
 > 
 > > %sidebar%
 > > Example
@@ -217,23 +217,23 @@ Evaluates quotation {{q}} as a try/catch/finally block.
 > >         (0)
 > >       ) try #}
 
-{#op||unless||(2) (1)||\*?||
-If {{2}} evaluates to {{f}} then evaluates {{1}}.#}
+{#op||unless||{{q1}} {{q2}}||{{a0p}}||
+If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
-{#op||unquote||(\*)||\*||
+{#op||unquote||{{q}}||{{a0p}}||
 Pushes the contents of quotation {{q}} on the stack. #}
 
-{#op||unseal||§||{{null}}||
+{#op||unseal||{{sl}}||{{null}}||
 Unseals symbol {{sl}}, so that it can be re-assigned. #}
 
-{#op||version||{{null}}||S||
+{#op||version||{{null}}||{{s}}||
 Returns the current min version number. #}
 
-{#op||when||(2) (1)||\*?||
-If {{2}} evaluates to {{t}} then evaluates {{1}}.#}
+{#op||when||{{q1}} {{q2}}||{{a0p}}||
+If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 
-{#op||while||(2) (1)||\*?||
-> Executes {{1}} while {{2}} evaluates to {{t}}.
+{#op||while||{{q1}} {{q2}}||{{a0p}}||
+> Executes {{q2}} while {{q1}} evaluates to {{t}}.
 > 
 > > %sidebar%
 > > Example
@@ -244,6 +244,5 @@ If {{2}} evaluates to {{t}} then evaluates {{1}}.#}
 > >     (count 10 <=) 
 > >     (count puts succ @count) while #}
 
-{#op||with||(2) (1)||\*?||
-Applies quotation {{2}} within the scope of {{1}}. #}
-
+{#op||with||{{q1}} {{q2}}||{{a0p}}||
+Applies quotation {{q1}} within the scope of {{q2}}. #}

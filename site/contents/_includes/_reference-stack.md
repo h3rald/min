@@ -41,4 +41,3 @@ Substitute the existing stack with the contents of {{q}}.#}
 
 {#op||w||(2) (1)||(2) (2) 1||
 W combinator; duplicates the second element from the stack and unquotes the first element on the stack.#}
-

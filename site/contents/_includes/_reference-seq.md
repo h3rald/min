@@ -70,7 +70,7 @@ Returns a new quotation containing all elements of the input quotation except fo
 {#op||reverse||(1)||(\*)||
 Returns a new quotation {{q}} containing all elements of {{1}} in reverse order. #}
 
-{#op||shorten|(\*) I||(\*)||
+{#op||shorten||(\*) I||(\*)||
 Returns a quotation containing the first {{i}} values of the input quotation. #}
 
 {#op||size||(\*)||I||
@@ -88,4 +88,3 @@ Returns the length of {{q}}.#}
 
 {#op||values||(D)||(\*+)||
 Returns a quotation containing all the values of dictionary {{d}}. #}
-
