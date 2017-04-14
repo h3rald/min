@@ -65,31 +65,10 @@ newline
 
   (2 2 mymath ^myplus 4 ==) assert
   
-  (1 2 3 4 stack (1 2 3 4) ==) assert
-
-  ((1 2 3) unstack stack (1 2 3) ==) assert
-
-  ((1 2) (3 4) concat (1 2 3 4) ==) assert
-
-  ((1 2 3) first 1 ==) assert
-  
-  ((1 2 3) rest (2 3) ==) assert
 
   (2 quote (2) ==) assert
 
   ((2 3) unquote stack (2 3) ==) assert
-
-  (4 (1 2 3) append (1 2 3 4) ==) assert
-
-  (0 (1 2 3) prepend (0 1 2 3) ==) assert
-
-  ((1 2 3 4) 2 at 3 ==) assert
-  ((1 2 3) size 3 ==) assert
-
-  ((1 2 3 4) 5 in? false ==) assert
-  ((1 2 3 4) 2 in?) assert
-
-  ((1 2 3 4) (2 +) map (3 4 5 6) ==) assert
 
   (3 (succ) 3 times 6 ==) assert
 
@@ -102,20 +81,8 @@ newline
 
   ((2 3 >) ("YES") unless "YES" ==) assert
 
-  (0 :c
-    (c 10 <) (c succ @c) while
-    c 10 ==) assert
-
-  ((1 2 3 4 5) (even?) filter (2 4) ==) assert
-
-  ((1 2 3 4 5) (even?) any?) assert
-
-  ((2 4 6 8) (even?) all?) assert
-
-  ((5 4 3 2 1) reverse (1 2 3 4 5) ==) assert
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
-
 
   (
    (
@@ -158,18 +125,6 @@ newline
 
   ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) assert
 
-  (((a 1)(b 2)(c 3)) dictionary?) assert
-
-  (((a 1)(b 2)(c 3)) 'b dget 2 ==) assert
-
-  (((a 1)(b 2)(c 3)) ' :dict dict 5 'b dset 7 %d =newdict newdict ((a 1)(b 5)(c 3)(d 7)) ==  dict ((a 1)(b 2)(c 3)) == and) assert
-
-  (((a 1)(b 2)(c 3)) ' :dict dict 'b ddel =newdict newdict ((a 1)(c 3)) == dict ((a 1)(b 2)(c 3)) == and) assert
-
-  (((a 1)(b 2)(c 3)) keys (a b c) ==) assert
-
-  (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
-
   (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" in?) assert
 
   (<sym1 symbols "sym1" in?) assert
@@ -187,10 +142,6 @@ newline
       ((3 >) (true))
     ) case
   ) assert
-
-  ((3 4 7 2 4 6 5 6) '> sort  (2 3 4 4 5 6 6 7) ==) assert
-
-  ((3 4 7 2 4 6 5 6) '< sort (7 6 6 5 4 4 3 2) ==) assert
 
   (time module-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp") ==) assert
 

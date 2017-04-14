@@ -3,5 +3,41 @@
 
 "seq" describe
 
+  ((1 2) (3 4) concat (1 2 3 4) ==) assert
+
+  ((1 2 3) first 1 ==) assert
+  
+  ((1 2 3) rest (2 3) ==) assert
+
+  (4 (1 2 3) append (1 2 3 4) ==) assert
+
+  (0 (1 2 3) prepend (0 1 2 3) ==) assert
+
+  ((1 2 3 4) 2 at 3 ==) assert
+  ((1 2 3) size 3 ==) assert
+
+  ((1 2 3 4) 5 in? false ==) assert
+  ((1 2 3 4) 2 in?) assert
+
+  ((1 2 3 4) (2 +) map (3 4 5 6) ==) assert
+
+  ((5 4 3 2 1) reverse (1 2 3 4 5) ==) assert
+
+  (((a 1)(b 2)(c 3)) dictionary?) assert
+
+  (((a 1)(b 2)(c 3)) 'b dget 2 ==) assert
+
+  (((a 1)(b 2)(c 3)) ' :dict dict 5 'b dset 7 %d =newdict newdict ((a 1)(b 5)(c 3)(d 7)) ==  dict ((a 1)(b 2)(c 3)) == and) assert
+
+  (((a 1)(b 2)(c 3)) ' :dict dict 'b ddel =newdict newdict ((a 1)(c 3)) == dict ((a 1)(b 2)(c 3)) == and) assert
+
+  (((a 1)(b 2)(c 3)) keys (a b c) ==) assert
+
+  (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
+
+  ((3 4 7 2 4 6 5 6) '> sort  (2 3 4 4 5 6 6 7) ==) assert
+
+  ((3 4 7 2 4 6 5 6) '< sort (7 6 6 5 4 4 3 2) ==) assert
+
   report
   newstack

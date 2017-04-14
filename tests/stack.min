@@ -3,6 +3,10 @@
 
 "stack" describe
 
+  (1 2 3 4 stack (1 2 3 4) ==) assert
+
+  ((1 2 3) unstack stack (1 2 3) ==) assert
+
   (1 id 1 ==) assert
 
   (2 id 2 ==) assert
