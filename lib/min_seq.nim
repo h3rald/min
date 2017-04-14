@@ -1,6 +1,7 @@
 import 
   critbits, 
   tables,
+  sequtils,
   algorithm
 import 
   ../core/parser, 
@@ -143,6 +144,13 @@ proc seq_module*(i: In)=
       sort[MinValue](qList, minCmp)
       i.push qList.newVal(i.scope)
     
+    .symbol("shorten") do (i: In):
+      var n, q: MinValue
+      i.reqIntAndQuotation n, q
+      if n.intVal > q.qVal.len:
+        raiseInvalid("Quotation is too short")
+      i.push q.qVal[0..n.intVal.int-1].newVal(i.scope)
+
     # Operations on dictionaries
 
     .symbol("dhas?") do (i: In):
