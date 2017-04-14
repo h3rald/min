@@ -113,7 +113,7 @@ newline
 
   (
    (
-    (() 1 at)
+    (() 1 get)
     (1)
     ) try 1 ==) assert
 

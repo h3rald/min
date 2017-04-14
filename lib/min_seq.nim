@@ -46,13 +46,53 @@ proc seq_module*(i: In)=
       let v = i.pop
       i.push newVal(v & q.qVal, i.scope)
     
-    .symbol("at") do (i: In):
+    .symbol("get") do (i: In):
       var index, q: MinValue
       i.reqIntAndQuotation index, q
-      if q.qVal.len-1 < index.intVal:
-        raiseOutOfBounds("Insufficient items in quotation")
-      i.push q.qVal[index.intVal.int]
+      let ix = index.intVal
+      if q.qVal.len < ix or ix < 0:
+        raiseOutOfBounds("Index out of bounds")
+      i.push q.qVal[ix.int]
   
+    .symbol("set") do (i: In):
+      var val, index, q: MinValue
+      i.reqInt index
+      val = i.pop
+      i.reqQuotation q
+      let ix = index.intVal
+      if q.qVal.len < ix or ix < 0:
+        raiseOutOfBounds("Index out of bounds")
+      q.qVal[ix.int] = val
+      i.push q
+  
+    .symbol("remove") do (i: In):
+      var index, q: MinValue
+      i.reqIntAndQuotation index, q
+      let ix = index.intVal
+      if q.qVal.len < ix or ix < 0:
+        raiseOutOfBounds("Index out of bounds")
+      var res = newSeq[MinValue](0)
+      for x in 0..q.qVal.len-1:
+        if x == ix:
+          continue
+        res.add q.qVal[x]
+      i.push res.newVal(i.scope)
+  
+    .symbol("insert") do (i: In):
+      var val, index, q: MinValue
+      i.reqInt index
+      val = i.pop
+      i.reqQuotation q
+      let ix = index.intVal
+      if q.qVal.len < ix or ix < 0:
+        raiseOutOfBounds("Index out of bounds")
+      var res = newSeq[MinValue](0)
+      for x in 0..q.qVal.len-1:
+        if x == ix:
+          res.add val
+        res.add q.qVal[x]
+      i.push res.newVal(i.scope)
+
     .symbol("size") do (i: In):
       var q: MinValue
       i.reqQuotation q
@@ -100,6 +140,18 @@ proc seq_module*(i: In)=
           res.add e
       i.push res.newVal(i.scope)
 
+    .symbol("reject") do (i: In):
+      var filter, list: MinValue
+      i.reqTwoQuotations filter, list
+      var res = newSeq[MinValue](0)
+      for e in list.qVal:
+        i.push e
+        i.unquote(filter)
+        var check = i.pop
+        if check.isBool and check.boolVal == false:
+          res.add e
+      i.push res.newVal(i.scope)
+
     .symbol("any?") do (i: In):
       var filter, list: MinValue
       i.reqTwoQuotations filter, list
@@ -134,7 +186,7 @@ proc seq_module*(i: In)=
         i2.unquote(cmp)
         let r = i2.pop
         if r.isBool:
-          if r.boolVal == true:
+          if r.isBool and r.boolVal == true:
             return 1
           else:
             return -1
@@ -150,6 +202,101 @@ proc seq_module*(i: In)=
       if n.intVal > q.qVal.len:
         raiseInvalid("Quotation is too short")
       i.push q.qVal[0..n.intVal.int-1].newVal(i.scope)
+
+    .symbol("find") do (i: In):
+      var s, test, result: MinValue
+      i.reqTwoQuotations test, s
+      var res = -1
+      var c = 0
+      for el in s.qVal:
+        i.push el
+        i.unquote test
+        result = i.pop
+        if result.isBool and result.boolVal == true:
+          res = c
+          break
+        c.inc
+      i.push res.newVal
+
+    .symbol("reduce") do (i: In):
+      var s, q, acc: MinValue
+      i.reqQuotation q
+      acc = i.pop
+      i.reqQuotation s
+      for el in s.qVal:
+        i.push acc
+        i.push el
+        i.unquote q
+        acc = i.pop
+      i.push acc
+
+    .symbol("map-reduce") do (i: In):
+      var s, map, red, acc: MinValue
+      i.reqThreeQuotations red, map, s
+      if s.qVal.len == 0:
+        raiseInvalid("Quotation must have at least one element")
+      i.push s.qVal[0]
+      i.unquote map
+      acc = i.pop
+      for ix in 1..s.qVal.len-1:
+        i.push s.qVal[ix]
+        i.unquote map
+        i.push acc
+        i.unquote red
+        acc = i.pop
+      i.push acc
+
+    .symbol("partition") do (i: In):
+      var s, test: MinValue
+      i.reqTwoQuotations test, s
+      var tseq = newSeq[MinValue](0)
+      var fseq = newSeq[MinValue](0)
+      for el in s.qVal:
+        i.push el
+        i.unquote test
+        let res = i.pop
+        if res.isBool and res.boolVal == true:
+          tseq.add el
+        else:
+          fseq.add el
+      i.push tseq.newVal(i.scope)
+      i.push fseq.newVal(i.scope)
+
+    .symbol("slice") do (i: In):
+      var start, finish, q: MinValue
+      i.reqInt finish
+      i.reqInt start
+      i.reqQuotation q
+      let st = start.intVal
+      let fn = finish.intVal
+      if st < 0 or fn > q.qVal.len-1:
+        raiseOutOfBounds("Index out of bounds")
+      elif fn < st:
+        raiseInvalid("End index must be greater than start index")
+      let rng = q.qVal[st.int..fn.int]
+      i.push rng.newVal(i.scope)
+
+    .symbol("harvest") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      var res = newSeq[MinValue](0)
+      for el in q.qVal:
+        if el.isQuotation and el.qVal.len == 0:
+          continue
+        res.add el
+      i.push res.newVal(i.scope)
+
+    .symbol("flatten") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      var res = newSeq[MinValue](0)
+      for el in q.qVal:
+        if el.isQuotation:
+          for el2 in el.qVal:
+            res.add el2
+        else:
+          res.add el
+      i.push res.newVal(i.scope)
 
     # Operations on dictionaries
 

@@ -58,12 +58,12 @@ proc sys_module*(i: In)=
     let res = execCmdEx(cmd.getString)
     i.push @[@["output".newSym, res.output.newVal].newVal(i.scope), @["code".newSym, res.exitCode.newVal].newVal(i.scope)].newVal(i.scope)
   
-  .symbol("getenv") do (i: In):
+  .symbol("get-env") do (i: In):
     var a: MinValue
     i.reqStringLike a
     i.push a.getString.getEnv.newVal
   
-  .symbol("putenv") do (i: In):
+  .symbol("put-env") do (i: In):
     var key, value: MinValue
     i.reqTwoStringLike key, value
     key.getString.putEnv value.getString
@@ -180,7 +180,7 @@ proc sys_module*(i: In)=
     i.push f.getString.parentDir.unix.newVal
 
   .symbol("$") do (i: In):
-    i.push("getenv".newSym)
+    i.push("get-env".newSym)
 
   .symbol("!") do (i: In):
     i.push("system".newSym)
@@ -189,7 +189,7 @@ proc sys_module*(i: In)=
     i.push("run".newSym)
 
   .sigil("$") do (i: In):
-    i.push("getenv".newSym)
+    i.push("get-env".newSym)
 
   .sigil("!") do (i: In):
     i.push("system".newSym)

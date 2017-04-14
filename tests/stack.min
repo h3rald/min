@@ -33,7 +33,7 @@
 
   ((1 2 3) ('sum 'size) => cleave / 2 ==) assert
 
-  ((1 2) (3 4) ((0 at) (1 at)) spread stack (1 4) ==) assert
+  ((1 2) (3 4) ((0 get) (1 get)) spread stack (1 4) ==) assert
 
   report
   newstack
