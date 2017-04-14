@@ -5,10 +5,11 @@
 'num       import
 'sys       import
 'stack     import
+'seq       import
 'time      import
 'fs        import
 'crypto    import
 
 ; Unsealed symbols
-()                                :startup
-("[$1]$$ " (.) => %)                 :prompt
+()                    :startup
+("[$1]$$ " (.) => %)  :prompt

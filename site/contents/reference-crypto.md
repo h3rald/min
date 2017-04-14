@@ -2,4 +2,4 @@
 content-type: page
 title: crypto Module
 -----
-{@ _includes/_reference-crypto_.md || 1 @}
+{@ _includes/_reference-crypto.md || 1 @}

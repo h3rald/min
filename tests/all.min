@@ -1,6 +1,7 @@
 ; Load test files
 'lang    load
 'stack   load
+'seq     load
 'io      load
 'logic   load
 'num     load

@@ -20,6 +20,7 @@ import
 import 
   lib/min_lang, 
   lib/min_stack, 
+  lib/min_seq, 
   lib/min_num,
   lib/min_str,
   lib/min_logic,
@@ -123,6 +124,7 @@ stored-symbols ('load-symbol ROOT with) foreach
     MINRC.writeFile(minrc)
   i.lang_module
   i.stack_module
+  i.seq_module
   i.io_module
   i.logic_module
   i.num_module

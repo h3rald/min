@@ -2,4 +2,4 @@
 content-type: page
 title: time Module
 -----
-{@ _includes/_reference-time_.md || 1 @}
+{@ _includes/_reference-time.md || 1 @}

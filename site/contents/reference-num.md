@@ -2,4 +2,4 @@
 content-type: page
 title: num Module
 -----
-{@ _includes/_reference-num_.md || 1 @}
+{@ _includes/_reference-num.md || 1 @}
