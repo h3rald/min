@@ -83,16 +83,15 @@ Exits the program or shell. #}
 Applies the quotation {{q2}} to each element of {{q1}}.#}
 
 {#op||format-error||{{e}}||{{s}}||
-Formats the error {{e}} as a string.
-
-> %sidebar%
-> Example
-> 
-> The following: 
-> 
-> `((error "MyError") (message "This is a test error")) format-error`
-> 
-> produces: `"This is a test error"`#}
+> Formats the error {{e}} as a string. 
+> > %sidebar%
+> > Example
+> > 
+> > The following: 
+> > 
+> > `((error "MyError") (message "This is a test error")) format-error`
+> > 
+> > produces: `"This is a test error"`#}
 
 {#op||from-json||{{s}}||{{a0p}}||
 Converts a JSON string into {{m}} data.#}
@@ -114,7 +113,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > > %sidebar%
 > > Example
 > > 
-> > The following programs returns [120](class:kwd), the factorial of 5:
+> > The following program leaves `120` on the stack, the factorial of 5:
 > > 
 > >     (dup 0 ==) 'succ (dup pred) '* linrec
  #}
@@ -150,7 +149,7 @@ Returns a list of all sigils defined in module {{q}}.#}
 Returns a list of all symbols defined in module {{q}}.#}
 
 {#op||publish||{{sl}} {{q}}||{{null}}||
-Publishes symbol {{sl}} to the scope of {{q}}.
+> Publishes symbol {{sl}} to the scope of {{q}}.
 > 
 > > %sidebar%
 > > Example
@@ -198,7 +197,7 @@ Applies the quotation {{q}} {{i}} times.#}
 Converts {{q}} into a JSON string {{s}}.#}
 
 {#op||try||({{q1}} {{q}}{{2}}{{01}} {{q}}{{3}}{{01}})||{{a0p}}||
-Evaluates a quotation as a try/catch/finally block. 
+> Evaluates a quotation as a try/catch/finally block. 
 > 
 > The must contain the following elements:
 > 

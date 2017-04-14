@@ -1,5 +1,4 @@
 {{q => [quot](class:kwd)}}
-{{qq => [(quot<sub>+</sub>)](class:kwd)}}
 {{q1 => [quot<sub>1</sub>](class:kwd)}}
 {{q2 => [quot<sub>2</sub>](class:kwd)}}
 {{q3 => [quot<sub>3</sub>](class:kwd)}}
@@ -10,10 +9,15 @@
 {{4 => [<sub>4</sub>](class:kwd)}}
 {{e => [err](class:kwd)}}
 {{d => [dict](class:kwd)}}
+{{d1 => [dict<sub>1</sub>](class:kwd)}}
+{{d2 => [dict<sub>2</sub>](class:kwd)}}
 {{i => [int](class:kwd)}}
 {{n => [num](class:kwd)}}
-{{any => [any](class:kwd)}}
-{{a0p => [any<sub>\*</sub>](class:kwd)}}
+{{any => [a](class:kwd)}}
+{{a1 => [a<sub>1</sub>](class:kwd)}}
+{{a2 => [a<sub>2</sub>](class:kwd)}}
+{{a3 => [a<sub>3</sub>](class:kwd)}}
+{{a0p => [a<sub>\*</sub>](class:kwd)}}
 {{s0p => [string<sub>\*</sub>](class:kwd)}}
 {{s => [string](class:kwd)}}
 {{b => [bool](class:kwd)}}

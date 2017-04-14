@@ -1,42 +1,42 @@
 {@ _defs_.md || 0 @}
 
-{#op||all?||(2) (1)||B||
-Applies predicate {{1}} to each element of {{2}} and returns {{t}} if all elements of {{2}} satisfy predicate {{1}}. #}
+{#op||all?||{{q1}} {{q2}}||{{b}}||
+Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if all elements of {{q1}} satisfy predicate {{q2}}, {{f}} otherwise. #}
 
-{#op||any?||(2) (1)||B||
-Applies predicate {{1}} to each element of {{2}} and returns {{t}} if at least one element of {{2}} satisfies predicate {{1}}. #}
+{#op||any?||{{q1}} {{q2}}||B||
+Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if at least one element of {{q1}} satisfies predicate {{q2}}, {{f}} otherwise. #}
 
-{#op||append||\* (1)||(\*)||
-Returns a new quotation containing the contents of {{1}} with {{any}} appended. #}
+{#op||append||{{any}} {{q}}||({{a0p}} {{any}})||
+Returns a new quotation containing the contents of {{q}} with {{any}} appended. #}
 
-{#op||apply||(1)||(\*)||
-Returns a new quotation {{q}} obtained by evaluating each element of {{1}} in a separate stack.#}
+{#op||apply||{{q}}||({{a0p}})||
+Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}
 
-{#op||at||(\*) I||\*||
-Returns the {{i}}^th element of {{q}}.#}
+{#op||get||{{q}} {{i}}||{{any}}||
+Returns the _n^th_ element of {{q}} (zero-based).#}
 
-{#op||concat||(2) (1)||(\*)||
-Concatenates {{2}} with {{1}}. #}
+{#op||concat||{{q1}} {{q2}}||{{q3}}||
+Concatenates {{q1}} with {{q2}}. #}
 
-{#op||ddel||(D) §||(D')||
-Returns a copy of {{d}} without the element with key {{sl}}. #}
+{#op||ddel||{{d1}} {{sl}}||{{d2}}||
+Returns a copy of {{d1}} without the element with key {{sl}}. #}
 
-{#op||filter||(2) (1)||(\*)||
-> Returns a new quotation {{q}} containing all elements of {{2}} that satisfy predicate {{1}}.
+{#op||filter||{{q1}} {{q2}}||{{q3}}||
+> Returns a new quotation {{q3}} containing all elements of {{q1}} that satisfy predicate {{q2}}.
 > 
 > > %sidebar%
 > > Example
 > > 
-> > The following program returns [(2 6 8 12)](class:kwd):
+> > The following program leaves `(2 6 8 12)` on the stack:
 > > 
 > >     (1 37 34 2 6 8 12 21) 
 > >     (dup 20 < swap even? and) filter #}
 
-{#op||dget||(D) §||\*||
-Returns the value of key {{sl}}. #}
+{#op||dget||{{d}} {{sl}}||{{any}}||
+Returns the value of key {{sl}} from dictionary {{d}}. #}
 
-{#op||dhas?||(D) §||B||
-> Returns {{t}} if dictionary {{d}} contains the key {{sl}}.
+{#op||dhas?||{{d}} {{sl}}||{{b}}||
+> Returns {{t}} if dictionary {{d}} contains the key {{sl}}, {{f}} otherwise.
 > 
 > > %sidebar%
 > > Example
@@ -46,45 +46,57 @@ Returns the value of key {{sl}}. #}
 > >     ((a1 true) (a2 "aaa") (a3 false)) 'a2 dhas?
  #}
 
-{#op||dset||(D) \* §||(D')||
-Sets the values of the {{sl}} of {{d}}  to {{any}}, and return a modified copy of {{d}}. #}
+{#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||
+Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified copy of the dictionary {{d2}}. #}
 
-{#op||first||(\*)||\*||
+{#op||first||{{q}}||{{any}}||
 Returns the first element of {{q}}. #}
 
-{#op||in?||(\*) \*||B||
-Returns {{t}} if {{any}} is contained in {{q}}.#}
+{#op||in?||{{q}} {{any}}||{{b}}||
+Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
 
-{#op||keys||(D)||(S+)||
+{#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
+Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
+
+{#op||keys||{{q}}||({{s}}{{0p}})||
 Returns a quotation containing all the keys of dictionary {{d}}. #}
 
-{#op||map||(2) (1)||(\*)||
-Returns a new quotation {{q}} obtained by applying {{1}} to each element of {{2}}.#}
+{#op||map||{{q1}} {{q2}}||{{q3}}||
+Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{q1}}.#}
 
-{#op||prepend||\* (\*)||(\*)||
-Returns a new quotation containing the contents of {{q}} with [\*](class:kwd) prepended. #}
+{#op||prepend||{{any}} {{q}}||({{any}} {{a0p}})||
+Returns a new quotation containing the contents of {{q}} with {{any}} prepended. #}
 
-{#op||rest||(\*)||(\*)||
-Returns a new quotation containing all elements of the input quotation except for the first. #}
+{#op||reject||{{q1}} {{q2}}||{{q3}}||
+Returns a new quotatios {{q3}} including all elements of {{q1}} that do not satisfy predicate {{q2}} (i.e. the opposite of `filter`)#}
 
-{#op||reverse||(1)||(\*)||
-Returns a new quotation {{q}} containing all elements of {{1}} in reverse order. #}
+{#op||remove||{{q1}} {{i}}||{{q2}}||
+Returns the _n^th_ element of {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}.#}
 
-{#op||shorten||(\*) I||(\*)||
-Returns a quotation containing the first {{i}} values of the input quotation. #}
+{#op||rest||{{q1}}||{{q2}}||
+Returns a new quotation {{q2}} containing all elements of {{q1}} quotation except for the first. #}
 
-{#op||size||(\*)||I||
+{#op||reverse||{{q1}}||{{q2}}||
+Returns a new quotation {{q2}} containing all elements of {{q1}} in reverse order. #}
+
+{#op||set||{{q1}} {{any}} {{i}}||{{q2}}||
+Sets the value of the _n^th_ element {{q1}} (zero-based) to {{any}}, and returns the modified copy of the quotation {{q2}}. #}
+
+{#op||shorten||{{q1}} {{i}}||{{q2}}||
+Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}. #}
+
+{#op||size||{{q}}||{{i}}||
 Returns the length of {{q}}.#}
 
-{#op||sort||(2) (1)||(\*)||
-> Sorts all elements of {{2}} according to predicate {{1}}. 
+{#op||sort||{{q1}} {{q2}}||{{q3}}||
+> Sorts all elements of {{q1}} according to predicate {{q2}}. 
 > 
 > > %sidebar%
 > > Example
 > > 
-> > The following programs returns [(1 3 5 7 9 13 16)](class:kwd):
+> > The following program leaves `(1 3 5 7 9 13 16)` on the stack:
 > > 
 > >     (1 9 5 13 16 3 7) '> sort #}
 
-{#op||values||(D)||(\*+)||
+{#op||values||{{d}}||({{a0p}})||
 Returns a quotation containing all the values of dictionary {{d}}. #}

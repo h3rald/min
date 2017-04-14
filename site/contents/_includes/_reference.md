@@ -47,8 +47,6 @@ The following notation is used in the signature of all min operators:
 : A string-like value (string or quoted symbol).
 {{q}}
 : A quotation (also expressed as parenthesis enclosing other values).
-{{qq}}
-: Quotation of quotations.
 {{d}}
 : A dictionary value.
 {{e}}
