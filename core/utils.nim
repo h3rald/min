@@ -191,6 +191,22 @@ proc reqQuotation*(i: var MinInterpreter, a: var MinValue) =
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
 
+proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raiseInvalid("A quotation is required on the stack")
+  for s in a.qVal:
+    if not s.isQuotation:
+      raiseInvalid("A quotation of quotations is required on the stack")
+
+proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raiseInvalid("A quotation is required on the stack")
+  for s in a.qVal:
+    if not s.isNumber:
+      raiseInvalid("A quotation of numbers is required on the stack")
+
 proc reqIntAndQuotation*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop

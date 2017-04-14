@@ -93,11 +93,14 @@ newline
 
   (3 (succ) 3 times 6 ==) assert
 
-  ((2 3 >) ("YES") ("NO") ifte "NO" ==) assert
-  ((2 3 <) ("YES") ("NO") ifte "YES" ==) assert
+  ((2 3 >) ("YES") ("NO") if "NO" ==) assert
+  ((2 3 <) ("YES") ("NO") if "YES" ==) assert
 
-  ("NO" (2 3 >) ("YES") ift "NO" ==) assert
-  ((2 3 <) ("YES") ift "YES" ==) assert
+  ("NO" (2 3 >) ("YES") when "NO" ==) assert
+
+  ((2 3 <) ("YES") when "YES" ==) assert
+
+  ((2 3 >) ("YES") unless "YES" ==) assert
 
   (0 :c
     (c 10 <) (c succ @c) while

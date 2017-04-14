@@ -372,7 +372,7 @@ proc lang_module*(i: In) =
       for c in 1..t.intVal:
         i.unquote(prog)
     
-    .symbol("ifte") do (i: In):
+    .symbol("if") do (i: In):
       var fpath, tpath, check: MinValue
       i.reqThreeQuotations fpath, tpath, check
       var stack = i.stack
@@ -386,7 +386,7 @@ proc lang_module*(i: In) =
       else:
         i.unquote(fpath)
 
-    .symbol("ift") do (i: In):
+    .symbol("when") do (i: In):
       var tpath, check: MinValue
       i.reqTwoQuotations tpath, check
       var stack = i.stack
@@ -396,6 +396,18 @@ proc lang_module*(i: In) =
       if not res.isBool:
         raiseInvalid("Result of check is not a boolean value")
       if res.boolVal == true:
+        i.unquote(tpath)
+
+    .symbol("unless") do (i: In):
+      var tpath, check: MinValue
+      i.reqTwoQuotations tpath, check
+      var stack = i.stack
+      i.unquote(check)
+      let res = i.pop
+      i.stack = stack
+      if not res.isBool:
+        raiseInvalid("Result of check is not a boolean value")
+      if res.boolVal == false:
         i.unquote(tpath)
 
     # 4 (

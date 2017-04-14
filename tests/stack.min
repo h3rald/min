@@ -13,9 +13,23 @@
 
   (3 2 (1 +) dip + 6 ==) assert
 
+  (1 2 4 '+ dip stack (3 4) ==) assert
+
+  (1 2 4 '+ keep stack (1 6 4) ==) assert
+
   ((1) (2 swap append) sip concat (1 2 1) ==) assert
 
   (1 (2 3) cons (1 2 3) ==) assert
+
+  (1 2 nip 2 ==) assert
+
+  (1 2 over stack (1 2 1) ==) assert
+
+  (1 2 3 pick stack (1 2 3 1) ==) assert
+
+  ((1 2 3) ('sum 'size) => cleave / 2 ==) assert
+
+  ((1 2) (3 4) ((0 at) (1 at)) spread stack (1 4) ==) assert
 
   report
   newstack

@@ -30,7 +30,7 @@
     check results append quote @results 
     "x" print!
   )
-  ifte
+  if
   results
  ) :assert
 
@@ -42,7 +42,7 @@
   0 :failed
   results (
     total succ @total
-    (ok !=) (failed succ @failed) () ifte
+    (ok !=) (failed succ @failed) () if
   ) map
   padding total print! " tests executed - " print! failed print! " failed." puts!
   (
@@ -51,7 +51,7 @@
     (ok !=)
     (padding "FAILED: " print! result puts!)
     ()
-    ifte
+    if
   )
   map
   pop ;Remove results accomulator from stack

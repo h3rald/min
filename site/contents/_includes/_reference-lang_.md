@@ -149,10 +149,7 @@ Formats the error {{e}} as a string.
 {#op||from-json||S||\*||
 Converts a JSON string into {{M -> min}} data.#}
 
-{#op||ifte||(2) (1)||\*?||
-If {{2}} evaluates to {{t}} then evaluates {{1}}.#}
-
-{#op||ifte||(3) (2) (1)||\*?||
+{#op||if||(3) (2) (1)||\*?||
 If {{3}} evaluates to {{t}} then evaluates {{2}}, otherwise evaluates {{1}}.#}
 
 {#op||import||§||{{null}}||
@@ -303,6 +300,9 @@ Evaluates quotation {{q}} as a try/catch/finally block.
 > >         (0)
 > >       ) try #}
 
+{#op||unless||(2) (1)||\*?||
+If {{2}} evaluates to {{f}} then evaluates {{1}}.#}
+
 {#op||unquote||(\*)||\*||
 Pushes the contents of quotation {{q}} on the stack. #}
 
@@ -314,6 +314,9 @@ Returns a quotation containing all the values of dictionary {{d}}. #}
 
 {#op||version||{{null}}||S||
 Returns the current min version number. #}
+
+{#op||when||(2) (1)||\*?||
+If {{2}} evaluates to {{t}} then evaluates {{1}}.#}
 
 {#op||while||(2) (1)||\*?||
 > Executes {{1}} while {{2}} evaluates to {{t}}.

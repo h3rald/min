@@ -30,5 +30,7 @@
 
   (1000 random 1000 <) assert
 
+  ((1 2 3 4 5) sum 15 ==) assert
+
   report
   newstack

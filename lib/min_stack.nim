@@ -70,17 +70,69 @@ proc stack_module*(i: In)=
       i.unquote(q)
       i.push v
     
+    .symbol("cleave") do (i: In):
+      var q: MinValue
+      i.reqQuotationOfQuotations q
+      let v = i.pop
+      for s in q.qVal:
+        var s1 = s
+        i.push v
+        i.unquote(s1)
+    
+    .symbol("spread") do (i: In):
+      var q: MinValue
+      i.reqQuotationOfQuotations q
+      var els = newSeq[MinValue](0)
+      for el in 0..q.qVal.len-1:
+        els.add i.pop
+      var count = els.len-1
+      for s in q.qVal:
+        var s1 = s
+        i.push els[count]
+        i.unquote(s1)
+        count.dec
+    
+    .symbol("keep") do (i: In):
+      var q: MinValue
+      i.reqQuotation q
+      let v = i.pop
+      i.push v
+      i.unquote(q)
+      i.push v
+    
     .symbol("swap") do (i: In):
-      if i.stack.len < 2:
-        raiseEmptyStack()
+      i.reqStackSize 2
       let a = i.pop
       let b = i.pop
       i.push a
       i.push b
 
+    .symbol("nip") do (i: In):
+      i.reqStackSize 2
+      let a = i.pop
+      discard i.pop
+      i.push a
+
+    .symbol("over") do (i: In):
+      i.reqStackSize 2
+      let a = i.pop
+      let b = i.pop
+      i.push b
+      i.push a
+      i.push b
+
+    .symbol("pick") do (i: In):
+      i.reqStackSize 3
+      let a = i.pop
+      let b = i.pop
+      let c = i.pop
+      i.push c
+      i.push b
+      i.push a
+      i.push c
+
     .symbol("rollup") do (i: In):
-      if i.stack.len < 3:
-        raiseEmptyStack()
+      i.reqStackSize 3
       let first = i.pop
       let second = i.pop
       let third = i.pop
@@ -89,8 +141,7 @@ proc stack_module*(i: In)=
       i.push third
 
     .symbol("rolldown") do (i: In):
-      if i.stack.len < 3:
-        raiseEmptyStack()
+      i.reqStackSize 3
       let first = i.pop
       let second = i.pop
       let third = i.pop
