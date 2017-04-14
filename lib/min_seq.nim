@@ -13,9 +13,6 @@ proc seq_module*(i: In)=
 
   i.define()
 
-    .symbol("harvest") do (i: In):
-      discard
-
     .symbol("concat") do (i: In):
       var q1, q2: MinValue 
       i.reqTwoQuotations q1, q2

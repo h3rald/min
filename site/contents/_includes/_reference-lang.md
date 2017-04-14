@@ -36,21 +36,6 @@
 
 {#sig||=||quote-bind#}
 
-{#op||all?||(2) (1)||B||
-Applies predicate {{1}} to each element of {{2}} and returns {{t}} if all elements of {{2}} satisfy predicate {{1}}. #}
-
-{#op||any?||(2) (1)||B||
-Applies predicate {{1}} to each element of {{2}} and returns {{t}} if at least one element of {{2}} satisfies predicate {{1}}. #}
-
-{#op||append||\* (1)||(\*)||
-Returns a new quotation containing the contents of {{1}} with {{any}} appended. #}
-
-{#op||apply||(1)||(\*)||
-Returns a new quotation {{q}} obtained by evaluating each element of {{1}} in a separate stack.#}
-
-{#op||at||(\*) I||\*||
-Returns the {{i}}^th element of {{q}}.#}
-
 {#op||bind||\* §||{{null}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
@@ -76,12 +61,6 @@ Calls operator {{sl}} defined in scope {{q}}. #}
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
-{#op||concat||(2) (1)||(\*)||
-Concatenates {{2}} with {{1}}. #}
-
-{#op||ddel||(D) §||(D')||
-Returns a copy of {{d}} without the element with key {{sl}}. #}
-
 {#op||debug||{{null}}||{{null}}||
 Toggles debug mode. #}
 
@@ -94,42 +73,11 @@ Defines a new symbol {{sl}}, containing the specified value (auto-quoted).#}
 {#op||delete||§||{{null}}||
 Deletes the specified symbol {{sl}}.#}
 
-{#op||dget||(D) §||\*||
-Returns the value of key {{sl}}. #}
-
-{#op||dhas?||(D) §||B||
-> Returns {{t}} if dictionary {{d}} contains the key {{sl}}.
-> 
-> > %sidebar%
-> > Example
-> >  
-> > The following program returns {{t}}:
-> > 
-> >     ((a1 true) (a2 "aaa") (a3 false)) 'a2 dhas?
- #}
-
-{#op||dset||(D) \* §||(D')||
-Sets the values of the {{sl}} of {{d}}  to {{any}}, and return a modified copy of {{d}}. #}
-
 {#op||eval||S||\*?||
 Parses and interprets {{s}}. #}
 
 {#op||exit||{{null}}||{{null}}||
 Exits the program or shell. #}
-
-{#op||filter||(2) (1)||(\*)||
-> Returns a new quotation {{q}} containing all elements of {{2}} that satisfy predicate {{1}}.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program returns [(2 6 8 12)](class:kwd):
-> > 
-> >     (1 37 34 2 6 8 12 21) 
-> >     (dup 20 < swap even? and) filter #}
-
-{#op||first||(\*)||\*||
-Returns the first element of {{q}}. #}
 
 {#op||foreach||(2) (1)||\*?||
 Applies the quotation {{1}} to each element of {{2}}.#}
@@ -154,12 +102,6 @@ If {{3}} evaluates to {{t}} then evaluates {{2}}, otherwise evaluates {{1}}.#}
 
 {#op||import||§||{{null}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
-
-{#op||in?||(\*) \*||B||
-Returns {{t}} if {{any}} is contained in {{q}}.#}
-
-{#op||keys||(D)||(S+)||
-Returns a quotation containing all the keys of dictionary {{d}}. #}
 
 {#op||linrec||(4) (3) (2) (1)||\*?||
 > Implements linear recursions as follows:
@@ -198,9 +140,6 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > 
 > > The default logging level is _notice_.#}
 
-{#op||map||(2) (1)||(\*)||
-Returns a new quotation {{q}} obtained by applying {{1}} to each element of {{2}}.#}
-
 {#op||module||(\*) §||{{null}}||
 Creates a new module {{sl}} based on quotation {{q}}. #}
 
@@ -209,9 +148,6 @@ Returns a list of all sigils defined in module {{q}}.#}
 
 {#op||module-symbols||(\*)||(S+)||
 Returns a list of all symbols defined in module {{q}}.#}
-
-{#op||prepend||\* (\*)||(\*)||
-Returns a new quotation containing the contents of {{q}} with [\*](class:kwd) prepended. #}
 
 {#op||publish||§ (*)||{{null}}||
 Publishes symbol {{sl}} to the scope of [(\*)](class:kwd).
@@ -237,12 +173,6 @@ Raises the error specified via the dictionary {{e}}.#}
 {#op||remove-symbol||§||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||rest||(\*)||(\*)||
-Returns a new quotation containing all elements of the input quotation except for the first. #}
-
-{#op||reverse||(1)||(\*)||
-Returns a new quotation {{q}} containing all elements of {{1}} in reverse order. #}
-
 {#op||save-symbol||§||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
@@ -251,19 +181,6 @@ Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 
 {#op||sigils||{{null}}||(S+)||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
-
-{#op||size||(\*)||I||
-Returns the length of {{q}}.#}
-
-{#op||sort||(2) (1)||(\*)||
-> Sorts all elements of {{2}} according to predicate {{1}}. 
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following programs returns [(1 3 5 7 9 13 16)](class:kwd):
-> > 
-> >     (1 9 5 13 16 3 7) '> sort #}
 
 {#op||source||§||(\*)||
 Display the source code of symbol {{sl}} (if it has been implemented a {{M}} quotation). #}
@@ -308,9 +225,6 @@ Pushes the contents of quotation {{q}} on the stack. #}
 
 {#op||unseal||§||{{null}}||
 Unseals symbol {{sl}}, so that it can be re-assigned. #}
-
-{#op||values||(D)||(\*+)||
-Returns a quotation containing all the values of dictionary {{d}}. #}
 
 {#op||version||{{null}}||S||
 Returns the current min version number. #}
