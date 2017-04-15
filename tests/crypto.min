@@ -20,4 +20,4 @@
   ("test" "test" aes "test" aes strip "test" ==) assert
   
   report
-  newstack
+  clear-stack

@@ -54,7 +54,7 @@
     if
   )
   map
-  pop ;Remove results accomulator from stack
+  pop ;Remove results accomulator from get-stack
  ) :report
 
 ) +test

@@ -3,35 +3,35 @@
 
 "stack" describe
 
-  (1 2 3 4 stack (1 2 3 4) ==) assert
+  (1 2 3 4 get-stack (1 2 3 4) ==) assert
 
-  ((1 2 3) unstack stack (1 2 3) ==) assert
+  ((1 2 3) set-stack get-stack (1 2 3) ==) assert
 
   (1 id 1 ==) assert
 
-  (2 id 2 ==) assert
+  (2 pop get-stack () ==) assert
 
-  (2 pop stack () ==) assert
-
-  (1 dup stack (1 1) ==) assert
+  (1 dup get-stack (1 1) ==) assert
 
   (3 2 (1 +) dip + 6 ==) assert
 
-  (1 2 4 '+ dip stack (3 4) ==) assert
+  (1 2 nip get-stack (2) ==) assert
 
-  (1 2 4 '+ keep stack (1 6 4) ==) assert
+  (1 2 4 '+ dip get-stack (3 4) ==) assert
+
+  (1 2 4 '+ keep get-stack (1 6 4) ==) assert
 
   ((1) (2 swap append) sip concat (1 2 1) ==) assert
 
   (1 (2 3) cons (1 2 3) ==) assert
 
-  (1 2 over stack (1 2 1) ==) assert
+  (1 2 over get-stack (1 2 1) ==) assert
 
-  (1 2 3 pick stack (1 2 3 1) ==) assert
+  (1 2 3 pick get-stack (1 2 3 1) ==) assert
 
   ((1 2 3) ('sum 'size) => cleave / 2 ==) assert
 
-  ((1 2) (3 4) ((0 get) (1 get)) spread stack (1 4) ==) assert
+  ((1 2) (3 4) ((0 get) (1 get)) spread get-stack (1 4) ==) assert
 
   report
-  newstack
+  clear-stack

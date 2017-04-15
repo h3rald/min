@@ -12,14 +12,14 @@ proc stack_module*(i: In)=
 
   i.define()
 
-    .symbol("newstack") do (i: In):
+    .symbol("clear-stack") do (i: In):
       while i.stack.len > 0:
         discard i.pop
   
-    .symbol("stack") do (i: In):
+    .symbol("get-stack") do (i: In):
       i.push i.stack.newVal(i.scope)
   
-    .symbol("unstack") do (i: In):
+    .symbol("set-stack") do (i: In):
       var q: MinValue
       i.reqQuotation q
       i.stack = q.qVal
@@ -32,30 +32,8 @@ proc stack_module*(i: In)=
         raiseEmptyStack()
       discard i.pop
     
-    .symbol("popop") do (i: In):
-      if i.stack.len < 2:
-        raiseEmptyStack()
-      discard i.pop
-      discard i.pop
-    
-    # (pop) dip
-    .symbol("popd") do (i: In):
-      i.push newVal(@["pop".newSym], i.scope)
-      i.push "dip".newSym
-
-    # ((pop) dip unquote)     
-    .symbol("k") do (i: In):
-      i.push newVal(@["pop".newSym], i.scope)
-      i.push "dip".newSym
-      i.push "unquote".newSym
-
     .symbol("dup") do (i: In):
       i.push i.peek
-
-    # (dup) dip
-    .symbol("dupd") do (i: In):
-      i.push newVal(@["dup".newSym], i.scope)
-      i.push "dip".newSym
 
     .symbol("dip") do (i: In):
       var q: MinValue
@@ -63,6 +41,12 @@ proc stack_module*(i: In)=
       let v = i.pop
       i.unquote(q)
       i.push v
+
+    .symbol("nip") do (i: In):
+      var a, b: MinValue
+      a = i.pop
+      b = i.pop
+      i.push a
     
     .symbol("cleave") do (i: In):
       var q: MinValue
@@ -137,11 +121,6 @@ proc stack_module*(i: In)=
       i.push first
       i.push third
 
-    # (swap) dip
-    .symbol("swapd") do (i: In):
-      i.push newVal(@["swap".newSym], i.scope)
-      i.push "dip".newSym
-    
     .symbol("cons") do (i: In):
       var q: MinValue
       i.reqQuotation q

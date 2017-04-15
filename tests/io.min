@@ -11,4 +11,4 @@
 
   "test.txt" rm
   report
-  newstack
+  clear-stack

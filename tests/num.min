@@ -43,4 +43,4 @@
   ((2 4 6 8) (even?) all?) assert
 
   report
-  newstack
+  clear-stack

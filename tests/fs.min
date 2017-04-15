@@ -16,5 +16,5 @@
   ("test.txt" fstats 'type dget "file" ==) assert
   
   report
-  newstack
+  clear-stack
   "test.txt" rm

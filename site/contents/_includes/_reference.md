@@ -54,10 +54,10 @@ The following notation is used in the signature of all min operators:
   <pre><code>(
     (error "MyError")
     (message "An error occurred")
-    (symbol "symbol1")            
-    (filename "dir1/file1.min")   
-    (line 3)                      
-    (column 13)                   
+    (symbol "symbol1")
+    (filename "dir1/file1.min")
+    (line 3)
+    (column 13)
   )
   </code></pre>
 {{t}}
@@ -80,6 +80,6 @@ The following suffixes can be placed at the end of a value or type to indicate o
 {{01}}
 : Zero or one.
 {{0p}}
-: Zero more.
+: Zero or more.
 {{1p}}
 : One or more

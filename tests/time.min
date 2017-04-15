@@ -14,4 +14,4 @@
   (1464951736 timeinfo 'second dget 16 ==) assert
 
   report
-  newstack
+  clear-stack
