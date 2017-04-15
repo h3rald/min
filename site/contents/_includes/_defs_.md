@@ -22,6 +22,8 @@
 {{a0p => [a<sub>\*</sub>](class:kwd)}}
 {{s0p => [string<sub>\*</sub>](class:kwd)}}
 {{s => [string](class:kwd)}}
+{{s1 => [string<sub>1</sub>](class:kwd)}}
+{{s2 => [string<sub>2</sub>](class:kwd)}}
 {{b => [bool](class:kwd)}}
 {{01 => [<sub>?</sub>](class:kwd)}}
 {{0p => [<sub>\*</sub>](class:kwd)}}
