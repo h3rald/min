@@ -11,9 +11,9 @@ import
 
 
 proc str_module*(i: In) = 
-  i.define()
+  let def = i.define()
 
-  .symbol("interpolate") do (i: In):
+  def.symbol("interpolate") do (i: In):
     var s, q: MinValue
     i.reqQuotationAndString q, s
     var strings = newSeq[string](0)
@@ -22,12 +22,12 @@ proc str_module*(i: In) =
     let res = s.strVal % strings
     i.push res.newVal
 
-  .symbol("strip") do (i: In):
+  def.symbol("strip") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.strip.newVal
     
-  .symbol("split") do (i: In):
+  def.symbol("split") do (i: In):
     var sep, s: MinValue
     i.reqTwoStrings sep, s
     var q = newSeq[MinValue](0)
@@ -35,51 +35,51 @@ proc str_module*(i: In) =
       q.add e.newVal
     i.push q.newVal(i.scope)
 
-  .symbol("join") do (i: In):
+  def.symbol("join") do (i: In):
     var q, s: MinValue
     i.reqStringLikeAndQuotation s, q
     i.push q.qVal.mapIt($$it).join(s.getString).newVal 
 
-  .symbol("length") do (i: In):
+  def.symbol("length") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.len.newVal
   
-  .symbol("lowercase") do (i: In):
+  def.symbol("lowercase") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.toLowerAscii.newVal
 
-  .symbol("uppercase") do (i: In):
+  def.symbol("uppercase") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.toUpperAscii.newVal
 
-  .symbol("capitalize") do (i: In):
+  def.symbol("capitalize") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.capitalizeAscii.newVal
 
-  .symbol("titleize") do (i: In):
+  def.symbol("titleize") do (i: In):
     var s: MinValue
     i.reqStringLike s
     i.push s.getString.split(" ").mapIt(it.capitalizeAscii).join(" ").newVal
 
-  .symbol("repeat") do (i: In):
+  def.symbol("repeat") do (i: In):
     var s, n: MinValue
     i.reqIntAndString n, s
     i.push s.getString.repeat(n.intVal).newVal
 
-  .symbol("indent") do (i: In):
+  def.symbol("indent") do (i: In):
     var s, n: MinValue
     i.reqIntAndString n, s
     i.push s.getString.indent(n.intVal).newVal
 
-  .symbol("string") do (i: In):
+  def.symbol("string") do (i: In):
     var s = i.pop
     i.push(($$s).newVal)
 
-  .symbol("bool") do (i: In):
+  def.symbol("bool") do (i: In):
     var v = i.pop
     let strcheck = (v.isString and (v.getString == "false" or v.getString == ""))
     let intcheck = v.isInt and v.intVal == 0
@@ -91,7 +91,7 @@ proc str_module*(i: In) =
     else:
       i.push true.newVal
 
-  .symbol("int") do (i: In):
+  def.symbol("int") do (i: In):
     var s = i.pop
     if s.isString:
       i.push s.getString.parseInt.newVal
@@ -107,7 +107,7 @@ proc str_module*(i: In) =
     else:
       raiseInvalid("Cannot convert a quotation to an integer.")
 
-  .symbol("float") do (i: In):
+  def.symbol("float") do (i: In):
     var s = i.pop
     if s.isString:
       i.push s.getString.parseFloat.newVal
@@ -123,7 +123,7 @@ proc str_module*(i: In) =
     else:
       raiseInvalid("Cannot convert a quotation to float.")
 
-  .symbol("search") do (i: In):
+  def.symbol("search") do (i: In):
     var reg, str: MinValue
     i.reqTwoStrings reg, str
     var matches = str.strVal.search(reg.strVal)
@@ -132,7 +132,7 @@ proc str_module*(i: In) =
       res[i] = matches[i].newVal
     i.push res.newVal(i.scope)
 
-  .symbol("match") do (i: In):
+  def.symbol("match") do (i: In):
     var reg, str: MinValue
     i.reqTwoStrings reg, str
     if str.strVal.match(reg.strVal):
@@ -140,12 +140,12 @@ proc str_module*(i: In) =
     else:
       i.push false.newVal
 
-  .symbol("replace") do (i: In):
+  def.symbol("replace") do (i: In):
     var s_replace, reg, s_find: MinValue
     i.reqThreeStrings s_replace, reg, s_find
     i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
 
-  .symbol("regex") do (i: In):
+  def.symbol("regex") do (i: In):
     var reg, str: MinValue
     i.reqTwoStrings reg, str
     let results = str.strVal =~ reg.strVal
@@ -154,10 +154,10 @@ proc str_module*(i: In) =
       res.add(r.newVal)
     i.push res.newVal(i.scope)
 
-  .symbol("=~") do (i: In):
+  def.symbol("=~") do (i: In):
     i.push("regex".newSym)
 
-  .symbol("%") do (i: In):
+  def.symbol("%") do (i: In):
     i.push("interpolate".newSym)
 
-  .finalize("str")
+  def.finalize("str")

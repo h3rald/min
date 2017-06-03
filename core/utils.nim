@@ -17,21 +17,17 @@ proc define*(i: In): ref MinScope =
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc): ref MinScope =
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
   scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
-  return scope
 
-proc symbol*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
+proc symbol*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.symbols[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
-  return scope
 
-proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc): ref MinScope =
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
   scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
-  return scope
 
-proc sigil*(scope: ref MinScope, sym: string, v: MinValue): ref MinScope =
+proc sigil*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
-  return scope
 
 proc finalize*(scope: ref MinScope, name: string = "") =
   var mdl = newSeq[MinValue](0).newVal(nil)
