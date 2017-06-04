@@ -36,6 +36,9 @@
 
 {#sig||=||quote-bind#}
 
+{#op||args||{{null}}||{{q}}||
+Returns a list of all arguments passed to the current program.#}
+
 {#op||bind||{{any}} {{sl}}||{{null}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
@@ -147,6 +150,9 @@ Returns a list of all sigils defined in module {{q}}.#}
 
 {#op||module-symbols||{{q}}||({{s0p}})||
 Returns a list of all symbols defined in module {{q}}.#}
+
+{#op||opts||{{null}}||{{d}}||
+Returns a dictionary of all options passed to the current program, with their respective values.#}
 
 {#op||publish||{{sl}} {{q}}||{{null}}||
 > Publishes symbol {{sl}} to the scope of {{q}}.

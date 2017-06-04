@@ -1,6 +1,7 @@
 import 
   critbits, 
   strutils, 
+  parseopt2,
   json,
   os, 
   logging
@@ -474,6 +475,30 @@ proc lang_module*(i: In) =
     i.push @[m].newVal(i.scope)
     i.push s
     i.push "define".newSym
+
+
+  def.symbol("args") do (i: In):
+    var args = newSeq[MinValue](0)
+    for kind, key, val in getopt():
+      case kind:
+        of cmdArgument:
+          args.add key.newVal
+        else:
+          discard
+    i.push args.newVal(i.scope)
+
+  def.symbol("opts") do (i: In):
+    var opts = newVal(newSeq[MinValue](0), i.scope) 
+    for kind, key, val in getopt():
+      case kind:
+        of cmdLongOption, cmdShortOption:
+          if val == "":
+            opts = i.dset(opts, key.newVal, true.newVal)
+          else:
+            opts = i.dset(opts, key.newVal, val.newVal)
+        else:
+          discard
+    i.push opts
 
   # Sigils
 

@@ -147,6 +147,10 @@ newline
 
   (sys module-sigils ("!" "$" "&") ==) assert
 
+  (opts () ==) assert
+
+  (args ("tests/all.min") ==) assert
+
   report
   ; Tidy up
   clear-stack

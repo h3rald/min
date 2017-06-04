@@ -335,6 +335,4 @@ proc seq_module*(i: In)=
     i.reqDictionary d
     i.push i.values(d)
 
-  
-
   def.finalize("seq")
