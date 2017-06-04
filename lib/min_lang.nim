@@ -1,6 +1,7 @@
 import 
   critbits, 
   strutils, 
+  sequtils,
   parseopt2,
   json,
   os, 
@@ -513,6 +514,11 @@ proc lang_module*(i: In) =
         else:
           discard
     i.push opts
+
+  def.symbol("expect") do (i: In):
+    var q: MinValue
+    i.reqQuotationOfSymbols q
+    i.push(i.expect(q.qVal.mapIt(it.getString())).newVal(i.scope))
 
   # Sigils
 

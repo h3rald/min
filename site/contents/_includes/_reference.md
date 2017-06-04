@@ -39,8 +39,10 @@ The following notation is used in the signature of all min operators:
 : A boolean value
 {{i}}
 : An integer value.
+{{flt}}
+: A float value.
 {{n}}
-: A numeric value.
+: A numeric (integer or float) value.
 {{s}}
 : A string value.
 {{sl}}

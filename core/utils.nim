@@ -158,13 +158,13 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 # Validators
 
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
-  let stack = elements.reverse.join(" ")
+  let stack = elements.join(" ")
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
   let message = proc(invalid: string): string =
     result = "Incorrect values found on the stack:\n"
-    result &= "- expected: {" & stack & "}\n"
-    result &= "- got: {" & invalid & " " & valid.reverse.join(" ") & "}"
+    result &= "- expected: {top} " & stack & " {bottom}\n"
+    result &= "- got:      {top} " & valid.reverse.join(" ") & " " & invalid & " {bottom}"
   for element in elements:
     let value = i.pop
     result.add value
@@ -217,6 +217,14 @@ proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) =
   for s in a.qVal:
     if not s.isNumber:
       raiseInvalid("A quotation of numbers is required on the stack")
+
+proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raiseInvalid("A quotation is required on the stack")
+  for s in a.qVal:
+    if not s.isSymbol:
+      raiseInvalid("A quotation of symbols is required on the stack")
 
 proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop

@@ -11,6 +11,7 @@
 {{d => [dict](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
+{{flt => [float](class:kwd)}}
 {{i => [int](class:kwd)}}
 {{i1 => [a<sub>1</sub>](class:kwd)}}
 {{i2 => [a<sub>2</sub>](class:kwd)}}

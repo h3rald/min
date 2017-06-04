@@ -82,6 +82,19 @@ Parses and interprets {{s}}. #}
 {#op||exit||{{null}}||{{null}}||
 Exits the program or shell. #}
 
+{#op||expect||{{q1}}||{{q2}}||
+> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}}.
+> > %sidebar%
+> > Example
+> > 
+> > Assuming that the following elements are on the stack (from top to bottom): `1 "test" 3.4`
+> > 
+> > the following:
+> > 
+> > `(int string num) expect`
+> > 
+> > produces: `(1 "test" 3.4)`#}
+
 {#op||foreach||{{q1}} {{q2}}||{{a0p}}||
 Applies the quotation {{q2}} to each element of {{q1}}.#}
 
