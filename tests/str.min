@@ -5,11 +5,15 @@
   
   ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
 
+  ("$1 + $2 = $3" (2 2 (2 2 +)) apply interpolate "2 + 2 = 4" ==) assert
+
   (" test   " strip "test" ==) assert
 
   ("test" length 4 ==) assert
 
   ("a,b,c" "," split ("a" "b" "c") ==) assert
+
+  ("This is a test" "is" indexof 2 ==) assert
 
   ("test #1" "[0-9]" search ("1") ==) assert 
 
@@ -19,7 +23,7 @@
 
   ("something is not something else" "some" "any" replace "anything is not anything else" ==) assert
 
-  ("MiNiM is a concatenative programming language" "/^minim/i" =~ ("MiNiM") ==) assert
+  ("MiN is a concatenative programming language" "/^min/i" =~ ("MiN") ==) assert
 
   ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) assert
 

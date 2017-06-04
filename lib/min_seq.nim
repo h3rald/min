@@ -120,7 +120,7 @@ proc seq_module*(i: In)=
 
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot")
-    let prog = vals[0]
+    var prog = vals[0]
     i.apply prog
 
   def.symbol("reverse") do (i: In):

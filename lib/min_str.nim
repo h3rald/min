@@ -29,11 +29,11 @@ proc str_module*(i: In) =
     i.push s.getString.strip.newVal
     
   def.symbol("split") do (i: In):
-    let vals = i.expect("string", "string")
+    let vals = i.expect("'sym", "'sym")
     let sep = vals[0]
     let s = vals[1]
     var q = newSeq[MinValue](0)
-    for e in s.strVal.split(sep.strVal):
+    for e in s.getString().split(sep.getString()):
       q.add e.newVal
     i.push q.newVal(i.scope)
 
@@ -79,6 +79,13 @@ proc str_module*(i: In) =
     let n = vals[0]
     let s = vals[1]
     i.push s.getString.indent(n.intVal).newVal
+
+  def.symbol("indexof") do (i: In):
+    let vals = i.expect("string", "string")
+    let reg = vals[0]
+    let str = vals[1]
+    let index = str.strVal.find(reg.strVal)
+    i.push index.newVal
 
   def.symbol("search") do (i: In):
     let vals = i.expect("string", "string")

@@ -25,6 +25,8 @@
 {{s => [string](class:kwd)}}
 {{s1 => [string<sub>1</sub>](class:kwd)}}
 {{s2 => [string<sub>2</sub>](class:kwd)}}
+{{s3 => [string<sub>3</sub>](class:kwd)}}
+{{s4 => [string<sub>4</sub>](class:kwd)}}
 {{b => [bool](class:kwd)}}
 {{b1 => [bool<sub>1</sub>](class:kwd)}}
 {{b2 => [bool<sub>2</sub>](class:kwd)}}
@@ -33,10 +35,14 @@
 {{0p => [<sub>\*</sub>](class:kwd)}}
 {{1p => [<sub>\+</sub>](class:kwd)}}
 {{sl => [&apos;sym](class:kwd)}}
+{{sl1 => [&apos;sym<sub>1</sub>](class:kwd)}}
+{{sl2 => [&apos;sym<sub>2</sub>](class:kwd)}}
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
 {{null => &#x2205;}}
 {{m => _min_}}
+
+{{sgregex => [sgregex](https://github.com/snake5/sgregex).}}
 
 {#op => 
 <a id="op-$1"></>
@@ -67,4 +73,6 @@
  #}
 
 {# link-module => [`$1` Module](/reference-$1/) #}
+
+{# link-operator => [`$2`](/reference-$1/$2) #}
 
