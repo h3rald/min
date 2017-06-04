@@ -44,8 +44,8 @@ proc fs_module*(i: In) =
     let fi = s.getString.getFileInfo
     var info = newSeq[MinValue](0).newVal(i.scope)
     info.qVal.add @["name".newSym, s].newVal(i.scope)
-    info.qVal.add @["device".newSym, fi.id.device.newVal].newVal(i.scope)
-    info.qVal.add @["file".newSym, fi.id.file.newVal].newVal(i.scope)
+    info.qVal.add @["device".newSym, fi.id.device.BiggestInt.newVal].newVal(i.scope)
+    info.qVal.add @["file".newSym, fi.id.file.BiggestInt.newVal].newVal(i.scope)
     info.qVal.add @["type".newSym, fi.kind.filetype.newVal].newVal(i.scope)
     info.qVal.add @["size".newSym, fi.size.newVal].newVal(i.scope)
     info.qVal.add @["permissions".newSym, fi.permissions.unixPermissions.newVal].newVal(i.scope)
