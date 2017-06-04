@@ -20,8 +20,8 @@ proc time_module*(i: In)=
     i.push epochTime().newVal
   
   def.symbol("timeinfo") do (i: In):
-    var t: MinValue
-    i.reqNumber t
+    let vals = i.expect("num")
+    let t = vals[0]
     var time: Time
     if t.kind == minInt:
       time = t.intVal.fromSeconds
@@ -40,8 +40,8 @@ proc time_module*(i: In)=
     i.push info
 
   def.symbol("datetime") do (i: In):
-    var t: MinValue
-    i.reqNumber t
+    let vals = i.expect("num")
+    let t = vals[0]
     var time: Time
     if t.kind == minInt:
       time = t.intVal.fromSeconds
@@ -50,9 +50,9 @@ proc time_module*(i: In)=
     i.push time.getLocalTime.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
 
   def.symbol("tformat") do (i: In):
-    var t, s: MinValue
-    i.reqString s
-    i.reqNumber t
+    let vals = i.expect("string", "num")
+    let s = vals[0]
+    let t = vals[1]
     var time: Time
     if t.kind == minInt:
       time = t.intVal.fromSeconds

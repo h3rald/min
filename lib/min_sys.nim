@@ -27,55 +27,56 @@ proc sys_module*(i: In)=
     i.push newVal(getCurrentDir().parentDir.unix)
   
   def.symbol("cd") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     f.getString.setCurrentDir
   
   def.symbol("ls") do (i: In):
-    var a: MinValue
-    i.reqStringLike a
+    let vals = i.expect("'sym")
+    let a = vals[0]
     var list = newSeq[MinValue](0)
     for i in walkDir(a.getString):
       list.add newVal(i.path.unix)
     i.push list.newVal(i.scope)
   
   def.symbol("ls-r") do (i: In):
-    var a: MinValue
-    i.reqStringLike a
+    let vals = i.expect("'sym")
+    let a = vals[0]
     var list = newSeq[MinValue](0)
     for i in walkDirRec(a.getString):
       list.add newVal(i.unix)
     i.push list.newVal(i.scope)
 
   def.symbol("system") do (i: In):
-    var a: MinValue
-    i.reqStringLike a
+    let vals = i.expect("'sym")
+    let a = vals[0]
     i.push execShellCmd(a.getString).newVal
   
   def.symbol("run") do (i: In):
-    var cmd: MinValue
-    i.reqStringLike cmd
+    let vals = i.expect("'sym")
+    let cmd = vals[0]
     let res = execCmdEx(cmd.getString)
     i.push @[@["output".newSym, res.output.newVal].newVal(i.scope), @["code".newSym, res.exitCode.newVal].newVal(i.scope)].newVal(i.scope)
   
   def.symbol("get-env") do (i: In):
-    var a: MinValue
-    i.reqStringLike a
+    let vals = i.expect("'sym")
+    let a = vals[0]
     i.push a.getString.getEnv.newVal
   
   def.symbol("put-env") do (i: In):
-    var key, value: MinValue
-    i.reqTwoStringLike key, value
+    let vals = i.expect("'sym", "'sym")
+    let key = vals[0]
+    let value = vals[1]
     key.getString.putEnv value.getString
     
   def.symbol("env?") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.existsEnv.newVal
 
   def.symbol("which") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.findExe.newVal
 
   def.symbol("os") do (i: In):
@@ -85,23 +86,23 @@ proc sys_module*(i: In)=
     i.push hostCPU.newVal
   
   def.symbol("exists?") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     i.push newVal(f.getString.fileExists or f.getString.dirExists)
     
   def.symbol("file?") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     i.push f.getString.fileExists.newVal
     
   def.symbol("dir?") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     i.push f.getString.dirExists.newVal
     
   def.symbol("rm") do (i: In):
-    var v: MinValue
-    i.reqStringLike v
+    let vals = i.expect("'sym")
+    let v = vals[0]
     let f = v.getString
     if f.existsFile:
       f.removeFile
@@ -111,8 +112,9 @@ proc sys_module*(i: In)=
       raiseInvalid("File '$1' does not exist." % f)
     
   def.symbol("cp") do (i: In):
-    var a, b: MinValue
-    i.reqTwoStringLike a, b
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[0]
+    let b = vals[1]
     let src = b.getString
     var dest = a.getString
     if src.dirExists:
@@ -126,8 +128,9 @@ proc sys_module*(i: In)=
       copyFileWithPermissions src, dest 
     
   def.symbol("mv") do (i: In):
-    var a, b: MinValue
-    i.reqTwoStringLike a, b
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[0]
+    let b = vals[1]
     let src = b.getString
     var dest = a.getString
     if dest.dirExists:
@@ -135,48 +138,51 @@ proc sys_module*(i: In)=
     moveFile src, dest
   
   def.symbol("rmdir") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     f.getString.removeDir
   
   def.symbol("mkdir") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     f.getString.createDir
 
   def.symbol("sleep") do (i: In):
-    var ms: MinValue
-    i.reqInt ms
+    let vals = i.expect("int")
+    let ms = vals[0]
     sleep ms.intVal.int
 
   def.symbol("chmod") do (i: In):
-    var s, perms: MinValue
-    i.reqIntAndString perms, s
+    let vals = i.expect("int", "string")
+    let perms = vals[0]
+    let s = vals[1]
     s.getString.setFilePermissions(perms.intVal.toFilePermissions)
 
   def.symbol("symlink?") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.symlinkExists.newVal
 
   def.symbol("symlink") do (i: In):
-    var src, dest: MinValue
-    i.reqTwoStringLike dest, src
+    let vals = i.expect("'sym", "'sym")
+    let dest = vals[0]
+    let src = vals[0]
     src.getString.createSymlink dest.getString
 
   def.symbol("hardlink") do (i: In):
-    var src, dest: MinValue
-    i.reqTwoStringLike dest, src
+    let vals = i.expect("'sym", "'sym")
+    let dest = vals[0]
+    let src = vals[0]
     src.getString.createHardlink dest.getString
 
   def.symbol("filename") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     i.push f.getString.extractFilename.unix.newVal
 
   def.symbol("dirname") do (i: In):
-    var f: MinValue
-    i.reqStringLike f
+    let vals = i.expect("'sym")
+    let f = vals[0]
     i.push f.getString.parentDir.unix.newVal
 
   def.symbol("$") do (i: In):
@@ -199,13 +205,15 @@ proc sys_module*(i: In)=
 
   when not defined(lite):
     def.symbol("unzip") do (i: In):
-      var f, dir: MinValue
-      i.reqTwoStringLike dir, f
+      let vals = i.expect("'sym", "'sym")
+      let dir = vals[0]
+      let f = vals[1]
       miniz.unzip(f.getString, dir.getString)
 
     def.symbol("zip") do (i: In):
-      var files, file: MinValue
-      i.reqStringLikeAndQuotation file, files
+      let vals = i.expect("'sym", "quot")
+      let file = vals[0]
+      let files = vals[1]
       miniz.zip(files.qVal.mapIt(it.getString), file.getString)
 
   def.finalize("sys")

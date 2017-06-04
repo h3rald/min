@@ -17,48 +17,49 @@ proc crypto_module*(i: In)=
   let def = i.define()
 
   def.symbol("md5") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.getMD5.newVal
 
   def.symbol("sha1") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push compute(s.getString).toHex.newVal
 
   def.symbol("sha224") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push computeSHA224(s.getString).hex.toLowerAscii.newVal
 
   def.symbol("sha256") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push computeSHA256(s.getString).hex.toLowerAscii.newVal
 
   def.symbol("sha384") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push computeSHA384(s.getString).hex.toLowerAscii.newVal
 
   def.symbol("sha512") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push computeSHA512(s.getString).hex.toLowerAscii.newVal
 
   def.symbol("encode") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.encode.newVal
     
   def.symbol("decode") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     i.push s.getString.decode.newVal
 
   def.symbol("aes") do (i: In):
-    var s, k: MinValue
-    i.reqTwoStrings k, s
+    let vals = i.expect("'sym", "'sym")
+    let k = vals[0]
+    let s = vals[1]
     var ctx: AESContext
     var text = s.getString
     var length = text.len

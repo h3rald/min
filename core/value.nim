@@ -63,6 +63,21 @@ proc newVal*(s: bool): MinValue =
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
 
+proc typeName*(v: MinValue): string =
+  case v.kind:
+    of minInt:
+      return "int"
+    of minFloat:
+      return "float"
+    of minQuotation:
+      return "quot"
+    of minString:
+      return "string"
+    of minSymbol:
+      return "sym"
+    of minBool:
+      return "bool"
+
 # Get string value from string or quoted symbol
 
 proc getString*(v: MinValue): string =

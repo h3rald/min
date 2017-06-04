@@ -195,8 +195,8 @@ proc minRepl*(i: var MinInterpreter) =
       return ed.getCompletions(symbols)
     # evaluate prompt
     i.apply(i.scope.getSymbol("prompt"))
-    var v: MinValue
-    i.reqString(v)
+    let vals = i.expect("string")
+    let v = vals[0] 
     let prompt = v.getString()
     line = ed.readLine(prompt)
     i.parser.bufpos = 0

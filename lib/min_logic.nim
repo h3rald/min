@@ -85,23 +85,26 @@ proc logic_module*(i: In)=
   # Boolean Logic
   
   def.symbol("not") do (i: In):
-    var b: MinValue
-    i.reqBool b
+    let vals = i.expect("bool")
+    let b = vals[0]
     i.push newVal(not b.boolVal)
   
   def.symbol("and") do (i: In):
-    var a, b: MinValue
-    i.reqTwoBools a, b
+    let vals = i.expect("bool", "bool")
+    let a = vals[0]
+    let b = vals[1]
     i.push newVal(a.boolVal and b.boolVal)
   
   def.symbol("or") do (i: In):
-    var a, b: MinValue
-    i.reqTwoBools a, b
+    let vals = i.expect("bool", "bool")
+    let a = vals[0]
+    let b = vals[1]
     i.push newVal(a.boolVal or b.boolVal)
   
   def.symbol("xor") do (i: In):
-    var a, b: MinValue
-    i.reqTwoBools a, b
+    let vals = i.expect("bool", "bool")
+    let a = vals[0]
+    let b = vals[1]
     i.push newVal(a.boolVal xor b.boolVal)
   
   def.symbol("string?") do (i: In):

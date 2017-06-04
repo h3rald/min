@@ -15,50 +15,52 @@ proc seq_module*(i: In)=
   let def = i.define()
 
   def.symbol("concat") do (i: In):
-    var q1, q2: MinValue 
-    i.reqTwoQuotations q1, q2
+    let vals = i.expect("quot", "quot")
+    let q1 = vals[0]
+    let q2 = vals[1]
     let q = q2.qVal & q1.qVal
     i.push q.newVal(i.scope)
   
   def.symbol("first") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[0]
   
   def.symbol("rest") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[1..q.qVal.len-1].newVal(i.scope)
   
   def.symbol("append") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
-    let v = i.pop
+    let vals = i.expect("quot", "a")
+    let q = vals[0]
+    let v = vals[1]
     i.push newVal(q.qVal & v, i.scope)
   
   def.symbol("prepend") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
-    let v = i.pop
+    let vals = i.expect("quot", "a")
+    let q = vals[0]
+    let v = vals[1]
     i.push newVal(v & q.qVal, i.scope)
   
   def.symbol("get") do (i: In):
-    var index, q: MinValue
-    i.reqIntAndQuotation index, q
+    let vals = i.expect("int", "quot")
+    let index = vals[0]
+    let q = vals[1]
     let ix = index.intVal
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")
     i.push q.qVal[ix.int]
   
   def.symbol("set") do (i: In):
-    var val, index, q: MinValue
-    i.reqInt index
-    val = i.pop
-    i.reqQuotation q
+    let vals = i.expect("int", "a", "quot")
+    let index = vals[0]
+    let val = vals[1]
+    let q = vals[2]
     let ix = index.intVal
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")
@@ -66,8 +68,9 @@ proc seq_module*(i: In)=
     i.push q
   
   def.symbol("remove") do (i: In):
-    var index, q: MinValue
-    i.reqIntAndQuotation index, q
+    let vals = i.expect("int", "quot")
+    let index = vals[0]
+    let q = vals[1]
     let ix = index.intVal
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")
@@ -79,10 +82,10 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
   
   def.symbol("insert") do (i: In):
-    var val, index, q: MinValue
-    i.reqInt index
-    val = i.pop
-    i.reqQuotation q
+    let vals = i.expect("int", "a", "quot")
+    let index = vals[0]
+    let val = vals[1]
+    let q = vals[2]
     let ix = index.intVal
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")
@@ -94,20 +97,20 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
 
   def.symbol("size") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     i.push q.qVal.len.newVal
   
   def.symbol("in?") do (i: In):
-    i.reqStackSize(2)
-    let v = i.pop
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("a", "quot")
+    let v = vals[0]
+    let q = vals[1]
     i.push q.qVal.contains(v).newVal 
   
   def.symbol("map") do (i: In):
-    var prog, list: MinValue
-    i.reqTwoQuotations prog, list
+    let vals = i.expect("quot", "quot")
+    var prog = vals[0]
+    let list = vals[1]
     var res = newSeq[MinValue](0)
     for litem in list.qVal:
       i.push litem
@@ -116,21 +119,22 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
 
   def.symbol("apply") do (i: In):
-    var prog: MinValue
-    i.reqQuotation prog
+    let vals = i.expect("quot")
+    let prog = vals[0]
     i.apply prog
 
   def.symbol("reverse") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     var res = newSeq[MinValue](0)
     for c in countdown(q.qVal.len-1, 0):
       res.add q.qVal[c]
     i.push res.newVal(i.scope)
 
   def.symbol("filter") do (i: In):
-    var filter, list: MinValue
-    i.reqTwoQuotations filter, list
+    let vals = i.expect("quot", "quot")
+    var filter = vals[0]
+    let list = vals[1]
     var res = newSeq[MinValue](0)
     for e in list.qVal:
       i.push e
@@ -141,8 +145,9 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
 
   def.symbol("reject") do (i: In):
-    var filter, list: MinValue
-    i.reqTwoQuotations filter, list
+    let vals = i.expect("quot", "quot")
+    var filter = vals[0]
+    let list = vals[1]
     var res = newSeq[MinValue](0)
     for e in list.qVal:
       i.push e
@@ -153,8 +158,9 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
 
   def.symbol("any?") do (i: In):
-    var filter, list: MinValue
-    i.reqTwoQuotations filter, list
+    let vals = i.expect("quot", "quot")
+    var filter = vals[0]
+    let list = vals[1]
     for e in list.qVal:
       i.push e
       i.unquote(filter)
@@ -165,8 +171,9 @@ proc seq_module*(i: In)=
     i.push false.newVal
 
   def.symbol("all?") do (i: In):
-    var filter, list: MinValue
-    i.reqTwoQuotations filter, list
+    let vals = i.expect("quot", "quot")
+    var filter = vals[0]
+    let list = vals[1]
     for e in list.qVal:
       i.push e
       i.unquote(filter)
@@ -177,8 +184,9 @@ proc seq_module*(i: In)=
     i.push true.newVal
 
   def.symbol("sort") do (i: In):
-    var cmp, list: MinValue
-    i.reqTwoQuotations cmp, list
+    let vals = i.expect("quot", "quot")
+    var cmp = vals[0]
+    let list = vals[1]
     var i2 = i
     var minCmp = proc(a, b: MinValue): int {.closure.}=
       i2.push a
@@ -197,15 +205,18 @@ proc seq_module*(i: In)=
     i.push qList.newVal(i.scope)
   
   def.symbol("shorten") do (i: In):
-    var n, q: MinValue
-    i.reqIntAndQuotation n, q
+    let vals = i.expect("int", "quot")
+    let n = vals[0]
+    let q = vals[1]
     if n.intVal > q.qVal.len:
       raiseInvalid("Quotation is too short")
     i.push q.qVal[0..n.intVal.int-1].newVal(i.scope)
 
   def.symbol("find") do (i: In):
-    var s, test, result: MinValue
-    i.reqTwoQuotations test, s
+    let vals = i.expect("quot", "quot")
+    var test = vals[0]
+    let s = vals[1]
+    var result: MinValue
     var res = -1
     var c = 0
     for el in s.qVal:
@@ -219,10 +230,10 @@ proc seq_module*(i: In)=
     i.push res.newVal
 
   def.symbol("reduce") do (i: In):
-    var s, q, acc: MinValue
-    i.reqQuotation q
-    acc = i.pop
-    i.reqQuotation s
+    let vals = i.expect("quot", "a", "quot")
+    var q = vals[0]
+    var acc = vals[1]
+    let s = vals[2]
     for el in s.qVal:
       i.push acc
       i.push el
@@ -231,13 +242,15 @@ proc seq_module*(i: In)=
     i.push acc
 
   def.symbol("map-reduce") do (i: In):
-    var s, map, red, acc: MinValue
-    i.reqThreeQuotations red, map, s
+    let vals = i.expect("quot", "quot", "quot")
+    var red = vals[0]
+    var map = vals[1]
+    let s = vals[2]
     if s.qVal.len == 0:
       raiseInvalid("Quotation must have at least one element")
     i.push s.qVal[0]
     i.unquote map
-    acc = i.pop
+    var acc = i.pop
     for ix in 1..s.qVal.len-1:
       i.push s.qVal[ix]
       i.unquote map
@@ -247,8 +260,9 @@ proc seq_module*(i: In)=
     i.push acc
 
   def.symbol("partition") do (i: In):
-    var s, test: MinValue
-    i.reqTwoQuotations test, s
+    let vals = i.expect("quot", "quot")
+    var test = vals[0]
+    var s = vals[1]
     var tseq = newSeq[MinValue](0)
     var fseq = newSeq[MinValue](0)
     for el in s.qVal:
@@ -263,10 +277,10 @@ proc seq_module*(i: In)=
     i.push fseq.newVal(i.scope)
 
   def.symbol("slice") do (i: In):
-    var start, finish, q: MinValue
-    i.reqInt finish
-    i.reqInt start
-    i.reqQuotation q
+    let vals = i.expect("int", "int", "quot")
+    let finish = vals[0]
+    let start = vals[1]
+    let q = vals[2]
     let st = start.intVal
     let fn = finish.intVal
     if st < 0 or fn > q.qVal.len-1:
@@ -277,8 +291,8 @@ proc seq_module*(i: In)=
     i.push rng.newVal(i.scope)
 
   def.symbol("harvest") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     var res = newSeq[MinValue](0)
     for el in q.qVal:
       if el.isQuotation and el.qVal.len == 0:
@@ -287,8 +301,8 @@ proc seq_module*(i: In)=
     i.push res.newVal(i.scope)
 
   def.symbol("flatten") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     var res = newSeq[MinValue](0)
     for el in q.qVal:
       if el.isQuotation:
@@ -301,38 +315,38 @@ proc seq_module*(i: In)=
   # Operations on dictionaries
 
   def.symbol("dhas?") do (i: In):
-    var d, k: MinValue
-    i.reqStringLike k
-    i.reqDictionary d
+    let vals = i.expect("'sym", "dict")
+    let k = vals[0]
+    let d = vals[1]
     i.push d.dhas(k).newVal
 
   def.symbol("dget") do (i: In):
-    var d, k: MinValue
-    i.reqStringLike k
-    i.reqDictionary d
+    let vals = i.expect("'sym", "dict")
+    let k = vals[0]
+    let d = vals[1]
     i.push d.dget(k)
     
   def.symbol("dset") do (i: In):
-    var d, k: MinValue
-    i.reqStringLike k
-    let m = i.pop
-    i.reqDictionary d
+    let vals = i.expect("'sym", "a", "dict")
+    let k = vals[0]
+    let m = vals[1]
+    let d = vals[2]
     i.push i.dset(d, k, m) 
 
   def.symbol("ddel") do (i: In):
-    var d, k: MinValue
-    i.reqStringLike k
-    i.reqDictionary d
+    let vals = i.expect("'sym", "dict")
+    let k = vals[0]
+    let d = vals[1]
     i.push i.ddel(d, k)
 
   def.symbol("keys") do (i: In):
-    var d: MinValue
-    i.reqDictionary d
+    let vals = i.expect("dict")
+    let d = vals[0]
     i.push i.keys(d)
 
   def.symbol("values") do (i: In):
-    var d: MinValue
-    i.reqDictionary d
+    let vals = i.expect("dict")
+    let d = vals[0]
     i.push i.values(d)
 
   def.finalize("seq")

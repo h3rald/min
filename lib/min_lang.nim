@@ -40,34 +40,34 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("module-symbols") do (i: In):
-    var m: MinValue
-    i.reqQuotation m
+    let vals = i.expect("quot")
+    let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.symbols.keys:
       q.add s.newVal
     i.push q.newVal(i.scope)
 
   def.symbol("module-sigils") do (i: In):
-    var m: MinValue
-    i.reqQuotation m
+    let vals = i.expect("quot")
+    let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.sigils.keys:
       q.add s.newVal
     i.push q.newVal(i.scope)
 
   def.symbol("from-json") do (i: In):
-    var s: MinValue
-    i.reqString s
+    let vals = i.expect("string")
+    let s = vals[0]
     i.push i.fromJson(s.getString.parseJson)
 
   def.symbol("to-json") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect "quot"
+    let q = vals[0]
     i.push(($((%q).pretty)).newVal)
 
   def.symbol("loglevel") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     var str = s.getString
     echo "Log level: ", setLogLevel(str)
 
@@ -77,9 +77,9 @@ proc lang_module*(i: In) =
   # Language constructs
 
   def.symbol("define") do (i: In):
-    var sym: MinValue
-    i.reqStringLike sym
-    var q1 = i.pop # existing (auto-quoted)
+    let vals = i.expect("'sym", "a")
+    let sym = vals[0]
+    var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
     if not q1.isQuotation:
       q1 = @[q1].newVal(i.scope)
@@ -92,9 +92,9 @@ proc lang_module*(i: In) =
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
 
   def.symbol("bind") do (i: In):
-    var sym: MinValue
-    i.reqStringLike sym
-    var q1 = i.pop # existing (auto-quoted)
+    let vals = i.expect("'sym", "a")
+    let sym = vals[0]
+    var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
     if not q1.isQuotation:
       q1 = @[q1].newVal(i.scope)
@@ -105,29 +105,30 @@ proc lang_module*(i: In) =
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
   def.symbol("delete") do (i: In):
-    var sym: MinValue 
-    i.reqStringLike sym
+    let vals = i.expect("'sym")
+    let sym = vals[0]
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
       raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
 
   def.symbol("module") do (i: In):
-    var code, name: MinValue
-    i.reqStringLike name
-    i.reqQuotation code
+    let vals = i.expect("'sym", "quot")
+    let name = vals[0]
+    var code = vals[1]
     code.filename = i.filename
     i.unquote(code)
     info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
     i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
   def.symbol("import") do (i: In):
-    var mdl, rawName: MinValue
+    var vals = i.expect("'sym")
+    let rawName = vals[0]
     var name: string
-    i.reqStringLike rawName
     name = rawName.getString
     var op = i.scope.getSymbol(name)
     i.apply(op)
-    i.reqQuotation mdl
+    vals = i.expect("quot")
+    let mdl = vals[0]
     info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.scope.symbols.len, $mdl.scope.sigils.len])
     for sym, val in mdl.scope.symbols.pairs:
       if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
@@ -141,13 +142,13 @@ proc lang_module*(i: In) =
       i.scope.sigils[sig] = val
   
   def.symbol("eval") do (i: In):
-    var s: MinValue
-    i.reqString s
+    let vals = i.expect("string")
+    let s = vals[0]
     i.eval s.strVal
 
   def.symbol("load") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     var file = s.getString
     if not file.endsWith(".min"):
       file = file & ".min"
@@ -158,8 +159,9 @@ proc lang_module*(i: In) =
     i.load file
 
   def.symbol("with") do (i: In):
-    var qscope, qprog: MinValue
-    i.reqTwoQuotations qscope, qprog
+    let vals = i.expect("quot", "quot")
+    var qscope = vals[0]
+    let qprog = vals[1]
     if qscope.qVal.len > 0:
       # System modules are empty quotes and don't need to be unquoted
       i.unquote(qscope)
@@ -168,8 +170,9 @@ proc lang_module*(i: In) =
         i.push v
 
   def.symbol("publish") do (i: In):
-    var qscope, str: MinValue
-    i.reqQuotationAndStringLike qscope, str
+    let vals = i.expect("quot", "'sym")
+    let qscope = vals[0]
+    let str = vals[1]
     let sym = str.getString
     if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
@@ -185,8 +188,8 @@ proc lang_module*(i: In) =
     qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
 
   def.symbol("source") do (i: In):
-    var s: MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     let str = s.getString
     let sym = i.scope.getSymbol(str)
     if sym.kind == minValOp:
@@ -195,9 +198,9 @@ proc lang_module*(i: In) =
       raiseInvalid("No source available for native symbol '$1'." % str)
 
   def.symbol("call") do (i: In):
-    var symbol, q: MinValue
-    i.reqStringLike symbol
-    i.reqQuotation  q
+    let vals = i.expect("'sym", "quot")
+    let symbol = vals[0]
+    let q = vals[1]
     let s = symbol.getString
     let origScope = i.scope
     i.scope = q.scope
@@ -206,16 +209,16 @@ proc lang_module*(i: In) =
     i.scope = origScope
 
   def.symbol("raise") do (i: In):
-    var err: MinValue
-    i.reqDictionary err
+    let vals = i.expect("dict")
+    let err = vals[0]
     if err.dhas("error".newSym) and err.dhas("message".newSym):
       raiseRuntime("($1) $2" % [err.dget("error".newVal).getString, err.dget("message".newVal).getString], err.qVal)
     else:
       raiseInvalid("Invalid error dictionary")
 
   def.symbol("format-error") do (i: In):
-    var err: MinValue
-    i.reqDictionary err
+    let vals = i.expect("dict")
+    let err = vals[0]
     if err.dhas("error".newSym) and err.dhas("message".newSym):
       var msg: string
       var list = newSeq[MinValue]()
@@ -237,8 +240,8 @@ proc lang_module*(i: In) =
       raiseInvalid("Invalid error dictionary")
 
   def.symbol("try") do (i: In):
-    var prog: MinValue
-    i.reqQuotation prog
+    let vals = i.expect("quot")
+    let prog = vals[0]
     if prog.qVal.len == 0:
       raiseInvalid("Quotation must contain at least one element")
     var code = prog.qVal[0]
@@ -280,19 +283,22 @@ proc lang_module*(i: In) =
         i.unquote(final)
 
   def.symbol("quote") do (i: In):
-    let a = i.pop
+    let vals = i.expect("a")
+    let a = vals[0]
     i.push @[a].newVal(i.scope)
   
   def.symbol("unquote") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    var q = vals[0]
     i.unquote(q)
   
   # Conditionals
 
   def.symbol("if") do (i: In):
-    var fpath, tpath, check: MinValue
-    i.reqThreeQuotations fpath, tpath, check
+    let vals = i.expect("quot", "quot", "quot")
+    var fpath = vals[0]
+    var tpath = vals[1]
+    var check = vals[2]
     var stack = i.stack
     i.unquote(check)
     let res = i.pop
@@ -305,8 +311,9 @@ proc lang_module*(i: In) =
       i.unquote(fpath)
 
   def.symbol("when") do (i: In):
-    var tpath, check: MinValue
-    i.reqTwoQuotations tpath, check
+    let vals = i.expect("quot", "quot")
+    var tpath = vals[0]
+    var check = vals[1]
     var stack = i.stack
     i.unquote(check)
     let res = i.pop
@@ -317,8 +324,9 @@ proc lang_module*(i: In) =
       i.unquote(tpath)
 
   def.symbol("unless") do (i: In):
-    var tpath, check: MinValue
-    i.reqTwoQuotations tpath, check
+    let vals = i.expect("quot", "quot")
+    var tpath = vals[0]
+    var check = vals[1]
     var stack = i.stack
     i.unquote(check)
     let res = i.pop
@@ -334,8 +342,8 @@ proc lang_module*(i: In) =
   #   ((true) ("Exactly 3" put!))
   # ) case
   def.symbol("case") do (i: In):
-    var cases: MinValue
-    i.reqQuotation cases
+    let vals = i.expect("quot")
+    var cases = vals[0]
     if cases.qVal.len == 0:
       raiseInvalid("Empty case operator")
     var k = 0
@@ -360,23 +368,26 @@ proc lang_module*(i: In) =
   # Loops
 
   def.symbol("foreach") do (i: In):
-    var prog, list: MinValue
-    i.reqTwoQuotations prog, list
+    let vals = i.expect("quot", "quot")
+    var prog = vals[0]
+    var list = vals[1]
     for litem in list.qVal:
       i.push litem
       i.unquote(prog)
   
   def.symbol("times") do (i: In):
-    var t, prog: MinValue
-    i.reqIntAndQuotation t, prog
+    let vals = i.expect("int", "quot")
+    var t = vals[0]
+    var prog = vals[1]
     if t.intVal < 1:
       raiseInvalid("A non-zero natural number is required")
     for c in 1..t.intVal:
       i.unquote(prog)
   
   def.symbol("while") do (i: In):
-    var d, b: MinValue
-    i.reqTwoQuotations d, b
+    let vals = i.expect("quot", "quot")
+    var d = vals[0]
+    var b = vals[1]
     for e in b.qVal:
       i.push e
     i.unquote(b)
@@ -390,8 +401,11 @@ proc lang_module*(i: In) =
   # Other
   
   def.symbol("linrec") do (i: In):
-    var r2, r1, t, p: MinValue
-    i.reqFourQuotations r2, r1, t, p
+    let vals = i.expect("quot", "quot", "quot", "quot")
+    var r2 = vals[0]
+    var r1 = vals[1]
+    var t = vals[2]
+    var p = vals[3]
     proc linrec(i: In, p, t, r1, r2: var MinValue) =
       i.unquote(p)
       var check = i.pop
@@ -409,8 +423,8 @@ proc lang_module*(i: In) =
   # Save/load symbols
   
   def.symbol("save-symbol") do (i: In):
-    var s:MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     let sym = s.getString
     let op = i.scope.getSymbol(sym)
     if op.kind == minProcOp:
@@ -420,8 +434,8 @@ proc lang_module*(i: In) =
     MINSYMBOLS.writeFile(json.pretty)
 
   def.symbol("load-symbol") do (i: In):
-    var s:MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     let sym = s.getString
     let json = MINSYMBOLS.readFile.parseJson
     if not json.hasKey(sym):
@@ -437,8 +451,8 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("remove-symbol") do (i: In):
-    var s:MinValue
-    i.reqStringLike s
+    let vals = i.expect("'sym")
+    let s = vals[0]
     let sym = s.getString
     var json = MINSYMBOLS.readFile.parseJson
     if not json.hasKey(sym):
@@ -447,31 +461,31 @@ proc lang_module*(i: In) =
     MINSYMBOLS.writeFile(json.pretty)
 
   def.symbol("seal") do (i: In):
-    var sym: MinValue 
-    i.reqStringLike sym
+    let vals = i.expect("'sym")
+    let sym = vals[0]
     var s = i.scope.getSymbol(sym.getString) 
     s.sealed = true
     i.scope.setSymbol(sym.getString, s)
 
   def.symbol("unseal") do (i: In):
-    var sym: MinValue 
-    i.reqStringLike sym
+    let vals = i.expect("'sym")
+    let sym = vals[0]
     var s = i.scope.getSymbol(sym.getString) 
     s.sealed = false
     i.scope.setSymbol(sym.getString, s, true)
 
   def.symbol("quote-bind") do (i: In):
-    var s, m: MinValue
-    i.reqString(s)
-    m = i.pop
+    let vals = i.expect("string", "a")
+    let s = vals[0]
+    let m = vals[1]
     i.push @[m].newVal(i.scope)
     i.push s
     i.push "bind".newSym
 
   def.symbol("quote-define") do (i: In):
-    var s, m: MinValue
-    i.reqString(s)
-    m = i.pop
+    let vals = i.expect("string", "a")
+    let s = vals[0]
+    let m = vals[1]
     i.push @[m].newVal(i.scope)
     i.push s
     i.push "define".newSym
@@ -503,8 +517,8 @@ proc lang_module*(i: In) =
   # Sigils
 
   def.sigil("'") do (i: In):
-    var s: MinValue
-    i.reqString s
+    let vals = i.expect("string")
+    let s = vals[0]
     i.push(@[s.strVal.newSym].newVal(i.scope))
 
   def.sigil(":") do (i: In):

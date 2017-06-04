@@ -52,8 +52,9 @@ proc io_module*(i: In) =
     quit(100)
 
   def.symbol("column-print") do (i: In):
-    var n, q: MinValue
-    i.reqIntAndQuotation n, q
+    let vals = i.expect("int", "quot")
+    let n = vals[0]
+    let q = vals[1]
     var c = 0
     for s in q.qVal:
       c.inc
@@ -71,15 +72,15 @@ proc io_module*(i: In) =
     i.push ed.password("Enter Password: ").newVal
 
   def.symbol("ask") do (i: In):
-    var s: MinValue
     var ed = initEditor()
-    i.reqString s
+    let vals = i.expect("string")
+    let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
   def.symbol("confirm") do (i: In):
-    var s: MinValue
     var ed = initEditor()
-    i.reqString s
+    let vals = i.expect("string")
+    let s = vals[0]
     proc confirm(): bool =
       let answer = ed.readLine(s.getString & " [yes/no]: ")
       if answer.match("^y(es)?$", "i"):
@@ -92,9 +93,10 @@ proc io_module*(i: In) =
     i.push confirm().newVal
 
   def.symbol("choose") do (i: In):
-    var q, s: MinValue
     var ed = initEditor()
-    i.reqStringLikeAndQuotation s, q
+    let vals = i.expect("'sym", "quot")
+    let s = vals[0]
+    var q = vals[1]
     if q.qVal.len <= 0:
       raiseInvalid("No choices to display")
     stdout.writeLine(s.getString)
@@ -127,18 +129,20 @@ proc io_module*(i: In) =
     i.pop.print
 
   def.symbol("fread") do (i: In):
-    var a: MinValue
-    i.reqString a
+    let vals = i.expect("string")
+    let a = vals[0]
     i.push newVal(a.strVal.readFile)
   
   def.symbol("fwrite") do (i: In):
-    var a, b: MinValue
-    i.reqTwoStrings a, b
+    let vals = i.expect("string", "string")
+    let a = vals[0]
+    let b = vals[1]
     a.strVal.writeFile(b.strVal)
   
   def.symbol("fappend") do (i: In):
-    var a, b: MinValue
-    i.reqTwoStrings a, b
+    let vals = i.expect("string", "string")
+    let a = vals[0]
+    let b = vals[1]
     var f:File
     discard f.open(a.strVal, fmAppend)
     f.write(b.strVal)

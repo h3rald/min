@@ -20,32 +20,29 @@ proc stack_module*(i: In)=
     i.push i.stack.newVal(i.scope)
 
   def.symbol("set-stack") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
+    let vals = i.expect("quot")
+    let q = vals[0]
     i.stack = q.qVal
   
   def.symbol("id") do (i: In):
     discard
   
   def.symbol("pop") do (i: In):
-    if i.stack.len < 1:
-      raiseEmptyStack()
     discard i.pop
   
   def.symbol("dup") do (i: In):
     i.push i.peek
 
   def.symbol("dip") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
-    let v = i.pop
+    let vals = i.expect("quot", "a")
+    var q = vals[0]
+    let v = vals[1]
     i.unquote(q)
     i.push v
 
   def.symbol("nip") do (i: In):
-    var a, b: MinValue
-    a = i.pop
-    b = i.pop
+    let vals = i.expect("a", "a")
+    let a = vals[0]
     i.push a
   
   def.symbol("cleave") do (i: In):
@@ -71,60 +68,60 @@ proc stack_module*(i: In)=
       count.dec
   
   def.symbol("keep") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
-    let v = i.pop
+    let vals = i.expect("quot", "a")
+    var q = vals[0]
+    let v = vals[1]
     i.push v
     i.unquote(q)
     i.push v
   
   def.symbol("swap") do (i: In):
-    i.reqStackSize 2
-    let a = i.pop
-    let b = i.pop
+    let vals = i.expect("a", "a")
+    let a = vals[0]
+    let b = vals[1]
     i.push a
     i.push b
 
   def.symbol("over") do (i: In):
-    i.reqStackSize 2
-    let a = i.pop
-    let b = i.pop
+    let vals = i.expect("a", "a")
+    let a = vals[0]
+    let b = vals[1]
     i.push b
     i.push a
     i.push b
 
   def.symbol("pick") do (i: In):
-    i.reqStackSize 3
-    let a = i.pop
-    let b = i.pop
-    let c = i.pop
+    let vals = i.expect("a", "a", "a")
+    let a = vals[0]
+    let b = vals[1]
+    let c = vals[2]
     i.push c
     i.push b
     i.push a
     i.push c
 
   def.symbol("rollup") do (i: In):
-    i.reqStackSize 3
-    let first = i.pop
-    let second = i.pop
-    let third = i.pop
+    let vals = i.expect("a", "a", "a")
+    let first = vals[0]
+    let second = vals[1]
+    let third = vals[2]
     i.push first
     i.push second
     i.push third
 
   def.symbol("rolldown") do (i: In):
-    i.reqStackSize 3
-    let first = i.pop
-    let second = i.pop
-    let third = i.pop
+    let vals = i.expect("a", "a", "a")
+    let first = vals[0]
+    let second = vals[1]
+    let third = vals[2]
     i.push second
     i.push first
     i.push third
 
   def.symbol("cons") do (i: In):
-    var q: MinValue
-    i.reqQuotation q
-    let v = i.pop
+    let vals = i.expect("quot", "a")
+    let q = vals[0]
+    let v = vals[1]
     q.qVal = @[v] & q.qVal
     i.push q
 
@@ -133,8 +130,9 @@ proc stack_module*(i: In)=
     i.push "cons".newSym
   
   def.symbol("sip") do (i: In):
-    var a, b: MinValue 
-    i.reqTwoQuotations a, b
+    let vals = i.expect("quot", "quot")
+    var a = vals[0]
+    let b = vals[1]
     i.push b
     i.unquote(a)
     i.push b
