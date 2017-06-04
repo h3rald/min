@@ -41,9 +41,13 @@ title: Welcome to min
     <p>The following example shows how to find recursively all <code>.c</code> files in the current folder that are bigger than 100KB:</p>
     <pre>
       <code>
-        . ls-r  
-        ("\.c$" match) filter 
-        (fsize 100000 >) filter
+        . ls-r 
+        ( 
+          dup 
+          "\.c$" match 
+          (fsize 100000 >) dip 
+          and
+        ) filter
       </code>
     </pre>
     <p>The following example shows how to calculate the factorial of 5 using the <code>linrec</code> combinator:</p>
