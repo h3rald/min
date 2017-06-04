@@ -42,6 +42,14 @@ Returns a list of all arguments passed to the current program.#}
 {#op||bind||{{any}} {{sl}}||{{null}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
+{#op||bool||{{any}}||{{b}}||
+> Converts {{any}} to a boolean value based on the following rules:
+> 
+>  * If {{any}} is a boolean value, no conversion is performed.
+>  * If {{any}} is a non-zero numeric value, it is converted to {{t}}, otherwise it is converted to {{f}}.
+>  * If {{any}} is a non-empty quotation, it is converted to {{t}}, otherwise it is converted to {{f}}.
+>  * If {{any}} is a non-empty string or not `"false"`, it is converted to {{t}}, otherwise it is converted to {{f}}.#}
+
 {#op||call||{{q}} {{sl}}||{{a0p}}||
 Calls operator {{sl}} defined in scope {{q}}. #}
 
@@ -95,6 +103,15 @@ Exits the program or shell. #}
 > > 
 > > produces: `(1 "test" 3.4)`#}
 
+{#op||float||{{any}}||{{flt}}||
+> Converts {{any}} to an integer value based on the following rules:
+> 
+>   * If {{any}} is {{t}}, it is converted to `1.0`.
+>   * If {{any}} is {{f}}, it is converted to `0.0`.
+>   * If {{any}} is a integer, it is converted to float value.
+>   * If {{any}} is a float, no conversion is performed.
+>   * If {{any}} is a string, it is parsed as a float value.#}
+
 {#op||foreach||{{q1}} {{q2}}||{{a0p}}||
 Applies the quotation {{q2}} to each element of {{q1}}.#}
 
@@ -117,6 +134,15 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#
 
 {#op||import||{{sl}}||{{null}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
+
+{#op||int||{{any}}||{{i}}||
+> Converts {{any}} to an integer value based on the following rules:
+> 
+>   * If {{any}} is {{t}}, it is converted to `1`.
+>   * If {{any}} is {{f}}, it is converted to `0`.
+>   * If {{any}} is an integer, no conversion is performed.
+>   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
+>   * If {{any}} is a string, it is parsed as an integer value.#}
 
 {#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:
@@ -205,6 +231,9 @@ Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quo
 
 {#op||stored-symbols||{{null}}||({{s0p}})||
 Returns a quotation containing all symbols stored in the [.min\_symbols](class:file) file. #}
+
+{#op||string||{{any}}||{{s}}||
+Converts {{any}} to its string representation.#}
 
 {#op||symbols||{{null}}||({{s0p}})||
 Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}

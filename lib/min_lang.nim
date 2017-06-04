@@ -520,6 +520,56 @@ proc lang_module*(i: In) =
     i.reqQuotationOfSymbols q
     i.push(i.expect(q.qVal.mapIt(it.getString())).newVal(i.scope))
 
+  # Converters
+
+  def.symbol("string") do (i: In):
+    let s = i.pop
+    i.push(($$s).newVal)
+
+  def.symbol("bool") do (i: In):
+    let v = i.pop
+    let strcheck = (v.isString and (v.getString == "false" or v.getString == ""))
+    let intcheck = v.isInt and v.intVal == 0
+    let floatcheck = v.isFloat and v.floatVal == 0
+    let boolcheck = v.isBool and v.boolVal == false
+    let quotcheck = v.isQuotation and v.qVal.len == 0
+    if strcheck or intcheck or floatcheck or boolcheck or quotcheck:
+      i.push false.newVal
+    else:
+      i.push true.newVal
+
+  def.symbol("int") do (i: In):
+    let s = i.pop
+    if s.isString:
+      i.push s.getString.parseInt.newVal
+    elif s.isFloat:
+      i.push s.floatVal.int.newVal
+    elif s.isInt:
+      i.push s
+    elif s.isBool:
+      if s.boolVal == true:
+        i.push 1.int.newVal
+      else:
+        i.push 0.int.newVal
+    else:
+      raiseInvalid("Cannot convert a quotation to an integer.")
+
+  def.symbol("float") do (i: In):
+    let s = i.pop
+    if s.isString:
+      i.push s.getString.parseFloat.newVal
+    elif s.isInt:
+      i.push s.intVal.float.newVal
+    elif s.isFloat:
+      i.push s
+    elif s.isBool:
+      if s.boolVal == true:
+        i.push 1.float.newVal
+      else:
+        i.push 0.float.newVal
+    else:
+      raiseInvalid("Cannot convert a quotation to float.")
+
   # Sigils
 
   def.sigil("'") do (i: In):
