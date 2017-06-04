@@ -13,7 +13,7 @@ proc logic_module*(i: In)=
   let def = i.define()
   
   def.symbol(">") do (i: In):
-    var n2, n1: MinValue
+    var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n2, n1
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
@@ -28,7 +28,7 @@ proc logic_module*(i: In)=
         i.push newVal(n1.strVal > n2.strVal)
   
   def.symbol(">=") do (i: In):
-    var n2, n1: MinValue
+    var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n2, n1
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
@@ -43,7 +43,7 @@ proc logic_module*(i: In)=
         i.push newVal(n1.strVal >= n2.strVal)
   
   def.symbol("<") do (i: In):
-    var n2, n1: MinValue
+    var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n1, n2
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
@@ -58,7 +58,7 @@ proc logic_module*(i: In)=
         i.push newVal(n1.strVal > n2.strVal)
   
   def.symbol("<=") do (i: In):
-    var n2, n1: MinValue
+    var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n1, n2
     if n1.isNumber and n2.isNumber:
       if n1.isInt and n2.isInt:
@@ -113,7 +113,7 @@ proc logic_module*(i: In)=
     else:
       i.push false.newVal
   
-  def.symbol("int?") do (i: In):
+  def.symbol("integer?") do (i: In):
     if i.peek.kind == minInt:
       i.push true.newVal
     else:
@@ -131,7 +131,7 @@ proc logic_module*(i: In)=
     else:
       i.push false.newVal
   
-  def.symbol("bool?") do (i: In):
+  def.symbol("boolean?") do (i: In):
     if i.peek.kind == minBool:
       i.push true.newVal
     else:

@@ -97,12 +97,12 @@
   (false string? false ==) assert
   (("a" 2 c) string? false ==) assert
 
-  ("a" int? false ==) assert
-  (1 int?) assert
-  (1.0 int? false ==) assert
-  (true int? false ==) assert
-  (false int? false ==) assert
-  (("a" 2 c) int? false ==) assert
+  ("a" integer? false ==) assert
+  (1 integer?) assert
+  (1.0 integer? false ==) assert
+  (true integer? false ==) assert
+  (false integer? false ==) assert
+  (("a" 2 c) integer? false ==) assert
 
   ("a" float? false ==) assert
   (1 float? false ==) assert
@@ -111,12 +111,12 @@
   (false float? false ==) assert
   (("a" 2 c) float? false ==) assert
 
-  ("a" bool? false ==) assert
-  (1 bool? false ==) assert
-  (1.0 bool? false ==) assert
-  (true bool?) assert
-  (false bool?) assert
-  (("a" 2 c) bool? false ==) assert
+  ("a" boolean? false ==) assert
+  (1 boolean? false ==) assert
+  (1.0 boolean? false ==) assert
+  (true boolean?) assert
+  (false boolean?) assert
+  (("a" 2 c) boolean? false ==) assert
 
   ("a" number? false ==) assert
   (1 number?) assert

@@ -26,6 +26,9 @@
 {{s1 => [string<sub>1</sub>](class:kwd)}}
 {{s2 => [string<sub>2</sub>](class:kwd)}}
 {{b => [bool](class:kwd)}}
+{{b1 => [bool<sub>1</sub>](class:kwd)}}
+{{b2 => [bool<sub>2</sub>](class:kwd)}}
+{{b3 => [bool<sub>3</sub>](class:kwd)}}
 {{01 => [<sub>?</sub>](class:kwd)}}
 {{0p => [<sub>\*</sub>](class:kwd)}}
 {{1p => [<sub>\+</sub>](class:kwd)}}
