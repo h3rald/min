@@ -1,6 +1,6 @@
 -----
-content-type: page
-title: Welcome to min
+content-type: "page"
+title: "Welcome to min"
 -----
 <div class="note">
   <p>Under Construction</p>

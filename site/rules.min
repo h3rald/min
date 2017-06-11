@@ -1,5 +1,4 @@
 'hastysite import
-'stack import
 
 ;Routing
 (
@@ -51,11 +50,11 @@
 ) :process-content
 
 ;Main
-modified (
+contents (
   dup
   (
     ((/id "^_includes" match) ()) ;Ignore files starting with underscore.
-    ((asset?) (copy2output))
-    ((content?) (process-content set-destination output-fwrite)) 
+    ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach
+assets (copy2output) foreach

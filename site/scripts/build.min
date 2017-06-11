@@ -1,0 +1,8 @@
+;Builds a site by processing contents and assets.
+'hastysite import
+
+"Preprocessing..." notice
+preprocess
+"Processing rules.." notice
+process-rules
+"All done." notice

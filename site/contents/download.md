@@ -1,6 +1,6 @@
 -----
-content-type: page
-title: Download
+content-type: "page"
+title: "Download"
 -----
 You can download one of the following pre-built min binaries:
 

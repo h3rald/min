@@ -1,0 +1,8 @@
+;Deletes all temporary and output files.
+'hastysite import
+
+"Cleaning temporary folder..." notice
+clean-temp
+"Cleaning output folder..." notice
+clean-output
+"All done." notice

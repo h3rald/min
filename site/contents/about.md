@@ -1,5 +1,5 @@
 -----
-content-type: page
-title: About
+content-type: "page"
+title: "About"
 -----
 Coming soon...
