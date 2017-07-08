@@ -8,6 +8,7 @@
 {{3 => [<sub>3</sub>](class:kwd)}}
 {{4 => [<sub>4</sub>](class:kwd)}}
 {{e => [err](class:kwd)}}
+{{tinfo => [tinfo](class:kwd)}}
 {{d => [dict](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}

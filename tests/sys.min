@@ -63,9 +63,7 @@
 
    ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) assert
 
-  "extracted" ls 'rm foreach
-  . ls 'rm foreach
-  .. cd 
+  .. cd
 
   ("systest" rmdir . ls (. "systest") => "/" join in? false ==) assert
 
