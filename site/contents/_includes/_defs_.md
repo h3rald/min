@@ -15,7 +15,11 @@
 {{i => [int](class:kwd)}}
 {{i1 => [a<sub>1</sub>](class:kwd)}}
 {{i2 => [a<sub>2</sub>](class:kwd)}}
+{{i3 => [a<sub>3</sub>](class:kwd)}}
 {{n => [num](class:kwd)}}
+{{n1 => [num<sub>1</sub>](class:kwd)}}
+{{n2 => [num<sub>2</sub>](class:kwd)}}
+{{n3 => [num<sub>3</sub>](class:kwd)}}
 {{any => [a](class:kwd)}}
 {{a1 => [a<sub>1</sub>](class:kwd)}}
 {{a2 => [a<sub>2</sub>](class:kwd)}}
