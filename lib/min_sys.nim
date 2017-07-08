@@ -106,8 +106,6 @@ proc sys_module*(i: In)=
     let f = v.getString
     if f.existsFile:
       f.removeFile
-    elif f.existsDir:
-      f.removeDir
     else:
       raiseInvalid("File '$1' does not exist." % f)
     
@@ -166,13 +164,13 @@ proc sys_module*(i: In)=
   def.symbol("symlink") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let dest = vals[0]
-    let src = vals[0]
+    let src = vals[1]
     src.getString.createSymlink dest.getString
 
   def.symbol("hardlink") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let dest = vals[0]
-    let src = vals[0]
+    let src = vals[1]
     src.getString.createHardlink dest.getString
 
   def.symbol("filename") do (i: In):
