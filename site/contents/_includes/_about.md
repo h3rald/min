@@ -21,16 +21,16 @@ Also, I wanted it to be fully self-contained, cross platform, and tiny. Less tha
 
 I am currently building a static site generator called [HastySite](https://github.com/h3rald/hastysite), that also powers <https://min-lang.org>. HastySite internally uses min as the language to write the [rules](https://github.com/h3rald/min/blob/master/site/rules.min) to process the source files of the site, and also all its [scripts](https://github.com/h3rald/min/tree/master/site/scripts).
 
-## How
+## How?
 
 min is developed entirely in [nim](https://nim-lang.org) -- the name is (almost) entirely a coincidence. I wanted to call it _minim_ but then shortened it for more... minimalism.
 
 min's parser started off as a fork of nim's JSON parser -- adapted to process a concatenative programming language with less primitive types than JSON. It is interpreted in the traditional sense: no bytecode, no JIT, just plain read, parse and run. 
 
-## Who
+## Who?
 
 I am a [someone](https://www.linkedin.com/in/fabiocevasco) who is passionate about technology and who _does not_ build new programming languages for a living.
 
-## When
+## When?
 
 min's source code [repository](https://github.com/h3rald/min) was created on November 8^th 2014. Do your maths.

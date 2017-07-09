@@ -2,10 +2,6 @@
 content-type: "page"
 title: "Welcome to min"
 -----
-<div class="note">
-  <p>Under Construction</p>
-  <p>This site is under construction and the language documentation is incomplete. However, you can already <a href="/download/">download</a> a pre-release of min to try it out.</p>
-</div>
 <div class="pure-g">
   <section class="pitch pure-u-1 pure-u-md-2-3">
     <em>min</em> is a functional, concatenative programming language 
@@ -13,7 +9,8 @@ title: "Welcome to min"
     REPL. All packed in less than 1MB.
   </section>
   <section class="centered pure-u-1 pure-u-md-1-3">
-    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v{{$version}}</a>
+    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v{{$version}}</a><br />
+    (<em>pre-release</em>)
     <br>
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 

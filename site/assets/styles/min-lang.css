@@ -244,3 +244,10 @@ dl {
   font-weight: bold;
   content: "sigil";
 }
+
+footer {
+  font-size: 80%;
+  text-align: center;
+  margin: auto;
+  padding: 5px;
+}
