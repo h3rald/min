@@ -14,6 +14,8 @@ newline
     (3 a + (5 'a define a) -> +) -> a + 12 ==) assert
 
   (symbols "a" in? false ==) assert
+
+  ('abcdefg defined? false ==) assert
   
   5 :five
   (symbols "five" in?) assert

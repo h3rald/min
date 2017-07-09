@@ -20,7 +20,8 @@ import
 proc lang_module*(i: In) =
   let def = i.scope
   def.symbol("exit") do (i: In):
-    quit(0)
+    let vals = i.expect("int")
+    quit(vals[0].intVal.int)
    
   def.symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
@@ -30,6 +31,10 @@ proc lang_module*(i: In) =
         q.add s.newVal
       scope = scope.parent
     i.push q.newVal(i.scope)
+
+  def.symbol("defined?") do (i: In):
+    let vals = i.expect("'sym")
+    i.push(i.scope.hasSymbol(vals[0].getString).newVal)
 
   def.symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)

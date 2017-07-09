@@ -49,7 +49,10 @@
     =result
     result
     (ok !=)
-    (padding "FAILED: " print! result puts!)
+    (
+      ('failures defined?) (failures succ @failures) () if
+      padding "FAILED: " print! result puts!
+    )
     ()
     if
   )

@@ -30,7 +30,7 @@
   ("systest" cd . "systest" match) assert
   .. cd
 
-  ("minim -v" & 'output dget "\." match) assert
+  ("./min -v" & 'output dget "\." match) assert
 
   ("PATH" env?) assert
 

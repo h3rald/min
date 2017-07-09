@@ -1,4 +1,5 @@
 ; Load test files
+0 :failures
 'lang    load
 'stack   load
 'seq     load
@@ -10,3 +11,4 @@
 'time    load
 'fs      load
 'crypto  load
+failures exit

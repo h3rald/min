@@ -49,7 +49,6 @@ before_script:
     - export PATH="$PATH:$PWD/nifty:$PWD/nim-$BRANCH/bin"
 script:
     - nifty install
-    - nifty build discount
     - nim c --cc:$CC --verbosity:0 -d:release min.nim
     - ./min tests/all.min
 cache:
