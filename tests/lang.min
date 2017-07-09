@@ -1,13 +1,6 @@
 'test load
 'test import
 
-newline 
-symbols size :total-symbols
-sigils size :total-sigils
-"Total Symbols: $1" (total-symbols) => % puts! 
-"Total Sigils: $1" (total-sigils) => % puts!
-newline 
-
 "lang" describe
 
   (2 'a define
@@ -145,7 +138,7 @@ newline
     ) case
   ) assert
 
-  (time module-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp") ==) assert
+  (time module-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) assert
 
   (sys module-sigils ("!" "$" "&") ==) assert
 

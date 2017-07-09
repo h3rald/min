@@ -11,11 +11,11 @@
 
   (1464951736 "yy-MM-dd" tformat "16-06-03" ==) assert
 
-  (1464951736 timeinfo to-timestamp puts 1464951736 ==) assert
+  (1464951736 timeinfo to-timestamp 1464951736 ==) assert
 
   (1464951736 timeinfo 'second dget 16 ==) assert
 
-  (1464951736 timeinfo 'timezone dget -3600 ==) assert
+  (1464951736 timeinfo 'timezone dget integer?) assert
 
   report
   clear-stack

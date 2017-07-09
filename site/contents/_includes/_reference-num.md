@@ -14,7 +14,7 @@ Multiplies {{n1}} by {{n2}}. #}
 Divides {{n1}} by {{n2}}. #}
 
 {#op||even?||{{i}}||{{b}}||
-Returns **true** if {{i}} is even, **false** otherwise. #}
+Returns {{t}} if {{i}} is even, {{f}} otherwise. #}
 
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
@@ -23,7 +23,7 @@ Divides {{i1}} by {{i2}} (integer division). #}
 Returns the integer module of {{i1}} divided by {{i2}}. #}
 
 {#op||odd?||{{i}}||{{b}}||
-Returns **true** if {{i}} is odd, **false** otherwise. #}
+Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
 
 {#op||pred||{{i1}}||{{i2}}||
 Returns the predecessor of {{i1}}.#}

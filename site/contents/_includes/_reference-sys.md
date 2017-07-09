@@ -38,19 +38,19 @@ Copies the file or directory {{sl1}} to {{sl2}}. #}
 Returns the host CPU. It can be one of the following strings i386, alpha, powerpc, powerpc64, powerpc64el, sparc, amd64, mips, mipsel, arm, arm64. #}
 
 {#op||env?||{{sl}}||{{b}}||
-Returns **true** if environment variable {{sl}} exists, **false** otherwise. #}
+Returns {{t}} if environment variable {{sl}} exists, {{f}} otherwise. #}
 
 {#op||dir?||{{sl}}||{{b}}||
-Returns **true** if the specified path {{sl}} exists and is a directory. #}
+Returns {{t}} if the specified path {{sl}} exists and is a directory. #}
 
 {#op||dirname||{{sl}}||{{s}}||
 Returns the path of the directory containing path {{sl}}.#}
 
 {#op||exists?||{{sl}}||{{b}}||
-Returns **true** if the specified file or directory {{sl}} exists. #}
+Returns {{t}} if the specified file or directory {{sl}} exists. #}
 
 {#op||file?||{{sl}}||{{b}}||
-Returns **true** if the specified path {{sl}} exists and is a file. #}
+Returns {{t}} if the specified path {{sl}} exists and is a file. #}
 
 {#op||filename||{{sl}}||{{s}}||
 Returns the file name of path {{sl}}.#}
@@ -95,7 +95,7 @@ Halts program execution for {{i}} milliseconds.#}
 Creates symlink {{sl2}} for file or directory {{sl1}}. #}
 
 {#op||symlink?||{{sl}}||{{b}}||
-Returns **true** if the specified path {{sl}} exists and is a symbolic link. #}
+Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}
 
 {#op||system||{{sl}}||{{null}}||
 Executes the external command {{sl}} in the current directory. #}

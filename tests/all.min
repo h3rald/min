@@ -1,5 +1,11 @@
 ; Load test files
 0 :failures
+symbols size :total-symbols
+sigils size :total-sigils
+"=" 70 repeat puts!
+"Total Symbols: $1" (total-symbols) => % puts! 
+"Total Sigils: $1" (total-sigils) => % puts!
+"=" 70 repeat puts!
 'lang    load
 'stack   load
 'seq     load
@@ -11,4 +17,6 @@
 'time    load
 'fs      load
 'crypto  load
+"=" 70 repeat puts!
+"Total Failures: $1" (failures) => % puts!
 failures exit

@@ -81,14 +81,17 @@ Returns {{t}} if debug mode is on, {{f}} otherwise. #}
 {#op||define||{{any}} {{sl}}||{{null}}||
 Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
+{#op||defined?||{{sl}}||{{b}}||
+Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
+
 {#op||delete||{{sl}}||{{null}}||
 Deletes the specified symbol {{sl}}.#}
 
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
 
-{#op||exit||{{null}}||{{null}}||
-Exits the program or shell. #}
+{#op||exit||{{i}}||{{null}}||
+Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect||{{q1}}||{{q2}}||
 > Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}}.

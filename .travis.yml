@@ -1,9 +1,9 @@
 # Copied from https://github.com/nim-lang/Nim/wiki/TravisCI
 language: c
 env:
-  # Build and test against the master and devel branches of Nim
+  # Build and test against the master branch of Nim
   - BRANCH=master
-  - BRANCH=devel
+  #- BRANCH=devel
 compiler:
   #- gcc
   - clang
