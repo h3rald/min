@@ -25,6 +25,7 @@ title: "Welcome to min"
   <section class="pure-u-1 pure-u-md-1-2">
     <h2>Features</h2>
     <ul>
+      <li>Entirely written in <a href="https://nim-lang.org">nim</a>. It can be easily embedded in other nim programs.</li>
       <li>Follows the <strong>functional</strong> and <strong>concatenative</strong> programming paradigms.</li>
       <li>Provides a wide range of <strong>combinators</strong> for advanced stack manipulation and dequoting.</li>
       <li>Provides a <strong>minimal set of data types</strong>: integer, floats, strings, booleans, and quotations (lists).</li>

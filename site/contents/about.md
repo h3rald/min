@@ -2,4 +2,4 @@
 content-type: "page"
 title: "About"
 -----
-Coming soon...
+{@ _includes/_about.md || 1 @}
