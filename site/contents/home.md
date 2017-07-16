@@ -39,18 +39,16 @@ title: "Welcome to min"
     <p>The following example shows how to find recursively all files in the current folder that were modified in the last hour:</p>
     <pre>
       <code>
-         . ls-r 
-         (mtime now 3600 - >) 
-         filter
-      </code>
+. ls-r 
+(mtime now 3600 - >) 
+filter</code>
     </pre>
     <p>The following example shows how to calculate the factorial of 5 using the <code>linrec</code> combinator:</p>
     <pre>
       <code>
-      5 
-      (dup 0 ==) (1 +) 
-      (dup 1 -) (*) linrec
-      </code>
+5 
+(dup 0 ==) (1 +) 
+(dup 1 -) (*) linrec</code>
     </pre>
   </section>
 </div>

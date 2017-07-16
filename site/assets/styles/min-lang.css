@@ -126,7 +126,7 @@ dl {
   font-size: 100%;
   content: "\e6c5" " ";
 }
-.sidebar, .note, .tip, .warning {
+.sidebar, .note, .tip, .warning, pre {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
@@ -139,6 +139,11 @@ dl {
   background-color: var(--secondary-background);
   font-size: 90%;
 }
+
+.sidebar pre {
+  box-shadow: none;
+}
+
 .sidebar p:first-child,
 .note p:first-child,
 .tip p:first-child,
