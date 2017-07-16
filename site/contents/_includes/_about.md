@@ -33,4 +33,4 @@ I am a [someone](https://www.linkedin.com/in/fabiocevasco) who is passionate abo
 
 ## When?
 
-min's source code [repository](https://github.com/h3rald/min) was created on November 8^th 2014. Do your maths.
+min source code [repository](https://github.com/h3rald/min) was created on November 8^th 2014.

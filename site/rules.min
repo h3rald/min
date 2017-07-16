@@ -42,6 +42,16 @@
 
 (
   =meta
+  meta /path :path
+  " - Preprocessing $1" (path) => % notice
+  meta input-fread :contents
+  contents preprocess-css @contents
+  meta contents %contents #meta
+  meta
+) :preprocess-css-content
+
+(
+  =meta
   meta /ext :ext
   meta
   (
@@ -50,6 +60,19 @@
 ) :process-content
 
 ;Main
+assets (
+  =meta
+  meta /ext :ext
+  meta
+  (
+    ((".css" ext ==) (
+      preprocess-css-content
+      output-fwrite
+    ))
+    ((true) (copy2output))
+  ) case
+) foreach
+
 contents (
   dup
   (
@@ -57,4 +80,3 @@ contents (
     ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach
-assets (copy2output) foreach

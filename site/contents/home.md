@@ -6,7 +6,7 @@ title: "Welcome to min"
   <section class="pitch pure-u-1 pure-u-md-2-3">
     <em>min</em> is a functional, concatenative programming language 
     with a minimalist syntax, a small but practical standard library, and an advanced 
-    REPL. All packed in less than 1MB.
+    REPL. All packed in about 1MB.
   </section>
   <section class="centered pure-u-1 pure-u-md-1-3">
     <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v{{$version}}</a><br />
@@ -31,21 +31,17 @@ title: "Welcome to min"
       <li>Provides a lightweight <strong>module system</strong>.</li>
       <li>Provides <strong>sigils</strong> as syntactic sugar to access environment variables, quoting, defining and binding data, etc.</li>
       <li>Includes a small, useful <strong>standard library</strong> for common tasks.</li>
-      <li>Self-contained, statically compiled into single file, in <strong>less than 1MB</strong>.</li>
+      <li>Self-contained, statically compiled into single file.</li>
     </ul>
   </section>
   <section class="pure-u-1 pure-u-md-1-2">
     <h2>Examples</h2>
-    <p>The following example shows how to find recursively all <code>.c</code> files in the current folder that are bigger than 100KB:</p>
+    <p>The following example shows how to find recursively all files in the current folder that were modified in the last hour:</p>
     <pre>
       <code>
-        . ls-r 
-        ( 
-          dup 
-          "\.c$" match 
-          (fsize 100000 >) dip 
-          and
-        ) filter
+         . ls-r 
+         (mtime now 3600 - >) 
+         filter
       </code>
     </pre>
     <p>The following example shows how to calculate the factorial of 5 using the <code>linrec</code> combinator:</p>
