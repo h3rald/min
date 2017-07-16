@@ -114,7 +114,7 @@ proc seq_module*(i: In)=
     var res = newSeq[MinValue](0)
     for litem in list.qVal:
       i.push litem
-      i.unquote(prog)
+      i.dequote(prog)
       res.add i.pop
     i.push res.newVal(i.scope)
 
@@ -138,7 +138,7 @@ proc seq_module*(i: In)=
     var res = newSeq[MinValue](0)
     for e in list.qVal:
       i.push e
-      i.unquote(filter)
+      i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == true:
         res.add e
@@ -151,7 +151,7 @@ proc seq_module*(i: In)=
     var res = newSeq[MinValue](0)
     for e in list.qVal:
       i.push e
-      i.unquote(filter)
+      i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == false:
         res.add e
@@ -163,7 +163,7 @@ proc seq_module*(i: In)=
     let list = vals[1]
     for e in list.qVal:
       i.push e
-      i.unquote(filter)
+      i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == true:
         i.push true.newVal
@@ -176,7 +176,7 @@ proc seq_module*(i: In)=
     let list = vals[1]
     for e in list.qVal:
       i.push e
-      i.unquote(filter)
+      i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == false:
         i.push false.newVal
@@ -191,7 +191,7 @@ proc seq_module*(i: In)=
     var minCmp = proc(a, b: MinValue): int {.closure.}=
       i2.push a
       i2.push b
-      i2.unquote(cmp)
+      i2.dequote(cmp)
       let r = i2.pop
       if r.isBool:
         if r.isBool and r.boolVal == true:
@@ -221,7 +221,7 @@ proc seq_module*(i: In)=
     var c = 0
     for el in s.qVal:
       i.push el
-      i.unquote test
+      i.dequote test
       result = i.pop
       if result.isBool and result.boolVal == true:
         res = c
@@ -237,7 +237,7 @@ proc seq_module*(i: In)=
     for el in s.qVal:
       i.push acc
       i.push el
-      i.unquote q
+      i.dequote q
       acc = i.pop
     i.push acc
 
@@ -249,13 +249,13 @@ proc seq_module*(i: In)=
     if s.qVal.len == 0:
       raiseInvalid("Quotation must have at least one element")
     i.push s.qVal[0]
-    i.unquote map
+    i.dequote map
     var acc = i.pop
     for ix in 1..s.qVal.len-1:
       i.push s.qVal[ix]
-      i.unquote map
+      i.dequote map
       i.push acc
-      i.unquote red
+      i.dequote red
       acc = i.pop
     i.push acc
 
@@ -267,7 +267,7 @@ proc seq_module*(i: In)=
     var fseq = newSeq[MinValue](0)
     for el in s.qVal:
       i.push el
-      i.unquote test
+      i.dequote test
       let res = i.pop
       if res.isBool and res.boolVal == true:
         tseq.add el

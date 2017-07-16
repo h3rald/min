@@ -119,7 +119,7 @@ proc io_module*(i: In) =
       else:
         return choice
     let choice = choose()
-    i.unquote(q.qVal[choice-1].qVal[1])
+    i.dequote(q.qVal[choice-1].qVal[1])
 
   def.symbol("print") do (i: In):
     let a = i.peek

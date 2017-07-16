@@ -16,7 +16,7 @@ Empties the stack.#}
 Prepends {{a1}} to the quotation on top of the stack.#}
 
 {#op||dip||{{a1}} ({{a2}})||{{a0p}} {{a1}}||
-Removes the first and second element from the stack, unquotes the first element, and restores the second element.#}
+Removes the first and second element from the stack, dequotes the first element, and restores the second element.#}
 
 {#op||dup||{{a1}}||{{a1}} {{a1}}||
 Duplicates the first element on the stack.#}
@@ -58,7 +58,7 @@ Moves the third and second element into second and third position and moves the 
 Substitute the existing stack with the contents of {{q}}.#}
 
 {#op||sip||{{a1}} ({{a2}})||{{a0p}} {{a1}}||
-Saves the {{a1}}, unquotes {{a2}}, and restores {{a1}}.#}
+Saves the {{a1}}, dequotes {{a2}}, and restores {{a1}}.#}
 
 {#op||spread||{{a0p}} ({{q}}{{0p}})||{{a0p}}||
 > Applies each quotation contained in the first element to each subsequent corresponding element.

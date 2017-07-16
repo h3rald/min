@@ -122,7 +122,7 @@ proc lang_module*(i: In) =
     let name = vals[0]
     var code = vals[1]
     code.filename = i.filename
-    i.unquote(code)
+    i.dequote(code)
     info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
     i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
 
@@ -169,8 +169,8 @@ proc lang_module*(i: In) =
     var qscope = vals[0]
     let qprog = vals[1]
     if qscope.qVal.len > 0:
-      # System modules are empty quotes and don't need to be unquoted
-      i.unquote(qscope)
+      # System modules are empty quotes and don't need to be dequoted
+      i.dequote(qscope)
     i.withScope(qscope, qscope.scope):
       for v in qprog.qVal:
         i.push v
@@ -263,13 +263,13 @@ proc lang_module*(i: In) =
     if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
       raiseInvalid("Quotation must contain at one quotation")
     try:
-      i.unquote(code)
+      i.dequote(code)
     except MinRuntimeError:
       if not hasCatch:
         return
       let e = (MinRuntimeError)getCurrentException()
       i.push e.qVal.newVal(i.scope)
-      i.unquote(catch)
+      i.dequote(catch)
     except:
       if not hasCatch:
         return
@@ -283,20 +283,20 @@ proc lang_module*(i: In) =
       res.add @["line".newSym, i.currSym.line.newVal].newVal(i.scope)
       res.add @["column".newSym, i.currSym.column.newVal].newVal(i.scope)
       i.push res.newVal(i.scope)
-      i.unquote(catch)
+      i.dequote(catch)
     finally:
       if hasFinally:
-        i.unquote(final)
+        i.dequote(final)
 
   def.symbol("quote") do (i: In):
     let vals = i.expect("a")
     let a = vals[0]
     i.push @[a].newVal(i.scope)
   
-  def.symbol("unquote") do (i: In):
+  def.symbol("dequote") do (i: In):
     let vals = i.expect("quot")
     var q = vals[0]
-    i.unquote(q)
+    i.dequote(q)
   
   # Conditionals
 
@@ -306,41 +306,41 @@ proc lang_module*(i: In) =
     var tpath = vals[1]
     var check = vals[2]
     var stack = i.stack
-    i.unquote(check)
+    i.dequote(check)
     let res = i.pop
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
     if res.boolVal == true:
-      i.unquote(tpath)
+      i.dequote(tpath)
     else:
-      i.unquote(fpath)
+      i.dequote(fpath)
 
   def.symbol("when") do (i: In):
     let vals = i.expect("quot", "quot")
     var tpath = vals[0]
     var check = vals[1]
     var stack = i.stack
-    i.unquote(check)
+    i.dequote(check)
     let res = i.pop
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
     if res.boolVal == true:
-      i.unquote(tpath)
+      i.dequote(tpath)
 
   def.symbol("unless") do (i: In):
     let vals = i.expect("quot", "quot")
     var tpath = vals[0]
     var check = vals[1]
     var stack = i.stack
-    i.unquote(check)
+    i.dequote(check)
     let res = i.pop
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
     if res.boolVal == false:
-      i.unquote(tpath)
+      i.dequote(tpath)
 
   # 4 (
   #   ((> 3) ("Greater than 3" put!))
@@ -362,13 +362,13 @@ proc lang_module*(i: In) =
       if c.qVal.len != 2 or not c.qVal[0].isQuotation or not c.qVal[1].isQuotation:
         raiseInvalid("Inner quotations in case operator must contain two quotations")
       var q = c.qVal[0]
-      i.unquote(q)
+      i.dequote(q)
       let res = i.pop
       if not res.isBool():
         raiseInvalid("Result of case #$1 is not a boolean value" % $k)
       if res.boolVal == true:
         var t = c.qVal[1]
-        i.unquote(t)
+        i.dequote(t)
         break
 
   # Loops
@@ -379,7 +379,7 @@ proc lang_module*(i: In) =
     var list = vals[1]
     for litem in list.qVal:
       i.push litem
-      i.unquote(prog)
+      i.dequote(prog)
   
   def.symbol("times") do (i: In):
     let vals = i.expect("int", "quot")
@@ -388,7 +388,7 @@ proc lang_module*(i: In) =
     if t.intVal < 1:
       raiseInvalid("A non-zero natural number is required")
     for c in 1..t.intVal:
-      i.unquote(prog)
+      i.dequote(prog)
   
   def.symbol("while") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -396,11 +396,11 @@ proc lang_module*(i: In) =
     var b = vals[1]
     for e in b.qVal:
       i.push e
-    i.unquote(b)
+    i.dequote(b)
     var check = i.pop
     while check.isBool and check.boolVal == true:
-      i.unquote(d)
-      i.unquote(b)
+      i.dequote(d)
+      i.dequote(b)
       check = i.pop
     discard i.pop
 
@@ -413,14 +413,14 @@ proc lang_module*(i: In) =
     var t = vals[2]
     var p = vals[3]
     proc linrec(i: In, p, t, r1, r2: var MinValue) =
-      i.unquote(p)
+      i.dequote(p)
       var check = i.pop
       if check.isBool and check.boolVal == true:
-        i.unquote(t)
+        i.dequote(t)
       else:
-        i.unquote(r1)
+        i.dequote(r1)
         i.linrec(p, t, r1, r2)
-        i.unquote(r2)
+        i.dequote(r2)
     i.linrec(p, t, r1, r2)
 
   def.symbol("version") do (i: In):
@@ -630,7 +630,7 @@ proc lang_module*(i: In) =
     i.push("quote".newSym)
 
   def.symbol("->") do (i: In):
-    i.push("unquote".newSym)
+    i.push("dequote".newSym)
 
   def.symbol("=>") do (i: In):
     i.push("apply".newSym)

@@ -37,7 +37,7 @@ proc stack_module*(i: In)=
     let vals = i.expect("quot", "a")
     var q = vals[0]
     let v = vals[1]
-    i.unquote(q)
+    i.dequote(q)
     i.push v
 
   def.symbol("nip") do (i: In):
@@ -52,7 +52,7 @@ proc stack_module*(i: In)=
     for s in q.qVal:
       var s1 = s
       i.push v
-      i.unquote(s1)
+      i.dequote(s1)
   
   def.symbol("spread") do (i: In):
     var q: MinValue
@@ -64,7 +64,7 @@ proc stack_module*(i: In)=
     for s in q.qVal:
       var s1 = s
       i.push els[count]
-      i.unquote(s1)
+      i.dequote(s1)
       count.dec
   
   def.symbol("keep") do (i: In):
@@ -72,7 +72,7 @@ proc stack_module*(i: In)=
     var q = vals[0]
     let v = vals[1]
     i.push v
-    i.unquote(q)
+    i.dequote(q)
     i.push v
   
   def.symbol("swap") do (i: In):
@@ -134,7 +134,7 @@ proc stack_module*(i: In)=
     var a = vals[0]
     let b = vals[1]
     i.push b
-    i.unquote(a)
+    i.dequote(a)
     i.push b
 
   def.finalize("stack")

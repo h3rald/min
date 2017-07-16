@@ -63,7 +63,7 @@
 
   (2 quote (2) ==) assert
 
-  ((2 3) unquote get-stack (2 3) ==) assert
+  ((2 3) dequote get-stack (2 3) ==) assert
 
   (3 (succ) 3 times 6 ==) assert
 
@@ -116,7 +116,7 @@
 
   ("{\"a\": 1, \"b\": 2.3}" from-json ((a 1) (b 2.3)) ==) assert
 
-  ((1 2 3 "aaa" 'q q true) to-json "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
+  ((1 2 3 "aaa" 'q q true) to-json "\r\n" "" replace "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) assert
 
@@ -144,7 +144,7 @@
 
   (opts () ==) assert
 
-  (args ("tests/all.min") ==) assert
+  (args first "all.min$" match) assert
 
   (3 string "3" ==) assert
   

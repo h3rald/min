@@ -110,7 +110,7 @@ proc apply*(i: In, op: MinOperator) =
     else:
       i.push(op.val)
 
-proc unquote*(i: In, q: var MinValue) =
+proc dequote*(i: In, q: var MinValue) =
   i.withScope(q, q.scope): 
     for v in q.qVal:
       i.push v
@@ -124,7 +124,7 @@ proc apply*(i: In, q: var MinValue) =
       for v in q.qVal:
         if (v.kind == minQuotation):
           var v2 = v
-          i2.unquote(v2)
+          i2.dequote(v2)
         else:
           i2.push v
   except:

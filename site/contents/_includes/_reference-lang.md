@@ -28,7 +28,7 @@
 
 {#sig||<||load-symbol#}
 
-{#alias||->||unquote#}
+{#alias||->||dequote#}
 
 {#alias||=>||apply#}
 
@@ -270,7 +270,7 @@ Converts {{q}} into a JSON string {{s}}.#}
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
-{#op||unquote||{{q}}||{{a0p}}||
+{#op||dequote||{{q}}||{{a0p}}||
 Pushes the contents of quotation {{q}} on the stack. #}
 
 {#op||unseal||{{sl}}||{{null}}||
