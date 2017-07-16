@@ -1,5 +1,2 @@
------
-content-type: page
-title: Learn
------
+{@ _defs_.md || 0 @}
 Coming soon...

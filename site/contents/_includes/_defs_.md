@@ -81,3 +81,15 @@
 
 {# link-operator => [`$2`](/reference-$1/$2) #}
 
+{# link-learn => &rarr; Continue to [*$2*](/learn-$1) #}
+
+{{ learn-links =>
+> %sidebar%
+> Quick Links
+> 
+> * [Data Types](/learn-data-types)
+> * [Operators](/learn-operators)
+> * [Quotations](/learn-quotations)
+> * [Variables](/learn-variables)
+> * [Shell](/learn-shell)
+}}

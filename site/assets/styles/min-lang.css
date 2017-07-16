@@ -77,7 +77,7 @@ article, section {
   margin: auto;
 }
 
-b, strong {
+b, strong, dt {
   font-weight: 400;
 }
 
