@@ -545,7 +545,7 @@ proc lang_module*(i: In) =
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q
-    i.push(i.expect(q.qVal.mapIt(it.getString()).reversed).newVal(i.scope))
+    i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal(i.scope))
 
   # Converters
 
