@@ -87,6 +87,9 @@ Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
 {#op||delete||{{sl}}||{{null}}||
 Deletes the specified symbol {{sl}}.#}
 
+{#op||dequote||{{q}}||{{a0p}}||
+Pushes the contents of quotation {{q}} on the stack. #}
+
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
 
@@ -241,6 +244,50 @@ Converts {{any}} to its string representation.#}
 {#op||symbols||{{null}}||({{s0p}})||
 Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 
+{#op||tap||{{any}} {{q}}||{{any}}||
+> Performs the following operations:
+> 
+> 1. Removes {{any}} from the stack.
+> 2. For each quotation defined in {{q}} (which is a quotation of quotations each requiring one argument and returning one argument):
+>    1. Pushes {{any}} back to the stack.
+>    2. Dequotes the quotation and saves the result as {{any}}.
+> 3. Push the resulting {{any}} back on the stack.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program:
+> > 
+> >     (
+> >       ((a 1) (b 2) (c 3)) (
+> >       (dup /a  succ succ %a)
+> >       (dup /b  succ %b)
+> >     ) tap
+> > 
+> > Returns `((a 3) (b 3) (c 3))`.#}
+
+{#op||tap!||{{any}} {{q}}||{{any}}||
+> Performs the following operations:
+> 
+> 1. Removes {{any}} from the stack.
+> 2. For each quotation defined in {{q}} (which is a quotation of quotations each requiring one argument and returning one argument):
+>    1. Pushes {{any}} back to the stack.
+>    2. Dequotes the quotation and saves the result as {{any}}.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program:
+> > 
+> >     "" :s1
+> >     "test" (
+> >       (' "1" swap append "" join)
+> >       (' "2" swap append "" join)
+> >       (' "3" swap append "" join @s1 s1)
+> >     ) tap!
+> > 
+> > Sets `s1` to `"test123"`. #}
+
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
 
@@ -269,9 +316,6 @@ Converts {{q}} into a JSON string {{s}}.#}
 
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
-
-{#op||dequote||{{q}}||{{a0p}}||
-Pushes the contents of quotation {{q}} on the stack. #}
 
 {#op||unseal||{{sl}}||{{null}}||
 Unseals symbol {{sl}}, so that it can be re-assigned. #}

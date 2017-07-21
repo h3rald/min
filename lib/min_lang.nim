@@ -297,6 +297,27 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot")
     var q = vals[0]
     i.dequote(q)
+
+  def.symbol("tap") do (i: In):
+    let vals = i.expect("quot", "a")
+    let programs = vals[0]
+    var a = vals[1]
+    for program in programs.qVal:
+      var p = program
+      i.push(a)
+      i.dequote(p)
+      a = i.pop
+    i.push(a)
+
+  def.symbol("tap!") do (i: In):
+    let vals = i.expect("quot", "a")
+    let programs = vals[0]
+    var a = vals[1]
+    for program in programs.qVal:
+      var p = program
+      i.push(a)
+      i.dequote(p)
+      a = i.pop
   
   # Conditionals
 
