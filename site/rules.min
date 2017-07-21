@@ -2,56 +2,50 @@
 
 ;Routing
 (
-  =meta
+  (dict) expect -> =meta
   meta /id :id
   meta /ext :ext
   (
     ((id "home" ==) (
-      meta "index" %id #meta
-      meta ".html" %ext #meta
+      meta (
+        ("index" %id)
+        (".html" %ext)
+      ) tap
     ))
     ((ext ".md" ==) (
-      meta ".html" %ext #meta
-      meta "$1/index" (id) => % %id #meta
+      meta (
+        (".html" %ext)
+        ("$1/index" (id) => % %id)
+      ) tap
     ))
   ) case
-  meta
 ) :set-destination
 
 ;Processing operators
 (
-  :tpl
-  =meta
-  meta /path :path
-  " - Processing $1: $2" (tpl path) => % notice
-  meta input-fread :contents
-  meta settings /title %site #meta
-  meta settings /version %version #meta
-  contents meta markdown @contents
-  meta contents %contents #meta
-  tpl meta mustache :page
-  meta page %contents #meta
-  meta
+  ('sym dict) expect -> :tpl =meta
+  "" :page
+  "" :contents
+  " - Processing $1: $2" (tpl (meta /path)) => % notice
+  meta (
+    (input-fread @contents meta)
+    (settings /title %site)
+    (settings /version %version)
+    (=temp contents temp markdown @contents temp)
+    (contents %contents)
+    (=temp tpl temp mustache @page temp)
+    (page %contents)
+  ) tap
 ) :process-md-with-template
 
 (
-  =meta
+  (dict) expect -> =meta
   meta /content-type :ct
   meta ct process-md-with-template
 ) :process-md-content
 
 (
-  =meta
-  meta /path :path
-  " - Processing stylesheet: $1" (path) => % notice
-  meta input-fread :contents
-  contents preprocess-css @contents
-  meta contents %contents #meta
-  meta
-) :preprocess-css-content
-
-(
-  =meta
+  (dict) expect -> =meta
   meta /ext :ext
   meta
   (
@@ -60,23 +54,12 @@
 ) :process-content
 
 ;Main
-assets (
-  =meta
-  meta /ext :ext
-  meta
-  (
-    ((".css" ext ==) (
-      preprocess-css-content
-      output-fwrite
-    ))
-    ((true) (copy2output))
-  ) case
-) foreach
-
 contents (
+  (dict) expect -> 
   dup
   (
     ((/id "^_includes" match) ()) ;Ignore files starting with underscore.
     ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach
+assets (copy2output) foreach

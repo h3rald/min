@@ -97,17 +97,17 @@ Parses and interprets {{s}}. #}
 Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect||{{q1}}||{{q2}}||
-> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}}.
+> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}} (in reverse order).
 > > %sidebar%
 > > Example
 > > 
-> > Assuming that the following elements are on the stack (from top to bottom): `1 "test" 3.4`
+> > Assuming that the following elements are on the stack (from top to bottom): 
 > > 
-> > the following:
+> > `1 "test" 3.4`
 > > 
-> > `(int string num) expect`
+> > the following program evaluates to `true`:
 > > 
-> > produces: `(1 "test" 3.4)`#}
+> > `(int string num) expect (3.4 "test" 1) ==`
 
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to an integer value based on the following rules:
