@@ -77,9 +77,11 @@
 > See [$2](#op-$2).
  #}
 
+{# link-page => [$2](/$1/) #}
+
 {# link-module => [`$1` Module](/reference-$1/) #}
 
-{# link-operator => [`$2`](/reference-$1/$2) #}
+{# link-operator => [`$2`](/reference-$1#op-$2) #}
 
 {# link-learn => &rarr; Continue to [*$2*](/learn-$1) #}
 

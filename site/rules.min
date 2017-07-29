@@ -53,6 +53,18 @@
   ) case
 ) :process-content
 
+(
+  (dict) expect -> =meta
+  "" :contents
+  " - Processing CSS file: $1" ((meta /path)) => % notice
+  meta (
+    (input-fread @contents meta)
+    (=temp contents preprocess-css @contents temp)
+    (contents %contents)
+  ) tap
+  output-fwrite
+) :process-css-asset
+
 ;Main
 contents (
   (dict) expect -> 
@@ -62,4 +74,12 @@ contents (
     ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach
-assets (copy2output) foreach
+
+assets (
+  (dict) expect -> 
+  dup
+  (
+    ((/ext ".css" match) (process-css-asset))
+    ((true) (copy2output))
+  ) case
+) foreach

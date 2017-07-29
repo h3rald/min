@@ -3,7 +3,7 @@
   --primary-background:#262625;
   --secondary-background: #474745;
   --primary-accent:#4BAA76;
-  --secondary-accent:#3A4C4B;
+  --secondary-accent:#2B4737;
 }
 
 body {
@@ -22,6 +22,18 @@ textarea,
 .pure-g [class *= "pure-u"] {
   font-family: 'Lato', sans-serif;
 } 
+
+tr td, th {
+  border: 1px solid var(--secondary-background);
+}
+
+td, th {
+  padding: 5px;
+}
+
+th {
+  background: var(--secondary-accent);
+}
 
 a, a:visited {
   text-decoration: none;
@@ -45,6 +57,13 @@ header .luxbar-menu i {
 .luxbar-menu-light .active a, .luxbar-menu-light .luxbar-item:hover a {
   background: var(--primary-background);
   color: var(--primary-accent);
+}
+
+
+.luxbar-menu-light .luxbar-hamburger span, 
+.luxbar-menu-light .luxbar-hamburger span::before, 
+.luxbar-menu-light .luxbar-hamburger span::after {
+  background-color: var(--primary-foreground);
 }
 
 .pure-button-primary, .pure-button-selected, a.pure-button-primary, a.pure-button-selected {

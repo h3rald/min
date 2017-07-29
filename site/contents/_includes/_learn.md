@@ -6,6 +6,7 @@
 
 If not, well, here's how a short min program looks like:
 
+    ; This is a comment
     (1 2 3 4 5) (dup *) map
 
 This program returns a list containing the square values of the first five integer numbers:
