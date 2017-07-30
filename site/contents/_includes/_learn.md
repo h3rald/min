@@ -16,7 +16,7 @@ This program returns a list containing the square values of the first five integ
 Let's see how it works:
 
 1. First a list containing the first five integer is pushed on the stack.
-2. Then, another list containing two symbols (`dup` and `\*`) is pushed on the stack. This constitutes a quoted program which, when executed duplicates (`dup`) the first element on the stack and then multiplies (`*`) the two elements together.
+2. Then, another list containing two symbols (`dup` and `*`) is pushed on the stack. This constitutes a quoted program which, when executed duplicates (`dup`) the first element on the stack and then multiplies (`*`) the two elements together.
 3. Finally, the symbol `map` is pushed on the stack. Map takes a list of elements and a quoted program and applies the program to each element.
 
 Note that:

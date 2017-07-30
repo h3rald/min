@@ -44,12 +44,12 @@ Simple: `4`. Every quotation defines its own scope, and in each scope a new vari
 
 If we want to change the value of the original `a` symbol defined in the outermost scope, we have to use the {#link-operator||lang||bind#} or its shorthand sigil `@`, so that the programs becomes the following:
 
-     4 :a ;First definition of the symbol a in the outermost scope
+     4 :a ;First definition of the symbol a
      (
        a 3 + @a ;The value of a is updated to 7.
        (
          a 1 + @a ;The value of a is updated to 8
-         (a dup * @a) dequote ;The value of a is updated to 64
+         (a dup * @a) dequote ;The value of a is now 64
        ) dequote
      ) dequote
 
