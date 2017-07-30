@@ -101,4 +101,4 @@
 > %tip%
 > Tip
 > 
-> A printable, self-contained guide containing more or less the same content of this web site can be downloaded from [here](https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.html). }}
+> A printable, self-contained guide containing more or less the same content of this web site can be downloaded from [here](https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.htm). }}

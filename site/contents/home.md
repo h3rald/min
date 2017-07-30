@@ -13,7 +13,7 @@ title: "Welcome to min"
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 
       <a href="https://github.com/h3rald/min/issues">Issue Tracking</a> |
-      <a href="https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.html">Guide</a>
+      <a href="https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.htm">Guide</a>
     </small>
   </section>
 </div>
