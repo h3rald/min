@@ -4,7 +4,7 @@
   "templates": "templates", 
   "temp": "temp", 
   "output": "output", 
-  "title": "min programming language", 
+  "title": "min language", 
   "version": "0.10.0",
   "rules": "rules.min" 
 }
