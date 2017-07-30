@@ -2,7 +2,7 @@
 
 You can download one of the following pre-built min binaries:
 
-* {#release||{{$version}}||osx||macOS||x64#}
+* {#release||{{$version}}||macosx||macOS||x64#}
 * {#release||{{$version}}||windows||Windows||x64#}
 * {#release||{{$version}}||linux||Linux||x64#}
 * {#release||{{$version}}||linux||Linux||x86#}
