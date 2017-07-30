@@ -4385,7 +4385,6 @@ div .terminal {
  <ul>
   <li><a href="#About-min">About min</a>
   <ul>
-   <li><a href="#What?">What?</a></li>
    <li><a href="#Why?">Why?</a></li>
    <li><a href="#How?">How?</a></li>
    <li><a href="#Who?">Who?</a></li>
@@ -4471,9 +4470,6 @@ div .terminal {
 <a name="About-min"></a>
 <h2>About min<a href="#document-top" title="Go to top"></a></h2>
 
-<a name="What?"></a>
-<h3>What?<a href="#document-top" title="Go to top"></a></h3>
-
 <p><strong>min</strong> is an concatenative, fully-homoiconic, functional, interpreted programming language.</p>
 
 <p>This basically means that:</p>
@@ -4491,18 +4487,20 @@ div .terminal {
 
 <p>Because creating a programming language is something that every programmer needs to do, at some point in life. And also because there are way too few <a href="http://concatenative.org/wiki/view/Front%20Page">concatenative</a> programming language out there &ndash; so people are likely to be <em>less</em> pissed off than if I made a yet another Lisp instead.</p>
 
-<p>I always wanted to build a minimalist language, but that could also be used for real work and provided a standard library for common tasks and functionalities like regular expression support, cryptography, execution of external programs, shell-like operators to work with files, and more.</p>
+<p>I always wanted to build a minimalist language, but that could also be used for real work and provided a standard library for common tasks and functionalities like regular expression support, cryptography, execution of external programs, shell-like operators and keywords to work with files, and more.</p>
 
-<p>Also, I wanted it to be fully self-contained, cross platform, and tiny. Less than 1MB is not really tiny, but I feel it&rsquo;s a good compromise compared to the alternatives out there, considering that you only need <em>one file</em> to run any min program.</p>
+<p>Also, I wanted it to be fully self-contained, cross platform, and tiny. About 1MB (depending on the platform) is not really tiny, but I feel it&rsquo;s a good compromise compared to the alternatives out there, considering that you only need <em>one file</em> to run any min program.</p>
 
 <p>I am currently building a static site generator called <a href="https://github.com/h3rald/hastysite">HastySite</a>, that also powers <a href="https://min-lang.org">https://min-lang.org</a>. HastySite internally uses min as the language to write the <a href="https://github.com/h3rald/min/blob/master/site/rules.min">rules</a> to process the source files of the site, and also all its <a href="https://github.com/h3rald/min/tree/master/site/scripts">scripts</a>.</p>
+
+<p>Finally, I think more and more people should get to know concatenative programming languages, because <a href="http://evincarofautumn.blogspot.it/2012/02/why-concatenative-programming-matters.html">concatenative programming matters</a>.</p>
 
 <a name="How?"></a>
 <h3>How?<a href="#document-top" title="Go to top"></a></h3>
 
-<p>min is developed entirely in <a href="https://nim-lang.org">nim</a> &ndash; the name is (almost) entirely a coincidence. I wanted to call it <em>minim</em> but then shortened it for more&hellip; minimalism.</p>
+<p>min is developed entirely in <a href="https://nim-lang.org">Nim</a> &ndash; the name is (almost) entirely a coincidence. I wanted to call it <em>minim</em> but then shortened it for more&hellip; minimalism.</p>
 
-<p>min&rsquo;s parser started off as a fork of nim&rsquo;s JSON parser &ndash; adapted to process a concatenative programming language with less primitive types than JSON. It is interpreted in the traditional sense: no bytecode, no JIT, just plain read, parse and run.</p>
+<p>min&rsquo;s parser started off as a fork of Nim&rsquo;s JSON parser &ndash; adapted to process a concatenative programming language with less primitive types than JSON. It is interpreted in the traditional sense: no bytecode, no JIT, just plain read, parse and run.</p>
 
 <a name="Who?"></a>
 <h3>Who?<a href="#document-top" title="Go to top"></a></h3>
@@ -4512,7 +4510,7 @@ div .terminal {
 <a name="When?"></a>
 <h3>When?<a href="#document-top" title="Go to top"></a></h3>
 
-<p>min source code <a href="https://github.com/h3rald/min">repository</a> was created on November 8<sup>th</sup> 2014.</p>
+<p>min source code <a href="https://github.com/h3rald/min">repository</a> was created on November 8<sup>th</sup> 2014. This only means that I&rsquo;ve been very slowly developing something that was actually made public at the end of July 2017.</p>
 
 <a name="Getting-Started"></a>
 <h2>Getting Started<a href="#document-top" title="Go to top"></a></h2>
@@ -4599,7 +4597,7 @@ div .terminal {
 
 <ol>
 <li>First a list containing the first five integer is pushed on the stack.</li>
-<li>Then, another list containing two symbols (<code>dup</code> and <code>\*</code>) is pushed on the stack. This constitutes a quoted program which, when executed duplicates (<code>dup</code>) the first element on the stack and then multiplies (<code>*</code>) the two elements together.</li>
+<li>Then, another list containing two symbols (<code>dup</code> and <code>*</code>) is pushed on the stack. This constitutes a quoted program which, when executed duplicates (<code>dup</code>) the first element on the stack and then multiplies (<code>*</code>) the two elements together.</li>
 <li>Finally, the symbol <code>map</code> is pushed on the stack. Map takes a list of elements and a quoted program and applies the program to each element.</li>
 </ol>
 
@@ -4813,12 +4811,12 @@ div .terminal {
 
 <p>If we want to change the value of the original <code>a</code> symbol defined in the outermost scope, we have to use the <a href="#op-bind"><code>bind</code></a> or its shorthand sigil <code>@</code>, so that the programs becomes the following:</p>
 
-<pre><code> 4 :a ;First definition of the symbol a in the outermost scope
+<pre><code> 4 :a ;First definition of the symbol a
  (
    a 3 + @a ;The value of a is updated to 7.
    (
      a 1 + @a ;The value of a is updated to 8
-     (a dup * @a) dequote ;The value of a is updated to 64
+     (a dup * @a) dequote ;The value of a is now 64
    ) dequote
  ) dequote
 </code></pre>
