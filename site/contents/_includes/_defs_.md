@@ -86,12 +86,19 @@
 {# link-learn => &rarr; Continue to [*$2*](/learn-$1) #}
 
 {{ learn-links =>
-> %sidebar%
+> %tip%
 > Quick Links
 > 
 > * [Data Types](/learn-data-types)
 > * [Operators](/learn-operators)
 > * [Quotations](/learn-quotations)
-> * [Variables](/learn-variables)
+> * [Definitions](/learn-definitions)
+> * [Control Flow](/learn-control-flow)
 > * [Shell](/learn-shell)
 }}
+
+{{guide-download => 
+> %tip%
+> Tip
+> 
+> A printable, self-contained guide containing more or less the same content of this web site can be downloaded from [here](https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.html). }}

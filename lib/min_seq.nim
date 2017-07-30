@@ -118,11 +118,6 @@ proc seq_module*(i: In)=
       res.add i.pop
     i.push res.newVal(i.scope)
 
-  def.symbol("apply") do (i: In):
-    let vals = i.expect("quot")
-    var prog = vals[0]
-    i.apply prog
-
   def.symbol("reverse") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]

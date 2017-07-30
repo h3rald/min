@@ -36,6 +36,9 @@
 
 {#sig||=||quote-bind#}
 
+{#op||apply||{{q}}||({{a0p}})||
+Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}
+
 {#op||args||{{null}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
 
@@ -107,7 +110,7 @@ Exits the program or shell with {{i}} as return code. #}
 > > 
 > > the following program evaluates to `true`:
 > > 
-> > `(int string num) expect (3.4 "test" 1) ==`
+> > `(int string num) expect (3.4 "test" 1) ==`#}
 
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to an integer value based on the following rules:
@@ -198,6 +201,13 @@ Returns a list of all symbols defined in module {{q}}.#}
 
 {#op||opts||{{null}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
+
+{#op||prompt||{{null}}||{{s}}||
+> This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
+> 
+>     ([$1]$$ " (.) => %)
+> 
+> Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.#}
 
 {#op||publish||{{sl}} {{q}}||{{null}}||
 > Publishes symbol {{sl}} to the scope of {{q}}.

@@ -4,9 +4,9 @@
 
 {#alias||$||get-env#}
 
-{#sig||!||system#}
+{#sig||\!||system#}
 
-{#alias||!||system#}
+{#alias||\!||system#}
 
 {#sig||&||run#}
 

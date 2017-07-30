@@ -24,6 +24,11 @@ proc lang_module*(i: In) =
     let vals = i.expect("int")
     quit(vals[0].intVal.int)
    
+  def.symbol("apply") do (i: In):
+    let vals = i.expect("quot")
+    var prog = vals[0]
+    i.apply prog
+
   def.symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
     var scope = i.scope
@@ -262,7 +267,7 @@ proc lang_module*(i: In) =
       final = prog.qVal[2]
       hasFinally = true
     if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
-      raiseInvalid("Quotation must contain at one quotation")
+      raiseInvalid("Quotation must contain at least one quotation")
     try:
       i.dequote(code)
     except MinRuntimeError:
@@ -596,6 +601,9 @@ proc lang_module*(i: In) =
         i.push 0.float.newVal
     else:
       raiseInvalid("Cannot convert a quotation to float.")
+
+  def.symbol("prompt") do (i: In):
+    i.eval(""""[$1]$$ " (.) => %""")
 
   # Sigils
 

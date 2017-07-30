@@ -9,9 +9,6 @@ Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if at least
 {#op||append||{{any}} {{q}}||({{a0p}} {{any}})||
 Returns a new quotation containing the contents of {{q}} with {{any}} appended. #}
 
-{#op||apply||{{q}}||({{a0p}})||
-Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}
-
 {#op||get||{{q}} {{i}}||{{any}}||
 Returns the _n^th_ element of {{q}} (zero-based).#}
 

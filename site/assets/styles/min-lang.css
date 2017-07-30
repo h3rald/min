@@ -4,6 +4,7 @@
   --secondary-background: #474745;
   --primary-accent:#4BAA76;
   --secondary-accent:#2B4737;
+  --secondary-foreground:#D4CC90;
 }
 
 body {
@@ -100,7 +101,7 @@ b, strong, dt {
   font-weight: 400;
 }
 
-code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd {
+code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .min-terminal {
   font-family: 'Inconsolata',  monospace;
 }
 
@@ -110,6 +111,7 @@ code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd {
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
+  color: var(--secondary-foreground);
 }
 
 .pitch {
@@ -122,6 +124,28 @@ h1, h2, h3, h4, h5, h6 {
 
 dl {
   margin-left: 1em;  
+}
+
+.min-terminal {
+  border: 1px solid var(--secondary-accent);
+  padding: 5px;
+  white-space: pre;
+}
+
+.min-terminal p {
+  margin: 0.5em 0;  
+}
+
+.min-terminal p:first-child {
+  margin-top: 0;
+}
+
+.min-terminal p:last-child {
+  margin-bottom: 0;
+}
+
+.min-terminal .prompt {
+  color: var(--secondary-foreground);  
 }
 
 .note p:first-child:before {

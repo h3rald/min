@@ -44,7 +44,6 @@ export
 const PRELUDE* = "prelude.min".slurp.strip
 
 newNiftyLogger().addHandler()
-newRollingFileLogger(MINLOG, fmtStr = verboseFmtStr).addHandler()
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
@@ -114,14 +113,7 @@ proc stdLib*(i: In) =
   if not MINHISTORY.fileExists:
     MINHISTORY.writeFile("")
   if not MINRC.fileExists:
-    let minrc = """
-; Load all stored symbols
-stored-symbols ('load-symbol ROOT with) foreach
-
-; Execute startup symbol within ROOT scope
-'startup ROOT with
-"""
-    MINRC.writeFile(minrc)
+    MINRC.writeFile("")
   i.lang_module
   i.stack_module
   i.seq_module
@@ -136,6 +128,7 @@ stored-symbols ('load-symbol ROOT with) foreach
     i.crypto_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
+  i.eval "\"prompt\" unseal"
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
@@ -194,7 +187,7 @@ proc minRepl*(i: var MinInterpreter) =
     ed.completionCallback = proc(ed: LineEditor): seq[string] =
       return ed.getCompletions(symbols)
     # evaluate prompt
-    i.apply(i.scope.getSymbol("prompt"))
+    i.push("prompt".newSym)
     let vals = i.expect("string")
     let v = vals[0] 
     let prompt = v.getString()

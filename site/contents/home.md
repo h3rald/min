@@ -6,15 +6,14 @@ title: "Welcome to min"
   <section class="pitch pure-u-1 pure-u-md-2-3">
     <em>min</em> is a functional, concatenative programming language 
     with a minimalist syntax, a small but practical standard library, and an advanced 
-    REPL. All packed in about 1MB.
+    REPL. All packed in about 1MB<sup>*</sup>.
   </section>
   <section class="centered pure-u-1 pure-u-md-1-3">
     <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v{{$version}}</a><br />
-    (<em>pre-release</em>)
-    <br>
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 
-      <a href="https://github.com/h3rald/min/issues">Issue Tracking</a>
+      <a href="https://github.com/h3rald/min/issues">Issue Tracking</a> |
+      <a href="https://cdn.rawgit.com/h3rald/min/v{{$version}}/Min_DeveloperGuide.html">Guide</a>
     </small>
   </section>
 </div>
@@ -50,5 +49,10 @@ filter</code>
 (dup 0 ==) (1 +) 
 (dup 1 -) (*) linrec</code>
     </pre>
+  </section>
+</div>
+<div class="pure-g">
+  <section class="pure-u-1">
+    <small><sup>*</sup>: On Windows is actually more than 1MB, but on macOS and Linux it is considerably less. Let's just say 1MB is a good compromise.</small>
   </section>
 </div>

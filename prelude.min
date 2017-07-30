@@ -9,7 +9,3 @@
 'time      import
 'fs        import
 'crypto    import
-
-; Unsealed symbols
-()                    :startup
-("[$1]$$ " (.) => %)  :prompt
