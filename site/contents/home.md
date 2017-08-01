@@ -1,6 +1,6 @@
 -----
 content-type: "page"
-title: "Welcome to min"
+title: "Welcome to the min programming language"
 -----
 <div class="pure-g">
   <section class="pitch pure-u-1 pure-u-md-2-3">

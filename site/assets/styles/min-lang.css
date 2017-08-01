@@ -24,6 +24,19 @@ textarea,
   font-family: 'Lato', sans-serif;
 } 
 
+.donate-content-area {
+  margin: 5px;
+  padding: 5px;
+  background-color: var(--secondary-foreground);
+  border-radius: 2px;
+  text-align: center;
+  height: 120px;
+}
+
+.donate-content-area h3 {
+  color: var(--primary-background);  
+}
+
 tr td, th {
   border: 1px solid var(--secondary-background);
 }
