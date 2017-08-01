@@ -33,7 +33,7 @@ textarea,
   height: 120px;
 }
 
-.donate-content-area h3 {
+.donate-content-area h3, .donate-content-area code {
   color: var(--primary-background);  
 }
 
