@@ -11,13 +11,13 @@ You can donate any amount of money in the following ways:
 
 
 <div class="pure-g">
-  <section class="pure-u-1 pure-u-md-1-2">
+  <section class="pure-u-1 pure-u-lg-1-3">
     <div class="donate-content-area">
       <h3>BountySource Salt Campaign</h3>
       <a class="pure-button pure-button-primary" href="https://salt.bountysource.com/teams/min-lang">Support min</a>
     </div>
   </section>
-  <section class="pure-u-1 pure-u-md-1-2">
+  <section class="pure-u-1 pure-u-lg-1-3">
     <div class="donate-content-area">
       <h3>PayPal</h3>
       <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -28,6 +28,11 @@ You can donate any amount of money in the following ways:
       <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
       </form>
     </div>
+  </section>
+  <section class="pure-u-1 pure-u-lg-1-3">
+    <div class="donate-content-area">
+      <h3>BitCoin</h3>
+      <code>1GoP7D2T5cf1ohXKnPV1GuxvoV5fxmFxKs</code>
   </section>
 <div>
 
