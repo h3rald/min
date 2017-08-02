@@ -15,7 +15,7 @@ _Symbols_ are the most common type of operator. A min symbol is a single word th
 
 It is possible to define symbols using the {#link-operator||lang||define#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
-     (dup *) square define
+     (dup *) "square" define
 
 Besides symbols, min provides a set of predefined _sigils_ for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
 
