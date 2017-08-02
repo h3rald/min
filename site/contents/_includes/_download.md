@@ -18,7 +18,7 @@ Alternatively, you can build min from source as follows:
 
 1. Download and install [nim](https://nim-lang.org).
 2. Download and build [Nifty](https://github.com/h3rald/nifty), and put the nifty executable somewhere in your [$PATH](class:kwd).
-3. Clone the min [repository](https://github.com/h3rald/hastyscribe).
+3. Clone the min [repository](https://github.com/h3rald/min).
 4. Navigate to the min repository local folder.
 5. Run **nifty install** to download min’s dependencies.
 7. Run **nim c -d:release min.nim**.
