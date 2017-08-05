@@ -4518,11 +4518,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.0/min_v0.10.0_macosx_x64.zip">min v0.10.0 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.0/min_v0.10.0_windows_x64.zip">min v0.10.0 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.0/min_v0.10.0_linux_x64.zip">min v0.10.0 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.0/min_v0.10.0_linux_x86.zip">min v0.10.0 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.0/min_v0.10.0_linux_arm.zip">min v0.10.0 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_macosx_x64.zip">min v0.10.1 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_windows_x64.zip">min v0.10.1 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_x64.zip">min v0.10.1 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_x86.zip">min v0.10.1 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_arm.zip">min v0.10.1 for Linux (arm)</a></li>
 </ul>
 
 
@@ -4534,7 +4534,7 @@ div .terminal {
 <ol>
 <li>Download and install <a href="https://nim-lang.org">nim</a>.</li>
 <li>Download and build <a href="https://github.com/h3rald/nifty">Nifty</a>, and put the nifty executable somewhere in your <span class="kwd">$PATH</span>.</li>
-<li>Clone the min <a href="https://github.com/h3rald/hastyscribe">repository</a>.</li>
+<li>Clone the min <a href="https://github.com/h3rald/min">repository</a>.</li>
 <li>Navigate to the min repository local folder.</li>
 <li>Run <strong>nifty install</strong> to download min’s dependencies.</li>
 <li>Run <strong>nim c -d:release min.nim</strong>.</li>
@@ -4717,7 +4717,7 @@ div .terminal {
 
 <p>It is possible to define symbols using the <a href="#op-define"><code>define</code></a> symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:</p>
 
-<pre><code> (dup *) square define
+<pre><code> (dup *) "square" define
 </code></pre>
 
 <p>Besides symbols, min provides a set of predefined <em>sigils</em> for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:</p>
@@ -5251,12 +5251,6 @@ div .terminal {
 
 <p>See <a href="#op-call">call</a>.</p></div>
 
-<p><span class="reference-title">/</span> <span class="sigil"></span></p>
-
-<div class="operator"><p><span class="kwd"> /<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dget</span></p>
-
-<p>See <a href="#op-dget">dget</a>.</p></div>
-
 <p><span class="reference-title">@</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> @<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> bind</span></p>
@@ -5268,12 +5262,6 @@ div .terminal {
 <div class="operator"><p><span class="kwd"> @ <strong>&rArr;</strong> bind</span></p>
 
 <p>See <a href="#op-bind">bind</a>.</p></div>
-
-<p><span class="reference-title">%</span> <span class="sigil"></span></p>
-
-<div class="operator"><p><span class="kwd"> %<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dset</span></p>
-
-<p>See <a href="#op-dset">dset</a>.</p></div>
 
 <p><span class="reference-title">></span> <span class="sigil"></span></p>
 
@@ -6039,6 +6027,24 @@ div .terminal {
 
 <a name="<code>seq</code>-Module"></a>
 <h3><code>seq</code> Module<a href="#document-top" title="Go to top"></a></h3>
+
+<p><span class="reference-title">/</span> <span class="sigil"></span></p>
+
+<div class="operator"><p><span class="kwd"> /<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dget</span></p>
+
+<p>See <a href="#op-dget">dget</a>.</p></div>
+
+<p><span class="reference-title">?</span> <span class="sigil"></span></p>
+
+<div class="operator"><p><span class="kwd"> ?<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dhas?</span></p>
+
+<p>See <a href="#op-dhas?">dhas?</a>.</p></div>
+
+<p><span class="reference-title">%</span> <span class="sigil"></span></p>
+
+<div class="operator"><p><span class="kwd"> %<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dset</span></p>
+
+<p>See <a href="#op-dset">dset</a>.</p></div>
 
 <p><a id="op-all?"></a>
 <span class="reference-title">all?</span></p>
@@ -7386,7 +7392,7 @@ harvest
 <p>Encrypts or decrypts <span class="kwd">&apos;sym<sub>1</sub></span> using the Advanced Encryption Standard (AES), using <span class="kwd">&apos;sym<sub>2</sub></span> as password.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; July 30, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; August 5, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>

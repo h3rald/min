@@ -627,12 +627,6 @@ proc lang_module*(i: In) =
   def.sigil("^") do (i: In):
     i.push("call".newSym)
 
-  def.sigil("/") do (i: In):
-    i.push("dget".newSym)
-
-  def.sigil("%") do (i: In):
-    i.push("dset".newSym)
-
   def.sigil(">") do (i: In):
     i.push("save-symbol".newSym)
 
