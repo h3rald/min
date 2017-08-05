@@ -344,4 +344,13 @@ proc seq_module*(i: In)=
     let d = vals[0]
     i.push i.values(d)
 
+  def.sigil("?") do (i: In):
+    i.push("dhas?".newSym)
+
+  def.sigil("/") do (i: In):
+    i.push("dget".newSym)
+
+  def.sigil("%") do (i: In):
+    i.push("dset".newSym)
+
   def.finalize("seq")

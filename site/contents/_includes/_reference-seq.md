@@ -1,5 +1,11 @@
 {@ _defs_.md || 0 @}
 
+{#sig||/||dget#}
+
+{#sig||?||dhas?#}
+
+{#sig||%||dset#}
+
 {#op||all?||{{q1}} {{q2}}||{{b}}||
 Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if all elements of {{q1}} satisfy predicate {{q2}}, {{f}} otherwise. #}
 

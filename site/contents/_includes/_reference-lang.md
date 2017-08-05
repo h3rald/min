@@ -16,13 +16,9 @@
 
 {#alias||^||call#}
 
-{#sig||/||dget#}
-
 {#sig||@||bind#}
 
 {#alias||@||bind#}
-
-{#sig||%||dset#}
 
 {#sig||>||save-symbol#}
 
