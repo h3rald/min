@@ -39,7 +39,7 @@
 
   (((a 1)(b 2)(c 3)) ' :dict dict 'b ddel =newdict newdict ((a 1)(c 3)) == dict ((a 1)(b 2)(c 3)) == and) assert
 
-  (((a 1)(b 2)(c 3)) keys (a b c) ==) assert
+  (((a 1)(b 2)(c 3)) keys ("a" "b" "c") ==) assert
 
   (((a 1)(b 2)(c 3)) values (1 2 3) ==) assert
 

@@ -96,7 +96,7 @@ proc keys*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
   result = newSeq[MinValue](0).newVal(i.scope)
   for v in q.qVal:
-    result.qVal.add v.qVal[0]
+    result.qVal.add v.qVal[0].getString.newVal
 
 proc values*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
