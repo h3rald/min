@@ -26,7 +26,6 @@
   ('sym dict) expect -> :tpl =meta
   "" :page
   "" :contents
-  " - Processing $1: $2" (tpl (meta /path)) => % notice
   meta (
     (input-fread @contents meta)
     (settings /title %site)
@@ -56,7 +55,6 @@
 (
   (dict) expect -> =meta
   "" :contents
-  " - Processing CSS file: $1" ((meta /path)) => % notice
   meta (
     (input-fread @contents meta)
     (=temp contents preprocess-css @contents temp)
@@ -80,6 +78,6 @@ assets (
   dup
   (
     ((/ext ".css" match) (process-css-asset))
-    ((true) (copy2output))
+    ((true) (output-cp))
   ) case
 ) foreach
