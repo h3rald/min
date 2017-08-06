@@ -39,9 +39,11 @@
 
   ((("a" 1)("b" 2)("c" 3)) ' :dict dict 'b ddel =newdict newdict (("a" 1)("c" 3)) == dict (("a" 1)("b" 2)("c" 3)) == and) assert
 
-  ((("a" 1)("b" 2)("c" 3)) keys ("a" "b" "c") ==) assert
+  ((("a" 1)("b" 2)("c" 3)) dkeys ("a" "b" "c") ==) assert
 
-  ((("a" 1)("b" 2)("c" 3)) values (1 2 3) ==) assert
+  ((("a" 1)("b" 2)("c" 3)) dvalues (1 2 3) ==) assert
+
+  ((("a" 4) ("c" 8) ("f" 2) ("b" 0)) dsort (("a" 4)("b" 0)("c" 8)("f" 2)) ==) assert
 
   ((3 4 7 2 4 6 5 6) '> sort  (2 3 4 4 5 6 6 7) ==) assert
 
