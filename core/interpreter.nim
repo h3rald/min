@@ -111,9 +111,12 @@ proc apply*(i: In, op: MinOperator) =
       i.push(op.val)
 
 proc dequote*(i: In, q: var MinValue) =
-  i.withScope(q, q.scope): 
-    for v in q.qVal:
-      i.push v
+  if not q.isQuotation:
+    i.push(q)
+  else:
+    i.withScope(q, q.scope): 
+      for v in q.qVal:
+        i.push v
 
 proc apply*(i: In, q: var MinValue) =
   var i2 = newMinInterpreter("<apply>")
