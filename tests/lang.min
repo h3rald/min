@@ -183,6 +183,15 @@
   ) assert
 
   (
+    () =data
+    data (
+      1 %a
+      2 %b
+    ) tap
+    (("a" 1) ("b" 2)) ==
+  ) assert
+
+  (
     "" :s1
     "test" (
       (' "1" swap append "" join)
