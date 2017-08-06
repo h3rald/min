@@ -223,7 +223,7 @@ proc lang_module*(i: In) =
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
     let err = vals[0]
-    if err.dhas("error".newSym) and err.dhas("message".newSym):
+    if err.dhas("error".newVal) and err.dhas("message".newVal):
       raiseRuntime("($1) $2" % [err.dget("error".newVal).getString, err.dget("message".newVal).getString], err.qVal)
     else:
       raiseInvalid("Invalid error dictionary")
@@ -231,7 +231,7 @@ proc lang_module*(i: In) =
   def.symbol("format-error") do (i: In):
     let vals = i.expect("dict")
     let err = vals[0]
-    if err.dhas("error".newSym) and err.dhas("message".newSym):
+    if err.dhas("error".newVal) and err.dhas("message".newVal):
       var msg: string
       var list = newSeq[MinValue]()
       list.add err.dget("message".newVal)
@@ -282,12 +282,12 @@ proc lang_module*(i: In) =
       let e = getCurrentException()
       var res = newSeq[MinValue](0)
       let err = sgregex.replace($e.name, ":.+$", "")
-      res.add @["error".newSym, err.newVal].newVal(i.scope)
-      res.add @["message".newSym, e.msg.newVal].newVal(i.scope)
-      res.add @["symbol".newSym, i.currSym].newVal(i.scope)
-      res.add @["filename".newSym, i.currSym.filename.newVal].newVal(i.scope)
-      res.add @["line".newSym, i.currSym.line.newVal].newVal(i.scope)
-      res.add @["column".newSym, i.currSym.column.newVal].newVal(i.scope)
+      res.add @["error".newVal, err.newVal].newVal(i.scope)
+      res.add @["message".newVal, e.msg.newVal].newVal(i.scope)
+      res.add @["symbol".newVal, i.currSym].newVal(i.scope)
+      res.add @["filename".newVal, i.currSym.filename.newVal].newVal(i.scope)
+      res.add @["line".newVal, i.currSym.line.newVal].newVal(i.scope)
+      res.add @["column".newVal, i.currSym.column.newVal].newVal(i.scope)
       i.push res.newVal(i.scope)
       i.dequote(catch)
     finally:

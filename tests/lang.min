@@ -99,7 +99,7 @@
 
   (
    (
-    (((error "TestError")(message "Test Message")) raise) 
+    ((("error" "TestError")("message" "Test Message")) raise) 
     ('error dget)
     ) try "TestError" ==) assert
 
@@ -114,7 +114,7 @@
 
   ((a b +) (4 :a 5 :b) with 9 ==) assert
 
-  ("{\"a\": 1, \"b\": 2.3}" from-json ((a 1) (b 2.3)) ==) assert
+  ("{\"a\": 1, \"b\": 2.3}" from-json (("a" 1) ("b" 2.3)) ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json "\r\n" "" replace "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
 
@@ -175,11 +175,11 @@
   ("3.678" float 3.678 ==) assert
 
   (
-    ((a 1) (b 2) (c 3)) (
+    (("a" 1) ("b" 2) ("c" 3)) (
       (dup /a  succ succ %a)
       (dup /b  succ %b)
     ) tap
-    ((a 3) (b 3) (c 3)) ==
+    (("a" 3) ("b" 3) ("c" 3)) ==
   ) assert
 
   (

@@ -4,6 +4,21 @@ import
   parser,
   scope
 
+proc typeName*(v: MinValue): string =
+  case v.kind:
+    of minInt:
+      return "int"
+    of minFloat:
+      return "float"
+    of minQuotation:
+      return "quot"
+    of minString:
+      return "string"
+    of minSymbol:
+      return "sym"
+    of minBool:
+      return "bool"
+
 # Predicates
 
 proc isSymbol*(s: MinValue): bool =
@@ -36,7 +51,7 @@ proc isDictionary*(q: MinValue): bool =
   if q.qVal.len == 0:
     return true
   for val in q.qVal:
-    if not val.isQuotation or val.qVal.len != 2 or not (val.qVal[0].isSymbol or val.qVal[0].isString):
+    if not val.isQuotation or val.qVal.len != 2 or not val.qVal[0].isString:
       return false
   return true
 
@@ -62,21 +77,6 @@ proc newVal*(s: bool): MinValue =
 
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
-
-proc typeName*(v: MinValue): string =
-  case v.kind:
-    of minInt:
-      return "int"
-    of minFloat:
-      return "float"
-    of minQuotation:
-      return "quot"
-    of minString:
-      return "string"
-    of minSymbol:
-      return "sym"
-    of minBool:
-      return "bool"
 
 # Get string value from string or quoted symbol
 

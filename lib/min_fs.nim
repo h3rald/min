@@ -43,16 +43,16 @@ proc fs_module*(i: In) =
     let s = vals[0]
     let fi = s.getString.getFileInfo
     var info = newSeq[MinValue](0).newVal(i.scope)
-    info.qVal.add @["name".newSym, s].newVal(i.scope)
-    info.qVal.add @["device".newSym, fi.id.device.BiggestInt.newVal].newVal(i.scope)
-    info.qVal.add @["file".newSym, fi.id.file.BiggestInt.newVal].newVal(i.scope)
-    info.qVal.add @["type".newSym, fi.kind.filetype.newVal].newVal(i.scope)
-    info.qVal.add @["size".newSym, fi.size.newVal].newVal(i.scope)
-    info.qVal.add @["permissions".newSym, fi.permissions.unixPermissions.newVal].newVal(i.scope)
-    info.qVal.add @["nlinks".newSym, fi.linkCount.newVal].newVal(i.scope)
-    info.qVal.add @["ctime".newSym, fi.creationTime.toSeconds.newVal].newVal(i.scope)
-    info.qVal.add @["atime".newSym, fi.lastAccessTime.toSeconds.newVal].newVal(i.scope)
-    info.qVal.add @["mtime".newSym, fi.lastWriteTime.toSeconds.newVal].newVal(i.scope)
+    info.qVal.add @["name".newVal, s].newVal(i.scope)
+    info.qVal.add @["device".newVal, fi.id.device.BiggestInt.newVal].newVal(i.scope)
+    info.qVal.add @["file".newVal, fi.id.file.BiggestInt.newVal].newVal(i.scope)
+    info.qVal.add @["type".newVal, fi.kind.filetype.newVal].newVal(i.scope)
+    info.qVal.add @["size".newVal, fi.size.newVal].newVal(i.scope)
+    info.qVal.add @["permissions".newVal, fi.permissions.unixPermissions.newVal].newVal(i.scope)
+    info.qVal.add @["nlinks".newVal, fi.linkCount.newVal].newVal(i.scope)
+    info.qVal.add @["ctime".newVal, fi.creationTime.toSeconds.newVal].newVal(i.scope)
+    info.qVal.add @["atime".newVal, fi.lastAccessTime.toSeconds.newVal].newVal(i.scope)
+    info.qVal.add @["mtime".newVal, fi.lastWriteTime.toSeconds.newVal].newVal(i.scope)
     i.push info
 
   def.symbol("ftype") do (i: In):
