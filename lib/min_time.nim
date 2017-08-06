@@ -29,16 +29,16 @@ proc time_module*(i: In)=
       time = t.floatVal.fromSeconds
     let tinfo = time.getLocalTime
     var info = newSeq[MinValue](0).newVal(i.scope)
-    info.qVal.add @["year".newSym, tinfo.year.newVal].newVal(i.scope)
-    info.qVal.add @["month".newSym, (tinfo.month.int+1).newVal].newVal(i.scope)
-    info.qVal.add @["day".newSym, tinfo.monthday.newVal].newVal(i.scope)
-    info.qVal.add @["weekday".newSym, (tinfo.weekday.int+1).newVal].newVal(i.scope)
-    info.qVal.add @["yearday".newSym, tinfo.yearday.newVal].newVal(i.scope)
-    info.qVal.add @["hour".newSym, tinfo.hour.newVal].newVal(i.scope)
-    info.qVal.add @["minute".newSym, tinfo.minute.newVal].newVal(i.scope)
-    info.qVal.add @["second".newSym, tinfo.second.newVal].newVal(i.scope)
-    info.qVal.add @["dst".newSym, tinfo.isDST.newVal].newVal(i.scope)
-    info.qVal.add @["timezone".newSym, tinfo.timezone.newVal].newVal(i.scope)
+    info.qVal.add @["year".newVal, tinfo.year.newVal].newVal(i.scope)
+    info.qVal.add @["month".newVal, (tinfo.month.int+1).newVal].newVal(i.scope)
+    info.qVal.add @["day".newVal, tinfo.monthday.newVal].newVal(i.scope)
+    info.qVal.add @["weekday".newVal, (tinfo.weekday.int+1).newVal].newVal(i.scope)
+    info.qVal.add @["yearday".newVal, tinfo.yearday.newVal].newVal(i.scope)
+    info.qVal.add @["hour".newVal, tinfo.hour.newVal].newVal(i.scope)
+    info.qVal.add @["minute".newVal, tinfo.minute.newVal].newVal(i.scope)
+    info.qVal.add @["second".newVal, tinfo.second.newVal].newVal(i.scope)
+    info.qVal.add @["dst".newVal, tinfo.isDST.newVal].newVal(i.scope)
+    info.qVal.add @["timezone".newVal, tinfo.timezone.newVal].newVal(i.scope)
     i.push info
 
   def.symbol("to-timestamp") do (i: In):

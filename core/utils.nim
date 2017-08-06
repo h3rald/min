@@ -48,21 +48,24 @@ proc finalize*(scope: ref MinScope, name: string = "") =
 # Dictionary Methods
 
 proc dget*(q: MinValue, s: MinValue): MinValue =
-  # Assumes q is a dictionary
+  if not q.isDictionary:
+    raiseInvalid("Value is not a dictionary")
   for v in q.qVal:
     if v.qVal[0].getString == s.getString:
       return v.qVal[1]
   raiseInvalid("Dictionary key '$1' not found" % s.getString)
 
 proc dhas*(q: MinValue, s: MinValue): bool =
-  # Assumes q is a dictionary
+  if not q.isDictionary:
+    raiseInvalid("Value is not a dictionary")
   for v in q.qVal:
     if v.qVal[0].getString == s.getString:
       return true
   return false
 
 proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable.} =
-  # Assumes q is a dictionary
+  if not p.isDictionary:
+    raiseInvalid("Value is not a dictionary")
   var q = newVal(p.qVal, i.scope)
   var found = false
   var c = -1
@@ -76,7 +79,8 @@ proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable.} =
   return q
       
 proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable.}=
-  # Assumes q is a dictionary
+  if not p.isDictionary:
+    raiseInvalid("Value is not a dictionary")
   var q = newVal(p.qVal, i.scope)
   var found = false
   var c = -1
@@ -87,9 +91,9 @@ proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable
       break
   if found:
     q.qVal.delete(c)
-    q.qVal.insert(@[s.getString.newSym, m].newVal(i.scope), c)
+    q.qVal.insert(@[s.getString.newVal, m].newVal(i.scope), c)
   else:
-    q.qVal.add(@[s.getString.newSym, m].newVal(i.scope))
+    q.qVal.add(@[s.getString.newVal, m].newVal(i.scope))
   return q
 
 proc keys*(i: In, q: MinValue): MinValue =
@@ -147,7 +151,7 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
     of JObject:
       var res = newSeq[MinValue](0)
       for key, value in json.pairs:
-        res.add @[key.newSym, i.fromJson(value)].newVal(i.scope)
+        res.add @[key.newVal, i.fromJson(value)].newVal(i.scope)
       return res.newVal(i.scope)
     of JArray:
       var res = newSeq[MinValue](0)
@@ -158,13 +162,17 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 # Validators
 
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
-  let stack = elements.join(" ")
+  let stack = elements.reverse.join(" ")
+  let sym = i.currSym.getString
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
   let message = proc(invalid: string): string =
-    result = "Incorrect values found on the stack:\n"
-    result &= "- expected: {top} " & stack & " {bottom}\n"
-    result &= "- got:      {top} " & valid.reverse.join(" ") & " " & invalid & " {bottom}"
+    result = "Symbol: $1 - Incorrect values found on the stack:\n" % sym
+    result &= "- expected: " & stack & " $1\n" % sym
+    var other = ""
+    if valid.len > 0:
+      other = valid.reverse.join(" ") & " "
+    result &= "- got:      " & invalid & " " & other & sym
   for element in elements:
     let value = i.pop
     result.add value
