@@ -6,6 +6,8 @@
   ((1 2) (3 4) concat (1 2 3 4) ==) assert
 
   ((1 2 3) first 1 ==) assert
+
+  ((1 2 3) last 3 ==) assert
   
   ((1 2 3) rest (2 3) ==) assert
 

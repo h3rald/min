@@ -28,6 +28,13 @@ proc seq_module*(i: In)=
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[0]
   
+  def.symbol("last") do (i: In):
+    let vals = i.expect("quot")
+    let q = vals[0]
+    if q.qVal.len == 0:
+      raiseOutOfBounds("Quotation is empty")
+    i.push q.qVal[q.qVal.len - 1]
+  
   def.symbol("rest") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
