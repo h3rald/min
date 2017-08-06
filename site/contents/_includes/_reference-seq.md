@@ -121,6 +121,9 @@ Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
 {#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
 Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
 
+{#op||last||{{q}}||{{any}}||
+Returns the last element of {{q}}. #}
+
 {#op||map||{{q1}} {{q2}}||{{q3}}||
 Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{q1}}.#}
 
