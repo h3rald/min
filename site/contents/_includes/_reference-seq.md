@@ -38,8 +38,24 @@ Returns the value of key {{sl}} from dictionary {{d}}. #}
 > >     (("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
  #}
 
+{#op||dkeys||{{d}}||({{s}}{{0p}})||
+Returns a quotation containing all the keys of dictionary {{d}}. #}
+
 {#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified copy of the dictionary {{d2}}. #}
+
+{#op||dsort||{{d1}}||{{d2}}||
+> Returns a new dictionary {{d2}} containing all elements of {{d1}} sorted by key in ascending order.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(("a" 342) ("b" true) ("c" -4) ("d" 22))` on the stack:
+> > 
+> >     (("b" true) ("d" 22) ("c" -4) ("a" 342)) dsort#}
+
+{#op||dvalues||{{d}}||({{a0p}})||
+Returns a quotation containing all the values of dictionary {{d}}. #}
 
 {#op||filter||{{q1}} {{q2}}||{{q3}}||
 > Returns a new quotation {{q3}} containing all elements of {{q1}} that satisfy predicate {{q2}}.
@@ -93,9 +109,6 @@ Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
 
 {#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
 Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
-
-{#op||keys||{{q}}||({{s}}{{0p}})||
-Returns a quotation containing all the keys of dictionary {{d}}. #}
 
 {#op||map||{{q1}} {{q2}}||{{q3}}||
 Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{q1}}.#}
@@ -177,6 +190,3 @@ Returns the length of {{q}}.#}
 > > The following program leaves `(1 3 5 7 9 13 16)` on the stack:
 > > 
 > >     (1 9 5 13 16 3 7) '> sort #}
-
-{#op||values||{{d}}||({{a0p}})||
-Returns a quotation containing all the values of dictionary {{d}}. #}

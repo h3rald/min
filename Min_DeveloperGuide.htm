@@ -6111,12 +6111,40 @@ div .terminal {
 <pre><code>(("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
 </code></pre></div></div>
 
+<p><a id="op-dkeys"></a>
+<span class="reference-title">dkeys</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> (<span class="kwd">string</span><span class="kwd"><sub>*</sub></span>)</span></p>
+
+<p>Returns a quotation containing all the keys of dictionary <span class="kwd">dict</span>.</p></div>
+
 <p><a id="op-dset"></a>
 <span class="reference-title">dset</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
 
 <p>Sets the value of the <span class="kwd">&apos;sym</span> of <span class="kwd">dict<sub>1</sub></span>  to <span class="kwd">a</span>, and returns the modified copy of the dictionary <span class="kwd">dict<sub>2</sub></span>.</p></div>
+
+<p><a id="op-dsort"></a>
+<span class="reference-title">dsort</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
+
+<p>Returns a new dictionary <span class="kwd">dict<sub>2</sub></span> containing all elements of <span class="kwd">dict<sub>1</sub></span> sorted by key in ascending order.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following program leaves <code>(("a" 342) ("b" true) ("c" -4) ("d" 22))</code> on the stack:</p>
+
+<pre><code>(("b" true) ("d" 22) ("c" -4) ("a" 342)) dsort
+</code></pre></div></div>
+
+<p><a id="op-dvalues"></a>
+<span class="reference-title">dvalues</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span>)</span></p>
+
+<p>Returns a quotation containing all the values of dictionary <span class="kwd">dict</span>.</p></div>
 
 <p><a id="op-filter"></a>
 <span class="reference-title">filter</span></p>
@@ -6198,13 +6226,6 @@ harvest
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Inserts <span class="kwd">a</span> as the value of the <em>n<sup>th</sup></em> element <span class="kwd">quot<sub>1</sub></span> (zero-based), and returns the modified copy of the quotation <span class="kwd">quot<sub>2</sub></span>.</p></div>
-
-<p><a id="op-keys"></a>
-<span class="reference-title">keys</span></p>
-
-<div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">string</span><span class="kwd"><sub>*</sub></span>)</span></p>
-
-<p>Returns a quotation containing all the keys of dictionary <span class="kwd">dict</span>.</p></div>
 
 <p><a id="op-map"></a>
 <span class="reference-title">map</span></p>
@@ -6342,13 +6363,6 @@ harvest
 
 <pre><code>(1 9 5 13 16 3 7) '&gt; sort
 </code></pre></div></div>
-
-<p><a id="op-values"></a>
-<span class="reference-title">values</span></p>
-
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span>)</span></p>
-
-<p>Returns a quotation containing all the values of dictionary <span class="kwd">dict</span>.</p></div>
 
 <a name="<code>io</code>-Module"></a>
 <h3><code>io</code> Module<a href="#document-top" title="Go to top"></a></h3>

@@ -334,15 +334,20 @@ proc seq_module*(i: In)=
     let d = vals[1]
     i.push i.ddel(d, k)
 
-  def.symbol("keys") do (i: In):
+  def.symbol("dkeys") do (i: In):
     let vals = i.expect("dict")
     let d = vals[0]
     i.push i.keys(d)
 
-  def.symbol("values") do (i: In):
+  def.symbol("dvalues") do (i: In):
     let vals = i.expect("dict")
     let d = vals[0]
     i.push i.values(d)
+
+  def.symbol("dsort") do (i: In):
+    let vals = i.expect("dict")
+    var d = vals[0]
+    i.push d.qVal.sortedByIt(it.qVal[0].getString).newVal(i.scope)
 
   def.sigil("?") do (i: In):
     i.push("dhas?".newSym)
