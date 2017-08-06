@@ -349,6 +349,16 @@ proc seq_module*(i: In)=
     var d = vals[0]
     i.push d.qVal.sortedByIt(it.qVal[0].getString).newVal(i.scope)
 
+  def.symbol("dpick") do (i: In):
+    let vals = i.expect("quot", "dict")
+    var q = vals[0]
+    var d = vals[1]
+    var res = newSeq[MinValue](0)
+    for v in d.qVal:
+      if q.qVal.contains v.qVal[0]:
+        res.add v
+    i.push res.newVal(i.scope)
+
   def.sigil("?") do (i: In):
     i.push("dhas?".newSym)
 

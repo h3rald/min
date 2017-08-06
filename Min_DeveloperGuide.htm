@@ -6118,6 +6118,20 @@ div .terminal {
 
 <p>Returns a quotation containing all the keys of dictionary <span class="kwd">dict</span>.</p></div>
 
+<p><a id="op-dpick"></a>
+<span class="reference-title">dpick</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
+
+<p>Returns a new dictionary <span class="kwd">dict<sub>2</sub></span> containing the elements of <span class="kwd">dict<sub>1</sub></span> whose keys are included in <span class="kwd">quot</span>.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following program returns <code>(("a" 4) ("d" 7))</code>:</p>
+
+<pre><code>(("q" 5) ("a" 4) ("c" 6) ("d" 7)) ("a" "d") dpick
+</code></pre></div></div>
+
 <p><a id="op-dset"></a>
 <span class="reference-title">dset</span></p>
 
