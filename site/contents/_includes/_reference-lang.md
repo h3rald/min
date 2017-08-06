@@ -265,12 +265,12 @@ Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 > > The following program:
 > > 
 > >     (
-> >       ((a 1) (b 2) (c 3)) (
+> >       (("a" 1) ("b" 2) ("c" 3)) (
 > >       (dup /a  succ succ %a)
 > >       (dup /b  succ %b)
 > >     ) tap
 > > 
-> > Returns `((a 3) (b 3) (c 3))`.#}
+> > Returns `(("a" 3) ("b" 3) ("c" 3))`.#}
 
 {#op||tap!||{{any}} {{q}}||{{any}}||
 > Performs the following operations:

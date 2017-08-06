@@ -33,10 +33,6 @@ A sigil like `:` can be prepended to a single-word string instead of using the c
 : Alias for {#link-operator||lang||define#}. 
 ^
 : Alias for {#link-operator||lang||call#}. 
-/
-: Alias for {#link-operator||lang||dget#}. 
-%
-: Alias for {#link-operator||lang||dset#}. 
 @
 : Alias for {#link-operator||lang||bind#}. 
 >
@@ -47,6 +43,12 @@ A sigil like `:` can be prepended to a single-word string instead of using the c
 : Alias for {#link-operator||lang||quote-bind#}. 
 \#
 : Alias for {#link-operator||lang||quote-define#}. 
+/
+: Alias for {#link-operator||seq||dget#}. 
+%
+: Alias for {#link-operator||seq||dset#}. 
+?
+: Alias for {#link-operator||seq||dhas?#}.
 !
 : Alias for {#link-operator||sys||system#}.
 &

@@ -19,9 +19,9 @@ Additionally, quotations structured in a particular way can be used as dictionar
 > The following is a simple dictionary containing three keys: *name*, *paradigm*, and *first-release-year*:
 >
 >     (
->         (name "min")
->         (paradigm "concatenative")
->         (first-release-year 2017)
+>         ("name" "min")
+>         ("paradigm" "concatenative")
+>         ("first-release-year" 2017)
 >     )
 
 The {#link-module||logic#} provides predicate operators to check if an element belong to a particular data type or pseudo-type (`boolean?`, `number?`, `integer?`, `float?`, `string?`, `quotation?`, `dictionary?`).

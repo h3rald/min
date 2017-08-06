@@ -4518,11 +4518,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_macosx_x64.zip">min v0.10.1 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_windows_x64.zip">min v0.10.1 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_x64.zip">min v0.10.1 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_x86.zip">min v0.10.1 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.10.1/min_v0.10.1_linux_arm.zip">min v0.10.1 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_macosx_x64.zip">min v0.11.0 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_windows_x64.zip">min v0.11.0 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_x64.zip">min v0.11.0 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_x86.zip">min v0.11.0 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_arm.zip">min v0.11.0 for Linux (arm)</a></li>
 </ul>
 
 
@@ -4637,9 +4637,9 @@ div .terminal {
 <p>The following is a simple dictionary containing three keys: <em>name</em>, <em>paradigm</em>, and <em>first-release-year</em>:</p>
 
 <pre><code>(
-    (name "min")
-    (paradigm "concatenative")
-    (first-release-year 2017)
+    ("name" "min")
+    ("paradigm" "concatenative")
+    ("first-release-year" 2017)
 )
 </code></pre></div>
 
@@ -4738,10 +4738,6 @@ div .terminal {
 <dd>Alias for <a href="#op-define"><code>define</code></a>.</dd>
 <dt>^</dt>
 <dd>Alias for <a href="#op-call"><code>call</code></a>.</dd>
-<dt>/</dt>
-<dd>Alias for <a href="#op-dget"><code>dget</code></a>.</dd>
-<dt>%</dt>
-<dd>Alias for <a href="#op-dset"><code>dset</code></a>.</dd>
 <dt>@</dt>
 <dd>Alias for <a href="#op-bind"><code>bind</code></a>.</dd>
 <dt>></dt>
@@ -4752,6 +4748,12 @@ div .terminal {
 <dd>Alias for <a href="#op-quote-bind"><code>quote-bind</code></a>.</dd>
 <dt>#</dt>
 <dd>Alias for <a href="#op-quote-define"><code>quote-define</code></a>.</dd>
+<dt>/</dt>
+<dd>Alias for <a href="#op-dget"><code>dget</code></a>.</dd>
+<dt>%</dt>
+<dd>Alias for <a href="#op-dset"><code>dset</code></a>.</dd>
+<dt>?</dt>
+<dd>Alias for <a href="#op-dhas?"><code>dhas?</code></a>.</dd>
 <dt>!</dt>
 <dd>Alias for <a href="#op-system"><code>system</code></a>.</dd>
 <dt>&amp;</dt>
@@ -5149,27 +5151,27 @@ div .terminal {
 <dt><span class="kwd">tinfo</span></dt>
 <dd>A timeinfo dictionary:
 <pre><code>(
-  (year 2017)
-  (month 7)
-  (day 8)
-  (weekday 6)
-  (yearday 188)
-  (hour 15)
-  (minute 16)
-  (second 25)
-  (dst true)
-  (timezone -3600)
+  (&ldquo;year&rdquo; 2017)
+  (&ldquo;month&rdquo; 7)
+  (&ldquo;day&rdquo; 8)
+  (&ldquo;weekday&rdquo; 6)
+  (&ldquo;yearday&rdquo; 188)
+  (&ldquo;hour&rdquo; 15)
+  (&ldquo;minute&rdquo; 16)
+  (&ldquo;second&rdquo; 25)
+  (&ldquo;dst&rdquo; true)
+  (&ldquo;timezone&rdquo; -3600)
 )
 </code></pre></dd>
 <dt><span class="kwd">err</span></dt>
 <dd>An error dictionary:
 <pre><code>(
-  (error &ldquo;MyError&rdquo;)
-  (message &ldquo;An error occurred&rdquo;)
-  (symbol &ldquo;symbol1&rdquo;)
-  (filename &ldquo;dir1/file1.min&rdquo;)
-  (line 3)
-  (column 13)
+  (&ldquo;error&rdquo; &ldquo;MyError&rdquo;)
+  (&ldquo;message&rdquo; &ldquo;An error occurred&rdquo;)
+  (&ldquo;symbol&rdquo; &ldquo;symbol1&rdquo;)
+  (&ldquo;filename&rdquo; &ldquo;dir1/file1.min&rdquo;)
+  (&ldquo;line&rdquo; 3)
+  (&ldquo;column&rdquo; 13)
 )
 </code></pre></dd>
 <dt><span class="kwd">true</span></dt>
@@ -5738,13 +5740,13 @@ div .terminal {
 <p>The following program:</p>
 
 <pre><code>(
-  ((a 1) (b 2) (c 3)) (
+  (("a" 1) ("b" 2) ("c" 3)) (
   (dup /a  succ succ %a)
   (dup /b  succ %b)
 ) tap
 </code></pre>
 
-<p>Returns <code>((a 3) (b 3) (c 3))</code>.</p></div></div>
+<p>Returns <code>(("a" 3) ("b" 3) ("c" 3))</code>.</p></div></div>
 
 <p><a id="op-tap!"></a>
 <span class="reference-title">tap!</span></p>
@@ -6106,7 +6108,7 @@ div .terminal {
 
 <p>The following program returns <span class="kwd">true</span>:</p>
 
-<pre><code>((a1 true) (a2 "aaa") (a3 false)) 'a2 dhas?
+<pre><code>(("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
 </code></pre></div></div>
 
 <p><a id="op-dset"></a>
@@ -6547,16 +6549,16 @@ harvest
 <p>produces:</p>
 
 <pre><code> (
-   (name (min))
-   (device 16777220)
-   (file 50112479)
-   (type "file")
-   (size 617068)
-   (permissions 755)
-   (nlinks 1)
-   (ctime 1496583112.0)
-   (atime 1496584370.0)
-   (mtime 1496583112.0)
+   ("name" (min))
+   ("device" 16777220)
+   ("file" 50112479)
+   ("type" "file")
+   ("size" 617068)
+   ("permissions" 755)
+   ("nlinks" 1)
+   ("ctime" 1496583112.0)
+   ("atime" 1496584370.0)
+   ("mtime" 1496583112.0)
  )
 </code></pre></div></div>
 
@@ -7392,7 +7394,7 @@ harvest
 <p>Encrypts or decrypts <span class="kwd">&apos;sym<sub>1</sub></span> using the Advanced Encryption Standard (AES), using <span class="kwd">&apos;sym<sub>2</sub></span> as password.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; August 5, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; August 6, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
