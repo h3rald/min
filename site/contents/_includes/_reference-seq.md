@@ -41,6 +41,17 @@ Returns the value of key {{sl}} from dictionary {{d}}. #}
 {#op||dkeys||{{d}}||({{s}}{{0p}})||
 Returns a quotation containing all the keys of dictionary {{d}}. #}
 
+{#op||dpick||{{d1}} {{q}}||{{d2}}||
+> Returns a new dictionary {{d2}} containing the elements of {{d1}} whose keys are included in {{q}}.
+> 
+> > %sidebar%
+> > Example
+> >  
+> > The following program returns `(("a" 4) ("d" 7))`:
+> > 
+> >     (("q" 5) ("a" 4) ("c" 6) ("d" 7)) ("a" "d") dpick
+ #}
+
 {#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified copy of the dictionary {{d2}}. #}
 
