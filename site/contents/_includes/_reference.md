@@ -54,27 +54,27 @@ The following notation is used in the signature of all min operators:
 {{tinfo}}
 : A timeinfo dictionary:
   <pre><code>(
-    (year 2017)
-    (month 7)
-    (day 8)
-    (weekday 6)
-    (yearday 188)
-    (hour 15)
-    (minute 16)
-    (second 25)
-    (dst true)
-    (timezone -3600)
+    ("year" 2017)
+    ("month" 7)
+    ("day" 8)
+    ("weekday" 6)
+    ("yearday" 188)
+    ("hour" 15)
+    ("minute" 16)
+    ("second" 25)
+    ("dst" true)
+    ("timezone" -3600)
   )
   </code></pre>
 {{e}}
 : An error dictionary:
   <pre><code>(
-    (error "MyError")
-    (message "An error occurred")
-    (symbol "symbol1")
-    (filename "dir1/file1.min")
-    (line 3)
-    (column 13)
+    ("error" "MyError")
+    ("message" "An error occurred")
+    ("symbol" "symbol1")
+    ("filename" "dir1/file1.min")
+    ("line" 3)
+    ("column" 13)
   )
   </code></pre>
 {{t}}

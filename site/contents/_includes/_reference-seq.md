@@ -35,7 +35,7 @@ Returns the value of key {{sl}} from dictionary {{d}}. #}
 > >  
 > > The following program returns {{t}}:
 > > 
-> >     ((a1 true) (a2 "aaa") (a3 false)) 'a2 dhas?
+> >     (("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
  #}
 
 {#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||

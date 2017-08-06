@@ -24,16 +24,16 @@ Returns the size in bytes of file/directory {{sl}}.#}
 > > produces:
 > > 
 > >      (
-> >        (name (min))
-> >        (device 16777220)
-> >        (file 50112479)
-> >        (type "file")
-> >        (size 617068)
-> >        (permissions 755)
-> >        (nlinks 1)
-> >        (ctime 1496583112.0)
-> >        (atime 1496584370.0)
-> >        (mtime 1496583112.0)
+> >        ("name" (min))
+> >        ("device" 16777220)
+> >        ("file" 50112479)
+> >        ("type" "file")
+> >        ("size" 617068)
+> >        ("permissions" 755)
+> >        ("nlinks" 1)
+> >        ("ctime" 1496583112.0)
+> >        ("atime" 1496584370.0)
+> >        ("mtime" 1496583112.0)
 > >      )#}
 
 {#op||ftype||{{sl}}||{{s}}||
