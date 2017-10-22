@@ -27,7 +27,8 @@ import
   lib/min_time, 
   lib/min_io,
   lib/min_sys,
-  lib/min_fs
+  lib/min_fs,
+  lib/min_trig
 
 when not defined(lite):
   import lib/min_crypto
@@ -124,6 +125,7 @@ proc stdLib*(i: In) =
   i.sys_module
   i.time_module
   i.fs_module
+  i.trig_module
   when not defined(lite):
     i.crypto_module
   i.eval PRELUDE, "<prelude>"
