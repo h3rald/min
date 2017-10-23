@@ -1,5 +1,6 @@
 import 
-  tables
+  tables,
+  math
 import 
   ../core/parser, 
   ../core/value, 
@@ -75,7 +76,30 @@ proc logic_module*(i: In)=
   def.symbol("==") do (i: In):
     var n1, n2: MinValue
     i.reqTwoSimilarTypesNonSymbol n2, n1
-    i.push newVal(n1 == n2)
+    if n1.kind == minFloat or n2.kind == minFloat:
+      let
+        a:float = if n1.kind != minFloat: n1.intVal.float else: n1.floatVal
+        b:float = if n2.kind != minFloat: n2.intVal.float else: n2.floatVal
+      if a.classify == fcNan and b.classify == fcNan:
+        i.push newVal(true)
+      else:
+        const
+          FLOAT_MIN_NORMAL = 2e-1022
+          FLOAT_MAX_VALUE = (2-2e-52)*2e1023
+          epsilon = 0.00001
+        let
+          absA = abs(a)
+          absB = abs(b)
+          diff = abs(a - b)
+
+        if a == b:
+          i.push newVal(true)
+        elif a == 0 or b == 0 or diff < FLOAT_MIN_NORMAL:
+          i.push newVal(diff < (epsilon * FLOAT_MIN_NORMAL))
+        else:
+          i.push newVal(diff / min((absA + absB), FLOAT_MAX_VALUE) < epsilon)
+    else:
+      i.push newVal(n1 == n2)
   
   def.symbol("!=") do (i: In):
     var n1, n2: MinValue

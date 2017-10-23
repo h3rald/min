@@ -12,6 +12,15 @@ import
 proc num_module*(i: In)=
 
   let def = i.define()
+
+  def.symbol("nan") do (i: In):
+    i.push newVal(NaN)
+  
+  def.symbol("inf") do (i: In):
+    i.push newVal(Inf)
+  
+  def.symbol("ninf") do (i: In):
+    i.push newVal(NegInf)
   
   def.symbol("+") do (i: In):
     let vals = i.expect("num", "num")
