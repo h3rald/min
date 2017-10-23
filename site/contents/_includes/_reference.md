@@ -3,7 +3,7 @@
 min includes a small but powerful standard library organized into the following _modules_:
 
 {#link-module||lang#}
-: Defines the basic language constructs, such as control flow, symbol definition and binding, exception handling,  etc.
+: Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc.
 {#link-module||stack#}
 : Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.
 {#link-module||seq#}
@@ -15,7 +15,7 @@ min includes a small but powerful standard library organized into the following 
 {#link-module||logic#}
 : Provides comparison operators for all min data types and other boolean logic operators.
 {#link-module||str#}
-: Provides operators to perform operations on strings, use regular expressions, and convert strings into other data types.
+: Provides operators to perform operations on strings, use regular expressions, interpolation, etc..
 {#link-module||sys#}
 : Provides operators to use as basic shell commands, access environment variables, and execute external commands.
 {#link-module||num#}
