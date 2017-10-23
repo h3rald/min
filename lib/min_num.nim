@@ -19,7 +19,7 @@ proc num_module*(i: In)=
   def.symbol("inf") do (i: In):
     i.push newVal(Inf)
   
-  def.symbol("ninf") do (i: In):
+  def.symbol("-inf") do (i: In):
     i.push newVal(NegInf)
   
   def.symbol("+") do (i: In):
