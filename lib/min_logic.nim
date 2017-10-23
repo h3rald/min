@@ -62,8 +62,8 @@ proc logic_module*(i: In)=
         i.push newVal(n1.floatVal > n2.floatVal or floatCompare(n1, n2))
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float or floatCompare(n1, n2))
-      else:
-        i.push newVal(n1.strVal >= n2.strVal)
+    else:
+      i.push newVal(n1.strVal >= n2.strVal)
   
   def.symbol("<") do (i: In):
     var n1, n2: MinValue
