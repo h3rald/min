@@ -1,3 +1,4 @@
+{.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 
@@ -143,6 +144,9 @@ type
   libProc = proc(
       i: In
     ) {.nimcall.}
+{.emit: """
+  #include <dlfcn.h>
+"""}
 proc dynLib*(i: In) =
   var
     dll: LibHandle
@@ -152,6 +156,11 @@ proc dynLib*(i: In) =
     let setupAddr = dll.symAddr("setup")
     if setupAddr != nil:
       setup = cast[setupProc](setupAddr)
+  else:
+    echo "Unable to load lib"
+    {.emit:"""
+    printf("%s\n", dlerror());
+    """}
 
   if setup != nil:
     let
