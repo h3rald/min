@@ -7,7 +7,9 @@ import
   json, 
   sequtils,
   algorithm,
-  logging
+  logging,
+  dynlib
+
 import 
   packages/nimline/nimline,
   packages/niftylogger,
@@ -130,8 +132,43 @@ proc stdLib*(i: In) =
   i.eval MINRC.readFile()
   i.eval "\"prompt\" unseal"
 
+type
+  setupProc = proc(
+      defineProc: proc(i: In): ref MinScope,
+      finalizeProc: proc(scope: ref MinScope, name: string),
+      symbolProc: proc(scope: ref MinScope, sym: string, p: MinOperatorProc),
+      expectProc: proc(i: var MinInterpreter, elements: varargs[string]): seq[MinValue],
+      pushProc: proc(i: In, val: MinValue)
+    ): string {.nimcall.}
+  libProc = proc(
+      i: In
+    ) {.nimcall.}
+proc dynLib*(i: In) =
+  var
+    dll: LibHandle
+    setup: setupProc
+  dll = loadLib("./dynlibs/libmindyn.so")
+  if dll != nil:
+    let setupAddr = dll.symAddr("setup")
+    if setupAddr != nil:
+      setup = cast[setupProc](setupAddr)
+
+  if setup != nil:
+    let
+      libName = setup(define, finalize, symbol, expect, push)
+      libAddr = dll.symAddr(libName)
+    if libAddr != nil:
+      var lib = cast[libProc](libAddr)
+      i.lib
+      echo "Loaded dynlib"
+    else:
+      echo "Wasn't able to load " & libName & "(i: In) from DLL."
+  else:
+    echo "Wasn't able to load setup() from DLL."
+
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
+  i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -177,6 +214,7 @@ proc printResult(i: In, res: MinValue) =
 
 proc minRepl*(i: var MinInterpreter) =
   i.stdLib()
+  i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
