@@ -1,5 +1,0 @@
-'dyn import
-1 1 +
-1 1 myplus
-==
-puts!

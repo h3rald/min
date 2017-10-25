@@ -1,3 +1,0 @@
-proc filetype(p: PathComponent): string {.importc, extern:"filetype_FZiFjJo8tLR4Z31M0hOccg".}
-proc unixPermissions(s: set[FilePermission]): int {.importc, extern:"unixPermissions_yRhMgkace1wP9a9cKdvJCJhw".}
-proc toFilePermissions(p: BiggestInt): set[FilePermission] {.importc, extern:"toFilePermissions_iFbq0Qn5CDseGqlJex9cAkw".}

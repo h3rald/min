@@ -134,46 +134,42 @@ proc stdLib*(i: In) =
   i.eval "\"prompt\" unseal"
 
 type
-  setupProc = proc(
-      defineProc: proc(i: In): ref MinScope,
-      finalizeProc: proc(scope: ref MinScope, name: string),
-      symbolProc: proc(scope: ref MinScope, sym: string, p: MinOperatorProc),
-      expectProc: proc(i: var MinInterpreter, elements: varargs[string]): seq[MinValue],
-      pushProc: proc(i: In, val: MinValue)
-    ): string {.nimcall.}
+  DynInfo = object
+    moduleName: string # The name of the symbol to load and run
+    dynlibVersion: int # The version of the interface the dynlib is built for. This should increase if the interface changes
+  setupProc = proc(): DynInfo {.nimcall.}
   libProc = proc(
       i: In
     ) {.nimcall.}
-{.emit: """
-  #include <dlfcn.h>
-"""}
 proc dynLib*(i: In) =
   var
     dll: LibHandle
     setup: setupProc
-  dll = loadLib("./dynlibs/libmindyn.so")
-  if dll != nil:
-    let setupAddr = dll.symAddr("setup")
-    if setupAddr != nil:
-      setup = cast[setupProc](setupAddr)
-  else:
-    echo "Unable to load lib"
-    {.emit:"""
-    printf("%s\n", dlerror());
-    """}
-
-  if setup != nil:
-    let
-      libName = setup(define, finalize, symbol, expect, push)
-      libAddr = dll.symAddr(libName)
-    if libAddr != nil:
-      var lib = cast[libProc](libAddr)
-      i.lib
-      echo "Loaded dynlib"
+  echo "Trying to load libraries from " & $(getAppDir() / "dynlibs")
+  for library in walkFiles(getAppDir() / "dynlibs/*"):
+    dll = loadLib(library)
+    if dll != nil:
+      let setupAddr = dll.symAddr("setup")
+      if setupAddr != nil:
+        setup = cast[setupProc](setupAddr)
+      if setup != nil:
+        let
+          expectedVersion = 1
+          libInfo = setup()
+          libAddr = dll.symAddr(libInfo.moduleName)
+        if libInfo.dynlibVersion == expectedVersion: 
+          if libAddr != nil:
+            var lib = cast[libProc](libAddr)
+            i.lib
+            echo "Loaded dynlib " & libInfo.moduleName & "[" & library & "]"
+          else:
+            echo "Wasn't able to load " & libInfo.moduleName & "(i: In) from " & library
+        else:
+          echo "Dynlib in " & library & " has wrong version, got " & $libInfo.dynlibVersion & " but expected " & $expectedVersion
+      else:
+        echo "Wasn't able to load setup() from " & library
     else:
-      echo "Wasn't able to load " & libName & "(i: In) from DLL."
-  else:
-    echo "Wasn't able to load setup() from DLL."
+      echo "Unable to load lib from " & library
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
