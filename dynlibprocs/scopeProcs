@@ -1,0 +1,8 @@
+proc copy(s: ref MinScope): ref MinScope {.importc, extern:"copy_KGlnVwWC9c0GiqXFwLDTiww".}
+proc getSymbol(scope: ref MinScope, key: string): MinOperator {.importc, extern:"getSymbol_fLEzdqSpt81S0Of5t4H9afg".}
+proc hasSymbol(scope: ref MinScope, key: string): bool {.importc, extern:"hasSymbol_58ut1Z9aCNCsBFnk7k9a9cVKA".}
+proc delSymbol(scope: ref MinScope, key: string): bool {.importc, extern:"delSymbol_58ut1Z9aCNCsBFnk7k9a9cVKA_2".}
+proc setSymbol(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.importc, extern:"setSymbol_i9bO9b9aWD4K9c3RcQs0RqQvPw".}
+proc getSigil(scope: ref MinScope, key: string): MinOperator {.importc, extern:"getSigil_fLEzdqSpt81S0Of5t4H9afg_2".}
+proc hasSigil(scope: ref MinScope, key: string): bool {.importc, extern:"hasSigil_58ut1Z9aCNCsBFnk7k9a9cVKA_3".}
+proc previous(scope: ref MinScope): ref MinScope {.importc, extern:"previous_wp9cZN2pi3N79at4ESdxFNVQ".}

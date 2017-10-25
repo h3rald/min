@@ -1,0 +1,32 @@
+proc raiseInvalid(msg: string) {.importc, extern:"raiseInvalid_Emp5jFVyMCrh15i1fpFZiQ".}
+proc raiseUndefined(msg: string) {.importc, extern:"raiseUndefined_Emp5jFVyMCrh15i1fpFZiQ_2".}
+proc raiseOutOfBounds(msg: string) {.importc, extern:"raiseOutOfBounds_Emp5jFVyMCrh15i1fpFZiQ_3".}
+proc raiseEmptyStack() {.importc, extern:"raiseEmptyStack_TxAgT9bR9codeB2uLmVKwt3w".}
+proc newScope(parent: ref MinScope): MinScope {.importc, extern:"newScope_rH9cNZXpQjLoAhnola5cX4Q".}
+proc newScopeRef(parent: ref MinScope): ref MinScope {.importc, extern:"newScopeRef_s7aB4NQYrY7Hev87iAW4jw".}
+proc open(my: var MinParser, input: Stream, filename: string) {.importc, extern:"open_9brvHSJ7qjV9aGAqIpwcMV3A".}
+proc close(my: var MinParser) {.importc, extern:"close_vmj9agDNIDvOwQZe8A2kGIAparser".}
+proc getInt(my: MinParser): int {.importc, extern:"getInt_bXIqXGzvO9aGBMkrzA6B15gparser".}
+proc getFloat(my: MinParser): float {.importc, extern:"getFloat_VXTaXBiGVD6XkIZK3YSq5Aparser".}
+proc kind(my: MinParser): MinEventKind {.importc, extern:"kind_tgDyDbkEOSH9aIKWnOecz4Aparser".}
+proc getColumn(my: MinParser): int {.importc, extern:"getColumn_bXIqXGzvO9aGBMkrzA6B15g_2parser".}
+proc getLine(my: MinParser): int {.importc, extern:"getLine_bXIqXGzvO9aGBMkrzA6B15g_3parser".}
+proc getFilename(my: MinParser): string {.importc, extern:"getFilename_s9a5R24VyFqQ3N3m7ZkDqmAparser".}
+proc errorMsg(my: MinParser, msg: string): string {.importc, extern:"errorMsg_cVsoiM0SE9cH0KWBNfKqZcA".}
+proc errorMsg(my: MinParser): string {.importc, extern:"errorMsg_r87VYrPzvmEsJhjriyvyQw".}
+proc errorMsgExpected(my: MinParser, e: string): string {.importc, extern:"errorMsgExpected_Wqyr2ROfsYVJGDFwgiczQw".}
+proc raiseParsing(p: MinParser, msg: string) {.importc, extern:"result".}
+proc raiseUndefined(p:MinParser, msg: string) {.importc, extern:"msg".}
+proc parseNumber(my: var MinParser) {.importc, extern:"msg".}
+proc handleHexChar(c: char, x: var int): bool {.importc, extern:"handleHexChar_5qj5zQ9aD5ka0UVtIDvSjNg".}
+proc parseString(my: var MinParser): MinTokenKind {.importc, extern:"parseString_e3KFIguKCxnkZTqCF3o3jg".}
+proc parseSymbol(my: var MinParser): MinTokenKind {.importc, extern:"parseSymbol_4hcHuz8N3YVsotvxzfL3Kw".}
+proc skip(my: var MinParser) {.importc, extern:"skip_iFcpIZyA9cJx6updYRSgzjw".}
+proc getToken(my: var MinParser): MinTokenKind {.importc, extern:"getToken_e3KFIguKCxnkZTqCF3o3jg_2".}
+proc next(my: var MinParser) {.importc, extern:"next_iFcpIZyA9cJx6updYRSgzjw_2".}
+proc eat(p: var MinParser, token: MinTokenKind) {.importc, extern:"eat_WE9bi5nLbQn9cAjnzHQ9bV6Kw".}
+proc parseMinValue(p: var MinParser, i: In): MinValue {.importc, extern:"parseMinValue_Y6xeteQ253Mvf1JjLWhFig".}
+proc `$`(a: MinValue): string {.importc, extern:"dollar__byT09beg0JPSCPWB3NVBb9bQ".}
+proc `$$`(a: MinValue): string {.importc, extern:"dollardollar__byT09beg0JPSCPWB3NVBb9bQ_2".}
+proc print(a: MinValue) {.importc, extern:"print_az8I9cfVT9b9bR2oSHjBwYE9bQ".}
+proc `==`(a: MinValue, b: MinValue): bool {.importc, extern:"eqeq__zMKrLdJOCGuSouwNLkqPvQ".}
