@@ -1,7 +1,6 @@
 ## This is all you need to create a min module in Nim
 ## Compile with `nim c --app:lib --noMain -d:release dynamicadd.nim`
-{.pragma: rtl, exportc, dynlib, cdecl.}
-import mindyn
+include mindyn
 
 proc setup*(): DynInfo {.rtl.} =
   result = DynInfo(moduleName: "the_lib", dynlibVersion: 1) 
