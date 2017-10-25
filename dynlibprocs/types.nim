@@ -2,7 +2,9 @@
 import 
   lexbase,
   streams,
-  critbits
+  critbits,
+  json,
+  os
 
 type
   MinTokenKind* = enum

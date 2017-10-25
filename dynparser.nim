@@ -4,13 +4,13 @@ import nre
 var
   currentLine = 1
   oldLine = 0
-  sourceFile = open("core/parser.nim")
+  sourceFile = open("core/value.nim")
 
-for line in lines "core/nimcache/parser.ndi":
+for line in lines "core/nimcache/value.ndi":
   let
     fields = line.split('\t')
     (origName, mangledName, path, row, column) = (fields[0], fields[1], fields[2], fields[3].parseInt, fields[4])
-  if path == "/home/peter/min/core/parser.nim":
+  if path == "/home/peter/min/core/value.nim":
     while currentLine < row:
       currentLine += 1
       discard sourceFile.readLine()

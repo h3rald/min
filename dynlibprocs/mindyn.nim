@@ -102,8 +102,6 @@ type
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
-
-# Define all procedures and map them to their external symbol (as they will appear when loaded)
 proc raiseInvalid(msg: string) {.importc, extern:"raiseInvalid_Emp5jFVyMCrh15i1fpFZiQ".}
 proc raiseUndefined(msg: string) {.importc, extern:"raiseUndefined_Emp5jFVyMCrh15i1fpFZiQ_2".}
 proc raiseOutOfBounds(msg: string) {.importc, extern:"raiseOutOfBounds_Emp5jFVyMCrh15i1fpFZiQ_3".}
@@ -121,9 +119,9 @@ proc getFilename(my: MinParser): string {.importc, extern:"getFilename_s9a5R24Vy
 proc errorMsg(my: MinParser, msg: string): string {.importc, extern:"errorMsg_cVsoiM0SE9cH0KWBNfKqZcA".}
 proc errorMsg(my: MinParser): string {.importc, extern:"errorMsg_r87VYrPzvmEsJhjriyvyQw".}
 proc errorMsgExpected(my: MinParser, e: string): string {.importc, extern:"errorMsgExpected_Wqyr2ROfsYVJGDFwgiczQw".}
-proc raiseParsing(p: MinParser, msg: string) {.importc, extern:"result".}
-proc raiseUndefined(p:MinParser, msg: string) {.importc, extern:"msg".}
-proc parseNumber(my: var MinParser) {.importc, extern:"msg".}
+proc raiseParsing(p: MinParser, msg: string) {.importc, extern:"raiseParsing_Tz7DX0jKGOjDMX8SFWqb1A".}
+proc raiseUndefined(p:MinParser, msg: string) {.importc, extern:"raiseUndefined_Tz7DX0jKGOjDMX8SFWqb1A_2".}
+proc parseNumber(my: var MinParser) {.importc, extern:"parseNumber_q1Bg9ctZWMedsyrbTHRwU9aQ".}
 proc handleHexChar(c: char, x: var int): bool {.importc, extern:"handleHexChar_5qj5zQ9aD5ka0UVtIDvSjNg".}
 proc parseString(my: var MinParser): MinTokenKind {.importc, extern:"parseString_e3KFIguKCxnkZTqCF3o3jg".}
 proc parseSymbol(my: var MinParser): MinTokenKind {.importc, extern:"parseSymbol_4hcHuz8N3YVsotvxzfL3Kw".}
@@ -179,10 +177,10 @@ proc isDictionary(q: MinValue): bool {.importc, extern:"isDictionary_7f9afQ8e7zZ
 proc newVal(s: string): MinValue {.importc, extern:"newVal_JF8l73VBhy9cJEUaMht6wZA".}
 proc newVal(s: cstring): MinValue {.importc, extern:"newVal_MSseSJELDL5qivFR59byJ8Q".}
 proc newVal(q: seq[MinValue], parentScope: ref MinScope): MinValue {.importc, extern:"newVal_1PJ4YdZbCuyyD9bQkH2eu6A".}
-proc newVal(s: BiggestInt): MinValue {.importc, extern:"result".}
-proc newVal(s: BiggestFloat): MinValue {.importc, extern:"result".}
-proc newVal(s: bool): MinValue {.importc, extern:"result".}
-proc newSym(s: string): MinValue {.importc, extern:"result".}
+proc newVal(s: BiggestInt): MinValue {.importc, extern:"newVal_xDcIKp9bEb37NZkc9bhRat9cQ".}
+proc newVal(s: BiggestFloat): MinValue {.importc, extern:"newVal_ipbzO9cNeJyt42iGojkGmgg".}
+proc newVal(s: bool): MinValue {.importc, extern:"newVal_3PdI7sQ7HL5wBrAMsSG5sQ".}
+proc newSym(s: string): MinValue {.importc, extern:"newSym_JF8l73VBhy9cJEUaMht6wZA_2".}
 proc getString(v: MinValue): string {.importc, extern:"getString_81jMzzfB0Qc0O4DsVU5arg_2".}
 proc raiseRuntime(msg: string, qVal: var seq[MinValue]) {.importc, extern:"raiseRuntime_t8oUDThVodY80ZU1ov5Z9cQ".}
 proc dump(i: MinInterpreter): string {.importc, extern:"dump_QNAGfSm5dAMbe9cao1yAs9bg".}
