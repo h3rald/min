@@ -1,3 +1,4 @@
+{.pragma: rtl, exportc, dynlib, cdecl.}
 type
   DynInfo* = object
     moduleName*: string # The name of the symbol to load and run
