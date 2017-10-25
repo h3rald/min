@@ -1,14 +1,10 @@
+## This is all you need to create a min module in Nim
+## Compile with `nim c --app:lib --noMain -d:release dynamicadd.nim`
 {.pragma: rtl, exportc, dynlib, cdecl.}
-include "dynlibprocs/mindyn.nim"
+import mindyn
 
-proc setup*(
-    defineProc: proc(i: In): ref MinScope,
-    finalizeProc: proc(scope: ref MinScope, name: string),
-    symbolProc: proc(scope: ref MinScope, sym: string, p: MinOperatorProc),
-    expectProc: proc(i: var MinInterpreter, elements: varargs[string]): seq[MinValue],
-    pushProc: proc(i: In, val: MinValue)
-  ): string {.rtl.} =
-  result = "the_lib"
+proc setup*(): DynInfo {.rtl.} =
+  result = DynInfo(moduleName: "the_lib", dynlibVersion: 1) 
 
 proc the_lib*(i: In) {.rtl.} =
   let def = i.define()
@@ -26,4 +22,4 @@ proc the_lib*(i: In) {.rtl.} =
         i.push newVal(a.floatVal + b.floatVal)
       else:
         i.push newVal(a.floatVal + b.intVal.float)
-  def.finalize("dyn2")
+  def.finalize("dyn")
