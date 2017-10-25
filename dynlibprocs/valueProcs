@@ -1,0 +1,18 @@
+proc typeName(v: MinValue): string {.importc, extern:"typeName_81jMzzfB0Qc0O4DsVU5arg".}
+proc isSymbol(s: MinValue): bool {.importc, extern:"isSymbol_BKcj9aQlJC73fcAZURf0pHw".}
+proc isQuotation(s: MinValue): bool {.importc, extern:"isQuotation_BKcj9aQlJC73fcAZURf0pHw_2".}
+proc isString(s: MinValue): bool {.importc, extern:"isString_BKcj9aQlJC73fcAZURf0pHw_3".}
+proc isFloat(s: MinValue): bool {.importc, extern:"isFloat_BKcj9aQlJC73fcAZURf0pHw_4".}
+proc isInt(s: MinValue): bool {.importc, extern:"isInt_BKcj9aQlJC73fcAZURf0pHw_5".}
+proc isNumber(s: MinValue): bool {.importc, extern:"isNumber_BKcj9aQlJC73fcAZURf0pHw_6".}
+proc isBool(s: MinValue): bool {.importc, extern:"isBool_BKcj9aQlJC73fcAZURf0pHw_7".}
+proc isStringLike(s: MinValue): bool {.importc, extern:"isStringLike_BKcj9aQlJC73fcAZURf0pHw_8".}
+proc isDictionary(q: MinValue): bool {.importc, extern:"isDictionary_7f9afQ8e7zZDtSeY6FzGNrw".}
+proc newVal(s: string): MinValue {.importc, extern:"newVal_JF8l73VBhy9cJEUaMht6wZA".}
+proc newVal(s: cstring): MinValue {.importc, extern:"newVal_MSseSJELDL5qivFR59byJ8Q".}
+proc newVal(q: seq[MinValue], parentScope: ref MinScope): MinValue {.importc, extern:"newVal_1PJ4YdZbCuyyD9bQkH2eu6A".}
+proc newVal(s: BiggestInt): MinValue {.importc, extern:"result".}
+proc newVal(s: BiggestFloat): MinValue {.importc, extern:"result".}
+proc newVal(s: bool): MinValue {.importc, extern:"result".}
+proc newSym(s: string): MinValue {.importc, extern:"result".}
+proc getString(v: MinValue): string {.importc, extern:"getString_81jMzzfB0Qc0O4DsVU5arg_2".}
