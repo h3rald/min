@@ -254,5 +254,5 @@ proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
 proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
-  if not ((a.kind == a.kind or (a.isNumber and a.isNumber)) and not a.isSymbol):
+  if not ((a.kind == b.kind or (a.isNumber and b.isNumber)) and not a.isSymbol):
     raiseInvalid("Two non-symbol values of similar type are required on the stack")
