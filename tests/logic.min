@@ -132,5 +132,10 @@
   (false quotation? false ==) assert
   (("a" 2 c) quotation?) assert
 
+  (7 0 / inf ==) assert
+  (-7 0 / -inf ==) assert
+  (0 0 / nan ==) assert
+  (10 3 / 3.33333 ==) assert
+
   report
   clear-stack

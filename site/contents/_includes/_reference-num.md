@@ -7,6 +7,9 @@ Sums {{n1}} and {{n2}}. #}
 {#op||-||{{n1}} {{n2}}||{{n3}}||
 Subtracts {{n2}} from {{n1}}. #}
 
+{#op||-inf||{{null}}||{{n}}||
+Returns negative infinity. #}
+
 {#op||\*||{{n1}} {{n2}}||{{n3}}||
 Multiplies {{n1}} by {{n2}}. #}
 
@@ -19,8 +22,14 @@ Returns {{t}} if {{i}} is even, {{f}} otherwise. #}
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
 
+{#op||inf||{{null}}||{{n}}||
+Returns infinity. #}
+
 {#op||mod||{{i1}} {{i2}}||{{i3}}||
 Returns the integer module of {{i1}} divided by {{i2}}. #}
+
+{#op||nan||{{null}}||nan||
+Returns **NaN** (not a number). #}
 
 {#op||odd?||{{i}}||{{b}}||
 Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
