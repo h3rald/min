@@ -82,9 +82,6 @@ The following notation is used in the signature of all min operators:
 {{f}}
 : false (boolean type)
 
-#### Floating point
-Floating point in computers is always problematic. Min has three constants <code>nan</code>, <code>inf</code>, and <code>ninf</code> to deal with some of the edge cases and it implements a more forgiving equality check for floating point values to avoid rounding errors. This check also allows <code>nan</code> to be compared with any other <code>nan</code> and return true.
-
 ### Suffixes
 
 The following suffixes can be placed at the end of a value or type to indicate ordering or quantities.
