@@ -149,11 +149,19 @@ proc minString*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
 proc minFile*(filename: string) =
-  var stream = newFileStream(filename, fmRead)
-  if stream == nil:
+  var fileLines = newSeq[string](0)
+  var contents = ""
+  try:
+    fileLines = filename.readFile().splitLines()
+  except:
     fatal("Cannot read from file: "& filename)
     quit(3)
-  minStream(stream, filename)
+
+  if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
+    contents = fileLines[1..fileLines.len-1].join("\n")
+  else:
+    contents = fileLines.join("\n")
+  minStream(newStringStream(contents), filename)
 
 proc minFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)

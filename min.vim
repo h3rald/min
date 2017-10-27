@@ -34,6 +34,7 @@ syntax match            minSymbol             ;[a-zA-Z._][a-zA-Z0-9/!?+*._-]*;
 
 syntax match            minParen              ;(\|); 
 
+syntax match            minSharpBang          /\%^#!.*/
 
 
 " Highlighting
@@ -53,5 +54,6 @@ hi default link         minQuotedSymbol       Special
 hi default link         minBoundSymbol        Special
 hi default link         minQuotedBoundSymbol  Special
 hi default link         minParen              Special
+hi default link         minSharpBang          Preproc
 
 let b:current_syntax = "min"
