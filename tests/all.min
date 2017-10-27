@@ -1,3 +1,5 @@
+#!/usr/bin/env min
+
 ; Load test files
 0 :failures
 symbols size :total-symbols
