@@ -145,7 +145,7 @@ proc typeName*(v: MinValue): string {.importc, extern:"typeName_81jMzzfB0Qc0O4Ds
 proc isSymbol*(s: MinValue): bool {.importc, extern:"isSymbol_BKcj9aQlJC73fcAZURf0pHw".}
 proc isQuotation*(s: MinValue): bool {.importc, extern:"isQuotation_BKcj9aQlJC73fcAZURf0pHw_2".}
 proc isString*(s: MinValue): bool {.importc, extern:"isString_BKcj9aQlJC73fcAZURf0pHw_3".}
-proc isFloat*(s: MinValue): bool {.importc, extern:"isFloat_BKcj9aQlJC73fcAZURf0pHw_4".}
+proc isFloat*(s: MinValue): bool {.importc, extern:"isFloat_BKcj9aQlJC73fcAZURf0pHw_8".}
 proc isInt*(s: MinValue): bool {.importc, extern:"isInt_BKcj9aQlJC73fcAZURf0pHw_5".}
 proc isNumber*(s: MinValue): bool {.importc, extern:"isNumber_BKcj9aQlJC73fcAZURf0pHw_6".}
 proc isBool*(s: MinValue): bool {.importc, extern:"isBool_BKcj9aQlJC73fcAZURf0pHw_7".}
