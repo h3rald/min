@@ -5,6 +5,7 @@ import
   parseopt2, 
   strutils, 
   os, 
+  ospaths,
   json, 
   sequtils,
   algorithm,
@@ -136,42 +137,26 @@ proc stdLib*(i: In) =
   i.eval "\"prompt\" unseal"
 
 type
-  DynInfo = object
-    moduleName: string # The name of the symbol to load and run
-    dynlibVersion: int # The version of the interface the dynlib is built for. This should increase if the interface changes
-  setupProc = proc(): DynInfo {.nimcall.}
-  libProc = proc(
-      i: In
-    ) {.nimcall.}
+  LibProc = proc(i: In) {.nimcall.}
+
 proc dynLib*(i: In) =
-  var
-    dll: LibHandle
-    setup: setupProc
-  echo "Trying to load libraries from " & $(getAppDir() / "dynlibs")
+  info("Trying to load libraries from " & $(getAppDir() / "dynlibs"))
   for library in walkFiles(getAppDir() / "dynlibs/*"):
-    dll = loadLib(library)
+    var modname = library.splitFile.name
+    var libfile = library.splitFile.name & library.splitFile.ext
+    if modname.len > 3 and modname[0..2] == "lib":
+      modname = modname[3..modname.len-1]
+    let dll = library.loadLib()
     if dll != nil:
-      let setupAddr = dll.symAddr("setup")
-      if setupAddr != nil:
-        setup = cast[setupProc](setupAddr)
-      if setup != nil:
-        let
-          expectedVersion = 1
-          libInfo = setup()
-          libAddr = dll.symAddr(libInfo.moduleName)
-        if libInfo.dynlibVersion == expectedVersion: 
-          if libAddr != nil:
-            var lib = cast[libProc](libAddr)
-            i.lib
-            echo "Loaded dynlib " & libInfo.moduleName & "[" & library & "]"
-          else:
-            echo "Wasn't able to load " & libInfo.moduleName & "(i: In) from " & library
-        else:
-          echo "Dynlib in " & library & " has wrong version, got " & $libInfo.dynlibVersion & " but expected " & $expectedVersion
+      let modsym = dll.symAddr(modname)
+      if modsym != nil:
+        let modproc = cast[LibProc](dll.symAddr(modname))
+        i.modproc()
+        info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
       else:
-        echo "Wasn't able to load setup() from " & library
+        warn("[$1] Library does not contain symbol $2" % [libfile, modname])
     else:
-      echo "Unable to load lib from " & library
+      warn("Unable to load dynamic library: " & libfile)
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()

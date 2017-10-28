@@ -8,3 +8,4 @@ nimsuggest.log
 packages/
 site/output/
 site/temp/
+dynlibs/
