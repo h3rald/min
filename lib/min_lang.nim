@@ -190,7 +190,7 @@ proc lang_module*(i: In) =
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
     let scope = i.scope
     info("[publish] Symbol: $2" % [sym])
-    let op = proc(i: In) {.gcsafe, closure.} =
+    let op = proc(i: In) {.closure.} =
       let origscope = i.scope 
       i.scope = scope
       i.evaluating = true

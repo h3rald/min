@@ -109,16 +109,16 @@ type
 
 # Error Helpers
 
-proc raiseInvalid*(msg: string) =
+proc raiseInvalid*(msg: string) {.extern:"min_exported_symbol_$1".}=
   raise MinInvalidError(msg: msg)
 
-proc raiseUndefined*(msg: string) =
+proc raiseUndefined*(msg: string) {.extern:"min_exported_symbol_$1".}=
   raise MinUndefinedError(msg: msg)
 
-proc raiseOutOfBounds*(msg: string) =
+proc raiseOutOfBounds*(msg: string) {.extern:"min_exported_symbol_$1".}=
   raise MinOutOfBoundsError(msg: msg)
 
-proc raiseEmptyStack*() =
+proc raiseEmptyStack*() {.extern:"min_exported_symbol_$1".}=
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
 
@@ -146,59 +146,60 @@ const
     "false"
   ]
 
-proc newScope*(parent: ref MinScope): MinScope =
+proc newScope*(parent: ref MinScope): MinScope {.extern:"min_exported_symbol_$1".}=
   result = MinScope(parent: parent)
 
-proc newScopeRef*(parent: ref MinScope): ref MinScope =
+proc newScopeRef*(parent: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   new(result)
   result[] = newScope(parent)
 
-proc open*(my: var MinParser, input: Stream, filename: string) =
+proc open*(my: var MinParser, input: Stream, filename: string) {.extern:"min_exported_symbol_$1".}=
   lexbase.open(my, input)
   my.filename = filename
   my.state = @[stateStart]
   my.kind = eMinError
   my.a = ""
 
-proc close*(my: var MinParser) {.inline.} = 
+proc close*(my: var MinParser) {.inline, extern:"min_exported_symbol_$1".}= 
   lexbase.close(my)
 
-proc getInt*(my: MinParser): int {.inline.} = 
+proc getInt*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
   assert(my.kind == eMinInt)
   return parseint(my.a)
 
-proc getFloat*(my: MinParser): float {.inline.} = 
+proc getFloat*(my: MinParser): float {.inline, extern:"min_exported_symbol_$1".}= 
   assert(my.kind == eMinFloat)
   return parseFloat(my.a)
 
-proc kind*(my: MinParser): MinEventKind {.inline.} = 
+proc kind*(my: MinParser): MinEventKind {.inline, extern:"min_exported_symbol_$1".}= 
   return my.kind
 
-proc getColumn*(my: MinParser): int {.inline.} = 
+proc getColumn*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
   result = getColNumber(my, my.bufpos)
 
-proc getLine*(my: MinParser): int {.inline.} = 
+proc getLine*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
   result = my.lineNumber
 
-proc getFilename*(my: MinParser): string {.inline.} = 
+proc getFilename*(my: MinParser): string {.inline, extern:"min_exported_symbol_$1".}= 
   result = my.filename
   
-proc errorMsg*(my: MinParser, msg: string): string = 
+proc errorMsg*(my: MinParser, msg: string): string {.extern:"min_exported_symbol_$1".}= 
   assert(my.kind == eMinError)
   result = "$1 [l:$2, c:$3] ERROR - $4" % [
     my.filename, $getLine(my), $getColumn(my), msg]
 
-proc errorMsg*(my: MinParser): string = 
+proc errorMsg*(my: MinParser): string {.extern:"min_exported_symbol_$1_2".}= 
   assert(my.kind == eMinError)
   result = errorMsg(my, errorMessages[my.err])
   
-proc errorMsgExpected*(my: MinParser, e: string): string = 
+proc errorMsgExpected*(my: MinParser, e: string): string {.extern:"min_exported_symbol_$1".}= 
   result = errorMsg(my, e & " expected")
 
-proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn.} =
+proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1".}=
+
   raise MinParsingError(msg: errorMsgExpected(p, msg))
 
-proc raiseUndefined*(p:MinParser, msg: string) {.noinline, noreturn.} =
+proc raiseUndefined*(p:MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1_2".}=
   raise MinUndefinedError(msg: errorMsg(p, msg))
 
 proc parseNumber(my: var MinParser) = 
@@ -383,7 +384,7 @@ proc skip(my: var MinParser) =
       break
   my.bufpos = pos
 
-proc getToken*(my: var MinParser): MinTokenKind =
+proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1".}=
   setLen(my.a, 0)
   skip(my) 
   case my.buf[my.bufpos]
@@ -422,7 +423,7 @@ proc getToken*(my: var MinParser): MinTokenKind =
   my.token = result
 
 
-proc next*(my: var MinParser) = 
+proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}= 
   var tk = getToken(my)
   var i = my.state.len-1
   case my.state[i]
@@ -469,11 +470,11 @@ proc next*(my: var MinParser) =
       my.kind = eMinError
       my.err = errExprExpected
 
-proc eat(p: var MinParser, token: MinTokenKind) = 
+proc eat(p: var MinParser, token: MinTokenKind) {.extern:"min_exported_symbol_$1".}= 
   if p.token == token: discard getToken(p)
   else: raiseParsing(p, tokToStr[token])
 
-proc parseMinValue*(p: var MinParser, i: In): MinValue =
+proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
@@ -511,7 +512,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
   result.filename = p.filename
 
-proc `$`*(a: MinValue): string =
+proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:
     of minBool:
       return $a.boolVal
@@ -530,7 +531,7 @@ proc `$`*(a: MinValue): string =
       q = q.strip & ")"
       return q
 
-proc `$$`*(a: MinValue): string =
+proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:
     of minBool:
       return $a.boolVal
@@ -549,10 +550,10 @@ proc `$$`*(a: MinValue): string =
       q = q.strip & ")"
       return q
 
-proc print*(a: MinValue) =
+proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
   stdout.write($$a)
 
-proc `==`*(a: MinValue, b: MinValue): bool =
+proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}=
   if a.kind == minSymbol and b.kind == minSymbol:
     return a.symVal == b.symVal
   elif a.kind == minInt and b.kind == minInt:
