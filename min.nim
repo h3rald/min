@@ -27,11 +27,11 @@ import
   lib/min_time, 
   lib/min_io,
   lib/min_sys,
-  lib/min_fs,
-  lib/min_trig
+  lib/min_fs
 
 when not defined(lite):
   import lib/min_crypto
+  import lib/min_math
 
 export 
   parser,
@@ -125,9 +125,9 @@ proc stdLib*(i: In) =
   i.sys_module
   i.time_module
   i.fs_module
-  i.trig_module
   when not defined(lite):
     i.crypto_module
+    i.math_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
   i.eval "\"prompt\" unseal"

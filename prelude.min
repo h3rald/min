@@ -9,4 +9,4 @@
 'time      import
 'fs        import
 'crypto    import
-'trig      import
+'math      import
