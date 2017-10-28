@@ -1,3 +1,4 @@
+{.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 
@@ -7,7 +8,9 @@ import
   json, 
   sequtils,
   algorithm,
-  logging
+  logging,
+  dynlib
+
 import 
   packages/nimline/nimline,
   packages/niftylogger,
@@ -132,8 +135,47 @@ proc stdLib*(i: In) =
   i.eval MINRC.readFile()
   i.eval "\"prompt\" unseal"
 
+type
+  DynInfo = object
+    moduleName: string # The name of the symbol to load and run
+    dynlibVersion: int # The version of the interface the dynlib is built for. This should increase if the interface changes
+  setupProc = proc(): DynInfo {.nimcall.}
+  libProc = proc(
+      i: In
+    ) {.nimcall.}
+proc dynLib*(i: In) =
+  var
+    dll: LibHandle
+    setup: setupProc
+  echo "Trying to load libraries from " & $(getAppDir() / "dynlibs")
+  for library in walkFiles(getAppDir() / "dynlibs/*"):
+    dll = loadLib(library)
+    if dll != nil:
+      let setupAddr = dll.symAddr("setup")
+      if setupAddr != nil:
+        setup = cast[setupProc](setupAddr)
+      if setup != nil:
+        let
+          expectedVersion = 1
+          libInfo = setup()
+          libAddr = dll.symAddr(libInfo.moduleName)
+        if libInfo.dynlibVersion == expectedVersion: 
+          if libAddr != nil:
+            var lib = cast[libProc](libAddr)
+            i.lib
+            echo "Loaded dynlib " & libInfo.moduleName & "[" & library & "]"
+          else:
+            echo "Wasn't able to load " & libInfo.moduleName & "(i: In) from " & library
+        else:
+          echo "Dynlib in " & library & " has wrong version, got " & $libInfo.dynlibVersion & " but expected " & $expectedVersion
+      else:
+        echo "Wasn't able to load setup() from " & library
+    else:
+      echo "Unable to load lib from " & library
+
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
+  i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -187,6 +229,7 @@ proc printResult(i: In, res: MinValue) =
 
 proc minRepl*(i: var MinInterpreter) =
   i.stdLib()
+  i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
