@@ -80,6 +80,14 @@ proc newSym*(s: string): MinValue =
 
 # Get string value from string or quoted symbol
 
+proc getFloat*(v: MinValue): float =
+  if v.isInt:
+    return v.intVal.float
+  elif v.isFloat:
+    return v.floatVal
+  else:
+    raiseInvalid("Value is not a number")
+
 proc getString*(v: MinValue): string =
   if v.isSymbol:
     return v.symVal
