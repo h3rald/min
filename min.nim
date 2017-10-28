@@ -1,3 +1,5 @@
+when not defined(windows):
+  {.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 

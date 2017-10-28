@@ -4,13 +4,13 @@ import
 import
   parser
 
-proc copy*(s: ref MinScope): ref MinScope =
+proc copy*(s: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   var scope = newScope(s.parent)
   scope.symbols = s.symbols
   new(result)
   result[] = scope
   
-proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
+proc getSymbol*(scope: ref MinScope, key: string): MinOperator {.extern:"min_exported_symbol_$1".}=
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif not scope.parent.isNil:
@@ -18,7 +18,7 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   else:
     raiseUndefined("Symbol '$1' not found." % key)
 
-proc hasSymbol*(scope: ref MinScope, key: string): bool =
+proc hasSymbol*(scope: ref MinScope, key: string): bool {.extern:"min_exported_symbol_$1".}=
   if scope.isNil:
     return false
   elif scope.symbols.hasKey(key):
@@ -28,7 +28,7 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
-proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
+proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable, extern:"min_exported_symbol_$1".}=
   if scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key) 
@@ -36,7 +36,7 @@ proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
     return true
   return false
 
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.discardable.}=
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.discardable, extern:"min_exported_symbol_$1".}=
   result = false
   # check if a symbol already exists in current scope
   if not scope.isNil and scope.symbols.hasKey(key):
@@ -49,7 +49,7 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override =
     if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value)
 
-proc getSigil*(scope: ref MinScope, key: string): MinOperator =
+proc getSigil*(scope: ref MinScope, key: string): MinOperator {.extern:"min_exported_symbol_$1".}=
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
   elif not scope.parent.isNil:
@@ -57,7 +57,7 @@ proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   else:
     raiseUndefined("Sigil '$1' not found." % key)
 
-proc hasSigil*(scope: ref MinScope, key: string): bool =
+proc hasSigil*(scope: ref MinScope, key: string): bool {.extern:"min_exported_symbol_$1".}=
   if scope.isNil:
     return false
   elif scope.sigils.hasKey(key):
@@ -67,7 +67,7 @@ proc hasSigil*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
-proc previous*(scope: ref MinScope): ref MinScope =
+proc previous*(scope: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   if scope.parent.isNil:
     return scope 
   else:

@@ -1,11 +1,11 @@
 ## This is all you need to create a min module in Nim
 ## Compile with `nim c --app:lib --noMain -d:release -l:"-undefined dynamic_lookup" dyntest.nim`
 
-include ../mindyn
+import ../mindyn
 
-proc dyntest*(i: In) {.rtl, dynlib, exportc.} =
+proc dyntest*(i: In) {.dynlib, exportc.} =
   let def = i.define()
-  def.symbol("myp") do (i: In):
+  def.symbol("dynplus") do (i: In):
     let vals = i.expect("num", "num")
     let a = vals[0]
     let b = vals[1]

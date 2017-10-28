@@ -4,7 +4,7 @@ import
   parser,
   scope
 
-proc typeName*(v: MinValue): string =
+proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case v.kind:
     of minInt:
       return "int"
@@ -21,31 +21,31 @@ proc typeName*(v: MinValue): string =
 
 # Predicates
 
-proc isSymbol*(s: MinValue): bool =
+proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == minSymbol
 
-proc isQuotation*(s: MinValue): bool = 
+proc isQuotation*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
   return s.kind == minQuotation
 
-proc isString*(s: MinValue): bool = 
+proc isString*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
   return s.kind == minString
 
-proc isFloat*(s: MinValue): bool =
+proc isFloat*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == minFloat
 
-proc isInt*(s: MinValue): bool =
+proc isInt*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == minInt
 
-proc isNumber*(s: MinValue): bool =
+proc isNumber*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == minInt or s.kind == minFloat
 
 proc isBool*(s: MinValue): bool =
   return s.kind == minBool
 
-proc isStringLike*(s: MinValue): bool =
+proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
 
-proc isDictionary*(q: MinValue): bool =
+proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isQuotation:
     return false
   if q.qVal.len == 0:
@@ -57,30 +57,30 @@ proc isDictionary*(q: MinValue): bool =
 
 # Constructors
 
-proc newVal*(s: string): MinValue =
+proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
   return MinValue(kind: minString, strVal: s)
 
-proc newVal*(s: cstring): MinValue =
+proc newVal*(s: cstring): MinValue {.extern:"min_exported_symbol_$1_2".}=
   return MinValue(kind: minString, strVal: $s)
 
-proc newVal*(q: seq[MinValue], parentScope: ref MinScope): MinValue =
+proc newVal*(q: seq[MinValue], parentScope: ref MinScope): MinValue {.extern:"min_exported_symbol_$1_3".}=
   return MinValue(kind: minQuotation, qVal: q, scope: newScopeRef(parentScope))
 
-proc newVal*(s: BiggestInt): MinValue =
-  return MinValue(kind: minInt, intVal: s)
+proc newVal*(i: BiggestInt): MinValue {.extern:"min_exported_symbol_$1_4".}=
+  return MinValue(kind: minInt, intVal: i)
 
-proc newVal*(s: BiggestFloat): MinValue =
-  return MinValue(kind: minFloat, floatVal: s)
+proc newVal*(f: BiggestFloat): MinValue {.extern:"min_exported_symbol_$1_5".}=
+  return MinValue(kind: minFloat, floatVal: f)
 
-proc newVal*(s: bool): MinValue =
+proc newVal*(s: bool): MinValue {.extern:"min_exported_symbol_$1_6".}=
   return MinValue(kind: minBool, boolVal: s)
 
-proc newSym*(s: string): MinValue =
+proc newSym*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
   return MinValue(kind: minSymbol, symVal: s)
 
 # Get string value from string or quoted symbol
 
-proc getFloat*(v: MinValue): float =
+proc getFloat*(v: MinValue): float {.extern:"min_exported_symbol_$1".}=
   if v.isInt:
     return v.intVal.float
   elif v.isFloat:
@@ -88,7 +88,7 @@ proc getFloat*(v: MinValue): float =
   else:
     raiseInvalid("Value is not a number")
 
-proc getString*(v: MinValue): string =
+proc getString*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
   if v.isSymbol:
     return v.symVal
   elif v.isString:
