@@ -1,4 +1,3 @@
-{.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 
@@ -140,8 +139,8 @@ type
   LibProc = proc(i: In) {.nimcall.}
 
 proc dynLib*(i: In) =
-  info("Trying to load libraries from " & $(getAppDir() / "dynlibs"))
-  for library in walkFiles(getAppDir() / "dynlibs/*"):
+  discard MINLIBS.existsOrCreateDir
+  for library in walkFiles(MINLIBS & "/*"):
     var modname = library.splitFile.name
     var libfile = library.splitFile.name & library.splitFile.ext
     if modname.len > 3 and modname[0..2] == "lib":
@@ -246,6 +245,9 @@ proc minRepl*() =
 when isMainModule:
 
   var REPL = false
+  var INSTALL = false
+  var UNINSTALL = false
+  var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
   (c) 2014-2017 Fabio Cevasco
@@ -256,6 +258,8 @@ when isMainModule:
   Arguments:
     filename  A $1 file to interpret (default: STDIN).
   Options:
+    --install:<lib>   Install dynamic library file <lib>
+    --uninstall:<lib> Uninstall dynamic library file <lib>
     -e, --evaluate    Evaluate a $1 program inline
     -h, --help        Print this help
     -v, --version     Print the program version
@@ -283,6 +287,12 @@ when isMainModule:
             quit(0)
           of "interactive", "i":
             REPL = true
+          of "install":
+            INSTALL = true
+            libfile = val
+          of "uninstall":
+            UNINSTALL = true
+            libfile = val
           else:
             discard
       else:
@@ -292,6 +302,28 @@ when isMainModule:
     minString(s)
   elif file != "":
     minFile file
+  elif INSTALL:
+    if not libfile.existsFile:
+      fatal("Dynamic library file not found:" & libfile)
+      quit(4)
+    try:
+      libfile.copyFile(MINLIBS/libfile.extractFilename)
+    except:
+      fatal("Unable to install library file: " & libfile)
+      quit(5)
+    notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
+    quit(0)
+  elif UNINSTALL:
+    if not (MINLIBS/libfile.extractFilename).existsFile:
+      fatal("Dynamic library file not found:" & libfile)
+      quit(4)
+    try:
+      removeFile(MINLIBS/libfile.extractFilename)
+    except:
+      fatal("Unable to uninstall library file: " & libfile)
+      quit(6)
+    notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
+    quit(0)
   elif REPL:
     minRepl()
     quit(0)
