@@ -29,7 +29,7 @@ min's parser started off as a fork of Nim's JSON parser -- adapted to process a 
 
 ## Who?
 
-I am a [someone](https://www.linkedin.com/in/fabiocevasco) who is passionate about technology and who _does not_ build new programming languages for a living.
+min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [PMunch](https://github.com/PMunch).
 
 ## When?
 
