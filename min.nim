@@ -1,13 +1,17 @@
+{.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 
   parseopt2, 
   strutils, 
   os, 
+  ospaths,
   json, 
   sequtils,
   algorithm,
-  logging
+  logging,
+  dynlib
+
 import 
   packages/nimline/nimline,
   packages/niftylogger,
@@ -132,8 +136,31 @@ proc stdLib*(i: In) =
   i.eval MINRC.readFile()
   i.eval "\"prompt\" unseal"
 
+type
+  LibProc = proc(i: In) {.nimcall.}
+
+proc dynLib*(i: In) =
+  info("Trying to load libraries from " & $(getAppDir() / "dynlibs"))
+  for library in walkFiles(getAppDir() / "dynlibs/*"):
+    var modname = library.splitFile.name
+    var libfile = library.splitFile.name & library.splitFile.ext
+    if modname.len > 3 and modname[0..2] == "lib":
+      modname = modname[3..modname.len-1]
+    let dll = library.loadLib()
+    if dll != nil:
+      let modsym = dll.symAddr(modname)
+      if modsym != nil:
+        let modproc = cast[LibProc](dll.symAddr(modname))
+        i.modproc()
+        info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
+      else:
+        warn("[$1] Library does not contain symbol $2" % [libfile, modname])
+    else:
+      warn("Unable to load dynamic library: " & libfile)
+
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
+  i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -187,6 +214,7 @@ proc printResult(i: In, res: MinValue) =
 
 proc minRepl*(i: var MinInterpreter) =
   i.stdLib()
+  i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
