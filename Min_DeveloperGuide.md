@@ -76,6 +76,10 @@
 
 {@ site/contents/_includes/_learn-shell.md || 1 @}
 
+## Extending min
+
+{@ site/contents/_includes/_learn-extending.md || 1 @}
+
 ## Reference
 
 {@ site/contents/_includes/_reference.md || 1 @}
@@ -126,6 +130,9 @@
 {@ site/contents/_includes/_reference-crypto.md || 1 @}
 
 
+### `math` Module
+
+{@ site/contents/_includes/_reference-math.md || 1 @}
 
 
 

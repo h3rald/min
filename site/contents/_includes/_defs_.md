@@ -95,6 +95,7 @@
 > * [Definitions](/learn-definitions)
 > * [Control Flow](/learn-control-flow)
 > * [Shell](/learn-shell)
+> * [Extending min](/learn-extending)
 }}
 
 {{guide-download => 

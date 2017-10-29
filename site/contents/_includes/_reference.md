@@ -24,6 +24,8 @@ min includes a small but powerful standard library organized into the following 
 : Provides a few basic operators to manage dates, times, and timestamps.
 {#link-module||crypto#}
 : Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
+{#link-module||math#}
+: Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
 
 ## Notation
 
