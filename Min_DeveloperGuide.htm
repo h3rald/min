@@ -4437,6 +4437,13 @@ div .terminal {
    </li>
   </ul>
   </li>
+  <li><a href="#Extending-min">Extending min</a>
+  <ul>
+   <li><a href="#Implementing-new-min-modules-using-min-itself">Implementing new min modules using min itself</a></li>
+   <li><a href="#Embedding-min-in-your-Nim-program">Embedding min in your Nim program</a></li>
+   <li><a href="#Implementing-min-modules-as-dynamic-libraries">Implementing min modules as dynamic libraries</a></li>
+  </ul>
+  </li>
   <li><a href="#Reference">Reference</a>
   <ul>
    <li><a href="#Notation">Notation</a>
@@ -4456,6 +4463,7 @@ div .terminal {
    <li><a href="#<code>num</code>-Module"><code>num</code> Module</a></li>
    <li><a href="#<code>time</code>-Module"><code>time</code> Module</a></li>
    <li><a href="#<code>crypto</code>-Module"><code>crypto</code> Module</a></li>
+   <li><a href="#<code>math</code>-Module"><code>math</code> Module</a></li>
   </ul>
   </li>
  </ul>
@@ -4505,7 +4513,7 @@ div .terminal {
 <a name="Who?"></a>
 <h3>Who?<a href="#document-top" title="Go to top"></a></h3>
 
-<p>I am a <a href="https://www.linkedin.com/in/fabiocevasco">someone</a> who is passionate about technology and who <em>does not</em> build new programming languages for a living.</p>
+<p>min was created and implemented by <a href="https://h3rald.com">Fabio Cevasco</a>, with contributions by <a href="https://github.com/PMunch">PMunch</a>.</p>
 
 <a name="When?"></a>
 <h3>When?<a href="#document-top" title="Go to top"></a></h3>
@@ -4518,11 +4526,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_macosx_x64.zip">min v0.11.0 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_windows_x64.zip">min v0.11.0 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_x64.zip">min v0.11.0 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_x86.zip">min v0.11.0 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.11.0/min_v0.11.0_linux_arm.zip">min v0.11.0 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_macosx_x64.zip">min v0.12.0 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_windows_x64.zip">min v0.12.0 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_x64.zip">min v0.12.0 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_x86.zip">min v0.12.0 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_arm.zip">min v0.12.0 for Linux (arm)</a></li>
 </ul>
 
 
@@ -5089,6 +5097,165 @@ div .terminal {
 
 <p>This files contains all symbol definitions in JSON format that were previously-saved using the <a href="#op-save-symbol"><code>save-symbol</code></a> symbol. Symbols can be loaded using the <a href="#op-load-symbol"><code>load-symbol</code></a> symbol.</p>
 
+<a name="Extending-min"></a>
+<h2>Extending min<a href="#document-top" title="Go to top"></a></h2>
+
+<p>min provides a fairly complete standard library with many useful modules. However, you may feel the need to extend min in order to perform more specialized tasks.</p>
+
+<p>In such situations, you basically have three options:</p>
+
+<ul>
+<li>Implement new min modules in min</li>
+<li>Embed min in your <a href="https://nim-lang.org">Nim</a> program</li>
+<li>Implemet min modules as dynamic libraries in Nim</li>
+</ul>
+
+
+<a name="Implementing-new-min-modules-using-min-itself"></a>
+<h3>Implementing new min modules using min itself<a href="#document-top" title="Go to top"></a></h3>
+
+<p>When you just want to create more high-level min operator using functionalities that are already available in min, the easiest way is to create your own reusable min modules.</p>
+
+<p>The <a href="#op-module"><code>module</code></a> (and the <strong>+</strong> sigil) allows you to create a new min module:</p>
+
+<pre><code>(
+  (dup *)             :pow2
+
+  (dup dup * *)       :pow3
+
+  (dup dup dup * * *) :pow4
+
+) +quickpows
+</code></pre>
+
+<p>Save your code to a file (e.g. <em>quickpows.min</em>) and you can use it in other nim files using the <a href="#op-load"><code>load</code></a> operator and the <a href="#op-import"><code>import</code></a>:</p>
+
+<pre><code>'quickpows load
+'quickpows import
+
+2 pow3 pow2 puts ;prints 64
+</code></pre>
+
+<a name="Embedding-min-in-your-Nim-program"></a>
+<h3>Embedding min in your Nim program<a href="#document-top" title="Go to top"></a></h3>
+
+<p>If you&rsquo;d like to use min as a scripting language within your own program, and maybe extend it by implementing additional operators, you can use min as a Nim library.</p>
+
+<p>To do so:</p>
+
+<ol>
+<li>Install min sources using Nifty as explained in the Download section.</li>
+<li>Import it in your Nim file.</li>
+<li>Implement a new <code>proc</code> to define the module.</li>
+</ol>
+
+
+<p>The following code is taken from <a href="https://github.com/h3rald/hastysite">HastySite</a> and shows how to define a new <code>hastysite</code> module containing some symbols (<code>preprocess</code>, <code>postprocess</code>, <code>process-rules</code>, &hellip;):</p>
+
+<pre><code>import packages/min/min
+
+proc hastysite_module*(i: In, hs1: HastySite) =
+  var hs = hs1
+  let def = i.define()
+
+  def.symbol("preprocess") do (i: In):
+    hs.preprocess()
+
+   def.symbol("postprocess") do (i: In):
+    hs.postprocess()
+
+  def.symbol("process-rules") do (i: In):
+    hs.interpret(hs.files.rules)
+
+  # ...
+
+  def.finalize("hastysite")
+</code></pre>
+
+<p>Then you need to:</p>
+
+<ol>
+<li>Instantiate a new min interpreter using the <code>newMinInterpreter</code> proc.</li>
+<li>Run the <code>proc</code> used to define the module.</li>
+<li>Call the <code>interpret</code> method to interpret a min file or string:</li>
+</ol>
+
+
+<pre><code>proc interpret(hs: HastySite, file: string) =
+  var i = newMinInterpreter(file, file.parentDir)
+  i.hastysite_module(hs)
+  i.interpret(newFileStream(file, fmRead))
+</code></pre>
+
+<div class="tip"><p>Tip</p>
+
+<p>For more information on how to create new modules with Nim, have a look in the <a href="https://github.com/h3rald/min/tree/master/lib">lib folder</a> of the min repository, which contains all the min modules included in the standard library.</p></div>
+
+<a name="Implementing-min-modules-as-dynamic-libraries"></a>
+<h3>Implementing min modules as dynamic libraries<a href="#document-top" title="Go to top"></a></h3>
+
+<div class="warning"><p>Warning</p>
+
+<p>This technique is currently experimental, it has not been tested extensively and it may not even work on Windows.</p></div>
+
+<p>If you just want to add a new module to min providing functinalities that cannot be built natively with min operators, you can also implement a min module in Nim and compile it to a dynamic library which can be linked dynamically when min is started.</p>
+
+<p>In order to do this, you don&rsquo;t even need to download the whole min source code, you just need to download the <a href="https://github.com/h3rald/min/blob/master/mindyn.nim">mindyn.nim</a> file and import it in your Nim program.</p>
+
+<p>The following code shows how to create a simple min module called <em>dyntest</em> containing only a single operator <em>dynplus</em>, which essentially returns the sum of two numbers:</p>
+
+<pre><code>import mindyn
+
+proc dyntest*(i: In) {.dynlib, exportc.} =
+
+  let def = i.define()
+
+  def.symbol("dynplus") do (i: In):
+    let vals = i.expect("num", "num")
+    let a = vals[0]
+    let b = vals[1]
+    if a.isInt:
+      if b.isInt:
+        i.push newVal(a.intVal + b.intVal)
+      else:
+        i.push newVal(a.intVal.float + b.floatVal)
+    else:
+      if b.isFloat:
+        i.push newVal(a.floatVal + b.floatVal)
+      else:
+        i.push newVal(a.floatVal + b.intVal.float)
+
+  def.finalize("dyntest")
+</code></pre>
+
+<p>Note that the <code>mindym.nim</code> file contains the signatures of all the <code>proc</code>s that are commonly used to define min modules, but not their implementation. Such <code>proc</code>s will become available at run time when the dynamic library is linked to the min executable.</p>
+
+<p>You can compile the following library by running the following command:</p>
+
+<div class="min-terminal"><p><span class="prompt">$</span> nim c &ndash;app:lib -d:release &ndash;noMain dyntest.nim</p></div>
+
+<p>If you are using <a href="https://clang.llvm.org/">clang</a> to compile Nim code, you may need to run the following command instead:</p>
+
+<div class="min-terminal"><p><span class="prompt">$</span> nim c &ndash;app:lib -d:release &ndash;noMain  -l:&ldquo;-undefined dynamic_lookup&rdquo; dyntest.nim</p></div>
+
+<p>Now you should have a <code>libdyntest.so|dyn|dll</code> file. To make min load it and link it automatically when it starts, just run:</p>
+
+<div class="min-terminal"><p><span class="prompt">$</span> min &ndash;install:libdyntest.dyn</p></div>
+
+<p>This command will copy the library file to <code>$HOME/.minlibs/</code> (<code>%HOMEPATH%\.minlibs\</code> on Windows). min looks for dynamic libraries in this folder when it starts.</p>
+
+<div class="note"><p>Notes</p>
+
+<ul>
+<li>The dynamic library file must have the same name as the module it defines (<em>dyntest</em> in this case).</li>
+<li>At startup, min links all your installed dynamic libraries but does not import the modules automatically.</li>
+</ul>
+</div>
+
+<p>If you wish to uninstall the library, run the following command instead:</p>
+
+<div class="min-terminal"><p><span class="prompt">$</span> min &ndash;uninstall:libdyntest.dyn</p></div>
+
 <a name="Reference"></a>
 <h2>Reference<a href="#document-top" title="Go to top"></a></h2>
 
@@ -5096,7 +5263,7 @@ div .terminal {
 
 <dl>
 <dt><a href="#&lt;code>lang&lt;/code>-Module"><code>lang</code> Module</a></dt>
-<dd>Defines the basic language constructs, such as control flow, symbol definition and binding, exception handling,  etc.</dd>
+<dd>Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc.</dd>
 <dt><a href="#&lt;code>stack&lt;/code>-Module"><code>stack</code> Module</a></dt>
 <dd>Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.</dd>
 <dt><a href="#&lt;code>seq&lt;/code>-Module"><code>seq</code> Module</a></dt>
@@ -5108,7 +5275,7 @@ div .terminal {
 <dt><a href="#&lt;code>logic&lt;/code>-Module"><code>logic</code> Module</a></dt>
 <dd>Provides comparison operators for all min data types and other boolean logic operators.</dd>
 <dt><a href="#&lt;code>str&lt;/code>-Module"><code>str</code> Module</a></dt>
-<dd>Provides operators to perform operations on strings, use regular expressions, and convert strings into other data types.</dd>
+<dd>Provides operators to perform operations on strings, use regular expressions, interpolation, etc..</dd>
 <dt><a href="#&lt;code>sys&lt;/code>-Module"><code>sys</code> Module</a></dt>
 <dd>Provides operators to use as basic shell commands, access environment variables, and execute external commands.</dd>
 <dt><a href="#&lt;code>num&lt;/code>-Module"><code>num</code> Module</a></dt>
@@ -5117,6 +5284,8 @@ div .terminal {
 <dd>Provides a few basic operators to manage dates, times, and timestamps.</dd>
 <dt><a href="#&lt;code>crypto&lt;/code>-Module"><code>crypto</code> Module</a></dt>
 <dd>Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.</dd>
+<dt><a href="#&lt;code>math&lt;/code>-Module"><code>math</code> Module</a></dt>
+<dd>Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.</dd>
 </dl>
 
 <a name="Notation"></a>
@@ -7243,6 +7412,13 @@ harvest
 
 <p>Subtracts <span class="kwd">num<sub>2</sub></span> from <span class="kwd">num<sub>1</sub></span>.</p></div>
 
+<p><a id="op--inf"></a>
+<span class="reference-title">-inf</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
+
+<p>Returns negative infinity.</p></div>
+
 <p><a id="op-\*"></a>
 <span class="reference-title">*</span></p>
 
@@ -7271,12 +7447,26 @@ harvest
 
 <p>Divides <span class="kwd">a<sub>1</sub></span> by <span class="kwd">a<sub>2</sub></span> (integer division).</p></div>
 
+<p><a id="op-inf"></a>
+<span class="reference-title">inf</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
+
+<p>Returns infinity.</p></div>
+
 <p><a id="op-mod"></a>
 <span class="reference-title">mod</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span></span></p>
 
 <p>Returns the integer module of <span class="kwd">a<sub>1</sub></span> divided by <span class="kwd">a<sub>2</sub></span>.</p></div>
+
+<p><a id="op-nan"></a>
+<span class="reference-title">nan</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> nan</span></p>
+
+<p>Returns <strong>NaN</strong> (not a number).</p></div>
 
 <p><a id="op-odd?"></a>
 <span class="reference-title">odd?</span></p>
@@ -7427,9 +7617,173 @@ harvest
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Encrypts or decrypts <span class="kwd">&apos;sym<sub>1</sub></span> using the Advanced Encryption Standard (AES), using <span class="kwd">&apos;sym<sub>2</sub></span> as password.</p></div>
+
+<a name="<code>math</code>-Module"></a>
+<h3><code>math</code> Module<a href="#document-top" title="Go to top"></a></h3>
+
+<p><a id="op-acos"></a>
+<span class="reference-title">acos</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the arc cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-asin"></a>
+<span class="reference-title">asin</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the arc sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-atan"></a>
+<span class="reference-title">atan</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the arc tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-ceil"></a>
+<span class="reference-title">ceil</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
+
+<p>Returns the smallest integer <span class="kwd">int</span> that is not smaller than <span class="kwd">num</span>.</p></div>
+
+<p><a id="op-cos"></a>
+<span class="reference-title">cos</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-cosh"></a>
+<span class="reference-title">cosh</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the hyperbolic cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-d2r"></a>
+<span class="reference-title">d2r</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Converts <span class="kwd">num<sub>1</sub></span> from degrees to radians.</p></div>
+
+<p><a id="op-e"></a>
+<span class="reference-title">e</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
+
+<p>Returns the value of the <em>e</em> constant (Euler&rsquo;s number).</p></div>
+
+<p><a id="op-floor"></a>
+<span class="reference-title">floor</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
+
+<p>Returns the largest integer <span class="kwd">int</span> that is not greater than <span class="kwd">num</span>.</p></div>
+
+<p><a id="op-ln"></a>
+<span class="reference-title">ln</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the natural logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
+
+<p><a id="op-log10"></a>
+<span class="reference-title">log10</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the common logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
+
+<p><a id="op-log2"></a>
+<span class="reference-title">log2</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the binary logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
+
+<p><a id="op-pi"></a>
+<span class="reference-title">pi</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
+
+<p>Returns the value of the &pi; constant.</p></div>
+
+<p><a id="op-pow"></a>
+<span class="reference-title">pow</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
+
+<p>Computes <span class="kwd">num<sub>1</sub></span> to power raised of <span class="kwd">num<sub>2</sub></span>.</p></div>
+
+<p><a id="op-r2d"></a>
+<span class="reference-title">r2d</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Converts <span class="kwd">num<sub>1</sub></span> from radians to degrees.</p></div>
+
+<p><a id="op-round"></a>
+<span class="reference-title">round</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Rounds <span class="kwd">num<sub>1</sub></span> to the <span class="kwd">int</span><sup>th</sup> decimal place.</p></div>
+
+<p><a id="op-sin"></a>
+<span class="reference-title">sin</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-sinh"></a>
+<span class="reference-title">sinh</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the hyperbolic sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-sqrt"></a>
+<span class="reference-title">sqrt</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Returns square root of <span class="kwd">num<sub>1</sub></span>.</p></div>
+
+<p><a id="op-tan"></a>
+<span class="reference-title">tan</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-tanh"></a>
+<span class="reference-title">tanh</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Calculates the hyperbolic tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
+
+<p><a id="op-tau"></a>
+<span class="reference-title">tau</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
+
+<p>Returns the value of the &tau; constant (2&pi;).</p></div>
+
+<p><a id="op-trunc"></a>
+<span class="reference-title">trunc</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
+
+<p>Truncates <span class="kwd">num</span> to the decimal point.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; August 6, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; October 29, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
