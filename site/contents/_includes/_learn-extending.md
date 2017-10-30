@@ -140,7 +140,7 @@ If you are using [clang](https://clang.llvm.org/) to compile Nim code, you may n
 Now you should have a `libdyntest.so|dyn|dll` file. To make min load it and link it automatically when it starts, just run:
 
 > %min-terminal%
-> [$](class:prompt) min --install:libdyntest.dyn
+> [$](class:prompt) min \-\-install:libdyntest.dyn
 
 This command will copy the library file to `$HOME/.minlibs/` (`%HOMEPATH%\.minlibs\` on Windows). min looks for dynamic libraries in this folder when it starts.
 
@@ -153,5 +153,5 @@ This command will copy the library file to `$HOME/.minlibs/` (`%HOMEPATH%\.minli
 If you wish to uninstall the library, run the following command instead:
 
 > %min-terminal%
-> [$](class:prompt) min --uninstall:libdyntest.dyn
+> [$](class:prompt) min \-\-uninstall:libdyntest.dyn
 
