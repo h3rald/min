@@ -135,7 +135,7 @@ You can compile the following library by running the following command:
 If you are using [clang](https://clang.llvm.org/) to compile Nim code, you may need to run the following command instead:
 
 > %min-terminal%
-> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain  -l:\"-undefined dynamic\_lookup\" dyntest.nim
+> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain  -l:&#34;-undefined dynamic\_lookup&#34; dyntest.nim
 
 Now you should have a `libdyntest.so|dyn|dll` file. To make min load it and link it automatically when it starts, just run:
 
