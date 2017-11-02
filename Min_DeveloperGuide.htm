@@ -2662,7 +2662,7 @@ pre {
   color: #333;
   background-color: #f8f8f8;
   border: 1px solid #ccc;
-  white-space: pre;
+  white-space: pre-wrap;
   margin: auto;
   font-family: "Source Code Pro", "Monaco", "DejaVu Sans Mono", "Courier New", monospace;
   padding: 0;
@@ -3262,7 +3262,7 @@ a[href="#document-top"]:before {
   color: #eee;
   background-color: #222;
   border: 1px solid #ccc;
-  white-space: pre;
+  white-space: pre-wrap;
   padding: 0 3px;
   border: 2px solid #999;
   border-top: 10px solid #999;
@@ -3315,7 +3315,7 @@ a[href="#document-top"]:before {
   color: #eee;
   background-color: #222;
   border: 1px solid #ccc;
-  white-space: pre;
+  white-space: pre-wrap;
   padding: 0 3px;
   border: 2px solid #999;
   border-top: 10px solid #999;
@@ -5232,15 +5232,15 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>You can compile the following library by running the following command:</p>
 
-<div class="min-terminal"><p><span class="prompt">$</span> nim c &ndash;app:lib -d:release &ndash;noMain dyntest.nim</p></div>
+<div class="min-terminal"><p><span class="prompt">$</span> nim c --app:lib -d:release --noMain dyntest.nim</p></div>
 
 <p>If you are using <a href="https://clang.llvm.org/">clang</a> to compile Nim code, you may need to run the following command instead:</p>
 
-<div class="min-terminal"><p><span class="prompt">$</span> nim c &ndash;app:lib -d:release &ndash;noMain  -l:&ldquo;-undefined dynamic_lookup&rdquo; dyntest.nim</p></div>
+<div class="min-terminal"><p><span class="prompt">$</span> nim c --app:lib -d:release --noMain  -l:&#34;-undefined dynamic_lookup&#34; dyntest.nim</p></div>
 
 <p>Now you should have a <code>libdyntest.so|dyn|dll</code> file. To make min load it and link it automatically when it starts, just run:</p>
 
-<div class="min-terminal"><p><span class="prompt">$</span> min &ndash;install:libdyntest.dyn</p></div>
+<div class="min-terminal"><p><span class="prompt">$</span> min --install:libdyntest.dyn</p></div>
 
 <p>This command will copy the library file to <code>$HOME/.minlibs/</code> (<code>%HOMEPATH%\.minlibs\</code> on Windows). min looks for dynamic libraries in this folder when it starts.</p>
 
@@ -5254,7 +5254,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>If you wish to uninstall the library, run the following command instead:</p>
 
-<div class="min-terminal"><p><span class="prompt">$</span> min &ndash;uninstall:libdyntest.dyn</p></div>
+<div class="min-terminal"><p><span class="prompt">$</span> min --uninstall:libdyntest.dyn</p></div>
 
 <a name="Reference"></a>
 <h2>Reference<a href="#document-top" title="Go to top"></a></h2>
@@ -7783,7 +7783,7 @@ harvest
 <p>Truncates <span class="kwd">num</span> to the decimal point.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; October 29, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; November 2, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
