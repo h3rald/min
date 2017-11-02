@@ -49,7 +49,8 @@ export
 
 const PRELUDE* = "prelude.min".slurp.strip
 
-newNiftyLogger().addHandler()
+if logging.getHandlers().len == 0:
+  newNiftyLogger().addHandler()
 
 proc getExecs(): seq[string] =
   var res = newSeq[string](0)
@@ -70,8 +71,8 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
     word = ed.lineText
   else:
     word = words[words.len-1]
-  if word.startsWith("'"):
-    return symbols.mapIt("'" & $it)
+  if word.startsWith("’"):
+    return symbols.mapIt("’" & $it)
   elif word.startsWith("~"):
     return symbols.mapIt("~" & $it)
   if word.startsWith("@"):
@@ -260,12 +261,12 @@ when isMainModule:
   Arguments:
     filename  A $1 file to interpret (default: STDIN).
   Options:
-    --install:<lib>   Install dynamic library file <lib>
-    --uninstall:<lib> Uninstall dynamic library file <lib>
-    -e, --evaluate    Evaluate a $1 program inline
-    -h, --help        Print this help
-    -v, --version     Print the program version
-    -i, --interactive Start $1 shell""" % [appname, version]
+    —install:<lib>   Install dynamic library file <lib>
+    —uninstall:<lib> Uninstall dynamic library file <lib>
+    -e, —evaluate    Evaluate a $1 program inline
+    -h, —help        Print this help
+    -v, —version     Print the program version
+    -i, —interactive Start $1 shell""" % [appname, version]
 
   var file, s: string = ""
   setLogFilter(lvlNotice)
