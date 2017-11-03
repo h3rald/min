@@ -276,35 +276,41 @@ when isMainModule:
     case kind:
       of cmdArgument:
         args.add key
+        if file == "":
+          file = key 
       of cmdLongOption, cmdShortOption:
         case key:
           of "log", "l":
-            var val = val
-            setLogLevel(val)
+            if file == "":
+              var val = val
+              setLogLevel(val)
           of "evaluate", "e":
-            s = val
+            if file == "":
+              s = val
           of "help", "h":
-            echo usage
-            quit(0)
+            if file == "":
+              echo usage
+              quit(0)
           of "version", "v":
-            echo version
-            quit(0)
+            if file == "":
+              echo version
+              quit(0)
           of "interactive", "i":
-            REPL = true
+            if file == "":
+              REPL = true
           of "install":
-            INSTALL = true
-            libfile = val
+            if file == "":
+              INSTALL = true
+              libfile = val
           of "uninstall":
-            UNINSTALL = true
-            libfile = val
+            if file == "":
+              UNINSTALL = true
+              libfile = val
           else:
             discard
       else:
         discard
   
-  if args.len > 0 :
-    file = args[0]
-
   if s != "":
     minString(s)
   elif file != "":
