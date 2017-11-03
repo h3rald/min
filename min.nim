@@ -269,12 +269,13 @@ when isMainModule:
     -i, —interactive Start $1 shell""" % [appname, version]
 
   var file, s: string = ""
+  var args = newSeq[string](0)
   setLogFilter(lvlNotice)
   
   for kind, key, val in getopt():
     case kind:
       of cmdArgument:
-        file = key
+        args.add key
       of cmdLongOption, cmdShortOption:
         case key:
           of "log", "l":
@@ -301,6 +302,9 @@ when isMainModule:
       else:
         discard
   
+  if args.len > 0 :
+    file = args[0]
+
   if s != "":
     minString(s)
   elif file != "":
