@@ -198,6 +198,9 @@ Returns a list of all symbols defined in module {{q}}.#}
 {#op||opts||{{null}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
+{#op||parse||{{s}}||{{q}}||
+Parses {{s}} and returns a quoted program {{q}}. #}
+
 {#op||prompt||{{null}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
@@ -225,6 +228,9 @@ Quotes {{any}} and assigns the quotation to the symbol {{sl}}, creating it if no
 
 {#op||raise||{{e}}||{{null}}||
 Raises the error specified via the dictionary {{e}}.#}
+
+{#op||read||{{sl}}||{{q}}||
+Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{q}}. #}
 
 {#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}

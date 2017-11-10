@@ -173,14 +173,18 @@ proc peek*(i: MinInterpreter): MinValue {.extern:"min_exported_symbol_$1".}=
   else:
     raiseEmptyStack()
 
-proc interpret*(i: In): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
+proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   var val: MinValue
+  var q = newSeq[MinValue](0).newVal(i.scope)
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
     try:
       val = i.parser.parseMinValue(i)
-      i.push val
+      if parseOnly:
+        q.qVal.add val
+      else:
+        i.push val
     except MinRuntimeError:
       let msg = getCurrentExceptionMsg()
       i.stack = i.stackcopy
@@ -197,25 +201,34 @@ proc interpret*(i: In): MinValue {.discardable, extern:"min_exported_symbol_$1".
       i.stackTrace
       i.trace = @[]
       raise MinTrappedException(msg: msg)
+  if parseOnly:
+    return q
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
 
-proc eval*(i: In, s: string, name="<eval>") {.extern:"min_exported_symbol_$1".}=
+proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)
   i2.open(newStringStream(s), name)
   discard i2.parser.getToken() 
-  i2.interpret()
+  result = i2.interpret(parseOnly)
   i.trace = i2.trace
   i.stackcopy = i2.stackcopy
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc load*(i: In, s: string) {.extern:"min_exported_symbol_$1".}=
+proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(s)
   i2.open(newStringStream(s.readFile), s)
   discard i2.parser.getToken() 
-  i2.interpret()
+  result = i2.interpret(parseOnly)
   i.trace = i2.trace
   i.stackcopy = i2.stackcopy
   i.stack = i2.stack
   i.scope = i2.scope
+
+proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_symbol_$1".}=
+  return i.eval(s, name, true)
+
+proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
+  return i.load(s, true)
+
