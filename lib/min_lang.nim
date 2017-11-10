@@ -158,6 +158,11 @@ proc lang_module*(i: In) =
     let s = vals[0]
     i.eval s.strVal
 
+  def.symbol("parse") do (i: In):
+    let vals = i.expect("string")
+    let s = vals[0]
+    i.push i.parse s.strVal
+
   def.symbol("load") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -169,6 +174,17 @@ proc lang_module*(i: In) =
     if not file.fileExists:
       raiseInvalid("File '$1' does not exists." % file)
     i.load file
+
+  def.symbol("read") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0]
+    var file = s.getString
+    if not file.endsWith(".min"):
+      file = file & ".min"
+    info("[read] File: ", file)
+    if not file.fileExists:
+      raiseInvalid("File '$1' does not exists." % file)
+    i.push i.read file
 
   def.symbol("with") do (i: In):
     let vals = i.expect("quot", "quot")
