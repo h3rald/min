@@ -185,7 +185,7 @@ proc copy*(s: ref MinScope): ref MinScope {.importc, extern:"min_exported_symbol
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator {.importc, extern:"min_exported_symbol_$1".}
 proc hasSymbol*(scope: ref MinScope, key: string): bool {.importc, extern:"min_exported_symbol_$1".}
 proc delSymbol*(scope: ref MinScope, key: string): bool {.importc, extern:"min_exported_symbol_$1".}
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.importc, extern:"min_exported_symbol_$1".}
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override: bool): bool {.importc, extern:"min_exported_symbol_$1".}
 proc getSigil*(scope: ref MinScope, key: string): MinOperator {.importc, extern:"min_exported_symbol_$1".}
 proc hasSigil*(scope: ref MinScope, key: string): bool {.importc, extern:"min_exported_symbol_$1".}
 proc previous*(scope: ref MinScope): ref MinScope {.importc, extern:"min_exported_symbol_$1".}
@@ -209,9 +209,11 @@ proc dequote*(i: In, q: var MinValue) {.importc, extern:"min_exported_symbol_$1"
 proc apply*(i: In, q: var MinValue) {.importc, extern:"min_exported_symbol_$1_2".}
 proc pop*(i: In): MinValue {.importc, extern:"min_exported_symbol_$1".}
 proc peek*(i: MinInterpreter): MinValue {.importc, extern:"min_exported_symbol_$1".}
-proc interpret*(i: In): MinValue {.importc, extern:"min_exported_symbol_$1".}
-proc eval*(i: In, s: string, name: string) {.importc, extern:"min_exported_symbol_$1".}
-proc load*(i: In, s: string) {.importc, extern:"min_exported_symbol_$1".}
+proc interpret*(i: In): MinValue {.importc, discardable, extern:"min_exported_symbol_$1".}
+proc eval*(i: In, s: string, name: string, parseOnly: bool) {.importc, discardable, extern:"min_exported_symbol_$1".}
+proc load*(i: In, s: string, parseOnly: bool): MinValue {.importc, discardable, extern:"min_exported_symbol_$1".}
+proc parse*(i: In, s: string, name: string): MinValue {.extern:"min_exported_symbol_$1".}=
+proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
 
 # fileutils.nim
 proc filetype*(p: PathComponent): string {.importc, extern:"min_exported_symbol_$1".}
