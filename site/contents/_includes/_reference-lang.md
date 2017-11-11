@@ -28,9 +28,9 @@
 
 {#alias||=>||apply#}
 
-{#sig||#||quote-define#}
+{#sig||#||quote-bind#}
 
-{#sig||=||quote-bind#}
+{#sig||=||quote-define#}
 
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}

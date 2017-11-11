@@ -212,8 +212,8 @@ proc peek*(i: MinInterpreter): MinValue {.importc, extern:"min_exported_symbol_$
 proc interpret*(i: In): MinValue {.importc, discardable, extern:"min_exported_symbol_$1".}
 proc eval*(i: In, s: string, name: string, parseOnly: bool) {.importc, discardable, extern:"min_exported_symbol_$1".}
 proc load*(i: In, s: string, parseOnly: bool): MinValue {.importc, discardable, extern:"min_exported_symbol_$1".}
-proc parse*(i: In, s: string, name: string): MinValue {.extern:"min_exported_symbol_$1".}=
-proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
+proc parse*(i: In, s: string, name: string): MinValue {.importc, extern:"min_exported_symbol_$1".}
+proc read*(i: In, s: string): MinValue {.importc, extern:"min_exported_symbol_$1".}
 
 # fileutils.nim
 proc filetype*(p: PathComponent): string {.importc, extern:"min_exported_symbol_$1".}
