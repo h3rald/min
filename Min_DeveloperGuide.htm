@@ -4526,11 +4526,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_macosx_x64.zip">min v0.12.0 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_windows_x64.zip">min v0.12.0 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_x64.zip">min v0.12.0 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_x86.zip">min v0.12.0 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.12.0/min_v0.12.0_linux_arm.zip">min v0.12.0 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_macosx_x64.zip">min v0.13.0 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_windows_x64.zip">min v0.13.0 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_x64.zip">min v0.13.0 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_x86.zip">min v0.13.0 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_arm.zip">min v0.13.0 for Linux (arm)</a></li>
 </ul>
 
 
@@ -5460,15 +5460,27 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p><span class="reference-title">#</span> <span class="sigil"></span></p>
 
-<div class="operator"><p><span class="kwd"> #<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-define</span></p>
+<div class="operator"><p><span class="kwd"> #<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-bind</span></p>
 
-<p>See <a href="#op-quote-define">quote-define</a>.</p></div>
+<p>See <a href="#op-quote-bind">quote-bind</a>.</p></div>
+
+<p><span class="reference-title">#</span></p>
+
+<div class="operator"><p><span class="kwd"> # <strong>&rArr;</strong> quote-bind</span></p>
+
+<p>See <a href="#op-quote-bind">quote-bind</a>.</p></div>
 
 <p><span class="reference-title">=</span> <span class="sigil"></span></p>
 
-<div class="operator"><p><span class="kwd"> =<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-bind</span></p>
+<div class="operator"><p><span class="kwd"> =<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-define</span></p>
 
-<p>See <a href="#op-quote-bind">quote-bind</a>.</p></div>
+<p>See <a href="#op-quote-define">quote-define</a>.</p></div>
+
+<p><span class="reference-title">=</span></p>
+
+<div class="operator"><p><span class="kwd"> = <strong>&rArr;</strong> quote-define</span></p>
+
+<p>See <a href="#op-quote-define">quote-define</a>.</p></div>
 
 <p><a id="op-apply"></a>
 <span class="reference-title">apply</span></p>
@@ -5538,20 +5550,6 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
    ((true) ("Exactly 3" put!))
 ) case
 </code></pre></div></div>
-
-<p><a id="op-debug"></a>
-<span class="reference-title">debug</span></p>
-
-<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
-
-<p>Toggles debug mode.</p></div>
-
-<p><a id="op-debug?"></a>
-<span class="reference-title">debug?</span></p>
-
-<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
-
-<p>Returns <span class="kwd">true</span> if debug mode is on, <span class="kwd">false</span> otherwise.</p></div>
 
 <p><a id="op-define"></a>
 <span class="reference-title">define</span></p>
@@ -5776,6 +5774,13 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>Returns a dictionary of all options passed to the current program, with their respective values.</p></div>
 
+<p><a id="op-parse"></a>
+<span class="reference-title">parse</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
+
+<p>Parses <span class="kwd">string</span> and returns a quoted program <span class="kwd">quot</span>.</p></div>
+
 <p><a id="op-prompt"></a>
 <span class="reference-title">prompt</span></p>
 
@@ -5827,6 +5832,13 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <div class="operator"><p><span class="kwd"> <span class="kwd">err</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Raises the error specified via the dictionary <span class="kwd">err</span>.</p></div>
+
+<p><a id="op-read"></a>
+<span class="reference-title">read</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
+
+<p>Reads and parses the specified <em>min</em> file <span class="kwd">&apos;sym</span> and returns a quoted program <span class="kwd">quot</span>.</p></div>
 
 <p><a id="op-remove-symbol"></a>
 <span class="reference-title">remove-symbol</span></p>
@@ -6461,6 +6473,13 @@ harvest
 
 <p>Returns a new quotation containing the contents of <span class="kwd">quot</span> with <span class="kwd">a</span> prepended.</p></div>
 
+<p><a id="op-quote-map"></a>
+<span class="reference-title">quote-map</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
+
+<p>Returns a new quotation <span class="kwd">quot<sub>2</sub></span> obtained by quoting each element of <span class="kwd">quot<sub>1</sub></span>.</p></div>
+
 <p><a id="op-reduce"></a>
 <span class="reference-title">reduce</span></p>
 
@@ -6861,6 +6880,58 @@ harvest
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a boolean, <span class="kwd">false</span> otherwise.</p></div>
+
+<p><a id="op-dequote-and"></a>
+<span class="reference-title">dequote-and</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
+
+<p>Short-circuited logical and. It performs the following operations:</p>
+
+<ol>
+<li>Pops <span class="kwd">a<sub>1</sub></span> and <span class="kwd">a<sub>2</sub></span> off the stack.</li>
+<li>Dequotes <span class="kwd">a<sub>1</sub></span>, if <span class="kwd">false</span> is on the stack, it pushes <span class="kwd">false</span> on the stack and stops, otherwise it carries on.</li>
+<li>Dequotes <span class="kwd">a<sub>2</sub></span>.</li>
+<li>If <span class="kwd">a<sub>2</sub></span> is <span class="kwd">true</span>, it pushes <span class="kwd">true</span> on the stack.</li>
+</ol>
+
+
+<div class="note"><p>Note</p>
+
+<p><span class="kwd">a<sub>1</sub></span> (and <span class="kwd">a<sub>2</sub></span>, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.</p></div>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following program returns <span class="kwd">false</span> and never executes the second quotation.</p>
+
+<pre><code> "test" :x (x number?) (x 5 &lt;) dequote-and
+</code></pre></div></div>
+
+<p><a id="op-dequote-or"></a>
+<span class="reference-title">dequote-or</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
+
+<p>Short-circuited logical or. It performs the following operations:</p>
+
+<ol>
+<li>Pops <span class="kwd">a<sub>1</sub></span> and <span class="kwd">a<sub>2</sub></span> off the stack.</li>
+<li>Dequotes <span class="kwd">a<sub>1</sub></span>, if <span class="kwd">true</span> is on the stack, it pushes <span class="kwd">true</span> on the stack and stops, otherwise it carries on.</li>
+<li>Dequotes <span class="kwd">a<sub>2</sub></span>.</li>
+<li>If <span class="kwd">a<sub>2</sub></span> is <span class="kwd">false</span>, it pushes <span class="kwd">false</span> on the stack.</li>
+</ol>
+
+
+<div class="note"><p>Note</p>
+
+<p><span class="kwd">a<sub>1</sub></span> (and <span class="kwd">a<sub>2</sub></span>, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.</p></div>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following program returns <span class="kwd">true</span> and never executes the second quotation.</p>
+
+<pre><code> "test" :x (x string?) (x quotation?) dequote-or
+</code></pre></div></div>
 
 <p><a id="op-dictionary?"></a>
 <span class="reference-title">dictionary?</span></p>
@@ -7783,7 +7854,7 @@ harvest
 <p>Truncates <span class="kwd">num</span> to the decimal point.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; November 2, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; November 18, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>

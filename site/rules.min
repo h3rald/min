@@ -68,7 +68,7 @@ contents (
   (dict) expect -> 
   dup
   (
-    ((/id "^_includes" match) ()) ;Ignore files starting with underscore.
+    ((/id "^_" match) ()) ;Ignore files starting with underscore.
     ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach

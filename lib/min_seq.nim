@@ -125,6 +125,14 @@ proc seq_module*(i: In)=
       res.add i.pop
     i.push res.newVal(i.scope)
 
+  def.symbol("quote-map") do (i: In):
+    let vals = i.expect("quot")
+    let list = vals[0]
+    var res = newSeq[MinValue](0)
+    for litem in list.qVal:
+      res.add @[litem].newVal(i.scope)
+    i.push res.newVal(i.scope)
+
   def.symbol("reverse") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]

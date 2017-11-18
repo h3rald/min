@@ -42,97 +42,97 @@
 
 ## About min
 
-{@ site/contents/_includes/_about.md || 1 @}
+{@ site/contents/about.md || 1 @}
 
 ## Getting Started
 
-{@ site/contents/_includes/_download.md || 1 @}
+{@ site/contents/download.md || 1 @}
 
 ## Learning the min Language
 
-{@ site/contents/_includes/_learn.md || 1 @}
+{@ site/contents/learn.md || 1 @}
 
 ### Data Types
 
-{@ site/contents/_includes/_learn-data-types.md || 2 @}
+{@ site/contents/learn-data-types.md || 2 @}
 
 ### Quotations
 
-{@ site/contents/_includes/_learn-quotations.md || 2 @}
+{@ site/contents/learn-quotations.md || 2 @}
 
 ### Operators 
 
-{@ site/contents/_includes/_learn-operators.md || 2 @}
+{@ site/contents/learn-operators.md || 2 @}
 
 ### Definitions
 
-{@ site/contents/_includes/_learn-definitions.md || 2 @}
+{@ site/contents/learn-definitions.md || 2 @}
 
 ### Control Flow
 
-{@ site/contents/_includes/_learn-control.flow.md || 2 @}
+{@ site/contents/learn-control-flow.md || 2 @}
 
 ## Using the min Shell
 
-{@ site/contents/_includes/_learn-shell.md || 1 @}
+{@ site/contents/learn-shell.md || 1 @}
 
 ## Extending min
 
-{@ site/contents/_includes/_learn-extending.md || 1 @}
+{@ site/contents/learn-extending.md || 1 @}
 
 ## Reference
 
-{@ site/contents/_includes/_reference.md || 1 @}
+{@ site/contents/reference.md || 1 @}
 
 
 ### `lang` Module
 
-{@ site/contents/_includes/_reference-lang.md || 1 @}
+{@ site/contents/reference-lang.md || 1 @}
 
 ### `stack` Module
 
-{@ site/contents/_includes/_reference-stack.md || 1 @}
+{@ site/contents/reference-stack.md || 1 @}
 
 ### `seq` Module
 
-{@ site/contents/_includes/_reference-seq.md || 1 @}
+{@ site/contents/reference-seq.md || 1 @}
 
 ### `io` Module
 
-{@ site/contents/_includes/_reference-io.md || 1 @}
+{@ site/contents/reference-io.md || 1 @}
 
 ### `fs` Module
 
-{@ site/contents/_includes/_reference-fs.md || 1 @}
+{@ site/contents/reference-fs.md || 1 @}
 
 ### `logic` Module
 
-{@ site/contents/_includes/_reference-logic.md || 1 @}
+{@ site/contents/reference-logic.md || 1 @}
 
 ### `str` Module
 
-{@ site/contents/_includes/_reference-str.md || 1 @}
+{@ site/contents/reference-str.md || 1 @}
 
 ### `sys` Module
 
-{@ site/contents/_includes/_reference-sys.md || 1 @}
+{@ site/contents/reference-sys.md || 1 @}
 
 ### `num` Module
 
-{@ site/contents/_includes/_reference-num.md || 1 @}
+{@ site/contents/reference-num.md || 1 @}
 
 ### `time` Module
 
-{@ site/contents/_includes/_reference-time.md || 1 @}
+{@ site/contents/reference-time.md || 1 @}
 
 ### `crypto` Module
 
-{@ site/contents/_includes/_reference-crypto.md || 1 @}
+{@ site/contents/reference-crypto.md || 1 @}
 
 
 ### `math` Module
 
-{@ site/contents/_includes/_reference-math.md || 1 @}
+{@ site/contents/reference-math.md || 1 @}
 
 
 
