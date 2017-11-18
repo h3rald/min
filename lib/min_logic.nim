@@ -127,12 +127,46 @@ proc logic_module*(i: In)=
     let b = vals[1]
     i.push newVal(a.boolVal and b.boolVal)
   
+  def.symbol("dequote-and") do (i: In):
+    let vals = i.expect("a", "a")
+    var a = vals[0]
+    var b = vals[1]
+    i.dequote(b)
+    let resB = i.pop
+    if (resB.isBool and resB.boolVal == false):
+      i.push(false.newVal)
+    else:
+      i.dequote(a)
+      let resA = i.pop
+      if not resA.isBool:
+        raiseInvalid("Result of first quotation is not a boolean value")
+      if not resB.isBool:
+        raiseInvalid("Result of second quotation is not a boolean value")
+      i.push newVal(resA.boolVal and resB.boolVal)
+  
   def.symbol("or") do (i: In):
     let vals = i.expect("bool", "bool")
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal or b.boolVal)
   
+  def.symbol("dequote-or") do (i: In):
+    let vals = i.expect("a", "a")
+    var a = vals[0]
+    var b = vals[1]
+    i.dequote(b)
+    let resB = i.pop
+    if (resB.isBool and resB.boolVal == true):
+      i.push(true.newVal)
+    else:
+      i.dequote(a)
+      let resA = i.pop
+      if not resA.isBool:
+        raiseInvalid("Result of first quotation is not a boolean value")
+      if not resB.isBool:
+        raiseInvalid("Result of second quotation is not a boolean value")
+      i.push newVal(resA.boolVal and resB.boolVal)
+
   def.symbol("xor") do (i: In):
     let vals = i.expect("bool", "bool")
     let a = vals[0]
@@ -140,43 +174,44 @@ proc logic_module*(i: In)=
     i.push newVal(a.boolVal xor b.boolVal)
   
   def.symbol("string?") do (i: In):
-    if i.peek.kind == minString:
+    if i.pop.kind == minString:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("integer?") do (i: In):
-    if i.peek.kind == minInt:
+    if i.pop.kind == minInt:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("float?") do (i: In):
-    if i.peek.kind == minFloat:
+    if i.pop.kind == minFloat:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("number?") do (i: In):
-    if i.peek.kind == minFloat or i.peek.kind == minInt:
+    let a = i.pop
+    if a.kind == minFloat or a.kind == minInt:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("boolean?") do (i: In):
-    if i.peek.kind == minBool:
+    if i.pop.kind == minBool:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("quotation?") do (i: In):
-    if i.peek.kind == minQuotation:
+    if i.pop.kind == minQuotation:
       i.push true.newVal
     else:
       i.push false.newVal
   
   def.symbol("dictionary?") do (i: In):
-    if i.peek.isDictionary:
+    if i.pop.isDictionary:
       i.push true.newVal
     else:
       i.push false.newVal
