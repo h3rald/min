@@ -30,7 +30,11 @@
 
 {#sig||#||quote-bind#}
 
+{#alias||#||quote-bind#}
+
 {#sig||=||quote-define#}
+
+{#alias||=||quote-define#}
 
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}

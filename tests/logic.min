@@ -137,5 +137,9 @@
   (0 0 / nan ==) assert
   (10 3 / 3.33333 ==) assert
 
+  (3 "a" == not) assert
+  (1 () != true) assert
+  (3.3 'test == not) assert
+
   report
   clear-stack
