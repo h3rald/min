@@ -657,6 +657,13 @@ proc lang_module*(i: In) =
 
   # Shorthand symbol aliases
 
+
+  def.symbol("#") do (i: In):
+    i.push("quote-bind".newSym)
+
+  def.symbol("=") do (i: In):
+    i.push("quote-define".newSym)
+
   def.symbol(":") do (i: In):
     i.push("define".newSym)
 

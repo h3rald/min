@@ -250,9 +250,3 @@ proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.ext
   b = i.pop
   if not (a.isQuotation and b.isQuotation or a.isString and b.isString):
     raiseInvalid("Two quotations or two strings are required on the stack")
-
-proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) {.extern:"min_exported_symbol_$1".}=
-  a = i.pop
-  b = i.pop
-  if not ((a.kind == b.kind or (a.isNumber and b.isNumber)) and not a.isSymbol):
-    raiseInvalid("Two non-symbol values of similar type are required on the stack")

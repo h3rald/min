@@ -19,42 +19,6 @@ proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
     of minBool:
       return "bool"
 
-# Predicates
-
-proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minSymbol
-
-proc isQuotation*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
-  return s.kind == minQuotation
-
-proc isString*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
-  return s.kind == minString
-
-proc isFloat*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minFloat
-
-proc isInt*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minInt
-
-proc isNumber*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minInt or s.kind == minFloat
-
-proc isBool*(s: MinValue): bool =
-  return s.kind == minBool
-
-proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
-
-proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  if not q.isQuotation:
-    return false
-  if q.qVal.len == 0:
-    return true
-  for val in q.qVal:
-    if not val.isQuotation or val.qVal.len != 2 or not val.qVal[0].isString:
-      return false
-  return true
-
 # Constructors
 
 proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=

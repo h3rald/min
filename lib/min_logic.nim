@@ -97,16 +97,20 @@ proc logic_module*(i: In)=
   
   def.symbol("==") do (i: In):
     var n1, n2: MinValue
-    i.reqTwoSimilarTypesNonSymbol n2, n1
-    if n1.kind == minFloat or n2.kind == minFloat:
+    let vals = i.expect("a", "a")
+    n1 = vals[0]
+    n2 = vals[1]
+    if (n1.kind == minFloat or n2.kind == minFloat) and n1.isNumber and n2.isNumber:
       i.push newVal(floatCompare(n1, n2))
     else:
       i.push newVal(n1 == n2)
   
   def.symbol("!=") do (i: In):
     var n1, n2: MinValue
-    i.reqTwoSimilarTypesNonSymbol n2, n1
-    if n1.kind == minFloat or n2.kind == minFloat:
+    let vals = i.expect("a", "a")
+    n1 = vals[0]
+    n2 = vals[1]
+    if (n1.kind == minFloat or n2.kind == minFloat) and n1.isNumber and n2.isNumber:
       i.push newVal(not floatCompare(n1, n2))
     i.push newVal(not (n1 == n2))
   
