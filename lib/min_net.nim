@@ -53,15 +53,48 @@ proc net_module*(i: In)=
         protocol = IPPROTO_ICMP
     var socket = newSocket(domain, sockettype, protocol)
     var skt = newSeq[MinValue](0).newVal(i.scope)
-    skt = i.dset(skt, "domain".newSym, sDomain.newVal)
-    skt = i.dset(skt, "type".newSym, sSockType.newVal)
-    skt = i.dset(skt, "protocol".newSym, sProtocol.newVal)
+    skt = i.dset(skt, "domain".newVal, sDomain.newVal)
+    skt = i.dset(skt, "type".newVal, sSockType.newVal)
+    skt = i.dset(skt, "protocol".newVal, sProtocol.newVal)
     skt.objType = "socket"
     skt.obj = socket[].addr
     i.push skt
 
-  def.symbol("socket-close") do (i: In):
+  def.symbol("close") do (i: In):
     let vals = i.expect("dict:socket")
     vals[0].toSocket.close()
  
+  def.symbol("listen") do (i: In):
+    let vals = i.expect("dict", "dict:socket")
+    let params = vals[0]
+    var skt = vals[1]
+    var socket = skt.toSocket
+    var address = "0.0.0.0"
+    var port: BiggestInt = 80
+    if params.dhas("address".newVal):
+      address = params.dget("address".newVal).getString
+    if params.dhas("port".newVal):
+      port = params.dget("port".newVal).intVal
+    socket.bindAddr(Port(port), address)
+    skt = i.dset(skt, "address".newVal, address.newVal)
+    skt = i.dset(skt, "port".newVal, port.newVal)
+    skt.objType = "socket"
+    skt.obj = socket[].addr
+    socket.listen()
+    i.push skt
+
+  def.symbol("accept") do (i: In):
+    let vals = i.expect("dict:socket", "dict:socket")
+    var client = vals[0]
+    var server = vals[1]
+    var address = ""
+    var serverSocket = server.toSocket
+    var clientSocket = client.toSocket
+    serverSocket.acceptAddr(clientSocket, address)
+    i.dset(client, "address".newVal, address.newVal)
+    client.objType = "socket"
+    client.obj = clientSocket[].addr
+    i.push client
+
+
   def.finalize("net")
