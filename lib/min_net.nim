@@ -1,4 +1,4 @@
-import net, nativesockets
+import net, nativesockets, strutils
 import 
   ../core/parser, 
   ../core/value, 
@@ -17,7 +17,6 @@ proc net_module*(i: In)=
   def.symbol("socket") do (i: In):
     let vals = i.expect "dict"
     var q = vals[0]
-    # ((domain ipv4) (type stream) (protocol tcp))
     var 
       domain = AF_INET
       sockettype = SOCK_STREAM
@@ -126,8 +125,7 @@ proc net_module*(i: In)=
   def.symbol("recv-line") do (i: In):
     let vals = i.expect("dict:socket")
     let skt = vals[0]
-    var s = ""
-    skt.toSocket.readLine(s)
+    var s = skt.toSocket.recvLine()
     i.push s.newVal
 
   def.finalize("net")
