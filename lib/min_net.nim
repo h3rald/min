@@ -96,5 +96,38 @@ proc net_module*(i: In)=
     client.obj = clientSocket[].addr
     i.push client
 
+  def.symbol("connect") do (i: In):
+    let vals = i.expect("int", "string", "dict:socket")
+    let port = vals[0]
+    let address = vals[1]
+    var skt = vals[2]
+    let socket = skt.toSocket
+    socket.connect(address.getString, Port(port.intVal))
+    skt = i.dset(skt, "address".newVal, address)
+    skt = i.dset(skt, "port".newVal, port)
+    skt.objType = "socket"
+    skt.obj = socket[].addr
+    i.push skt
+
+  def.symbol("send") do (i: In):
+    let vals = i.expect("string", "dict:socket")
+    let msg = vals[0]
+    let skt = vals[1]
+    skt.toSocket.send msg.getString
+
+  def.symbol("recv") do (i: In):
+    let vals = i.expect("int", "dict:socket")
+    let size = vals[0]
+    let skt = vals[1]
+    var s = ""
+    discard skt.toSocket.recv(s, size.intVal.int)
+    i.push s.newVal
+
+  def.symbol("recv-line") do (i: In):
+    let vals = i.expect("dict:socket")
+    let skt = vals[0]
+    var s = ""
+    skt.toSocket.readLine(s)
+    i.push s.newVal
 
   def.finalize("net")
