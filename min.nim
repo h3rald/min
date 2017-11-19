@@ -35,6 +35,7 @@ import
   lib/min_fs
 
 when not defined(lite):
+  import lib/min_net
   import lib/min_crypto
   import lib/min_math
 
@@ -133,6 +134,7 @@ proc stdLib*(i: In) =
   i.fs_module
   when not defined(lite):
     i.crypto_module
+    i.net_module
     i.math_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
