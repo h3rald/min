@@ -30,6 +30,8 @@ min includes a small but powerful standard library organized into the following 
 : Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
 {#link-module||math#}
 : Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
+{#link-module||net#}
+: Provides basic supports for sockets (some features are not supported on Windows systems).
 
 ## Notation
 
@@ -83,6 +85,8 @@ The following notation is used in the signature of all min operators:
     ("column" 13)
   )
   </code></pre>
+{{sock}}
+: A socket dictionary, created through the {#link-operator||net||socket#} method.
 {{t}}
 : true (boolean type).
 {{f}}
