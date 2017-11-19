@@ -3262,9 +3262,9 @@ a[href="#document-top"]:before {
   color: #eee;
   background-color: #222;
   border: 1px solid #ccc;
-  white-space: pre-wrap;
   padding: 0 3px;
   border: 2px solid #999;
+  white-space: pre-wrap;
   border-top: 10px solid #999;
 }
 .terminal a {
@@ -3285,13 +3285,17 @@ a[href="#document-top"]:before {
 }
 .terminal p,
 .terminal p:first-child {
-  margin-top: 0;
+  margin-top: -40px;
   margin-bottom: 0;
   text-shadow: none;
   font-weight: normal;
   font-family: "Source Code Pro", "Monaco", "DejaVu Sans Mono", "Courier New", monospace;
   font-size: 85%;
   color: #eee;
+}
+.terminal p:first-child,
+.terminal p:first-child:first-child {
+  margin-top: 0px;
 }
 .terminal p:before,
 .terminal p:first-child:before {
@@ -3315,9 +3319,9 @@ a[href="#document-top"]:before {
   color: #eee;
   background-color: #222;
   border: 1px solid #ccc;
-  white-space: pre-wrap;
   padding: 0 3px;
   border: 2px solid #999;
+  white-space: pre-wrap;
   border-top: 10px solid #999;
 }
 .terminal-su a {
@@ -3338,13 +3342,17 @@ a[href="#document-top"]:before {
 }
 .terminal-su p,
 .terminal-su p:first-child {
-  margin-top: 0;
+  margin-top: -40px;
   margin-bottom: 0;
   text-shadow: none;
   font-weight: normal;
   font-family: "Source Code Pro", "Monaco", "DejaVu Sans Mono", "Courier New", monospace;
   font-size: 85%;
   color: #eee;
+}
+.terminal-su p:first-child,
+.terminal-su p:first-child:first-child {
+  margin-top: 0px;
 }
 .terminal-su p:before,
 .terminal-su p:first-child:before {
@@ -4464,6 +4472,7 @@ div .terminal {
    <li><a href="#<code>time</code>-Module"><code>time</code> Module</a></li>
    <li><a href="#<code>crypto</code>-Module"><code>crypto</code> Module</a></li>
    <li><a href="#<code>math</code>-Module"><code>math</code> Module</a></li>
+   <li><a href="#<code>net</code>-Module"><code>net</code> Module</a></li>
   </ul>
   </li>
  </ul>
@@ -5286,6 +5295,8 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <dd>Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.</dd>
 <dt><a href="#&lt;code>math&lt;/code>-Module"><code>math</code> Module</a></dt>
 <dd>Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.</dd>
+<dt><a href="#&lt;code>net&lt;/code>-Module"><code>net</code> Module</a></dt>
+<dd>Provides basic supports for sockets (some features are not supported on Windows systems).</dd>
 </dl>
 
 <a name="Notation"></a>
@@ -5343,6 +5354,8 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
   (&ldquo;column&rdquo; 13)
 )
 </code></pre></dd>
+<dt><span class="kwd">dict:socket</span></dt>
+<dd>A socket dictionary, created through the <a href="#op-socket"><code>socket</code></a> method.</dd>
 <dt><span class="kwd">true</span></dt>
 <dd>true (boolean type).</dd>
 <dt><span class="kwd">false</span></dt>
@@ -7852,9 +7865,165 @@ harvest
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Truncates <span class="kwd">num</span> to the decimal point.</p></div>
+
+<a name="<code>net</code>-Module"></a>
+<h3><code>net</code> Module<a href="#document-top" title="Go to top"></a></h3>
+
+<p><a id="op-accept"></a>
+<span class="reference-title">accept</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket<sub>1</sub></span> <span class="kwd">dict:socket<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">dict:socket<sub>1</sub></span></span></p>
+
+<p>Makes <span class="kwd">dict:socket<sub>2</sub></span> (server) accept a connection from <span class="kwd">dict:socket<sub>1</sub></span> (client). Returns the client socket <span class="kwd">dict:socket<sub>1</sub></span> from which it will be possible to receive data from.</p></div>
+
+<p><a id="op-close"></a>
+<span class="reference-title">close</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Closes a previously-opened socket.</p></div>
+
+<p><a id="op-connect"></a>
+<span class="reference-title">connect</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">string</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">dict:socket</span></span></p>
+
+<p>Connects socket <span class="kwd">dict:socket</span> to address <span class="kwd">string</span> and port <span class="kwd">int</span>.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.</p>
+
+<pre><code>() socket "localhost" 7777 connect =cli
+
+args 1 get :msg
+
+"Sending message \"$1\" to localhost:7777..." (msg) =&gt; % puts!
+
+cli "$1\n" (msg) =&gt; % send
+
+"Done." puts!
+
+cli close
+</code></pre></div></div>
+
+<p><a id="op-listen"></a>
+<span class="reference-title">listen</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <span class="kwd">dict:socket<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">dict:socket<sub>2</sub></span></span></p>
+
+<p>Makes socket <span class="kwd">dict:socket<sub>1</sub></span> listen to the specified address and port. <span class="kwd">dict</span> can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.</p>
+
+<dl>
+<dt>address</dt>
+<dd>The address to listen to (default: <strong>0.0.0.0</strong>).</dd>
+<dt>port</dt>
+<dd>The port to listen to (default: <strong>80</strong>).</dd>
+</dl>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string <code>exit</code>:</p>
+
+<pre><code>() socket (("address" "127.0.0.1") ("port" 7777)) listen =srv
+
+"Server listening on localhost:7777" puts!
+
+() socket =cli
+"" :line
+(line "exit" !=)
+(
+  srv cli accept #cli
+  cli recv-line @line
+  "Received: $1" (line) =&gt; % puts!
+) while
+
+"Exiting..." puts!
+
+srv close
+</code></pre></div></div>
+
+<p><a id="op-recv"></a>
+<span class="reference-title">recv</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
+
+<p>Waits to receive <span class="kwd">int</span> characters from <span class="kwd">dict:socket</span> and returns the resulting data <span class="kwd">string</span>.</p></div>
+
+<p><a id="op-recv-line"></a>
+<span class="reference-title">recv-line</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
+
+<p>Waits to receive a line of data from <span class="kwd">dict:socket</span> and returns the resulting data <span class="kwd">string</span>. <code>""</code> is returned if <span class="kwd">dict:socket</span> is disconnected.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following code shows how to make a simple GET request to <a href="http://httpbin.org/uuid">http://httpbin.org/uuid</a> to receive a random UUID and display its response:</p>
+
+<pre><code>() socket "httpbin.org" 80 connect =cli
+
+cli "GET /uuid HTTP/1.1\r\nHost: httpbin.org\r\n\r\n" send
+
+cli recv-line puts :line
+(line "}" !=) 
+(
+  cli recv-line puts @line
+) while
+</code></pre></div></div>
+
+<p><a id="op-send"></a>
+<span class="reference-title">send</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">string</span> <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Sends <span class="kwd">string</span> to the connected socket <span class="kwd">dict:socket</span>.</p></div>
+
+<p><a id="op-socket"></a>
+<span class="reference-title">socket</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> <span class="kwd">dict:socket</span></span></p>
+
+<p>Opens a new socket.</p>
+
+<p><span class="kwd">dict</span> can be empty or contain any of the following properties, used to specify the domain, type and protocol of the socket respectively.</p>
+
+<dl>
+<dt>domain</dt>
+<dd><p>The socket domain. It can be set to one of the following values:</p>
+
+<ul>
+<li><strong>ipv4</strong> (default): Internet Protocol version 4.</li>
+<li><strong>ipv6</strong>: Internet Protocol version 6.</li>
+<li><strong>unix</strong>: local Unix file (not supported on Windows systems).</li>
+</ul>
+</dd>
+<dt>type</dt>
+<dd><p>The socket type. It can be set to one of the following values:</p>
+
+<ul>
+<li><strong>stream</strong> (default): Reliable stream-oriented service or Stream Socket.</li>
+<li><strong>dgram</strong>: Datagram service or Datagram Socket.</li>
+<li><strong>raw</strong>: Raw protocols atop the network layer.</li>
+<li><strong>seqpacket</strong>: Reliable sequenced packet service.</li>
+</ul>
+</dd>
+<dt>protocol</dt>
+<dd><p>The socket protocol. It can be set to one of the following values:</p>
+
+<ul>
+<li><strong>tcp</strong> (default): Transmission Control Protocol.</li>
+<li><strong>udp</strong>: User Datagram Protocol.</li>
+<li><strong>ipv4</strong>: Internet Protocol version 4 (not supported on Windows systems).</li>
+<li><strong>ipv6</strong>: Internet Protocol version 6 (not supported on Windows systems).</li>
+<li><strong>raw</strong>: Raw IP Packets protocol (not supported on Windows systems).</li>
+<li><strong>icmp</strong>: Internet Control Message Protocol (not supported on Windows systems).</li>
+</ul>
+</dd>
+</dl></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; November 18, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; November 19, 2017</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
