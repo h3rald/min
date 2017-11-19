@@ -530,6 +530,8 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       var q = "("
       for i in a.qVal:
         q = q & $i & " "
+      if not a.objType.isNil:
+        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
 
@@ -549,6 +551,8 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       var q = "("
       for i in a.qVal:
         q = q & $i & " "
+      if not a.objType.isNil:
+        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
 

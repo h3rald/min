@@ -212,7 +212,11 @@ proc printResult(i: In, res: MinValue) =
       echo "{$1} -> (" % n
       for item in res.qVal:
         echo  "         " & $item
-      echo " ".repeat(n.len) & "      )"
+      if res.objType.isNil:
+        echo " ".repeat(n.len) & "      )"
+      else:
+        echo " ".repeat(n.len) & "        ;" & res.objType
+        echo " ".repeat(n.len) & "      )"
     else:
       echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
 

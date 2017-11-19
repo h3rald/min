@@ -178,7 +178,6 @@ proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) {.importc, e
 proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.importc, extern:"min_exported_symbol_$1".}
 proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) {.importc, extern:"min_exported_symbol_$1".}
 proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.importc, extern:"min_exported_symbol_$1".}
-proc reqTwoSimilarTypesNonSymbol*(i: var MinInterpreter, a, b: var MinValue) {.importc, extern:"min_exported_symbol_$1".}
 
 # scope.nim
 proc copy*(s: ref MinScope): ref MinScope {.importc, extern:"min_exported_symbol_$1".}
