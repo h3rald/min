@@ -69,6 +69,8 @@ type
       of minQuotation: 
         qVal*: seq[MinValue]
         scope*: ref MinScope
+        obj*: pointer
+        objType*: string
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool
