@@ -207,7 +207,12 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.
       of "a":
         discard # any type
       else:
-        raiseInvalid("Invalid type description: " & element)
+        var split = element.split(":")
+        if split[0] == "dict":
+          if not value.isTypedDictionary(split[1]):
+            raiseInvalid(message(value.typeName))
+        else:
+          raiseInvalid("Invalid type description: " & element)
     valid.add element
 
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
