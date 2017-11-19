@@ -11,7 +11,12 @@ proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
     of minFloat:
       return "float"
     of minQuotation:
-      return "quot"
+      if v.isTypedDictionary:
+        return "dict:" & v.objType
+      elif v.isDictionary:
+        return "dict"
+      else:
+        return "quot"
     of minString:
       return "string"
     of minSymbol:

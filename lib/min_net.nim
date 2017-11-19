@@ -7,6 +7,9 @@ import
 
 # Time
 
+proc toSocket(q: MinValue): Socket =
+  return cast[Socket](q.obj)
+
 
 proc net_module*(i: In)=
   let def = i.define()
@@ -56,5 +59,9 @@ proc net_module*(i: In)=
     skt.objType = "socket"
     skt.obj = socket[].addr
     i.push skt
+
+  def.symbol("socket-close") do (i: In):
+    let vals = i.expect("dict:socket")
+    vals[0].toSocket.close()
  
   def.finalize("net")

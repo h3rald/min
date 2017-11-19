@@ -145,6 +145,8 @@ proc isNumber*(s: MinValue): bool {.importc, extern:"min_exported_symbol_$1".}
 proc isBool*(s: MinValue): bool {.importc, extern:"min_exported_symbol_$1".}
 proc isStringLike*(s: MinValue): bool {.importc, extern:"min_exported_symbol_$1".}
 proc isDictionary*(q: MinValue): bool {.importc, extern:"min_exported_symbol_$1".}
+proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
 proc newVal*(s: string): MinValue {.importc, extern:"min_exported_symbol_$1".}
 proc newVal*(s: cstring): MinValue {.importc, extern:"min_exported_symbol_$1_2".}
 proc newVal*(q: seq[MinValue], parentScope: ref MinScope): MinValue {.importc, extern:"min_exported_symbol_$1_3".}

@@ -595,6 +595,16 @@ proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
       return false
   return true
 
+proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  if q.isDictionary:
+    return not q.objType.isNil
+  return false
+
+proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
+  if q.isTypedDictionary:
+    return q.objType == t
+  return false
+
 proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}=
   if not (a.kind == b.kind or (a.isNumber and b.isNumber)):
     return false
@@ -621,7 +631,12 @@ proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}
             c.inc
           else:
             return false
-        return true
+        if a.objType.isNil and b.objType.isNil:
+          return true
+        elif not a.objType.isNil and not b.objType.isNil:
+          return a.objType == b.objType
+        else:
+          return false
       else:
         return false
   else:
