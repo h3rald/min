@@ -11,5 +11,5 @@
 'crypto    import
 'math      import
 'net       import
-# Unseal prompt symbol
+; Unseal prompt symbol
 'prompt    unseal
