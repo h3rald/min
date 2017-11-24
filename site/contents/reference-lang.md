@@ -206,7 +206,7 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 {#op||prompt||{{null}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
->     ([$1]$$ " (.) => %)
+>     ("[$1]$$ " (.) => %)
 > 
 > Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.#}
 
