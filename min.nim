@@ -138,7 +138,6 @@ proc stdLib*(i: In) =
     i.math_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
-  i.eval "\"prompt\" unseal"
 
 type
   LibProc = proc(i: In) {.nimcall.}
