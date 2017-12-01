@@ -101,8 +101,8 @@ Creates symlink {{sl2}} for file or directory {{sl1}}. #}
 {#op||symlink?||{{sl}}||{{b}}||
 Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}
 
-{#op||system||{{sl}}||{{null}}||
-Executes the external command {{sl}} in the current directory. #}
+{#op||system||{{sl}}||{{i}}||
+Executes the external command {{sl}} in the current directory and pushes its return code on the stack. #}
 
 {#op||unzip||{{sl}}||{{null}}||
 Decompresses zip file {{sl}}.#}
