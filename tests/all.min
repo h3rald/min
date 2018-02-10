@@ -21,6 +21,7 @@ sigils size :total-sigils
 'crypto  load
 'math    load
 'net     load
+'http    load
 "=" 70 repeat puts!
 "Total Failures: $1" (failures) => % puts!
 failures exit

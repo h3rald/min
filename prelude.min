@@ -11,5 +11,6 @@
 'crypto    import
 'math      import
 'net       import
+'http      import
 ; Unseal prompt symbol
 'prompt    unseal

@@ -12,10 +12,10 @@
   () socket "httpbin.org" 80 connect #cli1
   "min v$1" (version) => % :user-agent
 
-  "GET /user-agent HTTP/1.1\r\nHost: httpbin.org\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :request
+  "GET /user-agent HTTP/1.1\r\nHost: httpbin.org\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :req
 
   "" :response
-  cli1 request send 
+  cli1 req send 
 
   cli1 recv-line :line
   (response line) => "\n" join @response 
@@ -41,7 +41,7 @@
   ;  "user-agent": "min v0.12.0"
   ;}
 
-  (response "\n\n" split 1 get from-json "user-agent" dget user-agent ==) assert
+  (response "\n\n" split 1 get from-json /user-agent user-agent ==) assert
 
   (srv1 srv2 ==) assert
   (cli1 cli2 !=) assert

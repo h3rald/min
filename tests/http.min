@@ -1,0 +1,62 @@
+'test load
+'test import
+
+"http" describe
+  
+  "http://httpbin.org" :url
+
+  ("$1/get" (url) => % get-content from-json /headers /User-Agent  "min http-module/$1" (version) => % ==) assert
+
+  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json /args /test "Hello!" ==) assert
+  "tests/test1.json" rm
+
+  (
+    () (
+      ("$1/get?test=request" (url) => % %url) 
+      ("GET" %method)
+      ((("Accept-Language" "it-it")) %headers)
+      (request)
+    ) tap /body from-json /headers /Accept-Language "it-it" ==
+  ) assert
+
+  (
+    () (
+      ("$1/put" (url) => % %url) 
+      ((("test" "put")) to-json %body)
+      (put-request)
+    ) tap /body from-json /json (("test" "put")) ==
+  ) assert
+
+  (
+    () (
+      ("$1/post" (url) => % %url) 
+      ((("test" "post")) to-json %body)
+      (post-request)
+    ) tap /body from-json /json (("test" "post")) ==
+  ) assert
+
+  (
+    () (
+      ("$1/patch" (url) => % %url) 
+      ((("test" "patch")) to-json %body)
+      (patch-request)
+    ) tap /body from-json /json (("test" "patch")) ==
+  ) assert
+
+  (
+    () (
+      ("$1/delete" (url) => % %url) 
+      (delete-request)
+    ) tap /body from-json /url "$1/delete" (url) => % ==
+  ) assert
+
+  (
+    () (
+      ("$1/get" (url) => % %url) 
+      (get-request)
+    ) tap /body from-json /url "$1/get" (url) => % ==
+  ) assert
+
+  report
+  clear-stack
+

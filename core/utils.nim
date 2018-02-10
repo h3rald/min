@@ -115,7 +115,7 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent".}=
     of minBool:
       return %a.boolVal
     of minSymbol:
-      return %(";sym:$1" % [a.symVal])
+      return %(";sym:$1" % [a.getstring])
     of minString:
       return %a.strVal
     of minInt:
@@ -126,7 +126,7 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent".}=
       if a.isDictionary:
         result = newJObject()
         for i in a.qVal:
-          result[$i.qVal[0].symVal] = %i.qVal[1]
+          result[$i.qVal[0].getString] = %i.qVal[1]
       else:
         result = newJArray()
         for i in a.qVal:

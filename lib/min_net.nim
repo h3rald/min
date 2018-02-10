@@ -5,7 +5,7 @@ import
   ../core/interpreter, 
   ../core/utils
 
-# Time
+# Net
 
 proc toSocket(q: MinValue): Socket =
   return cast[Socket](q.obj)
