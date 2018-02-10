@@ -563,6 +563,12 @@ proc lang_module*(i: In) =
           discard
     i.push opts
 
+  def.symbol("raw-args") do (i: In):
+    var args = newSeq[MinValue](0)
+    for par in commandLineParams():
+        args.add par.newVal
+    i.push args.newVal(i.scope)
+
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q

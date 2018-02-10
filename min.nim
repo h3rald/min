@@ -35,6 +35,7 @@ import
   lib/min_fs
 
 when not defined(lite):
+  import lib/min_http
   import lib/min_net
   import lib/min_crypto
   import lib/min_math
@@ -136,6 +137,7 @@ proc stdLib*(i: In) =
     i.crypto_module
     i.net_module
     i.math_module
+    i.http_module
   i.eval PRELUDE, "<prelude>"
   i.eval MINRC.readFile()
 
@@ -225,7 +227,6 @@ proc minRepl*(i: var MinInterpreter) =
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
-  #echo "$1 v$2" % [appname, version]
   var ed = initEditor(historyFile = MINHISTORY)
   while true:
     let symbols = toSeq(i.scope.symbols.keys)
