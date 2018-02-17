@@ -34,7 +34,7 @@
       ("POST" %method)
       ((("test" "post")) to-json %body)
       (request)
-    ) tap /headers /content-length "341" ==
+    ) tap /headers /content-type "application/json" ==
   ) assert
 
   (

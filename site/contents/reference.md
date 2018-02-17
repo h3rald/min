@@ -95,21 +95,23 @@ The following notation is used in the signature of all min operators:
 
       (
        ("url" "http://httpbin.org/put")
-       ("methdd" "PUT")
-       ("headers" (
-       ("Accept-Language" "it-id")
-       ("Host" "httpbin.org")))
-       ("body" "test body")
+       ("method" "PUT")
+       ("version" "1.1")         ;optional
+       ("hostname" "h3rald.com") ;optional
+       ("headers" (              ;optional
+        ("Accept-Language" "it-id")
+        ("Host" "httpbin.org")))
+       ("body" "test body")      ;optional
       )
 {{res}}
 : A response dictionary, representing an HTTP response returned by some of the operators exposed by the {#link-module||http#}:
 
       (
-        ("version" 1.1)
-        ("status" 200)
-        ("headers" 
+        ("version" "1.1") ;optional
+        ("status" 200)    ;optional
+        ("headers"        ;optional
           (("Content-Type" "application/json")))
-        ("body" 
+        ("body"           ;optional
           "{\"test\": \"This is a test\"}")
       )
 {{t}}
