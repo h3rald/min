@@ -94,9 +94,9 @@ proc open*(i: In, stream:Stream, filename: string) {.extern:"min_exported_symbol
 proc close*(i: In) {.extern:"min_exported_symbol_$1_2".}= 
   i.parser.close();
 
-proc push*(i: In, val: MinValue) {.extern:"min_exported_symbol_$1".} 
+proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
 
-proc apply*(i: In, op: MinOperator) {.extern:"min_exported_symbol_$1".}=
+proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   var newscope = newScopeRef(i.scope)
   case op.kind
   of minProcOp:
@@ -118,7 +118,7 @@ proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
       for v in q.qVal:
         i.push v
 
-proc apply*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1_2".}=
+proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".}=
   var i2 = newMinInterpreter("<apply>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -136,7 +136,7 @@ proc apply*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1_2".}=
     raise
   i.push i2.stack.newVal(i.scope)
 
-proc push*(i: In, val: MinValue) {.extern:"min_exported_symbol_$1".}= 
+proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
     i.debug(val)
     i.trace.add val
