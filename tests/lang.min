@@ -209,6 +209,8 @@
 
   ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) assert
 
+  (lite? false ==) assert
+
   report
   ; Tidy up
   clear-stack

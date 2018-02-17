@@ -167,6 +167,9 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > >     (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
+{#op||lite?||{{null}}||{{b}}||
+Returns {{t}} if min was built in _lite_ mode. #}
+
 {#op||load||{{sl}}||{{a0p}}||
 Parses and interprets the specified {{m}} file, adding [.min](class:ext) if not specified. #}
 
@@ -236,6 +239,15 @@ Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{
 
 {#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
+
+{#op||ROOT||{{null}}||{{q}}||
+Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
+
+> > %tip%
+> > Tip
+> > 
+> > This symbol is very useful in conjunction with the **with** operator.
+#}
 
 {#op||save-symbol||{{sl}}||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
@@ -353,4 +365,19 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 > >     (count puts succ @count) while #}
 
 {#op||with||{{q1}} {{q2}}||{{a0p}}||
-Applies quotation {{q1}} within the scope of {{q2}}. #}
+Applies quotation {{q1}} within the scope of {{q2}}. 
+
+> > %sidebar%
+> > Example
+> > 
+> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or a parent scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
+> > 
+> >     'lite? (
+> >      (
+> >       'crypto    import
+> >       'math      import
+> >       'net       import
+> >       'http      import
+> >      ) ROOT with
+> >     ) unless
+#}

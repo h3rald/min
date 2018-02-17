@@ -8,9 +8,13 @@
 'seq       import
 'time      import
 'fs        import
-'crypto    import
-'math      import
-'net       import
-'http      import
+'lite? (
+  (
+    'crypto    import
+    'math      import
+    'net       import
+    'http      import
+  ) ROOT with
+) unless
 ; Unseal prompt symbol
 'prompt    unseal

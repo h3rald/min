@@ -28,6 +28,23 @@ Alternatively, you can build min from source as follows:
 5. Run **nifty install** to download min’s dependencies.
 7. Run **nim c -d:release min.nim**.
 
+### Additional build options
+
+
+#### -d:ssl
+
+If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to perform HTTPS requests with the {#link-module||http#}. This means that the resulting **min** executable will no longer be self-contained and it will require the OpenSSL dynamic library to be available on your system.
+
+#### -d:lite
+
+If the **d:lite** flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:
+
+* The {#link-module||crypto#}
+* The {#link-module||net#}
+* The {#link-module||http#}
+* The {#link-module||math#}
+* The {#link-operator||sys||zip#} and {#link-operator||sys||unzip#} operators.
+
 ## Running then min Shell
 
 To start min shell, run [min -i](class:cmd). You will be presented with a prompt displaying the path to the current directory:

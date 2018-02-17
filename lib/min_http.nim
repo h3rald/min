@@ -14,7 +14,7 @@ proc newCli(): HttpClient =
 proc newVal(i: In, headers: HttpHeaders): MinValue = 
   result = newVal(newSeq[MinValue](), i.scope)
   for k, v in headers:
-    i.dset(result, k.newVal, v.newVal)
+    result = i.dset(result, k.newVal, v.newVal)
 
 proc execRequest(i:In, req: MinValue): MinValue = 
   let cli = newCli()
@@ -37,8 +37,8 @@ proc execRequest(i:In, req: MinValue): MinValue =
   url = req.dget("url".newVal)
   let resp = cli.request(url = url.getString, httpMethod = meth.getString, body = body.getString, headers = headers)
   result = newVal(newSeq[MinValue](), i.scope)
-  result = i.dset(result, "version".newVal, resp.version.newVal)
-  result = i.dset(result, "status".newVal, resp.status.newVal)
+  result = i.dset(result, "version".newVal, resp.version.parseFloat.newVal)
+  result = i.dset(result, "status".newVal, resp.status[0..2].parseInt.newVal)
   result = i.dset(result, "headers".newVal, i.newVal(resp.headers))
   result = i.dset(result, "body".newVal, resp.body.newVal)
 
@@ -58,9 +58,6 @@ proc http_module*(i: In)=
     let cli = newCli()
     i.push cli.getContent(url.getString).newVal
 
-  def.symbol("post-content") do (i: In):
-    discard
-
   def.symbol("download") do (i: In):
     let vals = i.expect("string", "string")
     let file = vals[0]
@@ -68,47 +65,5 @@ proc http_module*(i: In)=
     let cli = newCli()
     cli.downloadFile(url.getString, file.getString)
     discard
-
-  def.symbol("put-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "PUT".newVal)
-    i.push i.execRequest(req)
-  
-  def.symbol("get-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "GET".newVal)
-    i.push i.execRequest(req)
-  
-  def.symbol("post-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "POST".newVal)
-    i.push i.execRequest(req)
-  
-  def.symbol("head-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "HEAD".newVal)
-    i.push i.execRequest(req)
-
-  def.symbol("options-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "OPTIONS".newVal)
-    i.push i.execRequest(req)
-  
-  def.symbol("patch-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "PATCH".newVal)
-    i.push i.execRequest(req)
-
-  def.symbol("delete-request") do (i: In):
-    let vals = i.expect "dict"
-    var req = vals[0]
-    req = i.dset(req, "method".newVal, "DELETE".newVal)
-    i.push i.execRequest(req)
 
   def.finalize("http")

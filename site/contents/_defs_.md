@@ -45,9 +45,11 @@
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
 {{null => &#x2205;}}
-{{sock => [dict:socket](class:kwd)}}
-{{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}
-{{sock2 => [dict:socket<sub>2</sub>](class:kwd)}}
+{{sock => [socket](class:kwd)}}
+{{req => [request](class:kwd)}}
+{{res => [response](class:kwd)}}
+{{sock1 => [socket<sub>1</sub>](class:kwd)}}
+{{sock2 => [socket<sub>2</sub>](class:kwd)}}
 {{m => _min_}}
 
 {{sgregex => [sgregex](https://github.com/snake5/sgregex).}}

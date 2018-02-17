@@ -67,6 +67,9 @@ proc lang_module*(i: In) =
       q.add s.newVal
     i.push q.newVal(i.scope)
 
+  def.symbol("lite?") do (i: In):
+    i.push defined(lite).newVal
+
   def.symbol("from-json") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
