@@ -22,39 +22,36 @@
   (
     () (
       ("$1/put" (url) => % %url) 
+      ("PUT" %method)
       ((("test" "put")) to-json %body)
-      (put-request)
+      (request)
     ) tap /body from-json /json (("test" "put")) ==
   ) assert
 
   (
     () (
       ("$1/post" (url) => % %url) 
+      ("POST" %method)
       ((("test" "post")) to-json %body)
-      (post-request)
-    ) tap /body from-json /json (("test" "post")) ==
+      (request)
+    ) tap /headers /content-length "341" ==
   ) assert
 
   (
     () (
       ("$1/patch" (url) => % %url) 
+      ("PATCH" %method)
       ((("test" "patch")) to-json %body)
-      (patch-request)
+      (request)
     ) tap /body from-json /json (("test" "patch")) ==
   ) assert
 
   (
     () (
       ("$1/delete" (url) => % %url) 
-      (delete-request)
+      ("DELETE" %method)
+      (request)
     ) tap /body from-json /url "$1/delete" (url) => % ==
-  ) assert
-
-  (
-    () (
-      ("$1/get" (url) => % %url) 
-      (get-request)
-    ) tap /body from-json /url "$1/get" (url) => % ==
   ) assert
 
   report

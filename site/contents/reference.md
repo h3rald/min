@@ -32,6 +32,9 @@ min includes a small but powerful standard library organized into the following 
 : Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
 {#link-module||net#}
 : Provides basic supports for sockets (some features are not supported on Windows systems).
+{#link-module||http#}
+: Provides operators to perform HTTP requests, download files and create basic HTTP servers.
+
 
 ## Notation
 
@@ -61,32 +64,54 @@ The following notation is used in the signature of all min operators:
 : A dictionary value.
 {{tinfo}}
 : A timeinfo dictionary:
-  <pre><code>(
-    ("year" 2017)
-    ("month" 7)
-    ("day" 8)
-    ("weekday" 6)
-    ("yearday" 188)
-    ("hour" 15)
-    ("minute" 16)
-    ("second" 25)
-    ("dst" true)
-    ("timezone" -3600)
-  )
-  </code></pre>
+
+      (
+       ("year" 2017)
+       ("month" 7)
+       ("day" 8)
+       ("weekday" 6)
+       ("yearday" 188)
+       ("hour" 15)
+       ("minute" 16)
+       ("second" 25)
+       ("dst" true)
+       ("timezone" -3600)
+      )
 {{e}}
 : An error dictionary:
-  <pre><code>(
-    ("error" "MyError")
-    ("message" "An error occurred")
-    ("symbol" "symbol1")
-    ("filename" "dir1/file1.min")
-    ("line" 3)
-    ("column" 13)
-  )
-  </code></pre>
+
+      (
+       ("error" "MyError")
+       ("message" "An error occurred")
+       ("symbol" "symbol1")
+       ("filename" "dir1/file1.min")
+       ("line" 3)
+       ("column" 13)
+      )
 {{sock}}
-: A socket dictionary, created through the {#link-operator||net||socket#} method.
+: A socket dictionary, created through the {#link-operator||net||socket#} operator.
+{{req}}
+: A request dictionary, representing an HTTP request to be performed through the operators exposed by the {#link-module||http#}:
+
+      (
+       ("url" "http://httpbin.org/put")
+       ("methdd" "PUT")
+       ("headers" (
+       ("Accept-Language" "it-id")
+       ("Host" "httpbin.org")))
+       ("body" "test body")
+      )
+{{res}}
+: A response dictionary, representing an HTTP response returned by some of the operators exposed by the {#link-module||http#}:
+
+      (
+        ("version" 1.1)
+        ("status" 200)
+        ("headers" 
+          (("Content-Type" "application/json")))
+        ("body" 
+          "{\"test\": \"This is a test\"}")
+      )
 {{t}}
 : true (boolean type).
 {{f}}
