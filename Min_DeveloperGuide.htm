@@ -4401,7 +4401,17 @@ div .terminal {
   </li>
   <li><a href="#Getting-Started">Getting Started</a>
   <ul>
-   <li><a href="#Building-from-Source">Building from Source</a></li>
+   <li><a href="#Building-from-Source">Building from Source</a>
+   <ul>
+    <li><a href="#Additional-build-options">Additional build options</a>
+    <ul>
+     <li><a href="#-d:ssl">-d:ssl</a></li>
+     <li><a href="#-d:lite">-d:lite</a>
+</li>
+    </ul>
+    </li>
+   </ul>
+   </li>
    <li><a href="#Running-then-min-Shell">Running then min Shell</a></li>
    <li><a href="#Executing-a-min-Program">Executing a min Program</a></li>
   </ul>
@@ -4473,6 +4483,7 @@ div .terminal {
    <li><a href="#<code>crypto</code>-Module"><code>crypto</code> Module</a></li>
    <li><a href="#<code>math</code>-Module"><code>math</code> Module</a></li>
    <li><a href="#<code>net</code>-Module"><code>net</code> Module</a></li>
+   <li><a href="#<code>http</code>-Module"><code>http</code> Module</a></li>
   </ul>
   </li>
  </ul>
@@ -4494,7 +4505,7 @@ div .terminal {
 <ul>
 <li>It is based on a somewhat obscure and slightly unintuitive programming paradigm, think of <a href="http://www.forth.org/">Forth</a>, <a href="http://factorcode.org/">Factor</a> and <a href="http://www.kevinalbrecht.com/code/joy-mirror/">Joy</a> but with parethesis for an extra <a href="https://common-lisp.net/">Lisp</a>y flavor.</li>
 <li>Programs written in min are actually written using <em>quotations</em>, i.e. lists.</li>
-<li>It comes with map, filter, find, map-reduce and loads of other functional goodies. See the <a href="#&lt;code>seq&lt;/code>-Module"><code>seq</code> Module</a> for more.</li>
+<li>It comes with map, filter, find, map-reduce and loads of other functional goodies. See the <a href="#&lt;code>seq&lt;/code>-Module">seq Module</a> for more.</li>
 <li>It is probably slower than the average production-ready programming language.</li>
 </ul>
 
@@ -4535,11 +4546,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_macosx_x64.zip">min v0.13.0 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_windows_x64.zip">min v0.13.0 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_x64.zip">min v0.13.0 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_x86.zip">min v0.13.0 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.13.0/min_v0.13.0_linux_arm.zip">min v0.13.0 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_macosx_x64.zip">min v0.14.0 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_windows_x64.zip">min v0.14.0 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_x64.zip">min v0.14.0 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_x86.zip">min v0.14.0 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_arm.zip">min v0.14.0 for Linux (arm)</a></li>
 </ul>
 
 
@@ -4556,6 +4567,28 @@ div .terminal {
 <li>Run <strong>nifty install</strong> to download min’s dependencies.</li>
 <li>Run <strong>nim c -d:release min.nim</strong>.</li>
 </ol>
+
+
+<a name="Additional-build-options"></a>
+<h4>Additional build options<a href="#document-top" title="Go to top"></a></h4>
+
+<a name="-d:ssl"></a>
+<h5>-d:ssl<a href="#document-top" title="Go to top"></a></h5>
+
+<p>If the <strong>-d:ssl</strong> flag is specified when compiling, min will be built with SSL support, so it will be possible to perform HTTPS requests with the <a href="#&lt;code>http&lt;/code>-Module">http Module</a>. This means that the resulting <strong>min</strong> executable will no longer be self-contained and it will require the OpenSSL dynamic library to be available on your system.</p>
+
+<a name="-d:lite"></a>
+<h5>-d:lite<a href="#document-top" title="Go to top"></a></h5>
+
+<p>If the <strong>d:lite</strong> flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:</p>
+
+<ul>
+<li>The <a href="#&lt;code>crypto&lt;/code>-Module">crypto Module</a></li>
+<li>The <a href="#&lt;code>net&lt;/code>-Module">net Module</a></li>
+<li>The <a href="#&lt;code>http&lt;/code>-Module">http Module</a></li>
+<li>The <a href="#&lt;code>math&lt;/code>-Module">math Module</a></li>
+<li>The <a href="#min-operator-id-zip">zip</a> and <a href="#min-operator-id-unzip">unzip</a> operators.</li>
+</ul>
 
 
 <a name="Running-then-min-Shell"></a>
@@ -4647,7 +4680,7 @@ div .terminal {
 <dd>A list of elements, which may also contain symbols. Quotations can be be used to create heterogenous lists of elements of any data type, and also to create a block of code that will be evaluated later on (quoted program).</dd>
 </dl>
 
-<p>Additionally, quotations structured in a particular way can be used as dictionaries, and a few operators are available to manage them more easily (<code>dhas?</code>, <code>dget</code>, <code>ddel</code> and <code>dset</code>). A dictionary is a quotation containing zero or more quotations of two elements, the first of which is a symbol that has not already be used in any of the other inner quotations.</p>
+<p>Additionally, quotations structured in a particular way can be used as dictionaries, and a few operators are available to manage them more easily (<code>dhas?</code>, <code>dget</code>, <code>ddel</code> and <code>dset</code>). A dictionary is a quotation containing zero or more quotations of two elements, the first of which is a string that has not already be used in any of the other inner quotations.</p>
 
 <div class="sidebar"><p>Example</p>
 
@@ -4660,11 +4693,13 @@ div .terminal {
 )
 </code></pre></div>
 
-<p>The <a href="#&lt;code>logic&lt;/code>-Module"><code>logic</code> Module</a> provides predicate operators to check if an element belong to a particular data type or pseudo-type (<code>boolean?</code>, <code>number?</code>, <code>integer?</code>, <code>float?</code>, <code>string?</code>, <code>quotation?</code>, <code>dictionary?</code>).</p>
+<p>The <a href="#&lt;code>logic&lt;/code>-Module">logic Module</a> provides predicate operators to check if an element belong to a particular data type or pseudo-type (<code>boolean?</code>, <code>number?</code>, <code>integer?</code>, <code>float?</code>, <code>string?</code>, <code>quotation?</code>, <code>dictionary?</code>).</p>
+
+<p>Additionally, the <a href="#&lt;code>lang&lt;/code>-Module">lang Module</a> provides operators to convert values from a data type to another (e.g. <a href="#min-operator-id-int">int</a>, <a href="#min-operator-id-string">string</a>, and so on).</p>
 
 <div class="note"><p>Note</p>
 
-<p>Most of the operators defined in the <a href="#&lt;code>num&lt;/code>-Module"><code>num</code> Module</a> are able to operate on both integers and floats.</p></div>
+<p>Most of the operators defined in the <a href="#&lt;code>num&lt;/code>-Module">num Module</a> are able to operate on both integers and floats.</p></div>
 
 <a name="Quotations"></a>
 <h3>Quotations<a href="#document-top" title="Go to top"></a></h3>
@@ -4676,7 +4711,7 @@ div .terminal {
 <pre><code> . ls (ftype "file" ==) filter '&gt; sort
 </code></pre>
 
-<p>The symbol <a href="#op-filter"><code>filter</code></a> takes two quotations as arguments &ndash; the first quotation on the stack is applied to all the elements of the second quotation on the stack, to determine which elements of the second quotation will be part of the resulting quotation. This is an example of how quotations can be used both as lists and programs.</p>
+<p>The symbol <a href="#min-operator-id-filter">filter</a> takes two quotations as arguments &ndash; the first quotation on the stack is applied to all the elements of the second quotation on the stack, to determine which elements of the second quotation will be part of the resulting quotation. This is an example of how quotations can be used both as lists and programs.</p>
 
 <p>Let&rsquo;s examine this program step-by-step:</p>
 
@@ -4692,7 +4727,7 @@ div .terminal {
 
 <div class="tip"><p>Tip</p>
 
-<p>The {<a href="#&lt;code>seq&lt;/code>-Module"><code>seq</code> Module</a>} provides several symbols to work with quotations in a functional way.</p></div>
+<p>The <a href="#&lt;code>seq&lt;/code>-Module">seq Module</a> provides several symbols to work with quotations in a functional way.</p></div>
 
 <a name="Quoting,-dequoting,-and-applying"></a>
 <h4>Quoting, dequoting, and applying<a href="#document-top" title="Go to top"></a></h4>
@@ -4708,7 +4743,7 @@ div .terminal {
 
 <p>In this case, the second quotation is used to <em>quote</em> the symbol <code>odd?</code> so that instead of being executed immediately, it will be executed by the symbol <code>filter</code> on each element of the first quotation. In this way, we may say that <code>(odd?)</code> is <em>dequoted</em> by the symbol <code>filter</code>.</p>
 
-<p>The synbol <a href="#op-dequote"><code>dequote</code></a> or its alias <code>-&gt;</code> can be used to dequote a quotation by pushing all its element on the main stack, while the symbol <a href="#op-apply"><code>apply</code></a> can be used to dequote a quotation by pushing its element on a separate stack.</p>
+<p>The synbol <a href="#min-operator-id-dequote">dequote</a> or its alias <code>-&gt;</code> can be used to dequote a quotation by pushing all its element on the main stack, while the symbol <a href="#min-operator-id-apply">apply</a> can be used to dequote a quotation by pushing its element on a separate stack.</p>
 
 <a name="Operators"></a>
 <h3>Operators<a href="#document-top" title="Go to top"></a></h3>
@@ -4732,7 +4767,7 @@ div .terminal {
 </ul>
 
 
-<p>It is possible to define symbols using the <a href="#op-define"><code>define</code></a> symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:</p>
+<p>It is possible to define symbols using the <a href="#min-operator-id-define">define</a> symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:</p>
 
 <pre><code> (dup *) "square" define
 </code></pre>
@@ -4746,45 +4781,43 @@ div .terminal {
 
 <dl>
 <dt>+</dt>
-<dd>Alias for <a href="#op-module"><code>module</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-module">module</a>.</dd>
 <dt>~</dt>
-<dd>Alias for <a href="#op-delete"><code>delete</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-delete">delete</a>.</dd>
 <dt>'</dt>
-<dd>Alias for <a href="#op-quote"><code>quote</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-quote">quote</a>.</dd>
 <dt>:</dt>
-<dd>Alias for <a href="#op-define"><code>define</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-define">define</a>.</dd>
 <dt>^</dt>
-<dd>Alias for <a href="#op-call"><code>call</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-call">call</a>.</dd>
 <dt>@</dt>
-<dd>Alias for <a href="#op-bind"><code>bind</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-bind">bind</a>.</dd>
 <dt>></dt>
-<dd>Alias for <a href="#op-save-symbol"><code>save-symbol</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-save-symbol">save-symbol</a>.</dd>
 <dt>&lt;</dt>
-<dd>Alias for <a href="#op-load-symbol"><code>load-symbol</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-load-symbol">load-symbol</a>.</dd>
 <dt>&#61;</dt>
-<dd>Alias for <a href="#op-quote-bind"><code>quote-bind</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-quote-bind">quote-bind</a>.</dd>
 <dt>#</dt>
-<dd>Alias for <a href="#op-quote-define"><code>quote-define</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-quote-define">quote-define</a>.</dd>
 <dt>/</dt>
-<dd>Alias for <a href="#op-dget"><code>dget</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-dget">dget</a>.</dd>
 <dt>%</dt>
-<dd>Alias for <a href="#op-dset"><code>dset</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-dset">dset</a>.</dd>
 <dt>?</dt>
-<dd>Alias for <a href="#op-dhas?"><code>dhas?</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-dhas?">dhas?</a>.</dd>
 <dt>!</dt>
-<dd>Alias for <a href="#op-system"><code>system</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-system">system</a>.</dd>
 <dt>&amp;</dt>
-<dd>Alias for <a href="#op-run"><code>run</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-run">run</a>.</dd>
 <dt>$</dt>
-<dd>Alias for <a href="#op-get-env"><code>get-env</code></a>.</dd>
+<dd>Alias for <a href="#min-operator-id-get-env">get-env</a>.</dd>
 </dl>
-
-<p>{#link-learn||quotations||Quotations#}</p>
 
 <a name="Definitions"></a>
 <h3>Definitions<a href="#document-top" title="Go to top"></a></h3>
 
-<p>Being a concatenative language, min does not really need named parameters or variables: simbols just pop elements off the main stack in order, and that&rsquo;s normally enough. There is however one small problem witht the traditional concatenative paradigm; consider the following program for example:</p>
+<p>Being a concatenative language, min does not really need named parameters or variables: simbols just pop elements off the main stack in order, and that&rsquo;s normally enough. There is however one small problem with the traditional concatenative paradigm; consider the following program for example:</p>
 
 <pre><code> dup dup
  "\.zip$" match 
@@ -4792,9 +4825,9 @@ div .terminal {
  swap mtime now 3600 - &gt;
 </code></pre>
 
-<p>This program takes a single string corresponding to a file path and returns true if it&rsquo;s a .zip file bigger than 1MB that was modified in the last how. Sure, it is remarkable that no variables are needed for such a program, but it is not very readable: because no variables are used, it is often necessary to make copies of elements and push them to the end of the stack &ndash; that&rsquo;s what the <a href="#op-dup"><code>dup</code></a> and {#link-operator||stack||swap#} are used for.</p>
+<p>This program takes a single string corresponding to a file path and returns true if it&rsquo;s a .zip file bigger than 1MB that was modified in the last how. Sure, it is remarkable that no variables are needed for such a program, but it is not very readable: because no variables are used, it is often necessary to make copies of elements and push them to the end of the stack &ndash; that&rsquo;s what the <a href="#min-operator-id-dup">dup</a> and <a href="#min-operator-id-swap">swap</a> are used for.</p>
 
-<p>The good news is that you can use the <a href="#op-define"><code>define</code></a> operator and the <code>:</code> sigil to define new symbols, and symbols can also be set to literals of course.</p>
+<p>The good news is that you can use the <a href="#min-operator-id-define">define</a> operator and the <code>:</code> sigil to define new symbols, and symbols can also be set to literals of course.</p>
 
 <p>Consider the following program:</p>
 
@@ -4805,7 +4838,7 @@ div .terminal {
  and and
 </code></pre>
 
-<p>In this case, the <code>filepath</code> symbol is defined and then used on the following three lines, each of which defines a condition to be evaluated. The last line contains just two <a href="#op-and"><code>and</code></a> symbols necessary to compare the three conditions.</p>
+<p>In this case, the <code>filepath</code> symbol is defined and then used on the following three lines, each of which defines a condition to be evaluated. The last line contains just two <a href="#min-operator-id-and">and</a> symbols necessary to compare the three conditions.</p>
 
 <a name="Lexical-scoping-and-binding"></a>
 <h4>Lexical scoping and binding<a href="#document-top" title="Go to top"></a></h4>
@@ -4828,7 +4861,7 @@ div .terminal {
 
 <p>Simple: <code>4</code>. Every quotation defines its own scope, and in each scope a new variable called <code>a</code> is defined. In the innermost scope containing the quotation <code>(a dup * :a)</code> the value of <code>a</code> is set to <code>64</code>, but this value is not propagated to the outer scopes. Note also that the value of <code>a</code> in the innermost scope is first retrieved from the outer scope (8).</p>
 
-<p>If we want to change the value of the original <code>a</code> symbol defined in the outermost scope, we have to use the <a href="#op-bind"><code>bind</code></a> or its shorthand sigil <code>@</code>, so that the programs becomes the following:</p>
+<p>If we want to change the value of the original <code>a</code> symbol defined in the outermost scope, we have to use the <a href="#min-operator-id-bind">bind</a> or its shorthand sigil <code>@</code>, so that the programs becomes the following:</p>
 
 <pre><code> 4 :a ;First definition of the symbol a
  (
@@ -4843,7 +4876,7 @@ div .terminal {
 <a name="quote-define-and-quote-bind"></a>
 <h4>quote-define and quote-bind<a href="#document-top" title="Go to top"></a></h4>
 
-<p>So far, we saw how to use the <a href="#op-define"><code>define</code></a> and <a href="#op-bind"><code>bind</code></a> operator (or better, their shorthand sigils <code>:</code> and <code>@</code>) to define new symbols or bind values to existing ones.</p>
+<p>So far, we saw how to use the <a href="#min-operator-id-define">define</a> and <a href="#min-operator-id-bind">bind</a> operator (or better, their shorthand sigils <code>:</code> and <code>@</code>) to define new symbols or bind values to existing ones.</p>
 
 <p>Consider the following example:</p>
 
@@ -4859,9 +4892,9 @@ div .terminal {
      &lt;repl&gt;(1,19) in symbol: map
 </code></pre>
 
-<p>This error says that when the <a href="#op-map"><code>map</code></a> operator was evaluated, there were incorrect values on the stack. Two quotations were expected, but instead a quotation and an integer were found. How did this happen?</p>
+<p>This error says that when the <a href="#min-operator-id-map">map</a> operator was evaluated, there were incorrect values on the stack. Two quotations were expected, but instead a quotation and an integer were found. How did this happen?</p>
 
-<p>Basically, when <code>my-list</code> was pushed on the stack, it pushed all its item on top of the stack. If you run <a href="#op-get-stack"><code>get-stack</code></a>, it will return the following list:</p>
+<p>Basically, when <code>my-list</code> was pushed on the stack, it pushed all its item on top of the stack. If you run <a href="#min-operator-id-get-stack">get-stack</a>, it will return the following list:</p>
 
 <pre><code> (1 2 3 4 5 (dup *))
 </code></pre>
@@ -4872,7 +4905,7 @@ div .terminal {
  (1 2 3 4 5) (square) map
 </code></pre>
 
-<p>To avoid this behavior &ndash; i.e. whenever you want to define a list of items rather than an operator that will be immediately evaluated when pushed on the stack, you have to use the <a href="#op-quote-define"><code>quote-define</code></a> and the <a href="#op-quote-bind"><code>quote-bind</code></a> or their respective sigils <code>#</code> and <code>=</code>:</p>
+<p>To avoid this behavior &ndash; i.e. whenever you want to define a list of items rather than an operator that will be immediately evaluated when pushed on the stack, you have to use the <a href="#min-operator-id-quote-define">quote-define</a> and the <a href="#min-operator-id-quote-bind">quote-bind</a> or their respective sigils <code>#</code> and <code>=</code>:</p>
 
 <pre><code> (1 2 3 4 5) #my-list
  my-list (dup *) map ;Returns (1 4 9 16 25) 
@@ -4893,16 +4926,16 @@ div .terminal {
 
 <p>&hellip;because the <code>quote</code> symbol is only defined in the root scope and can therefore be redefined in child scopes.</p>
 
-<p>If you want, you can <a href="#op-seal"><code>seal</code></a> your own symbols so that they may not be redefined using the <a href="#op-bind"><code>bind</code></a> operator or deleted using the <a href="#op-delete"><code>delete</code></a>.</p>
+<p>If you want, you can <a href="#min-operator-id-seal">seal</a> your own symbols so that they may not be redefined using the <a href="#min-operator-id-bind">bind</a> operator or deleted using the <a href="#min-operator-id-delete">delete</a>.</p>
 
 <div class="info"><p>Note</p>
 
-<p>The <a href="#op-unseal"><code>unseal</code></a> operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!</p></div>
+<p>The <a href="#min-operator-id-unseal">unseal</a> operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!</p></div>
 
 <a name="Control-Flow"></a>
 <h3>Control Flow<a href="#document-top" title="Go to top"></a></h3>
 
-<p>The <a href="#&lt;code>lang&lt;/code>-Module"><code>lang</code> Module</a> provide some symbols that can be used for the most common control flow statements. Unlike most programming language, min does not differentiate between functions and statements &ndash; control flow statements are just ordinary symbols that manipulate the main stack.</p>
+<p>The <a href="#&lt;code>lang&lt;/code>-Module">lang Module</a> provide some symbols that can be used for the most common control flow statements. Unlike most programming language, min does not differentiate between functions and statements &ndash; control flow statements are just ordinary symbols that manipulate the main stack.</p>
 
 <a name="Conditionals"></a>
 <h4>Conditionals<a href="#document-top" title="Go to top"></a></h4>
@@ -4910,10 +4943,10 @@ div .terminal {
 <p>The following symbols provide ways to implement common conditional statements:</p>
 
 <ul>
-<li><a href="#op-case"><code>case</code></a></li>
-<li>{#link-operator||lang||if#}</li>
-<li><a href="#op-unless"><code>unless</code></a></li>
-<li>{#link-operator||lang||when#}</li>
+<li><a href="#min-operator-id-case">case</a></li>
+<li><a href="#min-operator-id-if">if</a></li>
+<li><a href="#min-operator-id-unless">unless</a></li>
+<li><a href="#min-operator-id-when">when</a></li>
 </ul>
 
 
@@ -4940,9 +4973,9 @@ div .terminal {
 <p>The following symbols provide ways to implement common loops:</p>
 
 <ul>
-<li><a href="#op-foreach"><code>foreach</code></a></li>
-<li>{#link-operator||lang||times#}</li>
-<li><a href="#op-while"><code>while</code></a></li>
+<li><a href="#min-operator-id-foreach">foreach</a></li>
+<li><a href="#min-operator-id-times">times</a></li>
+<li><a href="#min-operator-id-while">while</a></li>
 </ul>
 
 
@@ -4961,7 +4994,7 @@ div .terminal {
  ) :factorial
 </code></pre>
 
-<p>This program defines a symbol <code>factorial</code> that calculates the factorial of an integer iteratively using the symbol <a href="#op-while"><code>while</code></a>.</p>
+<p>This program defines a symbol <code>factorial</code> that calculates the factorial of an integer iteratively using the symbol <a href="#min-operator-id-while">while</a>.</p>
 
 <a name="Error-handling"></a>
 <h4>Error handling<a href="#document-top" title="Go to top"></a></h4>
@@ -4969,9 +5002,9 @@ div .terminal {
 <p>The following symbols provide ways to manage errors in min:</p>
 
 <ul>
-<li><a href="#op-format-error"><code>format-error</code></a></li>
-<li><a href="#op-raise"><code>raise</code></a></li>
-<li>{#link-operator||lang||try#}</li>
+<li><a href="#min-operator-id-format-error">format-error</a></li>
+<li><a href="#min-operator-id-raise">raise</a></li>
+<li><a href="#min-operator-id-try">try</a></li>
 </ul>
 
 
@@ -4987,7 +5020,7 @@ div .terminal {
  1 (+) reduce
 </code></pre>
 
-<p>This program calculates the size in bytes of all files included in the current directory. Because the <a href="#op-fsize"><code>fsize</code></a> symbol throws an error if the argument provided is not a file (for example if it is a directory), the <code>try</code> symbol is used to remove the error from the stack and push <code>0</code> on the stack instead.</p>
+<p>This program calculates the size in bytes of all files included in the current directory. Because the <a href="#min-operator-id-fsize">fsize</a> symbol throws an error if the argument provided is not a file (for example if it is a directory), the <code>try</code> symbol is used to remove the error from the stack and push <code>0</code> on the stack instead.</p>
 
 <a name="Using-the-min-Shell"></a>
 <h2>Using the min Shell<a href="#document-top" title="Go to top"></a></h2>
@@ -5104,7 +5137,7 @@ div .terminal {
 <a name=".min_symbols"></a>
 <h4>.min_symbols<a href="#document-top" title="Go to top"></a></h4>
 
-<p>This files contains all symbol definitions in JSON format that were previously-saved using the <a href="#op-save-symbol"><code>save-symbol</code></a> symbol. Symbols can be loaded using the <a href="#op-load-symbol"><code>load-symbol</code></a> symbol.</p>
+<p>This files contains all symbol definitions in JSON format that were previously-saved using the <a href="#min-operator-id-save-symbol">save-symbol</a> symbol. Symbols can be loaded using the <a href="#min-operator-id-load-symbol">load-symbol</a> symbol.</p>
 
 <a name="Extending-min"></a>
 <h2>Extending min<a href="#document-top" title="Go to top"></a></h2>
@@ -5125,7 +5158,7 @@ div .terminal {
 
 <p>When you just want to create more high-level min operator using functionalities that are already available in min, the easiest way is to create your own reusable min modules.</p>
 
-<p>The <a href="#op-module"><code>module</code></a> (and the <strong>+</strong> sigil) allows you to create a new min module:</p>
+<p>The <a href="#min-operator-id-module">module</a> (and the <strong>+</strong> sigil) allows you to create a new min module:</p>
 
 <pre><code>(
   (dup *)             :pow2
@@ -5137,7 +5170,7 @@ div .terminal {
 ) +quickpows
 </code></pre>
 
-<p>Save your code to a file (e.g. <em>quickpows.min</em>) and you can use it in other nim files using the <a href="#op-load"><code>load</code></a> operator and the <a href="#op-import"><code>import</code></a>:</p>
+<p>Save your code to a file (e.g. <em>quickpows.min</em>) and you can use it in other nim files using the <a href="#min-operator-id-load">load</a> operator and the <a href="#min-operator-id-import">import</a>:</p>
 
 <pre><code>'quickpows load
 'quickpows import
@@ -5271,32 +5304,34 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <p>min includes a small but powerful standard library organized into the following <em>modules</em>:</p>
 
 <dl>
-<dt><a href="#&lt;code>lang&lt;/code>-Module"><code>lang</code> Module</a></dt>
+<dt><a href="#&lt;code>lang&lt;/code>-Module">lang Module</a></dt>
 <dd>Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc.</dd>
-<dt><a href="#&lt;code>stack&lt;/code>-Module"><code>stack</code> Module</a></dt>
+<dt><a href="#&lt;code>stack&lt;/code>-Module">stack Module</a></dt>
 <dd>Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.</dd>
-<dt><a href="#&lt;code>seq&lt;/code>-Module"><code>seq</code> Module</a></dt>
+<dt><a href="#&lt;code>seq&lt;/code>-Module">seq Module</a></dt>
 <dd>Defines operators for quotations and dictionaries, like map, filter, reduce, etc.</dd>
-<dt><a href="#&lt;code>io&lt;/code>-Module"><code>io</code> Module</a></dt>
+<dt><a href="#&lt;code>io&lt;/code>-Module">io Module</a></dt>
 <dd>Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.</dd>
-<dt><a href="#&lt;code>fs&lt;/code>-Module"><code>fs</code> Module</a></dt>
+<dt><a href="#&lt;code>fs&lt;/code>-Module">fs Module</a></dt>
 <dd>Provides operators for accessing file information and properties.</dd>
-<dt><a href="#&lt;code>logic&lt;/code>-Module"><code>logic</code> Module</a></dt>
+<dt><a href="#&lt;code>logic&lt;/code>-Module">logic Module</a></dt>
 <dd>Provides comparison operators for all min data types and other boolean logic operators.</dd>
-<dt><a href="#&lt;code>str&lt;/code>-Module"><code>str</code> Module</a></dt>
+<dt><a href="#&lt;code>str&lt;/code>-Module">str Module</a></dt>
 <dd>Provides operators to perform operations on strings, use regular expressions, interpolation, etc..</dd>
-<dt><a href="#&lt;code>sys&lt;/code>-Module"><code>sys</code> Module</a></dt>
+<dt><a href="#&lt;code>sys&lt;/code>-Module">sys Module</a></dt>
 <dd>Provides operators to use as basic shell commands, access environment variables, and execute external commands.</dd>
-<dt><a href="#&lt;code>num&lt;/code>-Module"><code>num</code> Module</a></dt>
+<dt><a href="#&lt;code>num&lt;/code>-Module">num Module</a></dt>
 <dd>Provides operators to perform simple mathematical operations on integer and floating point numbers.</dd>
-<dt><a href="#&lt;code>time&lt;/code>-Module"><code>time</code> Module</a></dt>
+<dt><a href="#&lt;code>time&lt;/code>-Module">time Module</a></dt>
 <dd>Provides a few basic operators to manage dates, times, and timestamps.</dd>
-<dt><a href="#&lt;code>crypto&lt;/code>-Module"><code>crypto</code> Module</a></dt>
+<dt><a href="#&lt;code>crypto&lt;/code>-Module">crypto Module</a></dt>
 <dd>Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.</dd>
-<dt><a href="#&lt;code>math&lt;/code>-Module"><code>math</code> Module</a></dt>
+<dt><a href="#&lt;code>math&lt;/code>-Module">math Module</a></dt>
 <dd>Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.</dd>
-<dt><a href="#&lt;code>net&lt;/code>-Module"><code>net</code> Module</a></dt>
+<dt><a href="#&lt;code>net&lt;/code>-Module">net Module</a></dt>
 <dd>Provides basic supports for sockets (some features are not supported on Windows systems).</dd>
+<dt><a href="#&lt;code>http&lt;/code>-Module">http Module</a></dt>
+<dd>Provides operators to perform HTTP requests, download files and create basic HTTP servers.</dd>
 </dl>
 
 <a name="Notation"></a>
@@ -5329,33 +5364,69 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <dt><span class="kwd">dict</span></dt>
 <dd>A dictionary value.</dd>
 <dt><span class="kwd">tinfo</span></dt>
-<dd>A timeinfo dictionary:
+<dd><p>A timeinfo dictionary:</p>
+
 <pre><code>(
-  (&ldquo;year&rdquo; 2017)
-  (&ldquo;month&rdquo; 7)
-  (&ldquo;day&rdquo; 8)
-  (&ldquo;weekday&rdquo; 6)
-  (&ldquo;yearday&rdquo; 188)
-  (&ldquo;hour&rdquo; 15)
-  (&ldquo;minute&rdquo; 16)
-  (&ldquo;second&rdquo; 25)
-  (&ldquo;dst&rdquo; true)
-  (&ldquo;timezone&rdquo; -3600)
+ ("year" 2017)
+ ("month" 7)
+ ("day" 8)
+ ("weekday" 6)
+ ("yearday" 188)
+ ("hour" 15)
+ ("minute" 16)
+ ("second" 25)
+ ("dst" true)
+ ("timezone" -3600)
 )
 </code></pre></dd>
 <dt><span class="kwd">err</span></dt>
-<dd>An error dictionary:
+<dd><p>An error dictionary:</p>
+
 <pre><code>(
-  (&ldquo;error&rdquo; &ldquo;MyError&rdquo;)
-  (&ldquo;message&rdquo; &ldquo;An error occurred&rdquo;)
-  (&ldquo;symbol&rdquo; &ldquo;symbol1&rdquo;)
-  (&ldquo;filename&rdquo; &ldquo;dir1/file1.min&rdquo;)
-  (&ldquo;line&rdquo; 3)
-  (&ldquo;column&rdquo; 13)
+ ("error" "MyError")
+ ("message" "An error occurred")
+ ("symbol" "symbol1")
+ ("filename" "dir1/file1.min")
+ ("line" 3)
+ ("column" 13)
 )
 </code></pre></dd>
-<dt><span class="kwd">dict:socket</span></dt>
-<dd>A socket dictionary, created through the <a href="#op-socket"><code>socket</code></a> method.</dd>
+<dt><span class="kwd">socket</span></dt>
+<dd><p>A socket dictionary that must be created through the <a href="#min-operator-id-socket">socket</a> operator:</p>
+
+<pre><code>(
+ ("domain" "ipv4")
+ ("type" "stream")
+ ("protocol" "tcp")
+ ;socket
+)
+</code></pre></dd>
+<dt><span class="kwd">request</span></dt>
+<dd><p>A request dictionary, representing an HTTP request to be performed through the operators exposed by the <a href="#&lt;code>http&lt;/code>-Module">http Module</a>:</p>
+
+<pre><code>(
+ ("url" "http://httpbin.org/put")
+ ("method" "PUT")
+ ("version" "1.1")         ;optional
+ ("hostname" "h3rald.com") ;optional
+ ("headers" (              ;optional
+  ("Accept-Language" "it-id")
+  ("Host" "httpbin.org")))
+ ("body" "test body")      ;optional
+)
+</code></pre></dd>
+<dt><span class="kwd">response</span></dt>
+<dd><p>A response dictionary, representing an HTTP response returned by some of the operators exposed by the <a href="#&lt;code>http&lt;/code>-Module">http Module</a>:</p>
+
+<pre><code>(
+  ("version" "1.1") ;optional
+  ("status" 200)    ;optional
+  ("headers"        ;optional
+   (("Content-Type" "application/json")))
+  ("body"           ;optional
+   "{\"test\": \"This is a test\"}")
+)
+</code></pre></dd>
 <dt><span class="kwd">true</span></dt>
 <dd>true (boolean type).</dd>
 <dt><span class="kwd">false</span></dt>
@@ -5391,132 +5462,132 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <div class="operator"><p><span class="kwd"> &apos;<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote</span></p>
 
-<p>See <a href="#op-quote">quote</a>.</p></div>
+<p>See <a href="#min-operator-id-quote">quote</a>.</p></div>
 
 <p><span class="reference-title">&apos;</span></p>
 
 <div class="operator"><p><span class="kwd"> &apos; <strong>&rArr;</strong> quote</span></p>
 
-<p>See <a href="#op-quote">quote</a>.</p></div>
+<p>See <a href="#min-operator-id-quote">quote</a>.</p></div>
 
 <p><span class="reference-title">:</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> :<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> define</span></p>
 
-<p>See <a href="#op-define">define</a>.</p></div>
+<p>See <a href="#min-operator-id-define">define</a>.</p></div>
 
 <p><span class="reference-title">:</span></p>
 
 <div class="operator"><p><span class="kwd"> : <strong>&rArr;</strong> define</span></p>
 
-<p>See <a href="#op-define">define</a>.</p></div>
+<p>See <a href="#min-operator-id-define">define</a>.</p></div>
 
 <p><span class="reference-title">~</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> ~<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> delete</span></p>
 
-<p>See <a href="#op-delete">delete</a>.</p></div>
+<p>See <a href="#min-operator-id-delete">delete</a>.</p></div>
 
 <p><span class="reference-title">+</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> +<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> module</span></p>
 
-<p>See <a href="#op-module">module</a>.</p></div>
+<p>See <a href="#min-operator-id-module">module</a>.</p></div>
 
 <p><span class="reference-title">^</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> ^<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> call</span></p>
 
-<p>See <a href="#op-call">call</a>.</p></div>
+<p>See <a href="#min-operator-id-call">call</a>.</p></div>
 
 <p><span class="reference-title">^</span></p>
 
 <div class="operator"><p><span class="kwd"> ^ <strong>&rArr;</strong> call</span></p>
 
-<p>See <a href="#op-call">call</a>.</p></div>
+<p>See <a href="#min-operator-id-call">call</a>.</p></div>
 
 <p><span class="reference-title">@</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> @<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> bind</span></p>
 
-<p>See <a href="#op-bind">bind</a>.</p></div>
+<p>See <a href="#min-operator-id-bind">bind</a>.</p></div>
 
 <p><span class="reference-title">@</span></p>
 
 <div class="operator"><p><span class="kwd"> @ <strong>&rArr;</strong> bind</span></p>
 
-<p>See <a href="#op-bind">bind</a>.</p></div>
+<p>See <a href="#min-operator-id-bind">bind</a>.</p></div>
 
 <p><span class="reference-title">></span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> ><span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> save-symbol</span></p>
 
-<p>See <a href="#op-save-symbol">save-symbol</a>.</p></div>
+<p>See <a href="#min-operator-id-save-symbol">save-symbol</a>.</p></div>
 
 <p><span class="reference-title">&lt;</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> &lt;<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> load-symbol</span></p>
 
-<p>See <a href="#op-load-symbol">load-symbol</a>.</p></div>
+<p>See <a href="#min-operator-id-load-symbol">load-symbol</a>.</p></div>
 
 <p><span class="reference-title">-></span></p>
 
 <div class="operator"><p><span class="kwd"> -> <strong>&rArr;</strong> dequote</span></p>
 
-<p>See <a href="#op-dequote">dequote</a>.</p></div>
+<p>See <a href="#min-operator-id-dequote">dequote</a>.</p></div>
 
 <p><span class="reference-title">=></span></p>
 
 <div class="operator"><p><span class="kwd"> => <strong>&rArr;</strong> apply</span></p>
 
-<p>See <a href="#op-apply">apply</a>.</p></div>
+<p>See <a href="#min-operator-id-apply">apply</a>.</p></div>
 
 <p><span class="reference-title">#</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> #<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-bind</span></p>
 
-<p>See <a href="#op-quote-bind">quote-bind</a>.</p></div>
+<p>See <a href="#min-operator-id-quote-bind">quote-bind</a>.</p></div>
 
 <p><span class="reference-title">#</span></p>
 
 <div class="operator"><p><span class="kwd"> # <strong>&rArr;</strong> quote-bind</span></p>
 
-<p>See <a href="#op-quote-bind">quote-bind</a>.</p></div>
+<p>See <a href="#min-operator-id-quote-bind">quote-bind</a>.</p></div>
 
 <p><span class="reference-title">=</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> =<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> quote-define</span></p>
 
-<p>See <a href="#op-quote-define">quote-define</a>.</p></div>
+<p>See <a href="#min-operator-id-quote-define">quote-define</a>.</p></div>
 
 <p><span class="reference-title">=</span></p>
 
 <div class="operator"><p><span class="kwd"> = <strong>&rArr;</strong> quote-define</span></p>
 
-<p>See <a href="#op-quote-define">quote-define</a>.</p></div>
+<p>See <a href="#min-operator-id-quote-define">quote-define</a>.</p></div>
 
-<p><a id="op-apply"></a>
+<p><a id="min-operator-id-apply"></a>
 <span class="reference-title">apply</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span>)</span></p>
 
 <p>Returns a new quotation <span class="kwd">quot</span> obtained by evaluating each element of <span class="kwd">quot</span> in a separate stack.</p></div>
 
-<p><a id="op-args"></a>
+<p><a id="min-operator-id-args"></a>
 <span class="reference-title">args</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Returns a list of all arguments passed to the current program.</p></div>
 
-<p><a id="op-bind"></a>
+<p><a id="min-operator-id-bind"></a>
 <span class="reference-title">bind</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Binds the specified value (auto-quoted) to an existing symbol <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-bool"></a>
+<p><a id="min-operator-id-bool"></a>
 <span class="reference-title">bool</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -5531,14 +5602,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 </ul>
 </div>
 
-<p><a id="op-call"></a>
+<p><a id="min-operator-id-call"></a>
 <span class="reference-title">call</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Calls operator <span class="kwd">&apos;sym</span> defined in scope <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-case"></a>
+<p><a id="min-operator-id-case"></a>
 <span class="reference-title">case</span></p>
 
 <div class="operator"><p><span class="kwd"> ((<span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span>)<span class="kwd"><sub>*</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -5564,49 +5635,49 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 ) case
 </code></pre></div></div>
 
-<p><a id="op-define"></a>
+<p><a id="min-operator-id-define"></a>
 <span class="reference-title">define</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Defines a new symbol <span class="kwd">&apos;sym</span>, containing the specified value (auto-quoted if not already a quotation).</p></div>
 
-<p><a id="op-defined?"></a>
+<p><a id="min-operator-id-defined?"></a>
 <span class="reference-title">defined?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">&apos;sym</span> is defined, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-delete"></a>
+<p><a id="min-operator-id-delete"></a>
 <span class="reference-title">delete</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Deletes the specified symbol <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-dequote"></a>
+<p><a id="min-operator-id-dequote"></a>
 <span class="reference-title">dequote</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Pushes the contents of quotation <span class="kwd">quot</span> on the stack.</p></div>
 
-<p><a id="op-eval"></a>
+<p><a id="min-operator-id-eval"></a>
 <span class="reference-title">eval</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Parses and interprets <span class="kwd">string</span>.</p></div>
 
-<p><a id="op-exit"></a>
+<p><a id="min-operator-id-exit"></a>
 <span class="reference-title">exit</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Exits the program or shell with <span class="kwd">int</span> as return code.</p></div>
 
-<p><a id="op-expect"></a>
+<p><a id="min-operator-id-expect"></a>
 <span class="reference-title">expect</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
@@ -5623,7 +5694,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p><code>(int string num) expect (3.4 "test" 1) ==</code></p></div></div>
 
-<p><a id="op-float"></a>
+<p><a id="min-operator-id-float"></a>
 <span class="reference-title">float</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">float</span></span></p>
@@ -5639,14 +5710,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 </ul>
 </div>
 
-<p><a id="op-foreach"></a>
+<p><a id="min-operator-id-foreach"></a>
 <span class="reference-title">foreach</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Applies the quotation <span class="kwd">quot<sub>2</sub></span> to each element of <span class="kwd">quot<sub>1</sub></span>.</p></div>
 
-<p><a id="op-format-error"></a>
+<p><a id="min-operator-id-format-error"></a>
 <span class="reference-title">format-error</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">err</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
@@ -5661,28 +5732,28 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>produces: <code>"This is a test error"</code></p></div></div>
 
-<p><a id="op-from-json"></a>
+<p><a id="min-operator-id-from-json"></a>
 <span class="reference-title">from-json</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Converts a JSON string into <em>min</em> data.</p></div>
 
-<p><a id="op-if"></a>
+<p><a id="min-operator-id-if"></a>
 <span class="reference-title">if</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <span class="kwd">quot<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>If <span class="kwd">quot<sub>1</sub></span> evaluates to <span class="kwd">true</span> then evaluates <span class="kwd">quot<sub>2</sub></span>, otherwise evaluates <span class="kwd">quot<sub>3</sub></span>.</p></div>
 
-<p><a id="op-import"></a>
+<p><a id="min-operator-id-import"></a>
 <span class="reference-title">import</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Imports the a previously-loaded module <span class="kwd">&apos;sym</span>, defining all its symbols in the current scope.</p></div>
 
-<p><a id="op-int"></a>
+<p><a id="min-operator-id-int"></a>
 <span class="reference-title">int</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
@@ -5698,7 +5769,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 </ul>
 </div>
 
-<p><a id="op-linrec"></a>
+<p><a id="min-operator-id-linrec"></a>
 <span class="reference-title">linrec</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <span class="kwd">quot<sub>3</sub></span> <span class="kwd">quot<sub>4</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -5724,21 +5795,28 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <pre><code>(dup 0 ==) 'succ (dup pred) '* linrec
 </code></pre></div></div>
 
-<p><a id="op-load"></a>
+<p><a id="min-operator-id-lite?"></a>
+<span class="reference-title">lite?</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
+
+<p>Returns <span class="kwd">true</span> if min was built in <em>lite</em> mode.</p></div>
+
+<p><a id="min-operator-id-load"></a>
 <span class="reference-title">load</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Parses and interprets the specified <em>min</em> file, adding <span class="ext">.min</span> if not specified.</p></div>
 
-<p><a id="op-load-symbol"></a>
+<p><a id="min-operator-id-load-symbol"></a>
 <span class="reference-title">load-symbol</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Loads the contents of symbol <span class="kwd">&apos;sym</span> from the <span class="file">.min_symbols</span> file.</p></div>
 
-<p><a id="op-loglevel"></a>
+<p><a id="min-operator-id-loglevel"></a>
 <span class="reference-title">loglevel</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
@@ -5759,54 +5837,54 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>The default logging level is <em>notice</em>.</p></div></div>
 
-<p><a id="op-module"></a>
+<p><a id="min-operator-id-module"></a>
 <span class="reference-title">module</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Creates a new module <span class="kwd">&apos;sym</span> based on quotation <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-module-sigils"></a>
+<p><a id="min-operator-id-module-sigils"></a>
 <span class="reference-title">module-sigils</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">string<sub>*</sub></span>)</span></p>
 
 <p>Returns a list of all sigils defined in module <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-module-symbols"></a>
+<p><a id="min-operator-id-module-symbols"></a>
 <span class="reference-title">module-symbols</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">string<sub>*</sub></span>)</span></p>
 
 <p>Returns a list of all symbols defined in module <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-opts"></a>
+<p><a id="min-operator-id-opts"></a>
 <span class="reference-title">opts</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">dict</span></span></p>
 
 <p>Returns a dictionary of all options passed to the current program, with their respective values.</p></div>
 
-<p><a id="op-parse"></a>
+<p><a id="min-operator-id-parse"></a>
 <span class="reference-title">parse</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Parses <span class="kwd">string</span> and returns a quoted program <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-prompt"></a>
+<p><a id="min-operator-id-prompt"></a>
 <span class="reference-title">prompt</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:</p>
 
-<pre><code>([$1]$$ " (.) =&gt; %)
+<pre><code>("[$1]$$ " (.) =&gt; %)
 </code></pre>
 
 <p>Unlike other predefined symbols, this symbol is <em>unsealed</em>, which means it can be modified.</p></div>
 
-<p><a id="op-publish"></a>
+<p><a id="min-operator-id-publish"></a>
 <span class="reference-title">publish</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <span class="kwd">quot</span> <strong>&rArr;</strong> &#x2205;</span></p>
@@ -5818,98 +5896,110 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <p>Publish symbol <span class="kwd">my-local-symbol</span> to <span class="kwd">ROOT</span> scope:
 <code>'my-local-symbol ROOT publish</code></p></div></div>
 
-<p><a id="op-quote"></a>
+<p><a id="min-operator-id-quote"></a>
 <span class="reference-title">quote</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> (<span class="kwd">a</span>)</span></p>
 
 <p>Wraps <span class="kwd">a</span> in a quotation.</p></div>
 
-<p><a id="op-quote-bind"></a>
+<p><a id="min-operator-id-quote-bind"></a>
 <span class="reference-title">quote-bind</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Quotes <span class="kwd">a</span> and binds the quotation to the existing symbol <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-quote-define"></a>
+<p><a id="min-operator-id-quote-define"></a>
 <span class="reference-title">quote-define</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Quotes <span class="kwd">a</span> and assigns the quotation to the symbol <span class="kwd">&apos;sym</span>, creating it if not already defined.</p></div>
 
-<p><a id="op-raise"></a>
+<p><a id="min-operator-id-raise"></a>
 <span class="reference-title">raise</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">err</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Raises the error specified via the dictionary <span class="kwd">err</span>.</p></div>
 
-<p><a id="op-read"></a>
+<p><a id="min-operator-id-read"></a>
 <span class="reference-title">read</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Reads and parses the specified <em>min</em> file <span class="kwd">&apos;sym</span> and returns a quoted program <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-remove-symbol"></a>
+<p><a id="min-operator-id-remove-symbol"></a>
 <span class="reference-title">remove-symbol</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Removes the symbol <span class="kwd">&apos;sym</span> from the <span class="file">.min_symbols</span> file.</p></div>
 
-<p><a id="op-save-symbol"></a>
+<p><a id="min-operator-id-ROOT"></a>
+<span class="reference-title">ROOT</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
+
+<p>Returns an empty quotation holding a reference to the <span class="kwd">ROOT</span> scope.</p>
+
+<div class="tip"><p>Tip</p>
+
+<p>This symbol is very useful in conjunction with the <strong>with</strong> operator.
+#</p></div></div>
+
+<p><a id="min-operator-id-save-symbol"></a>
 <span class="reference-title">save-symbol</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Saves the contents of symbol <span class="kwd">&apos;sym</span> to the <span class="file">.min_symbols</span> file.</p></div>
 
-<p><a id="op-seal"></a>
+<p><a id="min-operator-id-seal"></a>
 <span class="reference-title">seal</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Seals symbol <span class="kwd">&apos;sym</span>, so that it cannot be re-assigned.</p></div>
 
-<p><a id="op-sigils"></a>
+<p><a id="min-operator-id-sigils"></a>
 <span class="reference-title">sigils</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> (<span class="kwd">string<sub>*</sub></span>)</span></p>
 
 <p>Returns a list of all sigils defined in the <span class="kwd">ROOT</span> scope.</p></div>
 
-<p><a id="op-source"></a>
+<p><a id="min-operator-id-source"></a>
 <span class="reference-title">source</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Display the source code of symbol <span class="kwd">&apos;sym</span> (if it has been implemented a <em>min</em> quotation).</p></div>
 
-<p><a id="op-stored-symbols"></a>
+<p><a id="min-operator-id-stored-symbols"></a>
 <span class="reference-title">stored-symbols</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> (<span class="kwd">string<sub>*</sub></span>)</span></p>
 
 <p>Returns a quotation containing all symbols stored in the <span class="file">.min_symbols</span> file.</p></div>
 
-<p><a id="op-string"></a>
+<p><a id="min-operator-id-string"></a>
 <span class="reference-title">string</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Converts <span class="kwd">a</span> to its string representation.</p></div>
 
-<p><a id="op-symbols"></a>
+<p><a id="min-operator-id-symbols"></a>
 <span class="reference-title">symbols</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> (<span class="kwd">string<sub>*</sub></span>)</span></p>
 
 <p>Returns a list of all symbols defined in the <span class="kwd">ROOT</span> scope.</p></div>
 
-<p><a id="op-tap"></a>
+<p><a id="min-operator-id-tap"></a>
 <span class="reference-title">tap</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
@@ -5942,7 +6032,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>Returns <code>(("a" 3) ("b" 3) ("c" 3))</code>.</p></div></div>
 
-<p><a id="op-tap!"></a>
+<p><a id="min-operator-id-tap!"></a>
 <span class="reference-title">tap!</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
@@ -5975,21 +6065,21 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p>Sets <code>s1</code> to <code>"test123"</code>.</p></div></div>
 
-<p><a id="op-times"></a>
+<p><a id="min-operator-id-times"></a>
 <span class="reference-title">times</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Applies the quotation <span class="kwd">quot</span> <span class="kwd">int</span> times.</p></div>
 
-<p><a id="op-to-json"></a>
+<p><a id="min-operator-id-to-json"></a>
 <span class="reference-title">to-json</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Converts <span class="kwd">quot</span> into a JSON string <span class="kwd">string</span>.</p></div>
 
-<p><a id="op-try"></a>
+<p><a id="min-operator-id-try"></a>
 <span class="reference-title">try</span></p>
 
 <div class="operator"><p><span class="kwd"> (<span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot</span><span class="kwd"><sub>2</sub></span><span class="kwd"><sub>?</sub></span> <span class="kwd">quot</span><span class="kwd"><sub>3</sub></span><span class="kwd"><sub>?</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -6016,35 +6106,35 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
   ) try
 </code></pre></div></div>
 
-<p><a id="op-unless"></a>
+<p><a id="min-operator-id-unless"></a>
 <span class="reference-title">unless</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>If <span class="kwd"><sub>1</sub></span> evaluates to <span class="kwd">false</span> then evaluates <span class="kwd"><sub>2</sub></span>.</p></div>
 
-<p><a id="op-unseal"></a>
+<p><a id="min-operator-id-unseal"></a>
 <span class="reference-title">unseal</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Unseals symbol <span class="kwd">&apos;sym</span>, so that it can be re-assigned.</p></div>
 
-<p><a id="op-version"></a>
+<p><a id="min-operator-id-version"></a>
 <span class="reference-title">version</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the current min version number.</p></div>
 
-<p><a id="op-when"></a>
+<p><a id="min-operator-id-when"></a>
 <span class="reference-title">when</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>If <span class="kwd">quot<sub>1</sub></span> evaluates to <span class="kwd">true</span> then evaluates <span class="kwd">quot<sub>2</sub></span>.</p></div>
 
-<p><a id="op-while"></a>
+<p><a id="min-operator-id-while"></a>
 <span class="reference-title">while</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -6060,24 +6150,40 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 (count puts succ @count) while
 </code></pre></div></div>
 
-<p><a id="op-with"></a>
+<p><a id="min-operator-id-with"></a>
 <span class="reference-title">with</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
-<p>Applies quotation <span class="kwd">quot<sub>1</sub></span> within the scope of <span class="kwd">quot<sub>2</sub></span>.</p></div>
+<p>Applies quotation <span class="kwd">quot<sub>1</sub></span> within the scope of <span class="kwd">quot<sub>2</sub></span>.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>This operator is useful to define symbols on the <span class="kwd">ROOT</span> scope or a parent scope. For example min&rsquo;s prelude includes the following code used to import certain modules only if min was not compiled in lite mode:</p>
+
+<pre><code>'lite? (
+ (
+  'crypto    import
+  'math      import
+  'net       import
+  'http      import
+ ) ROOT with
+) unless
+</code></pre>
+
+<p>#</p></div></div>
 
 <a name="<code>stack</code>-Module"></a>
 <h3><code>stack</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-clear-stack"></a>
+<p><a id="min-operator-id-clear-stack"></a>
 <span class="reference-title">clear-stack</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Empties the stack.</p></div>
 
-<p><a id="op-cleave"></a>
+<p><a id="min-operator-id-cleave"></a>
 <span class="reference-title">cleave</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> (<span class="kwd">quot</span><span class="kwd"><sub>*</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -6090,42 +6196,42 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p><code>(1 2 3) ((sum) (size)) cleave /</code></p></div></div>
 
-<p><a id="op-cons"></a>
+<p><a id="min-operator-id-cons"></a>
 <span class="reference-title">cons</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> (<span class="kwd">a<sub>*</sub></span>) <strong>&rArr;</strong> (<span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>*</sub></span>)</span></p>
 
 <p>Prepends <span class="kwd">a<sub>1</sub></span> to the quotation on top of the stack.</p></div>
 
-<p><a id="op-dip"></a>
+<p><a id="min-operator-id-dip"></a>
 <span class="reference-title">dip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> (<span class="kwd">a<sub>2</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Removes the first and second element from the stack, dequotes the first element, and restores the second element.</p></div>
 
-<p><a id="op-dup"></a>
+<p><a id="min-operator-id-dup"></a>
 <span class="reference-title">dup</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Duplicates the first element on the stack.</p></div>
 
-<p><a id="op-get-stack"></a>
+<p><a id="min-operator-id-get-stack"></a>
 <span class="reference-title">get-stack</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span>)</span></p>
 
 <p>Returns a quotation containing the contents of the stack.</p></div>
 
-<p><a id="op-id"></a>
+<p><a id="min-operator-id-id"></a>
 <span class="reference-title">id</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Does nothing.</p></div>
 
-<p><a id="op-keep"></a>
+<p><a id="min-operator-id-keep"></a>
 <span class="reference-title">keep</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
@@ -6138,63 +6244,63 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p><code>2 3 '+ keep</code></p></div></div>
 
-<p><a id="op-nip"></a>
+<p><a id="min-operator-id-nip"></a>
 <span class="reference-title">nip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
 
 <p>Removes the second element from the stack.</p></div>
 
-<p><a id="op-over"></a>
+<p><a id="min-operator-id-over"></a>
 <span class="reference-title">over</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Pushes a copy of the second element on top of the stack.</p></div>
 
-<p><a id="op-pick"></a>
+<p><a id="min-operator-id-pick"></a>
 <span class="reference-title">pick</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>3</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Pushes a copy of the third element on top of the stack.</p></div>
 
-<p><a id="op-pop"></a>
+<p><a id="min-operator-id-pop"></a>
 <span class="reference-title">pop</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Removes the first element from the stack.</p></div>
 
-<p><a id="op-rolldown"></a>
+<p><a id="min-operator-id-rolldown"></a>
 <span class="reference-title">rolldown</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>3</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Moves the third element in first position, the second in third position and the the first in second position.</p></div>
 
-<p><a id="op-rollup"></a>
+<p><a id="min-operator-id-rollup"></a>
 <span class="reference-title">rollup</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Moves the third and second element into second and third position and moves the first element into third position.</p></div>
 
-<p><a id="op-set-stack"></a>
+<p><a id="min-operator-id-set-stack"></a>
 <span class="reference-title">set-stack</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
 
 <p>Substitute the existing stack with the contents of <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-sip"></a>
+<p><a id="min-operator-id-sip"></a>
 <span class="reference-title">sip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> (<span class="kwd">a<sub>2</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Saves the <span class="kwd">a<sub>1</sub></span>, dequotes <span class="kwd">a<sub>2</sub></span>, and restores <span class="kwd">a<sub>1</sub></span>.</p></div>
 
-<p><a id="op-spread"></a>
+<p><a id="min-operator-id-spread"></a>
 <span class="reference-title">spread</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>*</sub></span> (<span class="kwd">quot</span><span class="kwd"><sub>*</sub></span>) <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -6207,14 +6313,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <p><code>(1 2) (3 4) ((0 get) (1 get)) spread</code></p></div></div>
 
-<p><a id="op-swap"></a>
+<p><a id="min-operator-id-swap"></a>
 <span class="reference-title">swap</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span> <span class="kwd">a<sub>1</sub></span></span></p>
 
 <p>Swaps the first two elements on the stack.</p></div>
 
-<p><a id="op-swons"></a>
+<p><a id="min-operator-id-swons"></a>
 <span class="reference-title">swons</span></p>
 
 <div class="operator"><p><span class="kwd"> (<span class="kwd">a<sub>*</sub></span>) <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> (<span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>*</sub></span>)</span></p>
@@ -6228,70 +6334,70 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 
 <div class="operator"><p><span class="kwd"> /<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dget</span></p>
 
-<p>See <a href="#op-dget">dget</a>.</p></div>
+<p>See <a href="#min-operator-id-dget">dget</a>.</p></div>
 
 <p><span class="reference-title">?</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> ?<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dhas?</span></p>
 
-<p>See <a href="#op-dhas?">dhas?</a>.</p></div>
+<p>See <a href="#min-operator-id-dhas?">dhas?</a>.</p></div>
 
 <p><span class="reference-title">%</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> %<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> dset</span></p>
 
-<p>See <a href="#op-dset">dset</a>.</p></div>
+<p>See <a href="#min-operator-id-dset">dset</a>.</p></div>
 
-<p><a id="op-all?"></a>
+<p><a id="min-operator-id-all?"></a>
 <span class="reference-title">all?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Applies predicate <span class="kwd">quot<sub>2</sub></span> to each element of <span class="kwd">quot<sub>1</sub></span> and returns <span class="kwd">true</span> if all elements of <span class="kwd">quot<sub>1</sub></span> satisfy predicate <span class="kwd">quot<sub>2</sub></span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-any?"></a>
+<p><a id="min-operator-id-any?"></a>
 <span class="reference-title">any?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Applies predicate <span class="kwd">quot<sub>2</sub></span> to each element of <span class="kwd">quot<sub>1</sub></span> and returns <span class="kwd">true</span> if at least one element of <span class="kwd">quot<sub>1</sub></span> satisfies predicate <span class="kwd">quot<sub>2</sub></span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-append"></a>
+<p><a id="min-operator-id-append"></a>
 <span class="reference-title">append</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span> <span class="kwd">a</span>)</span></p>
 
 <p>Returns a new quotation containing the contents of <span class="kwd">quot</span> with <span class="kwd">a</span> appended.</p></div>
 
-<p><a id="op-get"></a>
+<p><a id="min-operator-id-get"></a>
 <span class="reference-title">get</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Returns the <em>n<sup>th</sup></em> element of <span class="kwd">quot</span> (zero-based).</p></div>
 
-<p><a id="op-concat"></a>
+<p><a id="min-operator-id-concat"></a>
 <span class="reference-title">concat</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span></span></p>
 
 <p>Concatenates <span class="kwd">quot<sub>1</sub></span> with <span class="kwd">quot<sub>2</sub></span>.</p></div>
 
-<p><a id="op-ddel"></a>
+<p><a id="min-operator-id-ddel"></a>
 <span class="reference-title">ddel</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
 
 <p>Returns a copy of <span class="kwd">dict<sub>1</sub></span> without the element with key <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-dget"></a>
+<p><a id="min-operator-id-dget"></a>
 <span class="reference-title">dget</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Returns the value of key <span class="kwd">&apos;sym</span> from dictionary <span class="kwd">dict</span>.</p></div>
 
-<p><a id="op-dhas?"></a>
+<p><a id="min-operator-id-dhas?"></a>
 <span class="reference-title">dhas?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6305,14 +6411,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <pre><code>(("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
 </code></pre></div></div>
 
-<p><a id="op-dkeys"></a>
+<p><a id="min-operator-id-dkeys"></a>
 <span class="reference-title">dkeys</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> (<span class="kwd">string</span><span class="kwd"><sub>*</sub></span>)</span></p>
 
 <p>Returns a quotation containing all the keys of dictionary <span class="kwd">dict</span>.</p></div>
 
-<p><a id="op-dpick"></a>
+<p><a id="min-operator-id-dpick"></a>
 <span class="reference-title">dpick</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
@@ -6326,14 +6432,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <pre><code>(("q" 5) ("a" 4) ("c" 6) ("d" 7)) ("a" "d") dpick
 </code></pre></div></div>
 
-<p><a id="op-dset"></a>
+<p><a id="min-operator-id-dset"></a>
 <span class="reference-title">dset</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
 
 <p>Sets the value of the <span class="kwd">&apos;sym</span> of <span class="kwd">dict<sub>1</sub></span>  to <span class="kwd">a</span>, and returns the modified copy of the dictionary <span class="kwd">dict<sub>2</sub></span>.</p></div>
 
-<p><a id="op-dsort"></a>
+<p><a id="min-operator-id-dsort"></a>
 <span class="reference-title">dsort</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">dict<sub>2</sub></span></span></p>
@@ -6347,14 +6453,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 <pre><code>(("b" true) ("d" 22) ("c" -4) ("a" 342)) dsort
 </code></pre></div></div>
 
-<p><a id="op-dvalues"></a>
+<p><a id="min-operator-id-dvalues"></a>
 <span class="reference-title">dvalues</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> (<span class="kwd">a<sub>*</sub></span>)</span></p>
 
 <p>Returns a quotation containing all the values of dictionary <span class="kwd">dict</span>.</p></div>
 
-<p><a id="op-filter"></a>
+<p><a id="min-operator-id-filter"></a>
 <span class="reference-title">filter</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span></span></p>
@@ -6369,7 +6475,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 (dup 20 &lt; swap even? and) filter
 </code></pre></div></div>
 
-<p><a id="op-find"></a>
+<p><a id="min-operator-id-find"></a>
 <span class="reference-title">find</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
@@ -6384,14 +6490,14 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 (5 &gt;) find
 </code></pre></div></div>
 
-<p><a id="op-first"></a>
+<p><a id="min-operator-id-first"></a>
 <span class="reference-title">first</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Returns the first element of <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-flatten"></a>
+<p><a id="min-operator-id-flatten"></a>
 <span class="reference-title">flatten</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
@@ -6406,7 +6512,7 @@ proc dyntest*(i: In) {.dynlib, exportc.} =
 flatten
 </code></pre></div></div>
 
-<p><a id="op-harvest"></a>
+<p><a id="min-operator-id-harvest"></a>
 <span class="reference-title">harvest</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
@@ -6421,35 +6527,35 @@ flatten
 harvest
 </code></pre></div></div>
 
-<p><a id="op-in?"></a>
+<p><a id="min-operator-id-in?"></a>
 <span class="reference-title">in?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is contained in <span class="kwd">quot</span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-insert"></a>
+<p><a id="min-operator-id-insert"></a>
 <span class="reference-title">insert</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Inserts <span class="kwd">a</span> as the value of the <em>n<sup>th</sup></em> element <span class="kwd">quot<sub>1</sub></span> (zero-based), and returns the modified copy of the quotation <span class="kwd">quot<sub>2</sub></span>.</p></div>
 
-<p><a id="op-last"></a>
+<p><a id="min-operator-id-last"></a>
 <span class="reference-title">last</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Returns the last element of <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-map"></a>
+<p><a id="min-operator-id-map"></a>
 <span class="reference-title">map</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span></span></p>
 
 <p>Returns a new quotation <span class="kwd">quot<sub>3</sub></span> obtained by applying <span class="kwd">quot<sub>2</sub></span> to each element of <span class="kwd">quot<sub>1</sub></span>.</p></div>
 
-<p><a id="op-map-reduce"></a>
+<p><a id="min-operator-id-map-reduce"></a>
 <span class="reference-title">map-reduce</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <span class="kwd">quot<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
@@ -6464,7 +6570,7 @@ harvest
 (dup *) (+) map-reduce
 </code></pre></div></div>
 
-<p><a id="op-partition"></a>
+<p><a id="min-operator-id-partition"></a>
 <span class="reference-title">partition</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span> <span class="kwd">quot<sub>4</sub></span></span></p>
@@ -6479,21 +6585,21 @@ harvest
 (odd?) partition
 </code></pre></div></div>
 
-<p><a id="op-prepend"></a>
+<p><a id="min-operator-id-prepend"></a>
 <span class="reference-title">prepend</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <span class="kwd">quot</span> <strong>&rArr;</strong> (<span class="kwd">a</span> <span class="kwd">a<sub>*</sub></span>)</span></p>
 
 <p>Returns a new quotation containing the contents of <span class="kwd">quot</span> with <span class="kwd">a</span> prepended.</p></div>
 
-<p><a id="op-quote-map"></a>
+<p><a id="min-operator-id-quote-map"></a>
 <span class="reference-title">quote-map</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Returns a new quotation <span class="kwd">quot<sub>2</sub></span> obtained by quoting each element of <span class="kwd">quot<sub>1</sub></span>.</p></div>
 
-<p><a id="op-reduce"></a>
+<p><a id="min-operator-id-reduce"></a>
 <span class="reference-title">reduce</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
@@ -6508,56 +6614,56 @@ harvest
 1 (*) reduce
 </code></pre></div></div>
 
-<p><a id="op-reject"></a>
+<p><a id="min-operator-id-reject"></a>
 <span class="reference-title">reject</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span></span></p>
 
 <p>Returns a new quotatios <span class="kwd">quot<sub>3</sub></span> including all elements of <span class="kwd">quot<sub>1</sub></span> that do not satisfy predicate <span class="kwd">quot<sub>2</sub></span> (i.e. the opposite of <code>filter</code>)</p></div>
 
-<p><a id="op-remove"></a>
+<p><a id="min-operator-id-remove"></a>
 <span class="reference-title">remove</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Returns the <em>n<sup>th</sup></em> element of <span class="kwd">quot<sub>1</sub></span> (zero-based), and returns the modified copy of the quotation <span class="kwd">quot<sub>2</sub></span>.</p></div>
 
-<p><a id="op-rest"></a>
+<p><a id="min-operator-id-rest"></a>
 <span class="reference-title">rest</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Returns a new quotation <span class="kwd">quot<sub>2</sub></span> containing all elements of <span class="kwd">quot<sub>1</sub></span> quotation except for the first.</p></div>
 
-<p><a id="op-reverse"></a>
+<p><a id="min-operator-id-reverse"></a>
 <span class="reference-title">reverse</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Returns a new quotation <span class="kwd">quot<sub>2</sub></span> containing all elements of <span class="kwd">quot<sub>1</sub></span> in reverse order.</p></div>
 
-<p><a id="op-set"></a>
+<p><a id="min-operator-id-set"></a>
 <span class="reference-title">set</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Sets the value of the <em>n<sup>th</sup></em> element <span class="kwd">quot<sub>1</sub></span> (zero-based) to <span class="kwd">a</span>, and returns the modified copy of the quotation <span class="kwd">quot<sub>2</sub></span>.</p></div>
 
-<p><a id="op-shorten"></a>
+<p><a id="min-operator-id-shorten"></a>
 <span class="reference-title">shorten</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
 <p>Returns a quotation <span class="kwd">quot<sub>2</sub></span> containing the first <em>n</em> values of the input quotation <span class="kwd">quot<sub>1</sub></span>.</p></div>
 
-<p><a id="op-size"></a>
+<p><a id="min-operator-id-size"></a>
 <span class="reference-title">size</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the length of <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-slice"></a>
+<p><a id="min-operator-id-slice"></a>
 <span class="reference-title">slice</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
@@ -6572,7 +6678,7 @@ harvest
 2 4 slice
 </code></pre></div></div>
 
-<p><a id="op-sort"></a>
+<p><a id="min-operator-id-sort"></a>
 <span class="reference-title">sort</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">quot<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>3</sub></span></span></p>
@@ -6589,14 +6695,14 @@ harvest
 <a name="<code>io</code>-Module"></a>
 <h3><code>io</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-ask"></a>
+<p><a id="min-operator-id-ask"></a>
 <span class="reference-title">ask</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">string<sub>2</sub></span></span></p>
 
 <p>Prints <span class="kwd">string<sub>1</sub></span> (prompt), reads a line from STDIN and places it on top of the stack as a string.</p></div>
 
-<p><a id="op-choose"></a>
+<p><a id="min-operator-id-choose"></a>
 <span class="reference-title">choose</span></p>
 
 <div class="operator"><p><span class="kwd"> ((<span class="kwd">string<sub>1</sub></span> <span class="kwd">quot<sub>1</sub></span>)<span class="kwd"><sub>+</sub></span>) <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>*</sub></span></span></p>
@@ -6605,14 +6711,14 @@ harvest
 
 <p>If the user enters a number that matches one of the choices, then the corresponding quotation <span class="kwd">quot<sub>1</sub></span> is executed, otherwise the choice menu is displayed again until a valid choice is made.</p></div>
 
-<p><a id="op-column-print"></a>
+<p><a id="min-operator-id-column-print"></a>
 <span class="reference-title">column-print</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints all elements of <span class="kwd">quot</span> to STDOUT, in <span class="kwd">int</span> columns.</p></div>
 
-<p><a id="op-confirm"></a>
+<p><a id="min-operator-id-confirm"></a>
 <span class="reference-title">confirm</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6626,112 +6732,112 @@ harvest
 </ul>
 </div>
 
-<p><a id="op-debug"></a>
+<p><a id="min-operator-id-debug"></a>
 <span class="reference-title">debug</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDOUT, if logging level is set to <span class="kwd">debug</span> or lower.</p></div>
 
-<p><a id="op-error"></a>
+<p><a id="min-operator-id-error"></a>
 <span class="reference-title">error</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDERR, if logging level is set to <span class="kwd">error</span> or lower.</p></div>
 
-<p><a id="op-fappend"></a>
+<p><a id="min-operator-id-fappend"></a>
 <span class="reference-title">fappend</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Appends <span class="kwd">string<sub>1</sub></span> to the end of file <span class="kwd">string<sub>2</sub></span>.</p></div>
 
-<p><a id="op-fatal"></a>
+<p><a id="min-operator-id-fatal"></a>
 <span class="reference-title">fatal</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDERR, and exists the program with error code <code>100</code>.</p></div>
 
-<p><a id="op-fread"></a>
+<p><a id="min-operator-id-fread"></a>
 <span class="reference-title">fread</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Reads the file <span class="kwd">string</span> and puts its contents on the top of the stack as a string.</p></div>
 
-<p><a id="op-fwrite"></a>
+<p><a id="min-operator-id-fwrite"></a>
 <span class="reference-title">fwrite</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Writes <span class="kwd">string<sub>1</sub></span> to the file <span class="kwd">string<sub>2</sub></span>, erasing all its contents first.</p></div>
 
-<p><a id="op-gets"></a>
+<p><a id="min-operator-id-gets"></a>
 <span class="reference-title">gets</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Reads a line from STDIN and places it on top of the stack as a string.</p></div>
 
-<p><a id="op-info"></a>
+<p><a id="min-operator-id-info"></a>
 <span class="reference-title">info</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDOUT, if logging level is set to <span class="kwd">info</span> or lower.</p></div>
 
-<p><a id="op-newline"></a>
+<p><a id="min-operator-id-newline"></a>
 <span class="reference-title">newline</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Prints a new line to STDOUT.</p></div>
 
-<p><a id="op-notice"></a>
+<p><a id="min-operator-id-notice"></a>
 <span class="reference-title">notice</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDOUT, if logging level is set to <span class="kwd">notice</span> (default) or lower.</p></div>
 
-<p><a id="op-password"></a>
+<p><a id="min-operator-id-password"></a>
 <span class="reference-title">password</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Reads a line from STDIN displaying * for each typed character, and places it on top of the stack as a string.</p></div>
 
-<p><a id="op-print"></a>
+<p><a id="min-operator-id-print"></a>
 <span class="reference-title">print</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> to STDOUT.</p></div>
 
-<p><a id="op-print!"></a>
+<p><a id="min-operator-id-print!"></a>
 <span class="reference-title">print!</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Prints <span class="kwd">a</span> to STDOUT and removes <span class="kwd">a</span> from the stack.</p></div>
 
-<p><a id="op-puts"></a>
+<p><a id="min-operator-id-puts"></a>
 <span class="reference-title">puts</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDOUT.</p></div>
 
-<p><a id="op-puts!"></a>
+<p><a id="min-operator-id-puts!"></a>
 <span class="reference-title">puts!</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Prints <span class="kwd">a</span> and a new line to STDOUT, removing <span class="kwd">a</span> from the stack.</p></div>
 
-<p><a id="op-warning"></a>
+<p><a id="min-operator-id-warning"></a>
 <span class="reference-title">warning</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">a</span></span></p>
@@ -6741,35 +6847,35 @@ harvest
 <a name="<code>fs</code>-Module"></a>
 <h3><code>fs</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-atime"></a>
+<p><a id="min-operator-id-atime"></a>
 <span class="reference-title">atime</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">float</span></span></p>
 
 <p>Returns a timestamp corresponding to the time that file/directory <span class="kwd">&apos;sym</span> was last accessed.</p></div>
 
-<p><a id="op-ctime"></a>
+<p><a id="min-operator-id-ctime"></a>
 <span class="reference-title">ctime</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">float</span></span></p>
 
 <p>Returns a timestamp corresponding to the time that file/directory <span class="kwd">&apos;sym</span> was created.</p></div>
 
-<p><a id="op-fperms"></a>
+<p><a id="min-operator-id-fperms"></a>
 <span class="reference-title">fperms</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the Unix permissions (expressed as a three-digit number) of file/directory <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-fsize"></a>
+<p><a id="min-operator-id-fsize"></a>
 <span class="reference-title">fsize</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the size in bytes of file/directory <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-fstats"></a>
+<p><a id="min-operator-id-fstats"></a>
 <span class="reference-title">fstats</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">dict</span></span></p>
@@ -6798,21 +6904,21 @@ harvest
  )
 </code></pre></div></div>
 
-<p><a id="op-ftype"></a>
+<p><a id="min-operator-id-ftype"></a>
 <span class="reference-title">ftype</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the type of file/directory <span class="kwd">&apos;sym</span> (<code>"file"</code> or <code>"dir"</code>).</p></div>
 
-<p><a id="op-hidden?"></a>
+<p><a id="min-operator-id-hidden?"></a>
 <span class="reference-title">hidden?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if file/directory <span class="kwd">&apos;sym</span> is hidden, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-mtime"></a>
+<p><a id="min-operator-id-mtime"></a>
 <span class="reference-title">mtime</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">float</span></span></p>
@@ -6822,7 +6928,7 @@ harvest
 <a name="<code>logic</code>-Module"></a>
 <h3><code>logic</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-&gt;"></a>
+<p><a id="min-operator-id-&gt;"></a>
 <span class="reference-title">&gt;</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6833,7 +6939,7 @@ harvest
 
 <p>Only comparisons among two numbers or two strings are supported.</p></div></div>
 
-<p><a id="op-&gt;="></a>
+<p><a id="min-operator-id-&gt;="></a>
 <span class="reference-title">&gt;=</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6844,7 +6950,7 @@ harvest
 
 <p>Only comparisons among two numbers or two strings are supported.</p></div></div>
 
-<p><a id="op-&lt;"></a>
+<p><a id="min-operator-id-&lt;"></a>
 <span class="reference-title">&lt;</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6855,7 +6961,7 @@ harvest
 
 <p>Only comparisons among two numbers or two strings are supported.</p></div></div>
 
-<p><a id="op-&lt;="></a>
+<p><a id="min-operator-id-&lt;="></a>
 <span class="reference-title">&lt;=</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6866,35 +6972,35 @@ harvest
 
 <p>Only comparisons among two numbers or two strings are supported.</p></div></div>
 
-<p><a id="op-=="></a>
+<p><a id="min-operator-id-=="></a>
 <span class="reference-title">==</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a<sub>1</sub></span> is equal to <span class="kwd">a<sub>2</sub></span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-!="></a>
+<p><a id="min-operator-id-!="></a>
 <span class="reference-title">!=</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a<sub>1</sub></span> is not equal to <span class="kwd">a<sub>2</sub></span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-and"></a>
+<p><a id="min-operator-id-and"></a>
 <span class="reference-title">and</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">bool<sub>1</sub></span> <span class="kwd">bool<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool<sub>3</sub></span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">bool<sub>1</sub></span> is equal to <span class="kwd">bool<sub>2</sub></span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-boolean?"></a>
+<p><a id="min-operator-id-boolean?"></a>
 <span class="reference-title">boolean?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a boolean, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-dequote-and"></a>
+<p><a id="min-operator-id-dequote-and"></a>
 <span class="reference-title">dequote-and</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6920,7 +7026,7 @@ harvest
 <pre><code> "test" :x (x number?) (x 5 &lt;) dequote-and
 </code></pre></div></div>
 
-<p><a id="op-dequote-or"></a>
+<p><a id="min-operator-id-dequote-or"></a>
 <span class="reference-title">dequote-or</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -6946,56 +7052,56 @@ harvest
 <pre><code> "test" :x (x string?) (x quotation?) dequote-or
 </code></pre></div></div>
 
-<p><a id="op-dictionary?"></a>
+<p><a id="min-operator-id-dictionary?"></a>
 <span class="reference-title">dictionary?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a dictionary, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-float?"></a>
+<p><a id="min-operator-id-float?"></a>
 <span class="reference-title">float?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a float, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-or"></a>
+<p><a id="min-operator-id-or"></a>
 <span class="reference-title">or</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">bool<sub>1</sub></span> <span class="kwd">bool<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool<sub>3</sub></span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">bool<sub>1</sub></span> or <span class="kwd">bool<sub>2</sub></span> is <span class="kwd">true</span>, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-integer?"></a>
+<p><a id="min-operator-id-integer?"></a>
 <span class="reference-title">integer?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is an integer, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-not"></a>
+<p><a id="min-operator-id-not"></a>
 <span class="reference-title">not</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">bool<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">bool<sub>2</sub></span></span></p>
 
 <p>Negates <span class="kwd">bool<sub>1</sub></span>.</p></div>
 
-<p><a id="op-number?"></a>
+<p><a id="min-operator-id-number?"></a>
 <span class="reference-title">number?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a number, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-quotation?"></a>
+<p><a id="min-operator-id-quotation?"></a>
 <span class="reference-title">quotation?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">a</span> is a quotation, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-xor"></a>
+<p><a id="min-operator-id-xor"></a>
 <span class="reference-title">xor</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">bool<sub>1</sub></span> <span class="kwd">bool<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool<sub>3</sub></span></span></p>
@@ -7009,36 +7115,36 @@ harvest
 
 <div class="operator"><p><span class="kwd"> % <strong>&rArr;</strong> interpolate</span></p>
 
-<p>See <a href="#op-interpolate">interpolate</a>.</p></div>
+<p>See <a href="#min-operator-id-interpolate">interpolate</a>.</p></div>
 
 <p><span class="reference-title">=~</span></p>
 
 <div class="operator"><p><span class="kwd"> =~ <strong>&rArr;</strong> regex</span></p>
 
-<p>See <a href="#op-regex">regex</a>.</p></div>
+<p>See <a href="#min-operator-id-regex">regex</a>.</p></div>
 
-<p><a id="op-capitalize"></a>
+<p><a id="min-operator-id-capitalize"></a>
 <span class="reference-title">capitalize</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns a copy of <span class="kwd">&apos;sym</span> with the first character capitalized.</p></div>
 
-<p><a id="op-indent"></a>
+<p><a id="min-operator-id-indent"></a>
 <span class="reference-title">indent</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns <span class="kwd">string</span> containing <span class="kwd">&apos;sym</span> indented with <span class="kwd">int</span> spaces.</p></div>
 
-<p><a id="op-indexof"></a>
+<p><a id="min-operator-id-indexof"></a>
 <span class="reference-title">indexof</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>If <span class="kwd">string<sub>2</sub></span> is contained in <span class="kwd">string<sub>1</sub></span>, returns the index of the first match or -1 if no match is found.</p></div>
 
-<p><a id="op-interpolate"></a>
+<p><a id="min-operator-id-interpolate"></a>
 <span class="reference-title">interpolate</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string</span> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
@@ -7059,28 +7165,28 @@ harvest
 
 <p><code>"Directory '/Users/h3rald/Development/min' includes 19 files."</code></p></div></div>
 
-<p><a id="op-join"></a>
+<p><a id="min-operator-id-join"></a>
 <span class="reference-title">join</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Joins the elements of <span class="kwd">quot</span> using separator <span class="kwd">&apos;sym</span>, producing <span class="kwd">string</span>.</p></div>
 
-<p><a id="op-length"></a>
+<p><a id="min-operator-id-length"></a>
 <span class="reference-title">length</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the length of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-lowercase"></a>
+<p><a id="min-operator-id-lowercase"></a>
 <span class="reference-title">lowercase</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns a copy of <span class="kwd">&apos;sym</span> converted to lowercase.</p></div>
 
-<p><a id="op-match"></a>
+<p><a id="min-operator-id-match"></a>
 <span class="reference-title">match</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
@@ -7091,14 +7197,14 @@ harvest
 
 <p><span class="kwd">string<sub>2</sub></span> can be a <a href="https://github.com/snake5/sgregex">sgregex</a>.-compatible regular expression.</p></div></div>
 
-<p><a id="op-repeat"></a>
+<p><a id="min-operator-id-repeat"></a>
 <span class="reference-title">repeat</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns <span class="kwd">string</span> containing <span class="kwd">&apos;sym</span> repeated <span class="kwd">int</span> times.</p></div>
 
-<p><a id="op-replace"></a>
+<p><a id="min-operator-id-replace"></a>
 <span class="reference-title">replace</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <span class="kwd">string<sub>3</sub></span> <strong>&rArr;</strong> <span class="kwd">string<sub>4</sub></span></span></p>
@@ -7117,7 +7223,7 @@ harvest
 
 <p>produces: <code>"This is a simple test. Is it really a simple test?"</code></p></div></div>
 
-<p><a id="op-regex"></a>
+<p><a id="min-operator-id-regex"></a>
 <span class="reference-title">regex</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
@@ -7171,7 +7277,7 @@ harvest
 
 <p>produces: <code>("This is a bad idea")</code></p></div></div>
 
-<p><a id="op-search"></a>
+<p><a id="min-operator-id-search"></a>
 <span class="reference-title">search</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
@@ -7196,28 +7302,28 @@ harvest
 
 <p>produces: <code>("192.168.1.1", "1", "1")</code></p></div></div>
 
-<p><a id="op-split"></a>
+<p><a id="min-operator-id-split"></a>
 <span class="reference-title">split</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Splits <span class="kwd">&apos;sym<sub>1</sub></span> using separator <span class="kwd">&apos;sym<sub>2</sub></span> and returns the resulting strings within the quotation <span class="kwd">quot</span>.</p></div>
 
-<p><a id="op-strip"></a>
+<p><a id="min-operator-id-strip"></a>
 <span class="reference-title">strip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns <span class="kwd">string</span>, which is set to <span class="kwd">&apos;sym</span> with leading and trailing spaces removed.</p></div>
 
-<p><a id="op-titleize"></a>
+<p><a id="min-operator-id-titleize"></a>
 <span class="reference-title">titleize</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns a copy of <span class="kwd">&apos;sym</span> in which the first character of each word is capitalized.</p></div>
 
-<p><a id="op-uppercase"></a>
+<p><a id="min-operator-id-uppercase"></a>
 <span class="reference-title">uppercase</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">&apos;sym<sub>2</sub></span></span></p>
@@ -7231,53 +7337,53 @@ harvest
 
 <div class="operator"><p><span class="kwd"> $<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> get-env</span></p>
 
-<p>See <a href="#op-get-env">get-env</a>.</p></div>
+<p>See <a href="#min-operator-id-get-env">get-env</a>.</p></div>
 
 <p><span class="reference-title">$</span></p>
 
 <div class="operator"><p><span class="kwd"> $ <strong>&rArr;</strong> get-env</span></p>
 
-<p>See <a href="#op-get-env">get-env</a>.</p></div>
+<p>See <a href="#min-operator-id-get-env">get-env</a>.</p></div>
 
 <p><span class="reference-title">!</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> !<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> system</span></p>
 
-<p>See <a href="#op-system">system</a>.</p></div>
+<p>See <a href="#min-operator-id-system">system</a>.</p></div>
 
 <p><span class="reference-title">!</span></p>
 
 <div class="operator"><p><span class="kwd"> ! <strong>&rArr;</strong> system</span></p>
 
-<p>See <a href="#op-system">system</a>.</p></div>
+<p>See <a href="#min-operator-id-system">system</a>.</p></div>
 
 <p><span class="reference-title">&amp;</span> <span class="sigil"></span></p>
 
 <div class="operator"><p><span class="kwd"> &amp;<span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span> run</span></p>
 
-<p>See <a href="#op-run">run</a>.</p></div>
+<p>See <a href="#min-operator-id-run">run</a>.</p></div>
 
 <p><span class="reference-title">&amp;</span></p>
 
 <div class="operator"><p><span class="kwd"> &amp; <strong>&rArr;</strong> run</span></p>
 
-<p>See <a href="#op-run">run</a>.</p></div>
+<p>See <a href="#min-operator-id-run">run</a>.</p></div>
 
-<p><a id="op-."></a>
+<p><a id="min-operator-id-."></a>
 <span class="reference-title">.</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the full path to the current directory.</p></div>
 
-<p><a id="op-.."></a>
+<p><a id="min-operator-id-.."></a>
 <span class="reference-title">..</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the full path to the parent directory.</p></div>
 
-<p><a id="op-chmod"></a>
+<p><a id="min-operator-id-chmod"></a>
 <span class="reference-title">chmod</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <span class="kwd">int</span> <strong>&rArr;</strong> &#x2205;</span></p>
@@ -7290,189 +7396,189 @@ harvest
 
 <p><code>/tmp/test.txt 755 chmod</code></p></div></div>
 
-<p><a id="op-cd"></a>
+<p><a id="min-operator-id-cd"></a>
 <span class="reference-title">cd</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Change the current directory to {<span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-cp"></a>
+<p><a id="min-operator-id-cp"></a>
 <span class="reference-title">cp</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Copies the file or directory <span class="kwd">&apos;sym<sub>1</sub></span> to <span class="kwd">&apos;sym<sub>2</sub></span>.</p></div>
 
-<p><a id="op-cpu"></a>
+<p><a id="min-operator-id-cpu"></a>
 <span class="reference-title">cpu</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the host CPU. It can be one of the following strings i386, alpha, powerpc, powerpc64, powerpc64el, sparc, amd64, mips, mipsel, arm, arm64.</p></div>
 
-<p><a id="op-env?"></a>
+<p><a id="min-operator-id-env?"></a>
 <span class="reference-title">env?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if environment variable <span class="kwd">&apos;sym</span> exists, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-dir?"></a>
+<p><a id="min-operator-id-dir?"></a>
 <span class="reference-title">dir?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if the specified path <span class="kwd">&apos;sym</span> exists and is a directory.</p></div>
 
-<p><a id="op-dirname"></a>
+<p><a id="min-operator-id-dirname"></a>
 <span class="reference-title">dirname</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the path of the directory containing path <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-exists?"></a>
+<p><a id="min-operator-id-exists?"></a>
 <span class="reference-title">exists?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if the specified file or directory <span class="kwd">&apos;sym</span> exists.</p></div>
 
-<p><a id="op-file?"></a>
+<p><a id="min-operator-id-file?"></a>
 <span class="reference-title">file?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if the specified path <span class="kwd">&apos;sym</span> exists and is a file.</p></div>
 
-<p><a id="op-filename"></a>
+<p><a id="min-operator-id-filename"></a>
 <span class="reference-title">filename</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the file name of path <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-get-env"></a>
+<p><a id="min-operator-id-get-env"></a>
 <span class="reference-title">get-env</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns environment variable <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-hardlink"></a>
+<p><a id="min-operator-id-hardlink"></a>
 <span class="reference-title">hardlink</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Creates hardlink <span class="kwd">&apos;sym<sub>2</sub></span> for file or directory <span class="kwd">&apos;sym<sub>1</sub></span>.</p></div>
 
-<p><a id="op-ls"></a>
+<p><a id="min-operator-id-ls"></a>
 <span class="reference-title">ls</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Returns a quotation <span class="kwd">quot</span> containing all children (files and directories) of the directory <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-ls-r"></a>
+<p><a id="min-operator-id-ls-r"></a>
 <span class="reference-title">ls-r</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">quot</span></span></p>
 
 <p>Returns a quotation <span class="kwd">quot</span> containing all children (files and directories) of the directory <span class="kwd">&apos;sym</span>, recursively.</p></div>
 
-<p><a id="op-mkdir"></a>
+<p><a id="min-operator-id-mkdir"></a>
 <span class="reference-title">mkdir</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Creates the specified directory <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-mv"></a>
+<p><a id="min-operator-id-mv"></a>
 <span class="reference-title">mv</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Moves the file or directory <span class="kwd">&apos;sym<sub>1</sub></span> to <span class="kwd">&apos;sym<sub>2</sub></span>.</p></div>
 
-<p><a id="op-os"></a>
+<p><a id="min-operator-id-os"></a>
 <span class="reference-title">os</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the host operating system. It can be one of the following strings: windows, macosx, linux, netbsd, freebsd, openbsd, solaris, aix, standalone.</p></div>
 
-<p><a id="op-put-env"></a>
+<p><a id="min-operator-id-put-env"></a>
 <span class="reference-title">put-env</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Sets environment variable <span class="kwd">&apos;sym<sub>2</sub></span> to <span class="kwd">&apos;sym<sub>1</sub></span>.</p></div>
 
-<p><a id="op-rm"></a>
+<p><a id="min-operator-id-rm"></a>
 <span class="reference-title">rm</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Deletes the specified file <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-rmdir"></a>
+<p><a id="min-operator-id-rmdir"></a>
 <span class="reference-title">rmdir</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Deletes the specified directory <span class="kwd">&apos;sym</span> and all its subdirectories recursively.</p></div>
 
-<p><a id="op-run"></a>
+<p><a id="min-operator-id-run"></a>
 <span class="reference-title">run</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">dict</span></span></p>
 
 <p>Executes the external command <span class="kwd">&apos;sym</span> in the current directory without displaying its output. Returns a dictionary containing the command output and return code (in keys <strong>output</strong> and <strong>code</strong> respectively).</p></div>
 
-<p><a id="op-sleep"></a>
+<p><a id="min-operator-id-sleep"></a>
 <span class="reference-title">sleep</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Halts program execution for <span class="kwd">int</span> milliseconds.</p></div>
 
-<p><a id="op-symlink"></a>
+<p><a id="min-operator-id-symlink"></a>
 <span class="reference-title">symlink</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Creates symlink <span class="kwd">&apos;sym<sub>2</sub></span> for file or directory <span class="kwd">&apos;sym<sub>1</sub></span>.</p></div>
 
-<p><a id="op-symlink?"></a>
+<p><a id="min-operator-id-symlink?"></a>
 <span class="reference-title">symlink?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if the specified path <span class="kwd">&apos;sym</span> exists and is a symbolic link.</p></div>
 
-<p><a id="op-system"></a>
+<p><a id="min-operator-id-system"></a>
 <span class="reference-title">system</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
-<p>Executes the external command <span class="kwd">&apos;sym</span> in the current directory.</p></div>
+<p>Executes the external command <span class="kwd">&apos;sym</span> in the current directory and pushes its return code on the stack.</p></div>
 
-<p><a id="op-unzip"></a>
+<p><a id="min-operator-id-unzip"></a>
 <span class="reference-title">unzip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Decompresses zip file <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-which"></a>
+<p><a id="min-operator-id-which"></a>
 <span class="reference-title">which</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the full path to the directory containing executable <span class="kwd">&apos;sym</span>, or an empty string if the executable is not found in <strong>$PATH</strong>.</p></div>
 
-<p><a id="op-zip"></a>
+<p><a id="min-operator-id-zip"></a>
 <span class="reference-title">zip</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <span class="kwd">quot</span> <strong>&rArr;</strong> &#x2205;</span></p>
@@ -7482,105 +7588,105 @@ harvest
 <a name="<code>num</code>-Module"></a>
 <h3><code>num</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-+"></a>
+<p><a id="min-operator-id-+"></a>
 <span class="reference-title">+</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
 
 <p>Sums <span class="kwd">num<sub>1</sub></span> and <span class="kwd">num<sub>2</sub></span>.</p></div>
 
-<p><a id="op--"></a>
+<p><a id="min-operator-id--"></a>
 <span class="reference-title">-</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
 
 <p>Subtracts <span class="kwd">num<sub>2</sub></span> from <span class="kwd">num<sub>1</sub></span>.</p></div>
 
-<p><a id="op--inf"></a>
+<p><a id="min-operator-id--inf"></a>
 <span class="reference-title">-inf</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
 
 <p>Returns negative infinity.</p></div>
 
-<p><a id="op-\*"></a>
+<p><a id="min-operator-id-\*"></a>
 <span class="reference-title">*</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
 
 <p>Multiplies <span class="kwd">num<sub>1</sub></span> by <span class="kwd">num<sub>2</sub></span>.</p></div>
 
-<p><a id="op-/"></a>
+<p><a id="min-operator-id-/"></a>
 <span class="reference-title">/</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
 
 <p>Divides <span class="kwd">num<sub>1</sub></span> by <span class="kwd">num<sub>2</sub></span>.</p></div>
 
-<p><a id="op-even?"></a>
+<p><a id="min-operator-id-even?"></a>
 <span class="reference-title">even?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">int</span> is even, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-div"></a>
+<p><a id="min-operator-id-div"></a>
 <span class="reference-title">div</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span></span></p>
 
 <p>Divides <span class="kwd">a<sub>1</sub></span> by <span class="kwd">a<sub>2</sub></span> (integer division).</p></div>
 
-<p><a id="op-inf"></a>
+<p><a id="min-operator-id-inf"></a>
 <span class="reference-title">inf</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
 
 <p>Returns infinity.</p></div>
 
-<p><a id="op-mod"></a>
+<p><a id="min-operator-id-mod"></a>
 <span class="reference-title">mod</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span></span></p>
 
 <p>Returns the integer module of <span class="kwd">a<sub>1</sub></span> divided by <span class="kwd">a<sub>2</sub></span>.</p></div>
 
-<p><a id="op-nan"></a>
+<p><a id="min-operator-id-nan"></a>
 <span class="reference-title">nan</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> nan</span></p>
 
 <p>Returns <strong>NaN</strong> (not a number).</p></div>
 
-<p><a id="op-odd?"></a>
+<p><a id="min-operator-id-odd?"></a>
 <span class="reference-title">odd?</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">bool</span></span></p>
 
 <p>Returns <span class="kwd">true</span> if <span class="kwd">int</span> is odd, <span class="kwd">false</span> otherwise.</p></div>
 
-<p><a id="op-pred"></a>
+<p><a id="min-operator-id-pred"></a>
 <span class="reference-title">pred</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
 
 <p>Returns the predecessor of <span class="kwd">a<sub>1</sub></span>.</p></div>
 
-<p><a id="op-random"></a>
+<p><a id="min-operator-id-random"></a>
 <span class="reference-title">random</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
 
 <p>Returns a random number <span class="kwd">a<sub>2</sub></span> between 0 and <span class="kwd">a<sub>1</sub></span>-1.</p></div>
 
-<p><a id="op-succ"></a>
+<p><a id="min-operator-id-succ"></a>
 <span class="reference-title">succ</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
 
 <p>Returns the successor of <span class="kwd">a<sub>1</sub></span>.</p></div>
 
-<p><a id="op-sum"></a>
+<p><a id="min-operator-id-sum"></a>
 <span class="reference-title">sum</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">quot</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
@@ -7590,42 +7696,42 @@ harvest
 <a name="<code>time</code>-Module"></a>
 <h3><code>time</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-now"></a>
+<p><a id="min-operator-id-now"></a>
 <span class="reference-title">now</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">float</span></span></p>
 
 <p>Returns the current time as Unix timestamp with microseconds.</p></div>
 
-<p><a id="op-timestamp"></a>
+<p><a id="min-operator-id-timestamp"></a>
 <span class="reference-title">timestamp</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the current time as Unix timestamp.</p></div>
 
-<p><a id="op-timeinfo"></a>
+<p><a id="min-operator-id-timeinfo"></a>
 <span class="reference-title">timeinfo</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">tinfo</span></span></p>
 
 <p>Returns a timeinfo dictionary from timestamp <span class="kwd">int</span>.</p></div>
 
-<p><a id="op-to-timestamp"></a>
+<p><a id="min-operator-id-to-timestamp"></a>
 <span class="reference-title">to-timestamp</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">tinfo</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Converts the timeinfo dictionary <span class="kwd">tinfo</span> to the corresponding Unix timestamp.</p></div>
 
-<p><a id="op-datetime"></a>
+<p><a id="min-operator-id-datetime"></a>
 <span class="reference-title">datetime</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns an ISO 8601 string representing the combined date and time in UTC of timestamp <span class="kwd">int</span>.</p></div>
 
-<p><a id="op-tformat"></a>
+<p><a id="min-operator-id-tformat"></a>
 <span class="reference-title">tformat</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">int</span> <span class="kwd">string</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
@@ -7639,63 +7745,63 @@ harvest
 <a name="<code>crypto</code>-Module"></a>
 <h3><code>crypto</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-md5"></a>
+<p><a id="min-operator-id-md5"></a>
 <span class="reference-title">md5</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the MD5 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-sha1"></a>
+<p><a id="min-operator-id-sha1"></a>
 <span class="reference-title">sha1</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the SHA1 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-sha224"></a>
+<p><a id="min-operator-id-sha224"></a>
 <span class="reference-title">sha224</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the SHA224 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-sha256"></a>
+<p><a id="min-operator-id-sha256"></a>
 <span class="reference-title">sha256</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the SHA256 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-sha384"></a>
+<p><a id="min-operator-id-sha384"></a>
 <span class="reference-title">sha384</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the SHA384 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-sha512"></a>
+<p><a id="min-operator-id-sha512"></a>
 <span class="reference-title">sha512</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Returns the SHA512 hash of <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-encode"></a>
+<p><a id="min-operator-id-encode"></a>
 <span class="reference-title">encode</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Base64-encodes <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-encode"></a>
+<p><a id="min-operator-id-encode"></a>
 <span class="reference-title">encode</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
 <p>Decodes the Base64-encoded string <span class="kwd">&apos;sym</span>.</p></div>
 
-<p><a id="op-aes"></a>
+<p><a id="min-operator-id-aes"></a>
 <span class="reference-title">aes</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
@@ -7705,161 +7811,161 @@ harvest
 <a name="<code>math</code>-Module"></a>
 <h3><code>math</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-acos"></a>
+<p><a id="min-operator-id-acos"></a>
 <span class="reference-title">acos</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the arc cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-asin"></a>
+<p><a id="min-operator-id-asin"></a>
 <span class="reference-title">asin</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the arc sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-atan"></a>
+<p><a id="min-operator-id-atan"></a>
 <span class="reference-title">atan</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the arc tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-ceil"></a>
+<p><a id="min-operator-id-ceil"></a>
 <span class="reference-title">ceil</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the smallest integer <span class="kwd">int</span> that is not smaller than <span class="kwd">num</span>.</p></div>
 
-<p><a id="op-cos"></a>
+<p><a id="min-operator-id-cos"></a>
 <span class="reference-title">cos</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-cosh"></a>
+<p><a id="min-operator-id-cosh"></a>
 <span class="reference-title">cosh</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the hyperbolic cosine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-d2r"></a>
+<p><a id="min-operator-id-d2r"></a>
 <span class="reference-title">d2r</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Converts <span class="kwd">num<sub>1</sub></span> from degrees to radians.</p></div>
 
-<p><a id="op-e"></a>
+<p><a id="min-operator-id-e"></a>
 <span class="reference-title">e</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
 
 <p>Returns the value of the <em>e</em> constant (Euler&rsquo;s number).</p></div>
 
-<p><a id="op-floor"></a>
+<p><a id="min-operator-id-floor"></a>
 <span class="reference-title">floor</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num</span> <strong>&rArr;</strong> <span class="kwd">int</span></span></p>
 
 <p>Returns the largest integer <span class="kwd">int</span> that is not greater than <span class="kwd">num</span>.</p></div>
 
-<p><a id="op-ln"></a>
+<p><a id="min-operator-id-ln"></a>
 <span class="reference-title">ln</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the natural logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
 
-<p><a id="op-log10"></a>
+<p><a id="min-operator-id-log10"></a>
 <span class="reference-title">log10</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the common logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
 
-<p><a id="op-log2"></a>
+<p><a id="min-operator-id-log2"></a>
 <span class="reference-title">log2</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the binary logarithm of <span class="kwd">num<sub>1</sub></span>.</p></div>
 
-<p><a id="op-pi"></a>
+<p><a id="min-operator-id-pi"></a>
 <span class="reference-title">pi</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
 
 <p>Returns the value of the &pi; constant.</p></div>
 
-<p><a id="op-pow"></a>
+<p><a id="min-operator-id-pow"></a>
 <span class="reference-title">pow</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">num<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>3</sub></span></span></p>
 
 <p>Computes <span class="kwd">num<sub>1</sub></span> to power raised of <span class="kwd">num<sub>2</sub></span>.</p></div>
 
-<p><a id="op-r2d"></a>
+<p><a id="min-operator-id-r2d"></a>
 <span class="reference-title">r2d</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Converts <span class="kwd">num<sub>1</sub></span> from radians to degrees.</p></div>
 
-<p><a id="op-round"></a>
+<p><a id="min-operator-id-round"></a>
 <span class="reference-title">round</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Rounds <span class="kwd">num<sub>1</sub></span> to the <span class="kwd">int</span><sup>th</sup> decimal place.</p></div>
 
-<p><a id="op-sin"></a>
+<p><a id="min-operator-id-sin"></a>
 <span class="reference-title">sin</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-sinh"></a>
+<p><a id="min-operator-id-sinh"></a>
 <span class="reference-title">sinh</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the hyperbolic sine of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-sqrt"></a>
+<p><a id="min-operator-id-sqrt"></a>
 <span class="reference-title">sqrt</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Returns square root of <span class="kwd">num<sub>1</sub></span>.</p></div>
 
-<p><a id="op-tan"></a>
+<p><a id="min-operator-id-tan"></a>
 <span class="reference-title">tan</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-tanh"></a>
+<p><a id="min-operator-id-tanh"></a>
 <span class="reference-title">tanh</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
 
 <p>Calculates the hyperbolic tangent of <span class="kwd">num<sub>1</sub></span> (in radians).</p></div>
 
-<p><a id="op-tau"></a>
+<p><a id="min-operator-id-tau"></a>
 <span class="reference-title">tau</span></p>
 
 <div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> <span class="kwd">num</span></span></p>
 
 <p>Returns the value of the &tau; constant (2&pi;).</p></div>
 
-<p><a id="op-trunc"></a>
+<p><a id="min-operator-id-trunc"></a>
 <span class="reference-title">trunc</span></p>
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">num<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">num<sub>2</sub></span></span></p>
@@ -7869,26 +7975,26 @@ harvest
 <a name="<code>net</code>-Module"></a>
 <h3><code>net</code> Module<a href="#document-top" title="Go to top"></a></h3>
 
-<p><a id="op-accept"></a>
+<p><a id="min-operator-id-accept"></a>
 <span class="reference-title">accept</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket<sub>1</sub></span> <span class="kwd">dict:socket<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">dict:socket<sub>1</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket<sub>1</sub></span> <span class="kwd">socket<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">socket<sub>1</sub></span></span></p>
 
-<p>Makes <span class="kwd">dict:socket<sub>2</sub></span> (server) accept a connection from <span class="kwd">dict:socket<sub>1</sub></span> (client). Returns the client socket <span class="kwd">dict:socket<sub>1</sub></span> from which it will be possible to receive data from.</p></div>
+<p>Makes <span class="kwd">socket<sub>2</sub></span> (server) accept a connection from <span class="kwd">socket<sub>1</sub></span> (client). Returns the client socket <span class="kwd">socket<sub>1</sub></span> from which it will be possible to receive data from.</p></div>
 
-<p><a id="op-close"></a>
+<p><a id="min-operator-id-close"></a>
 <span class="reference-title">close</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <strong>&rArr;</strong> &#x2205;</span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
 <p>Closes a previously-opened socket.</p></div>
 
-<p><a id="op-connect"></a>
+<p><a id="min-operator-id-connect"></a>
 <span class="reference-title">connect</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">string</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">dict:socket</span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket</span> <span class="kwd">string</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">socket</span></span></p>
 
-<p>Connects socket <span class="kwd">dict:socket</span> to address <span class="kwd">string</span> and port <span class="kwd">int</span>.</p>
+<p>Connects socket <span class="kwd">socket</span> to address <span class="kwd">string</span> and port <span class="kwd">int</span>.</p>
 
 <div class="sidebar"><p>Example</p>
 
@@ -7907,12 +8013,12 @@ cli "$1\n" (msg) =&gt; % send
 cli close
 </code></pre></div></div>
 
-<p><a id="op-listen"></a>
+<p><a id="min-operator-id-listen"></a>
 <span class="reference-title">listen</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <span class="kwd">dict:socket<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">dict:socket<sub>2</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <span class="kwd">socket<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">socket<sub>2</sub></span></span></p>
 
-<p>Makes socket <span class="kwd">dict:socket<sub>1</sub></span> listen to the specified address and port. <span class="kwd">dict</span> can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.</p>
+<p>Makes socket <span class="kwd">socket<sub>1</sub></span> listen to the specified address and port. <span class="kwd">dict</span> can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.</p>
 
 <dl>
 <dt>address</dt>
@@ -7943,19 +8049,19 @@ cli close
 srv close
 </code></pre></div></div>
 
-<p><a id="op-recv"></a>
+<p><a id="min-operator-id-recv"></a>
 <span class="reference-title">recv</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket</span> <span class="kwd">int</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
-<p>Waits to receive <span class="kwd">int</span> characters from <span class="kwd">dict:socket</span> and returns the resulting data <span class="kwd">string</span>.</p></div>
+<p>Waits to receive <span class="kwd">int</span> characters from <span class="kwd">socket</span> and returns the resulting data <span class="kwd">string</span>.</p></div>
 
-<p><a id="op-recv-line"></a>
+<p><a id="min-operator-id-recv-line"></a>
 <span class="reference-title">recv-line</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket</span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
-<p>Waits to receive a line of data from <span class="kwd">dict:socket</span> and returns the resulting data <span class="kwd">string</span>. <code>""</code> is returned if <span class="kwd">dict:socket</span> is disconnected.</p>
+<p>Waits to receive a line of data from <span class="kwd">socket</span> and returns the resulting data <span class="kwd">string</span>. <code>""</code> is returned if <span class="kwd">socket</span> is disconnected.</p>
 
 <div class="sidebar"><p>Example</p>
 
@@ -7972,17 +8078,17 @@ cli recv-line puts :line
 ) while
 </code></pre></div></div>
 
-<p><a id="op-send"></a>
+<p><a id="min-operator-id-send"></a>
 <span class="reference-title">send</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict:socket</span> <span class="kwd">string</span> <strong>&rArr;</strong> &#x2205;</span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">socket</span> <span class="kwd">string</span> <strong>&rArr;</strong> &#x2205;</span></p>
 
-<p>Sends <span class="kwd">string</span> to the connected socket <span class="kwd">dict:socket</span>.</p></div>
+<p>Sends <span class="kwd">string</span> to the connected socket <span class="kwd">socket</span>.</p></div>
 
-<p><a id="op-socket"></a>
+<p><a id="min-operator-id-socket"></a>
 <span class="reference-title">socket</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> <span class="kwd">dict:socket</span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> <span class="kwd">socket</span></span></p>
 
 <p>Opens a new socket.</p>
 
@@ -8021,9 +8127,102 @@ cli recv-line puts :line
 </ul>
 </dd>
 </dl></div>
+
+<a name="<code>http</code>-Module"></a>
+<h3><code>http</code> Module<a href="#document-top" title="Go to top"></a></h3>
+
+<p><a id="min-operator-id-download"></a>
+<span class="reference-title">download</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">string<sub>2</sub></span> <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Downloads the contents of URL <span class="kwd">string<sub>1</sub></span> to the local file <span class="kwd">string<sub>2</sub></span>.</p></div>
+
+<p><a id="min-operator-id-get-content"></a>
+<span class="reference-title">get-content</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">string<sub>2</sub></span></span></p>
+
+<p>Retrieves the contents of URL <span class="kwd">string<sub>1</sub></span> as <span class="kwd">string<sub>2</sub></span>.</p></div>
+
+<p><a id="min-operator-id-request"></a>
+<span class="reference-title">request</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">request</span> <strong>&rArr;</strong> <span class="kwd">response</span></span></p>
+
+<p>Performs an HTTP request.</p>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following code constructs a <span class="kwd">request</span> dictionary using the <strong>tap</strong> operator and passes it to the <strong>request</strong> operator to perform an HTTP GET request to <a href="http://httpbin.org/ip">http://httpbin.org/ip</a>:</p>
+
+<pre><code>() (
+  ("GET" %method)
+  ("http://httpbin.org/ip" %url)
+) tap request
+</code></pre></div></div>
+
+<p><a id="min-operator-id-start-server"></a>
+<span class="reference-title">start-server</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">dict</span> <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Starts an HTTP server based on the configuration provided in <span class="kwd">dict</span>.</p>
+
+<p><span class="kwd">dict</span> is a dictionary containing the following keys:</p>
+
+<dl>
+<dt>address</dt>
+<dd>The address to bind the server to (default: <strong>127.0.0.1</strong>).</dd>
+<dt>port</dt>
+<dd>The port to bind the server to.</dd>
+<dt>handler</dt>
+<dd>A quotation with the following signature, used to handle all incoming requests: <span class="kwd"><span class="kwd">request</span> &rArr; <span class="kwd">response</span></span></dd>
+</dl>
+
+<div class="sidebar"><p>Example</p>
+
+<p>The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:</p>
+
+<pre><code>(
+ =req
+ req /url :url
+ ;Set response body
+ "Invalid Request: $1" (url) =&gt; % :body
+ ("/datetime" url ==) (
+  timestamp datetime @body
+ ) when
+ ("/timestamp" url ==) (
+   timestamp string @body
+ ) when
+ ("/shutdown" url ==) (
+  "Stopping server..." puts!
+  stop-server
+ ) when
+ ;Prepare response
+ () (
+  (body %body)
+ ) tap 
+) =handler
+
+;Start server
+"Server started on port 5555." puts!
+"Press Ctrl+C to stop." puts!
+() (
+ (handler %handler)
+ (5555 %port)
+) tap start-server
+</code></pre></div></div>
+
+<p><a id="min-operator-id-stop-server"></a>
+<span class="reference-title">stop-server</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> &#x2205;</span></p>
+
+<p>Stops the currently-running HTTP server. This operator should be used within an HTTP server handler quotation.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; November 19, 2017</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; February 18, 2018</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>

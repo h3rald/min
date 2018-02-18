@@ -138,9 +138,12 @@
 
 {@ site/contents/reference-net.md || 1 @}
 
+### `http` Module
+
+{@ site/contents/reference-http.md || 1 @}
 
 {#op => 
-<a id="op-$1"></a>
+<a id="min-operator-id-$1"></a>
 [$1](class:reference-title)
 
 > %operator%
@@ -156,7 +159,7 @@
 > %operator%
 > [ $1 **&rArr;** $2](class:kwd)
 > 
-> See [$2](#op-$2).
+> See [$2](#min-operator-id-$2).
  #}
 
 {#sig => 
@@ -165,14 +168,14 @@
 > %operator%
 > [ $1{{s}} **&rArr;** {{s}} $2](class:kwd)
 > 
-> See [$2](#op-$2).
+> See [$2](#min-operator-id-$2).
  #}
 
 {# link-page => $2 #}
 
-{# link-module => [`$1` Module](#<code>$1</code>-Module) #}
+{# link-module => [$1 Module](#<code>$1</code>-Module) #}
 
-{# link-operator => [`$2`](#op-$2) #}
+{# link-operator => [$2](#min-operator-id-$2) #}
 
 {# link-learn => #}
 
