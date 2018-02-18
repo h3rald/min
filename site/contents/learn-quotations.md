@@ -27,7 +27,7 @@ Let's examine this program step-by-step:
 > %tip%
 > Tip
 > 
-> The {{#link-module||seq#}} provides several symbols to work with quotations in a functional way.
+> The {#link-module||seq#} provides several symbols to work with quotations in a functional way.
 
 
 ## Quoting, dequoting, and applying

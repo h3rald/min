@@ -89,7 +89,14 @@ The following notation is used in the signature of all min operators:
        ("column" 13)
       )
 {{sock}}
-: A socket dictionary, created through the {#link-operator||net||socket#} operator.
+: A socket dictionary that must be created through the {#link-operator||net||socket#} operator:
+
+      (
+       ("domain" "ipv4")
+       ("type" "stream")
+       ("protocol" "tcp")
+       ;socket
+      )
 {{req}}
 : A request dictionary, representing an HTTP request to be performed through the operators exposed by the {#link-module||http#}:
 
@@ -110,9 +117,9 @@ The following notation is used in the signature of all min operators:
         ("version" "1.1") ;optional
         ("status" 200)    ;optional
         ("headers"        ;optional
-          (("Content-Type" "application/json")))
+         (("Content-Type" "application/json")))
         ("body"           ;optional
-          "{\"test\": \"This is a test\"}")
+         "{\"test\": \"This is a test\"}")
       )
 {{t}}
 : true (boolean type).
