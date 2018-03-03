@@ -85,7 +85,7 @@ proc num_module*(i: In)=
   def.symbol("random") do (i: In):
     let vals = i.expect("int")
     let n = vals[0]
-    i.push n.intVal.int.random.newVal
+    i.push n.intVal.int.rand.newVal
 
   def.symbol("div") do (i: In):
     let vals = i.expect("int", "int")

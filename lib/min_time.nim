@@ -24,10 +24,10 @@ proc time_module*(i: In)=
     let t = vals[0]
     var time: Time
     if t.kind == minInt:
-      time = t.intVal.fromSeconds
+      time = t.intVal.fromUnix
     else:
-      time = t.floatVal.fromSeconds
-    let tinfo = time.getLocalTime
+      time = t.floatVal.int64.fromUnix
+    let tinfo = time.local
     var info = newSeq[MinValue](0).newVal(i.scope)
     info.qVal.add @["year".newVal, tinfo.year.newVal].newVal(i.scope)
     info.qVal.add @["month".newVal, (tinfo.month.int+1).newVal].newVal(i.scope)
@@ -38,7 +38,7 @@ proc time_module*(i: In)=
     info.qVal.add @["minute".newVal, tinfo.minute.newVal].newVal(i.scope)
     info.qVal.add @["second".newVal, tinfo.second.newVal].newVal(i.scope)
     info.qVal.add @["dst".newVal, tinfo.isDST.newVal].newVal(i.scope)
-    info.qVal.add @["timezone".newVal, tinfo.timezone.newVal].newVal(i.scope)
+    info.qVal.add @["timezone".newVal, tinfo.utcOffset.newVal].newVal(i.scope)
     i.push info
 
   def.symbol("to-timestamp") do (i: In):
@@ -53,8 +53,8 @@ proc time_module*(i: In)=
       let second = dict.dget("second".newVal).intVal.int
       let dst = dict.dget("dst".newVal).boolVal
       let timezone = dict.dget("timezone".newVal).intVal.int
-      let tinfo = TimeInfo(year: year, month: Month(month), monthday: monthday, hour: hour, minute: minute, second: second, isDST: dst, timezone: timezone)
-      i.push tinfo.toTime.toSeconds.int.newVal
+      let tinfo = Datetime(year: year, month: Month(month), monthday: monthday, hour: hour, minute: minute, second: second, isDST: dst, utcOffset: timezone)
+      i.push tinfo.toTime.toUnix.int.newVal
     except:
       raiseInvalid("An invalid timeinfo dictionary was provided.")
 
@@ -63,10 +63,10 @@ proc time_module*(i: In)=
     let t = vals[0]
     var time: Time
     if t.kind == minInt:
-      time = t.intVal.fromSeconds
+      time = t.intVal.fromUnix
     else:
-      time = t.floatVal.fromSeconds
-    i.push time.getGMTime.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
+      time = t.floatVal.int64.fromUnix
+    i.push time.utc.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
 
   def.symbol("tformat") do (i: In):
     let vals = i.expect("string", "num")
@@ -74,9 +74,9 @@ proc time_module*(i: In)=
     let t = vals[1]
     var time: Time
     if t.kind == minInt:
-      time = t.intVal.fromSeconds
+      time = t.intVal.fromUnix
     else:
-      time = t.floatVal.fromSeconds
-    i.push time.getLocalTime.format(s.getString).newVal
+      time = t.floatVal.int64.fromUnix
+    i.push time.local.format(s.getString).newVal
   
   def.finalize("time")

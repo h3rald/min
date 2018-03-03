@@ -3,7 +3,7 @@ when not defined(windows):
 import 
   streams, 
   critbits, 
-  parseopt2, 
+  parseopt, 
   strutils, 
   os, 
   ospaths,

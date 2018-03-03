@@ -2,7 +2,7 @@ import
   critbits, 
   strutils, 
   sequtils,
-  parseopt2,
+  parseopt,
   algorithm,
   json,
   os, 
