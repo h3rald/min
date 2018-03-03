@@ -16,17 +16,17 @@ proc fs_module*(i: In) =
   def.symbol("mtime") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
-    i.push s.getString.getLastModificationTime.toSeconds.newVal
+    i.push s.getString.getLastModificationTime.toUnix.newVal
 
   def.symbol("atime") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
-    i.push s.getString.getLastAccessTime.toSeconds.newVal
+    i.push s.getString.getLastAccessTime.toUnix.newVal
 
   def.symbol("ctime") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
-    i.push s.getString.getCreationTime.toSeconds.newVal
+    i.push s.getString.getCreationTime.toUnix.newVal
 
   def.symbol("hidden?") do (i: In):
     let vals = i.expect("'sym")
@@ -50,9 +50,9 @@ proc fs_module*(i: In) =
     info.qVal.add @["size".newVal, fi.size.newVal].newVal(i.scope)
     info.qVal.add @["permissions".newVal, fi.permissions.unixPermissions.newVal].newVal(i.scope)
     info.qVal.add @["nlinks".newVal, fi.linkCount.newVal].newVal(i.scope)
-    info.qVal.add @["ctime".newVal, fi.creationTime.toSeconds.newVal].newVal(i.scope)
-    info.qVal.add @["atime".newVal, fi.lastAccessTime.toSeconds.newVal].newVal(i.scope)
-    info.qVal.add @["mtime".newVal, fi.lastWriteTime.toSeconds.newVal].newVal(i.scope)
+    info.qVal.add @["ctime".newVal, fi.creationTime.toUnix.newVal].newVal(i.scope)
+    info.qVal.add @["atime".newVal, fi.lastAccessTime.toUnix.newVal].newVal(i.scope)
+    info.qVal.add @["mtime".newVal, fi.lastWriteTime.toUnix.newVal].newVal(i.scope)
     i.push info
 
   def.symbol("ftype") do (i: In):

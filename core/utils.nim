@@ -14,7 +14,7 @@ import
 proc reverse[T](xs: openarray[T]): seq[T] =
   result = newSeq[T](xs.len)
   for i, x in xs:
-    result[^i-1] = x 
+    result[result.len-i-1] = x 
 
 # Library methods
 
@@ -137,11 +137,11 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
     of JNull:
       result = newSeq[MinValue](0).newVal(i.scope)
     of JBool: 
-      result = json.getBVal.newVal
+      result = json.getBool.newVal
     of JInt:
-      result = json.getNum.newVal
+      result = json.getBiggestInt.newVal
     of JFloat:
-      result = json.getFNum.newVal
+      result = json.getFloat.newVal
     of JString:
       let s = json.getStr
       if s.match("^;sym:"):
