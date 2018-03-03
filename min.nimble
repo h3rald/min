@@ -7,4 +7,4 @@ license       = "MIT"
 bin           = "min"
 
 [Deps]
-requires: "nim >= 0.17.0"
+requires: "nim >= 0.18.0"
