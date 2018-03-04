@@ -20,8 +20,8 @@ sigils size :total-sigils
 'fs      load
 'crypto  load
 'math    load
-'net     load
 'http    load
+'net     load
 "=" 70 repeat puts!
 "Total Failures: $1" (failures) => % puts!
 failures exit
