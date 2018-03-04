@@ -267,12 +267,13 @@ when isMainModule:
   Arguments:
     filename  A $1 file to interpret (default: STDIN).
   Options:
-    —install:<lib>   Install dynamic library file <lib>
-    —uninstall:<lib> Uninstall dynamic library file <lib>
-    -e, —evaluate    Evaluate a $1 program inline
-    -h, —help        Print this help
-    -v, —version     Print the program version
-    -i, —interactive Start $1 shell""" % [appname, version]
+    -—install:<lib>   Install dynamic library file <lib>
+    —-uninstall:<lib> Uninstall dynamic library file <lib>
+    -l, --log         Set log level (1 to 5)
+    -e, --evaluate    Evaluate a $1 program inline
+    -h, —-help        Print this help
+    -v, —-version     Print the program version
+    -i, —-interactive Start $1 shell""" % [appname, version]
 
   var file, s: string = ""
   var args = newSeq[string](0)
