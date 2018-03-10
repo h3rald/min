@@ -13,6 +13,12 @@
 
   ("a,b,c" "," split ("a" "b" "c") ==) assert
 
+  ("abc" "" split ("a" "b" "c") ==) assert
+
+  ("This is a test" 5 2 substr "is" ==) assert
+
+  ("this" 2 3 substr "is" ==) assert
+
   ("This is a test" "is" indexof 2 ==) assert
 
   ("test #1" "[0-9]" search ("1") ==) assert 
