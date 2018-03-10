@@ -41,7 +41,15 @@ Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
 Returns the predecessor of {{i1}}.#}
 
 {#op||random||{{i1}}||{{i2}}||
-Returns a random number {{i2}} between 0 and {{i1}}-1. #}
+> Returns a random number {{i2}} between 0 and {{i1}}-1. 
+> 
+> %note%
+> Note
+> 
+> You must call `randomize` to initialize the random number generator, otherwise the same sequence of numbers will be returned.#}
+
+{#op||randomize||{{null}}||{{null}||
+Initializes the random number generator using a seed based on the current timestamp. #}
 
 {#op||succ||{{i1}}||{{i2}}||
 Returns the successor of {{i1}}.#}
