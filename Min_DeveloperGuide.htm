@@ -4546,11 +4546,11 @@ div .terminal {
 <p>You can download one of the following pre-built min binaries:</p>
 
 <ul>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_macosx_x64.zip">min v0.14.0 for macOS (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_windows_x64.zip">min v0.14.0 for Windows (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_x64.zip">min v0.14.0 for Linux (x64)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_x86.zip">min v0.14.0 for Linux (x86)</a></li>
-<li><a href="https://github.com/h3rald/min/releases/download/v0.14.0/min_v0.14.0_linux_arm.zip">min v0.14.0 for Linux (arm)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.15.0/min_v0.15.0_macosx_x64.zip">min v0.15.0 for macOS (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.15.0/min_v0.15.0_windows_x64.zip">min v0.15.0 for Windows (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.15.0/min_v0.15.0_linux_x64.zip">min v0.15.0 for Linux (x64)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.15.0/min_v0.15.0_linux_x86.zip">min v0.15.0 for Linux (x86)</a></li>
+<li><a href="https://github.com/h3rald/min/releases/download/v0.15.0/min_v0.15.0_linux_arm.zip">min v0.15.0 for Linux (arm)</a></li>
 </ul>
 
 
@@ -6666,9 +6666,9 @@ harvest
 <p><a id="min-operator-id-slice"></a>
 <span class="reference-title">slice</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">quot<sub>1</sub></span> <span class="kwd">int<sub>1</sub></span> <span class="kwd">int<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">quot<sub>2</sub></span></span></p>
 
-<p>Creates a new quotation <span class="kwd">quot<sub>2</sub></span> obtaining by selecting all elements of <span class="kwd">quot<sub>1</sub></span> between indexes <span class="kwd">a<sub>1</sub></span> and <span class="kwd">a<sub>2</sub></span>.</p>
+<p>Creates a new quotation <span class="kwd">quot<sub>2</sub></span> obtaining by selecting all elements of <span class="kwd">quot<sub>1</sub></span> between indexes <span class="kwd">int<sub>1</sub></span> and <span class="kwd">int<sub>2</sub></span>.</p>
 
 <div class="sidebar"><p>Example</p>
 
@@ -7316,6 +7316,13 @@ harvest
 
 <p>Returns <span class="kwd">string</span>, which is set to <span class="kwd">&apos;sym</span> with leading and trailing spaces removed.</p></div>
 
+<p><a id="min-operator-id-substr"></a>
+<span class="reference-title">substr</span></p>
+
+<div class="operator"><p><span class="kwd"> <span class="kwd">string<sub>1</sub></span> <span class="kwd">int<sub>1</sub></span> <span class="kwd">int<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">string<sub>2</sub></span></span></p>
+
+<p>Returns a substring <span class="kwd">string<sub>2</sub></span> obtained by retriving <span class="kwd">int<sub>2</sub></span> characters starting from index <span class="kwd">int<sub>1</sub></span> within <span class="kwd">string<sub>1</sub></span>.</p></div>
+
 <p><a id="min-operator-id-titleize"></a>
 <span class="reference-title">titleize</span></p>
 
@@ -7633,9 +7640,9 @@ harvest
 <p><a id="min-operator-id-div"></a>
 <span class="reference-title">div</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">int<sub>1</sub></span> <span class="kwd">int<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">int<sub>3</sub></span></span></p>
 
-<p>Divides <span class="kwd">a<sub>1</sub></span> by <span class="kwd">a<sub>2</sub></span> (integer division).</p></div>
+<p>Divides <span class="kwd">int<sub>1</sub></span> by <span class="kwd">int<sub>2</sub></span> (integer division).</p></div>
 
 <p><a id="min-operator-id-inf"></a>
 <span class="reference-title">inf</span></p>
@@ -7647,9 +7654,9 @@ harvest
 <p><a id="min-operator-id-mod"></a>
 <span class="reference-title">mod</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <span class="kwd">a<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>3</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">int<sub>1</sub></span> <span class="kwd">int<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">int<sub>3</sub></span></span></p>
 
-<p>Returns the integer module of <span class="kwd">a<sub>1</sub></span> divided by <span class="kwd">a<sub>2</sub></span>.</p></div>
+<p>Returns the integer module of <span class="kwd">int<sub>1</sub></span> divided by <span class="kwd">int<sub>2</sub></span>.</p></div>
 
 <p><a id="min-operator-id-nan"></a>
 <span class="reference-title">nan</span></p>
@@ -7668,23 +7675,35 @@ harvest
 <p><a id="min-operator-id-pred"></a>
 <span class="reference-title">pred</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">int<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">int<sub>2</sub></span></span></p>
 
-<p>Returns the predecessor of <span class="kwd">a<sub>1</sub></span>.</p></div>
+<p>Returns the predecessor of <span class="kwd">int<sub>1</sub></span>.</p></div>
 
 <p><a id="min-operator-id-random"></a>
 <span class="reference-title">random</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">int<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">int<sub>2</sub></span></span></p>
 
-<p>Returns a random number <span class="kwd">a<sub>2</sub></span> between 0 and <span class="kwd">a<sub>1</sub></span>-1.</p></div>
+<p>Returns a random number <span class="kwd">int<sub>2</sub></span> between 0 and <span class="kwd">int<sub>1</sub></span>-1.</p>
+
+<p>%note%
+Note</p>
+
+<p>You must call <code>randomize</code> to initialize the random number generator, otherwise the same sequence of numbers will be returned.</p></div>
+
+<p><a id="min-operator-id-randomize"></a>
+<span class="reference-title">randomize</span></p>
+
+<div class="operator"><p><span class="kwd"> &#x2205; <strong>&rArr;</strong> {{null}</span></p>
+
+<p>Initializes the random number generator using a seed based on the current timestamp.</p></div>
 
 <p><a id="min-operator-id-succ"></a>
 <span class="reference-title">succ</span></p>
 
-<div class="operator"><p><span class="kwd"> <span class="kwd">a<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">a<sub>2</sub></span></span></p>
+<div class="operator"><p><span class="kwd"> <span class="kwd">int<sub>1</sub></span> <strong>&rArr;</strong> <span class="kwd">int<sub>2</sub></span></span></p>
 
-<p>Returns the successor of <span class="kwd">a<sub>1</sub></span>.</p></div>
+<p>Returns the successor of <span class="kwd">int<sub>1</sub></span>.</p></div>
 
 <p><a id="min-operator-id-sum"></a>
 <span class="reference-title">sum</span></p>
@@ -7806,7 +7825,7 @@ harvest
 
 <div class="operator"><p><span class="kwd"> <span class="kwd">&apos;sym<sub>1</sub></span> <span class="kwd">&apos;sym<sub>2</sub></span> <strong>&rArr;</strong> <span class="kwd">string</span></span></p>
 
-<p>Encrypts or decrypts <span class="kwd">&apos;sym<sub>1</sub></span> using the Advanced Encryption Standard (AES), using <span class="kwd">&apos;sym<sub>2</sub></span> as password.</p></div>
+<p>Encrypts or decrypts <span class="kwd">&apos;sym<sub>1</sub></span> using the Advanced Encryption Standard (AES) in CTR mode, using <span class="kwd">&apos;sym<sub>2</sub></span> as password.</p></div>
 
 <a name="<code>math</code>-Module"></a>
 <h3><code>math</code> Module<a href="#document-top" title="Go to top"></a></h3>
@@ -8222,7 +8241,7 @@ cli recv-line puts :line
 <p>Stops the currently-running HTTP server. This operator should be used within an HTTP server handler quotation.</p></div>
     </div>
     <div id="footer">
-      <p><span class="copy"></span> Fabio Cevasco &ndash; February 18, 2018</p>
+      <p><span class="copy"></span> Fabio Cevasco &ndash; February 10, 2018</p>
       <p><span>Powered by</span> <a href="https://h3rald.com/hastyscribe"><span class="hastyscribe"></span></a></p>
     </div>
   </div>
