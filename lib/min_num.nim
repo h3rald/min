@@ -82,6 +82,9 @@ proc num_module*(i: In)=
       else:
         i.push newVal(b.intVal.float / a.floatVal) 
   
+  def.symbol("randomize") do (i: In):
+    randomize()
+
   def.symbol("random") do (i: In):
     let vals = i.expect("int")
     let n = vals[0]
