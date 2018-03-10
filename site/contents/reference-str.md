@@ -136,6 +136,9 @@ Splits {{sl1}} using separator {{sl2}} and returns the resulting strings within 
 {#op||strip||{{sl}}||{{s}}||
 Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#} 
 
+{#op||substr||{{s1}} {{i1}} {{i2}}||{{s2}}||
+Returns a substring {{s2}} obtained by retriving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
+
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
 

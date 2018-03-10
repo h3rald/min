@@ -28,13 +28,25 @@ proc str_module*(i: In) =
     let s = vals[0]
     i.push s.getString.strip.newVal
     
+  def.symbol("substr") do (i: In):
+    let vals = i.expect("int", "int", "'sym")
+    let length = vals[0].intVal
+    let start = vals[1].intVal
+    let s = vals[2].getString
+    let index = min(start+length-1, s.len-1) 
+    i.push s[start..index].newVal
+
   def.symbol("split") do (i: In):
     let vals = i.expect("'sym", "'sym")
-    let sep = vals[0]
-    let s = vals[1]
+    let sep = vals[0].getString
+    let s = vals[1].getString
     var q = newSeq[MinValue](0)
-    for e in s.getString().split(sep.getString()):
-      q.add e.newVal
+    if (sep == ""):
+      for c in s:
+        q.add ($c).newVal
+    else:
+      for e in s.split(sep):
+        q.add e.newVal
     i.push q.newVal(i.scope)
 
   def.symbol("join") do (i: In):
