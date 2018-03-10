@@ -29,5 +29,5 @@ Base64-encodes {{sl}}. #}
 Decodes the Base64-encoded string {{sl}}. #}
 
 {#op||aes||{{sl1}} {{sl2}}||{{s}}||
-Encrypts or decrypts {{sl1}} using the Advanced Encryption Standard (AES), using {{sl2}} as password. #}
+Encrypts or decrypts {{sl1}} using the Advanced Encryption Standard (AES) in CTR mode, using {{sl2}} as password. #}
 

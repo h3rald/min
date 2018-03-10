@@ -11,7 +11,9 @@ import
 import
   ../packages/sha1/sha1,
   ../packages/nimSHA2/nimSHA2,
-  ../packages/nimAES/nimAES
+  ../vendor/aes/aes
+
+{.compile: "vendor/aes/libaes.c".}
 
 proc crypto_module*(i: In)=
   let def = i.define()
@@ -60,15 +62,13 @@ proc crypto_module*(i: In)=
     let vals = i.expect("'sym", "'sym")
     let k = vals[0]
     let s = vals[1]
-    var ctx: AESContext
     var text = s.getString
-    var length = text.len
-    if length div 16 == 0:
-      text &= " ".repeat(16 - length)
-    elif length mod 16 != 0 and length div 16 >= 1:
-      text &= " ".repeat((length div 16 + 1) * 16 - length)
-    var key = k.getString.compute.toHex # SHA1 of key, to make sure it's long enough
-    var nonce = key[0..15]
-    i.push ctx.cryptOFB(nonce, text).newVal
+    var key = k.getString.compute.toHex
+    var iv = (key & $getTime().toUnix).compute.toHex
+    var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
+    AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[0].addr));
+    var input = cast[ptr uint8](text[0].addr)
+    AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
+    i.push text.newVal
 
   def.finalize("crypto")
