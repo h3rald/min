@@ -269,7 +269,7 @@ when isMainModule:
   Options:
     -—install:<lib>   Install dynamic library file <lib>
     —-uninstall:<lib> Uninstall dynamic library file <lib>
-    -l, --log         Set log level (1 to 5)
+    -l, --log         Set log level (0 to 5)
     -e, --evaluate    Evaluate a $1 program inline
     -h, —-help        Print this help
     -v, —-version     Print the program version

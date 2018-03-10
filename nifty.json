@@ -44,12 +44,6 @@
       "src": "https://github.com/h3rald/nim-miniz.git", 
       "git": true
     }, 
-    "nimAES": 
-    {
-      "name": "nimAES", 
-      "src": "https://github.com/jangko/nimAES.git", 
-      "git": true
-    }, 
     "nimSHA2": 
     {
       "name": "nimSHA2", 
