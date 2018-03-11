@@ -13,7 +13,7 @@ import
   ../packages/nimSHA2/nimSHA2,
   ../vendor/aes/aes
 
-{.compile: "vendor/aes/libaes.c".}
+{.compile: "../vendor/aes/libaes.c".}
 
 proc crypto_module*(i: In)=
   let def = i.define()
