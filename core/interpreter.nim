@@ -4,6 +4,7 @@ import
   critbits, 
   os,
   algorithm,
+  ospaths,
   logging
 import 
   value,
@@ -39,6 +40,9 @@ template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untype
   i.scope = origScope
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
+  var path = pwd
+  if not pwd.isAbsolute:
+    path = joinPath(getCurrentDir(), pwd)
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -46,7 +50,7 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
   var scope = new MinScope
   var i:MinInterpreter = MinInterpreter(
     filename: filename, 
-    pwd: pwd,
+    pwd: path,
     parser: pr, 
     stack: stack,
     trace: trace,
@@ -57,9 +61,12 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
   return i
 
 proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_exported_symbol_$1_2".}=
+  var path = filename
+  if not filename.isAbsolute:
+    path = joinPath(getCurrentDir(), filename)
   result = newMinInterpreter()
   result.filename = filename
-  result.pwd =  filename.parentDir
+  result.pwd =  path.parentDir
   result.stack = i.stack
   result.trace = i.trace
   result.stackcopy = i.stackcopy
