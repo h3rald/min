@@ -175,7 +175,7 @@ proc lang_module*(i: In) =
     file = i.pwd.joinPath(file)
     info("[load] File: ", file)
     if not file.fileExists:
-      raiseInvalid("File '$1' does not exists." % file)
+      raiseInvalid("File '$1' does not exist." % file)
     i.load file
 
   def.symbol("read") do (i: In):
@@ -186,7 +186,7 @@ proc lang_module*(i: In) =
       file = file & ".min"
     info("[read] File: ", file)
     if not file.fileExists:
-      raiseInvalid("File '$1' does not exists." % file)
+      raiseInvalid("File '$1' does not exist." % file)
     i.push i.read file
 
   def.symbol("with") do (i: In):

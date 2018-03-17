@@ -3,7 +3,8 @@ import
   os, 
   osproc, 
   strutils,
-  sequtils
+  sequtils,
+  logging
 import 
   ../core/parser, 
   ../core/value, 
@@ -28,8 +29,10 @@ proc sys_module*(i: In)=
   
   def.symbol("cd") do (i: In):
     let vals = i.expect("'sym")
-    let f = vals[0]
-    f.getString.setCurrentDir
+    let f = vals[0].getString
+    i.pwd = joinPath(getCurrentDir(), f)
+    info("Current directory changed to: ", i.pwd)
+    f.setCurrentDir
   
   def.symbol("ls") do (i: In):
     let vals = i.expect("'sym")
