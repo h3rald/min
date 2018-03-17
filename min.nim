@@ -259,7 +259,7 @@ when isMainModule:
   var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
-  (c) 2014-2017 Fabio Cevasco
+  (c) 2014-2018 Fabio Cevasco
   
   Usage:
     min [options] [filename]
@@ -269,7 +269,8 @@ when isMainModule:
   Options:
     -—install:<lib>   Install dynamic library file <lib>
     —-uninstall:<lib> Uninstall dynamic library file <lib>
-    -l, --log         Set log level (0 to 5)
+    -l, --log         Set log level (debug|info|notice|warn|error|fatal)
+                      Default: notice
     -e, --evaluate    Evaluate a $1 program inline
     -h, —-help        Print this help
     -v, —-version     Print the program version
