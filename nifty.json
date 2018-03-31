@@ -1,70 +1,59 @@
 {
-  "storage": "packages", 
-  "commands": 
-  {
-    "install": 
-    {
-      "git+src": 
-      {
+  "storage": "packages",
+  "commands": {
+    "install": {
+      "git+src": {
         "cmd": "git clone {{src}} --depth 1"
-      }, 
-      "git+src+tag": 
-      {
+      },
+      "git+src+tag": {
         "cmd": "git clone --branch {{tag}} {{src}} --depth 1"
-      }, 
-      "curl+src+name": 
-      {
+      },
+      "curl+src+name": {
         "cmd": "curl {{src}} -o {{name}}"
-      }
-    }, 
-    "update": 
-    {
-      "git+name": 
-      {
-        "cmd": "git pull", 
+      },
+      "_syntax": "install [<package>]",
+      "_description": "Installs the specified package (or all mapped packages) to the storage directory."
+    },
+    "update": {
+      "git+name": {
+        "cmd": "git pull",
         "pwd": "{{name}}"
-      }, 
-      "curl+src+name": 
-      {
+      },
+      "curl+src+name": {
         "cmd": "curl {{src}} -o {{name}}"
-      }
+      },
+      "_syntax": "update [<package>]",
+      "_description": "Updates the specified previously-installed package (or all packages)."
     }
-  }, 
-  "packages": 
-  {
-    "nim-sgregex": 
-    {
-      "name": "nim-sgregex", 
-      "src": "https://github.com/h3rald/nim-sgregex.git", 
+  },
+  "packages": {
+    "nim-sgregex": {
+      "name": "nim-sgregex",
+      "src": "https://github.com/h3rald/nim-sgregex.git",
       "git": true
-    }, 
-    "nim-miniz": 
-    {
-      "name": "nim-miniz", 
-      "src": "https://github.com/h3rald/nim-miniz.git", 
+    },
+    "nim-miniz": {
+      "name": "nim-miniz",
+      "src": "https://github.com/h3rald/nim-miniz.git",
       "git": true
-    }, 
-    "nimSHA2": 
-    {
-      "name": "nimSHA2", 
-      "src": "https://github.com/jangko/nimSHA2.git", 
+    },
+    "nimSHA2": {
+      "name": "nimSHA2",
+      "src": "https://github.com/jangko/nimSHA2.git",
       "git": true
-    }, 
-    "sha1": 
-    {
-      "name": "sha1", 
-      "src": "https://github.com/onionhammer/sha1.git", 
+    },
+    "sha1": {
+      "name": "sha1",
+      "src": "https://github.com/onionhammer/sha1.git",
       "git": true
-    }, 
-    "nimline": 
-    {
-      "name": "nimline", 
-      "src": "https://github.com/h3rald/nimline.git", 
+    },
+    "nimline": {
+      "name": "nimline",
+      "src": "https://github.com/h3rald/nimline.git",
       "git": true
-    }, 
-    "niftylogger.nim": 
-    {
-      "name": "niftylogger.nim", 
+    },
+    "niftylogger.nim": {
+      "name": "niftylogger.nim",
       "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/niftylogger.nim",
       "curl": true
     }
