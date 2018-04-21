@@ -13,7 +13,7 @@ title: "Welcome to the min programming language"
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 
       <a href="https://github.com/h3rald/min/issues">Issue Tracking</a> |
-      <a href="https://cdn.rawgit.com/h3rald/min/master/Min_DeveloperGuide.htm">Guide</a>
+      <a href="https://h3rald.com/min/Min_DeveloperGuide.htm">Guide</a>
     </small>
   </section>
 </div>
