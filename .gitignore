@@ -5,6 +5,8 @@ min
 nakefile
 Min_DeveloperGuide.htm
 nimsuggest.log
+libdyntools*
+dyntools.nim
 *.zip
 packages/
 site/output/
