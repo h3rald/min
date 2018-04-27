@@ -33,11 +33,13 @@ proc debug*(i: In, value: string) {.extern:"min_exported_symbol_$1_2".}=
 
 template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untyped =
   let origScope = i.scope
-  i.scope = q.scope.copy
-  i.scope.parent = origScope
-  body
-  res = i.scope
-  i.scope = origScope
+  try:
+    i.scope = q.scope.copy
+    i.scope.parent = origScope
+    body
+    res = i.scope
+  finally:
+    i.scope = origScope
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
   var path = pwd
