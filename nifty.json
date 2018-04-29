@@ -24,6 +24,17 @@
       },
       "_syntax": "update [<package>]",
       "_description": "Updates the specified previously-installed package (or all packages)."
+    },
+    "upgrade": {
+      "_syntax": "upgrade [<package>]",
+      "_description": "Upgrades the specified previously-installed package (or all packages).",
+      "git+name": {
+        "cmd": "git pull",
+        "pwd": "{{name}}"
+      },
+      "curl+src+name": {
+        "cmd": "curl {{src}} -o {{name}}"
+      }
     }
   },
   "packages": {
