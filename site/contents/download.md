@@ -80,3 +80,8 @@ min also supports running programs from standard input, so the following command
 > %min-terminal%
 > 
 > [$](class:prompt) cat myfile.min | min
+
+## Syntax Highlighting
+
+* If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
+* If you are using [Sublime Text 3](https://www.sublimetext.com/3), Rafael Carrasco created a min syntax definition file that is available [here](https://github.com/rscarrasco/min-sublime-syntax).
