@@ -4,6 +4,15 @@ title: "crypto Module"
 -----
 {@ _defs_.md || 0 @}
 
+{#op||aes||{{sl1}} {{sl2}}||{{s}}||
+Encrypts or decrypts {{sl1}} using the Advanced Encryption Standard (AES) in CTR mode, using {{sl2}} as password. #}
+
+{#op||decode||{{sl}}||{{s}}||
+Decodes the Base64-encoded string {{sl}}. #}
+
+{#op||encode||{{sl}}||{{s}}||
+Base64-encodes {{sl}}. #}
+
 {#op||md5||{{sl}}||{{s}}||
 Returns the MD5 hash of {{sl}}. #}
 
@@ -21,13 +30,3 @@ Returns the SHA384 hash of {{sl}}. #}
 
 {#op||sha512||{{sl}}||{{s}}||
 Returns the SHA512 hash of {{sl}}. #}
-
-{#op||encode||{{sl}}||{{s}}||
-Base64-encodes {{sl}}. #}
-
-{#op||encode||{{sl}}||{{s}}||
-Decodes the Base64-encoded string {{sl}}. #}
-
-{#op||aes||{{sl1}} {{sl2}}||{{s}}||
-Encrypts or decrypts {{sl1}} using the Advanced Encryption Standard (AES) in CTR mode, using {{sl2}} as password. #}
-
