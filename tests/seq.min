@@ -55,6 +55,14 @@
 
   ((1 2 3 4 5) 3 shorten (1 2 3) ==) assert
 
+  ((1 2 3 4 5) 3 take (1 2 3) ==) assert
+
+  ((1 2 3 4 5) 6 take (1 2 3 4 5) ==) assert
+
+  ((1 2 3 4 5) 3 drop (4 5) ==) assert
+
+  ((1 2 3 4 5) 6 drop () ==) assert
+
   ((1 2 3 4 5) (2 >) find 2 ==) assert
 
   ((1 2 3 4 5) 1 (*) reduce 120 ==) assert

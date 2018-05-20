@@ -56,6 +56,9 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 > >     (("q" 5) ("a" 4) ("c" 6) ("d" 7)) ("a" "d") dpick
  #}
 
+{#op||drop||{{q1}} {{i}}||{{q2}}||
+Returns a quotation {{q2}} containing the remaining elements after the first _n_ values of the input quotation {{q1}}, or an empty quotation if {{i}} is greater than the length of {{q1}}. #}
+
 {#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified copy of the dictionary {{d2}}. #}
 
@@ -211,3 +214,7 @@ Returns the length of {{q}}.#}
 > > The following program leaves `(1 3 5 7 9 13 16)` on the stack:
 > > 
 > >     (1 9 5 13 16 3 7) '> sort #}
+
+{#op||take||{{q1}} {{i}}||{{q2}}||
+Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}, or {{q1}} itself if {{i}} is greater than the length of {{q1}}. #}
+

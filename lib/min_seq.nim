@@ -222,6 +222,24 @@ proc seq_module*(i: In)=
       raiseInvalid("Quotation is too short")
     i.push q.qVal[0..n.intVal.int-1].newVal(i.scope)
 
+  def.symbol("take") do (i: In):
+    let vals = i.expect("int", "quot")
+    let n = vals[0]
+    let q = vals[1]
+    var nint = n.intVal
+    if nint > q.qVal.len:
+      nint = q.qVal.len
+    i.push q.qVal[0..nint-1].newVal(i.scope)
+
+  def.symbol("drop") do (i: In):
+    let vals = i.expect("int", "quot")
+    let n = vals[0]
+    let q = vals[1]
+    var nint = n.intVal
+    if nint > q.qVal.len:
+      nint = q.qVal.len
+    i.push q.qVal[nint..q.qVal.len-1].newVal(i.scope)
+
   def.symbol("find") do (i: In):
     let vals = i.expect("quot", "quot")
     var test = vals[0]
