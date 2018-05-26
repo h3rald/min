@@ -19,6 +19,8 @@ type
     tkFloat,
     tkBracketLe,
     tkBracketRi,
+    tkBraceLe,
+    tkBraceRi,
     tkSymbol,
     tkTrue,
     tkFalse
@@ -26,22 +28,26 @@ type
     minInt,
     minFloat,
     minQuotation,
+    minDictionary,
     minString,
     minSymbol,
     minBool
-  MinEventKind* = enum    ## enumeration of all events that may occur when parsing
+  MinEventKind* = enum     ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
     eMinEof,               ## end of file reached
     eMinString,            ## a string literal
     eMinInt,               ## an integer literal
     eMinFloat,             ## a float literal
     eMinQuotationStart,    ## start of an array: the ``(`` token
-    eMinQuotationEnd       ## start of an array: the ``)`` token
+    eMinQuotationEnd,      ## start of an array: the ``)`` token
+    eMinDictionaryStart,   ## start of a dictionary: the ``{`` token
+    eMinDictionaryEnd      ## start of a dictionary: the ``}`` token
   MinParserError* = enum        ## enumeration that lists all errors that can occur
     errNone,               ## no error
     errInvalidToken,       ## invalid token
     errStringExpected,     ## string expected
     errBracketRiExpected,  ## ``)`` expected
+    errBraceRiExpected,    ## ``}`` expected
     errQuoteExpected,      ## ``"`` or ``'`` expected
     errEOC_Expected,       ## ``*/`` expected
     errEofExpected,        ## EOF expected
@@ -50,6 +56,7 @@ type
     stateEof, 
     stateStart, 
     stateQuotation, 
+    stateDictionary, 
     stateExpectValue
   MinParser* = object of BaseLexer
     a*: string
@@ -66,7 +73,7 @@ type
     case kind*: MinKind
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
-      of minQuotation: 
+      of minQuotation, minDictionary: 
         qVal*: seq[MinValue]
         scope*: ref MinScope
         obj*: pointer
@@ -109,7 +116,7 @@ type
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
 
-# Error Helpers
+# Helpers
 
 proc raiseInvalid*(msg: string) {.extern:"min_exported_symbol_$1".}=
   raise MinInvalidError(msg: msg)
@@ -123,6 +130,9 @@ proc raiseOutOfBounds*(msg: string) {.extern:"min_exported_symbol_$1".}=
 proc raiseEmptyStack*() {.extern:"min_exported_symbol_$1".}=
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
+proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.extern:"min_exported_symbol_$1".}=
+  if v.kind == minDictionary:
+    return v.scope.symbols
 
 const
   errorMessages: array[MinParserError, string] = [
@@ -130,6 +140,7 @@ const
     "invalid token",
     "string expected",
     "')' expected",
+    "'}' expected",
     "'\"' or \"'\" expected",
     "'*/' expected",
     "EOF expected",
@@ -143,6 +154,8 @@ const
     "float literal",
     "(", 
     ")",
+    "{",
+    "}",
     "symbol",
     "true",
     "false"
@@ -198,7 +211,6 @@ proc errorMsgExpected*(my: MinParser, e: string): string {.extern:"min_exported_
   result = errorMsg(my, e & " expected")
 
 proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1".}=
-
   raise MinParsingError(msg: errorMsgExpected(p, msg))
 
 proc raiseUndefined*(p:MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1_2".}=
@@ -306,7 +318,7 @@ proc parseSymbol(my: var MinParser): MinTokenKind =
   var pos = my.bufpos
   var buf = my.buf
   if not(buf[pos] in Whitespace):
-    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(']):
+    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}', '{']):
         add(my.a, buf[pos])
         inc(pos)
   my.bufpos = pos
@@ -413,6 +425,12 @@ proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1
   of ')':
     inc(my.bufpos)
     result = tkBracketRi
+  of '{':
+    inc(my.bufpos)
+    result = tkBraceLe
+  of '}':
+    inc(my.bufpos)
+    result = tkBraceRi
   of '\0':
     result = tkEof
   else:
@@ -443,6 +461,9 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
     of tkBracketLe: 
       my.state.add(stateQuotation) # we expect any
       my.kind = eMinQuotationStart
+    of tkBraceLe: 
+      my.state.add(stateDictionary) # we expect any
+      my.kind = eMinDictionaryStart
     of tkEof:
       my.kind = eMinEof
     else:
@@ -455,12 +476,37 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
     of tkBracketLe: 
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
+    of tkBraceLe: 
+      my.state.add(stateDictionary)
+      my.kind = eMinDictionaryStart
     of tkBracketRi:
       my.kind = eMinQuotationEnd
+      discard my.state.pop()
+    of tkBraceRi:
+      my.kind = eMinDictionaryEnd
       discard my.state.pop()
     else:
       my.kind = eMinError
       my.err = errBracketRiExpected
+  of stateDictionary:
+    case tk
+    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
+      my.kind = MinEventKind(ord(tk))
+    of tkBracketLe: 
+      my.state.add(stateQuotation)
+      my.kind = eMinQuotationStart
+    of tkBraceLe: 
+      my.state.add(stateDictionary)
+      my.kind = eMinDictionaryStart
+    of tkBracketRi:
+      my.kind = eMinQuotationEnd
+      discard my.state.pop()
+    of tkBraceRi:
+      my.kind = eMinDictionaryEnd
+      discard my.state.pop()
+    else:
+      my.kind = eMinError
+      my.err = errBraceRiExpected
   of stateExpectValue:
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
@@ -468,6 +514,9 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
     of tkBracketLe: 
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
+    of tkBraceLe: 
+      my.state.add(stateDictionary)
+      my.kind = eMinDictionaryStart
     else:
       my.kind = eMinError
       my.err = errExprExpected
@@ -506,6 +555,17 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     eat(p, tkBracketRi)
     i.scope = oldscope
     result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
+  of tkBraceLe:
+    var q = newSeq[MinValue](0)
+    var oldscope = i.scope
+    var newscope = newScopeRef(i.scope)
+    i.scope = newscope
+    discard getToken(p)
+    while p.token != tkBraceRi: 
+      q.add p.parseMinValue(i)
+    eat(p, tkBraceRi)
+    i.scope = oldscope
+    result = MinValue(kind: minDictionary, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
     p.a = ""
@@ -534,6 +594,14 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
         q = q & ";" & a.objType
       q = q.strip & ")"
       return q
+    of minDictionary:
+      var d = "{"
+      for i in a.dVal.pairs:
+        d = d & $i.val.val & " :" & $i.key & " "
+      if not a.objType.isNil: 
+        d = d & ";" & a.objType
+      d = d.strip & "}"
+      return d
 
 proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:
@@ -555,6 +623,14 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
         q = q & ";" & a.objType
       q = q.strip & ")"
       return q
+    of minDictionary:
+      var d = "{"
+      for i in a.dVal.pairs:
+        d = d & $i.val.val & " :" & $i.key & " "
+      if not a.objType.isNil: 
+        d = d & ";" & a.objType
+      d = d.strip & "}"
+      return d
 
 proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
   stdout.write($$a)

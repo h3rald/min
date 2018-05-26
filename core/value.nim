@@ -10,13 +10,15 @@ proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
       return "int"
     of minFloat:
       return "float"
-    of minQuotation:
+    of minQuotation: #TODO review
       if v.isTypedDictionary:
         return "dict:" & v.objType
       elif v.isDictionary:
         return "dict"
       else:
         return "quot"
+    of minDictionary:
+      return "dict"
     of minString:
       return "string"
     of minSymbol:
@@ -32,8 +34,11 @@ proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
 proc newVal*(s: cstring): MinValue {.extern:"min_exported_symbol_$1_2".}=
   return MinValue(kind: minString, strVal: $s)
 
-proc newVal*(q: seq[MinValue], parentScope: ref MinScope): MinValue {.extern:"min_exported_symbol_$1_3".}=
-  return MinValue(kind: minQuotation, qVal: q, scope: newScopeRef(parentScope))
+proc newVal*(q: seq[MinValue], parentScope: ref MinScope, dictionary = false): MinValue {.extern:"min_exported_symbol_$1_3".}=
+  if dictionary:
+    return MinValue(kind: minDictionary, qVal: q, scope: newScopeRef(parentScope))
+  else:
+    return MinValue(kind: minQuotation, qVal: q, scope: newScopeRef(parentScope))
 
 proc newVal*(i: BiggestInt): MinValue {.extern:"min_exported_symbol_$1_4".}=
   return MinValue(kind: minInt, intVal: i)
