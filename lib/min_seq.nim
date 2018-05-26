@@ -364,7 +364,7 @@ proc seq_module*(i: In)=
   def.symbol("ddel") do (i: In):
     let vals = i.expect("'sym", "dict")
     let k = vals[0]
-    let d = vals[1]
+    var d = vals[1]
     i.push i.ddel(d, k)
 
   def.symbol("dkeys") do (i: In):

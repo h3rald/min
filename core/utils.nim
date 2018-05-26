@@ -50,63 +50,42 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 proc dget*(q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  for v in q.qVal:
-    if v.qVal[0].getString == s.getString:
-      return v.qVal[1]
-  raiseInvalid("Dictionary key '$1' not found" % s.getString)
+  let val = q.dVal[s.getString]
+  return val.val.qVal[0]
 
 proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  for v in q.qVal:
-    if v.qVal[0].getString == s.getString:
-      return true
-  return false
+  return q.dVal.contains(s.getString)
 
-proc ddel*(i: In, p: MinValue, s: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
+proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  var q = newVal(p.qVal, i.scope)
-  var found = false
-  var c = -1
-  for v in q.qVal:
-    c.inc
-    if v.qVal[0].getString == s.getString:
-      found = true
-      break
-  if found:
-    q.qVal.delete(c)
-  return q
+  excl(p.scope.symbols, s.getString)
+  return p
       
 proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  var q = newVal(p.qVal, i.scope)
-  var found = false
-  var c = -1
-  for v in q.qVal:
-    c.inc
-    if v.qVal[0].getString == s.getString:
-      found = true
-      break
-  if found:
-    q.qVal.delete(c)
-    q.qVal.insert(@[s.getString.newVal, m].newVal(i.scope), c)
-  else:
-    q.qVal.add(@[s.getString.newVal, m].newVal(i.scope))
-  return q
+  var q = m
+  if not q.isQuotation:
+    q = @[q].newVal(i.scope)
+  p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
+  return p
 
 proc keys*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal(i.scope)
-  for v in q.qVal:
-    result.qVal.add v.qVal[0].getString.newVal
+  var r = newSeq[MinValue](0)
+  for i in q.dVal.keys:
+    r.add newVal(i)
+  return r.newVal(i.scope)
 
 proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   # Assumes q is a dictionary
-  result = newSeq[MinValue](0).newVal(i.scope)
-  for v in q.qVal:
-    result.qVal.add v.qVal[1]
+  var r = newSeq[MinValue](0)
+  for i in q.dVal.values:
+    r.add i.val
+  return r.newVal(i.scope)
 
 # JSON interop
 
@@ -126,15 +105,9 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
     of minFloat:
       return %a.floatVal
     of minQuotation:
-      # TODO Review
-      if a.isDictionary:
-        result = newJObject()
-        for i in a.qVal:
-          result[$i.qVal[0].getString] = %i.qVal[1]
-      else:
-        result = newJArray()
-        for i in a.qVal:
-          result.add %i
+      result = newJArray()
+      for i in a.qVal:
+        result.add %i
     of minDictionary:
       result = newJObject()
       for i in a.dVal.pairs: 
@@ -159,6 +132,7 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
     of JObject:
       var res = newSeq[MinValue](0)
       for key, value in json.pairs:
+        #TODO
         res.add @[key.newVal, i.fromJson(value)].newVal(i.scope)
       return res.newVal(i.scope)
     of JArray:
