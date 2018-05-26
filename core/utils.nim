@@ -50,8 +50,7 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 proc dget*(q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  let val = q.dVal[s.getString]
-  return val.val.qVal[0]
+  return q.dVal[s.getString].val
 
 proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
