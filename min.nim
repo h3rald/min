@@ -26,6 +26,7 @@ import
   lib/min_lang, 
   lib/min_stack, 
   lib/min_seq, 
+  lib/min_dict, 
   lib/min_num,
   lib/min_str,
   lib/min_logic,
@@ -126,6 +127,7 @@ proc stdLib*(i: In) =
   i.lang_module
   i.stack_module
   i.seq_module
+  i.dict_module
   i.io_module
   i.logic_module
   i.num_module

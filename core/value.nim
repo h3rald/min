@@ -49,6 +49,9 @@ proc newVal*(f: BiggestFloat): MinValue {.extern:"min_exported_symbol_$1_5".}=
 proc newVal*(s: bool): MinValue {.extern:"min_exported_symbol_$1_6".}=
   return MinValue(kind: minBool, boolVal: s)
 
+proc newDict*(parentScope: ref MinScope): MinValue {.extern:"min_exported_symbol_$1".}=
+  return MinValue(kind: minDictionary, qVal: newSeq[MinValue](0), scope: newScopeRef(parentScope))
+
 proc newSym*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
   return MinValue(kind: minSymbol, symVal: s)
 

@@ -6,6 +6,7 @@
 'sys       import
 'stack     import
 'seq       import
+'dict      import
 'time      import
 'fs        import
 'lite? (
