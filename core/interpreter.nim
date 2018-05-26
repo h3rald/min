@@ -41,6 +41,16 @@ template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untype
   finally:
     i.scope = origScope
 
+template withScope*(i: In, q: MinValue, body: untyped): untyped =
+  let origScope = i.scope
+  try:
+    i.scope = q.scope.copy
+    i.scope.parent = origScope
+    body
+    q.scope = i.scope
+  finally:
+    i.scope = origScope
+
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
   var path = pwd
   if not pwd.isAbsolute:
@@ -120,10 +130,10 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
       i.push(op.val)
 
 proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
-  if not q.isQuotation:
+  if q.kind != minQuotation and q.kind != minDictionary:
     i.push(q)
   else:
-    i.withScope(q, q.scope): 
+    i.withScope(q): 
       for v in q.qVal:
         i.push v
 
@@ -132,7 +142,7 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(q, q.scope): 
+    i2.withScope(q): 
       for v in q.qVal:
         if (v.kind == minQuotation):
           var v2 = v
@@ -168,7 +178,10 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
-    i.stack.add(val)
+    var v = val
+    if (v.kind == minDictionary):
+      i.dequote(v)
+    i.stack.add(v)
 
 proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   if i.stack.len > 0:

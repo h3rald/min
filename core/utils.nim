@@ -110,7 +110,10 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
 
 # JSON interop
 
-proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent".}=
+proc `%`*(p: MinOperatorProc): JsonNode {.extern:"min_exported_symbol_percent_1".}=
+  return %nil
+
+proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
   case a.kind:
     of minBool:
       return %a.boolVal
@@ -123,6 +126,7 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent".}=
     of minFloat:
       return %a.floatVal
     of minQuotation:
+      # TODO Review
       if a.isDictionary:
         result = newJObject()
         for i in a.qVal:
@@ -131,6 +135,10 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent".}=
         result = newJArray()
         for i in a.qVal:
           result.add %i
+    of minDictionary:
+      result = newJObject()
+      for i in a.dVal.pairs: 
+        result[$i.key] = %i.val
 
 proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
   case json.kind:
