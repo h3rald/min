@@ -1,5 +1,4 @@
 import 
-  critbits, 
   tables,
   sequtils,
   algorithm
@@ -339,67 +338,5 @@ proc seq_module*(i: In)=
       else:
         res.add el
     i.push res.newVal(i.scope)
-
-  # Operations on dictionaries
-
-  def.symbol("dhas?") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let k = vals[0]
-    let d = vals[1]
-    i.push d.dhas(k).newVal
-
-  def.symbol("dget") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let k = vals[0]
-    let d = vals[1]
-    var val = d.dget(k)
-    i.dequote val # Dictionary values are always quoted
-    
-  def.symbol("dset") do (i: In):
-    let vals = i.expect("'sym", "a", "dict")
-    let k = vals[0]
-    let m = vals[1]
-    let d = vals[2]
-    i.push i.dset(d, k, m) 
-
-  def.symbol("ddel") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let k = vals[0]
-    var d = vals[1]
-    i.push i.ddel(d, k)
-
-  def.symbol("dkeys") do (i: In):
-    let vals = i.expect("dict")
-    let d = vals[0]
-    i.push i.keys(d)
-
-  def.symbol("dvalues") do (i: In):
-    let vals = i.expect("dict")
-    let d = vals[0]
-    i.push i.values(d)
-
-  def.symbol("dsort") do (i: In):
-    let vals = i.expect("dict")
-    var d = vals[0]
-    i.push d.qVal.sortedByIt(it.qVal[0].getString).newVal(i.scope)
-
-  def.symbol("dpick") do (i: In):
-    let vals = i.expect("quot", "dict")
-    var q = vals[0]
-    var d = vals[1]
-    var res = newSeq[MinValue](0)
-    for v in d.qVal:
-      if q.qVal.contains v.qVal[0]:
-        res.add v
-    i.push res.newVal(i.scope)
-
-  def.sigil("?") do (i: In):
-    i.push("dhas?".newSym)
-
-  def.sigil("/") do (i: In):
-    i.push("dget".newSym)
-
-  def.sigil("%") do (i: In):
-    i.push("dset".newSym)
 
   def.finalize("seq")
