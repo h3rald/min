@@ -352,7 +352,8 @@ proc seq_module*(i: In)=
     let vals = i.expect("'sym", "dict")
     let k = vals[0]
     let d = vals[1]
-    i.push d.dget(k)
+    var val = d.dget(k)
+    i.dequote val # Dictionary values are always quoted
     
   def.symbol("dset") do (i: In):
     let vals = i.expect("'sym", "a", "dict")

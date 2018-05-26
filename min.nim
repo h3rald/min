@@ -218,6 +218,18 @@ proc printResult(i: In, res: MinValue) =
       else:
         echo " ".repeat(n.len) & "        ;" & res.objType
         echo " ".repeat(n.len) & "      )"
+    elif res.isDictionary and res.dVal.len > 1:
+      echo "{$1} -> {" % n
+      for item in res.dVal.pairs:
+        var v = $item.val.val
+        if (not item.val.quotation):
+          v = v[1 .. v.len-2]
+        echo  "         " & v & " :" & $item.key
+      if res.objType.isNil:
+        echo " ".repeat(n.len) & "      }"
+      else:
+        echo " ".repeat(n.len) & "        ;" & res.objType
+        echo " ".repeat(n.len) & "      }"
     else:
       echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
 
