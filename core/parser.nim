@@ -97,6 +97,7 @@ type
     of minProcOp:
       prc*: MinOperatorProc
     of minValOp:
+      quotation*: bool
       val*: MinValue
   MinStack* = seq[MinValue]
   In* = var MinInterpreter
@@ -597,7 +598,10 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
     of minDictionary:
       var d = "{"
       for i in a.dVal.pairs:
-        d = d & $i.val.val & " :" & $i.key & " "
+        var v = $i.val.val
+        if (not i.val.quotation):
+          v = v[1 .. v.len-2]
+        d = d & v & " :" & $i.key & " "
       if not a.objType.isNil: 
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -626,7 +630,10 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
     of minDictionary:
       var d = "{"
       for i in a.dVal.pairs:
-        d = d & $i.val.val & " :" & $i.key & " "
+        var v = $i.val.val
+        if (not i.val.quotation):
+          v = v[1 .. v.len-2]
+        d = d & v & " :" & $i.key & " "
       if not a.objType.isNil: 
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -662,14 +669,7 @@ proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
 
 proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  if not q.isQuotation:
-    return false
-  if q.qVal.len == 0:
-    return true
-  for val in q.qVal:
-    if not val.isQuotation or val.qVal.len != 2 or not val.qVal[0].isString:
-      return false
-  return true
+  return q.kind == minDictionary
 
 proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if q.isDictionary:

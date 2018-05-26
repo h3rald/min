@@ -96,26 +96,30 @@ proc lang_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
+    var isQuot = true
     if not q1.isQuotation:
       q1 = @[q1].newVal(i.scope)
+      isQuot = false
     symbol = sym.getString
     if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
 
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
+    var isQuot = true
     if not q1.isQuotation:
       q1 = @[q1].newVal(i.scope)
+      isQuot = false
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
-    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
+    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, quotation: isQuot))
     if not res:
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
@@ -133,7 +137,7 @@ proc lang_module*(i: In) =
     code.filename = i.filename
     i.dequote(code)
     info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
-    i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope))
+    i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope), quotation: true)
 
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
@@ -493,7 +497,7 @@ proc lang_module*(i: In) =
     if not json.hasKey(sym):
       raiseUndefined("Symbol '$1' not found." % sym)
     let val = i.fromJson(json[sym])
-    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val)
+    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
 
   def.symbol("stored-symbols") do (i: In):
     var q = newSeq[MinValue](0)
