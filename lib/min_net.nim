@@ -24,22 +24,22 @@ proc net_module*(i: In)=
       sDomain = "ipv4"
       sSockType = "stream"
       sProtocol = "tcp"
-    if q.dhas("domain".newVal):
-      sDomain = q.dget("domain".newVal).getString
+    if q.dhas("domain"):
+      sDomain = i.dget(q, "domain").getString
       if (sDomain == "unix"):
         domain = AF_UNIX
       elif (sDomain == "ipv6"):
         domain = AF_INET6
-    if q.dhas("type".newVal):
-      sSockType = q.dget("type".newVal).getString
+    if q.dhas("type"):
+      sSockType = i.dget(q, "type").getString
       if (sSockType == "dgram"):
         sockettype = SOCK_DGRAM
       elif (sSockType == "raw"):
         sockettype = SOCK_RAW
       elif (sSockType == "seqpacket"):
         sockettype = SOCK_SEQPACKET
-    if q.dhas("protocol".newVal):
-      sProtocol = q.dget("protocol".newVal).getstring
+    if q.dhas("protocol"):
+      sProtocol = i.dget(q, "protocol").getstring
       if (sProtocol == "udp"):
         protocol = IPPROTO_UDP
       elif (sProtocol == "ipv4"):
@@ -52,9 +52,9 @@ proc net_module*(i: In)=
         protocol = IPPROTO_ICMP
     var socket = newSocket(domain, sockettype, protocol)
     var skt = newSeq[MinValue](0).newVal(i.scope)
-    skt = i.dset(skt, "domain".newVal, sDomain.newVal)
-    skt = i.dset(skt, "type".newVal, sSockType.newVal)
-    skt = i.dset(skt, "protocol".newVal, sProtocol.newVal)
+    skt = i.dset(skt, "domain", sDomain.newVal)
+    skt = i.dset(skt, "type", sSockType.newVal)
+    skt = i.dset(skt, "protocol", sProtocol.newVal)
     skt.objType = "socket"
     skt.obj = socket[].addr
     i.push skt
@@ -70,13 +70,13 @@ proc net_module*(i: In)=
     var socket = skt.toSocket
     var address = "0.0.0.0"
     var port: BiggestInt = 80
-    if params.dhas("address".newVal):
-      address = params.dget("address".newVal).getString
-    if params.dhas("port".newVal):
-      port = params.dget("port".newVal).intVal
+    if params.dhas("address"):
+      address = i.dget(params, "address").getString
+    if params.dhas("port"):
+      port = i.dget(params, "port").intVal
     socket.bindAddr(Port(port), address)
-    skt = i.dset(skt, "address".newVal, address.newVal)
-    skt = i.dset(skt, "port".newVal, port.newVal)
+    skt = i.dset(skt, "address", address.newVal)
+    skt = i.dset(skt, "port", port.newVal)
     skt.objType = "socket"
     skt.obj = socket[].addr
     socket.listen()
@@ -90,7 +90,7 @@ proc net_module*(i: In)=
     var serverSocket = server.toSocket
     var clientSocket = client.toSocket
     serverSocket.acceptAddr(clientSocket, address)
-    i.dset(client, "address".newVal, address.newVal)
+    i.dset(client, "address", address.newVal)
     client.objType = "socket"
     client.obj = clientSocket[].addr
     i.push client
@@ -102,8 +102,8 @@ proc net_module*(i: In)=
     var skt = vals[2]
     let socket = skt.toSocket
     socket.connect(address.getString, Port(port.intVal))
-    skt = i.dset(skt, "address".newVal, address)
-    skt = i.dset(skt, "port".newVal, port)
+    skt = i.dset(skt, "address", address)
+    skt = i.dset(skt, "port", port)
     skt.objType = "socket"
     skt.obj = socket[].addr
     i.push skt

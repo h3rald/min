@@ -26,7 +26,7 @@ proc dump*(i: MinInterpreter): string {.extern:"min_exported_symbol_$1".}=
   return s
 
 proc debug*(i: In, value: MinValue) {.extern:"min_exported_symbol_$1".}=
-  debug("{" & i.dump & $value & "}")
+  debug("(" & i.dump & $value & ")")
 
 proc debug*(i: In, value: string) {.extern:"min_exported_symbol_$1_2".}=
   debug(value)
@@ -154,6 +154,24 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
     i.trace = i2.trace
     raise
   i.push i2.stack.newVal(i.scope)
+
+proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+  var i2 = newMinInterpreter("<call>")
+  i2.trace = i.trace
+  i2.scope = i.scope
+  try:
+    i2.withScope(q): 
+      for v in q.qVal:
+        if (v.kind == minQuotation):
+          var v2 = v
+          i2.dequote(v2)
+        else:
+          i2.push v
+  except:
+    i.currSym = i2.currSym
+    i.trace = i2.trace
+    raise
+  return i2.stack.newVal(i2.scope)
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:

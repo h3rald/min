@@ -47,20 +47,38 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 
 # Dictionary Methods
 
-proc dget*(q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  return q.dVal[s.getString].val
+  var val = q.dVal[s.getString].val
+  return i.call(val)
+
+proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbol_$1_2".}=
+  if not q.isDictionary:
+    raiseInvalid("Value is not a dictionary")
+  var val = q.dVal[s].val
+  return i.call(val)
 
 proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   return q.dVal.contains(s.getString)
 
+proc dhas*(q: MinValue, s: string): bool {.extern:"min_exported_symbol_$1_2".}=
+  if not q.isDictionary:
+    raiseInvalid("Value is not a dictionary")
+  return q.dVal.contains(s)
+
 proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   excl(p.scope.symbols, s.getString)
+  return p
+      
+proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable, extern:"min_exported_symbol_$1_2".} =
+  if not p.isDictionary:
+    raiseInvalid("Value is not a dictionary")
+  excl(p.scope.symbols, s)
   return p
       
 proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
@@ -70,6 +88,15 @@ proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable
   if not q.isQuotation:
     q = @[q].newVal(i.scope)
   p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
+  return p
+
+proc dset*(i: In, p: MinValue, s: string, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1_2".}=
+  if not p.isDictionary:
+    raiseInvalid("Value is not a dictionary")
+  var q = m
+  if not q.isQuotation:
+    q = @[q].newVal(i.scope)
+  p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
 proc keys*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=

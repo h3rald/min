@@ -21,8 +21,7 @@ proc dict_module*(i: In)=
     let vals = i.expect("'sym", "dict")
     let k = vals[0]
     let d = vals[1]
-    var val = d.dget(k)
-    i.dequote val # Dictionary values are always quoted
+    i.push i.dget(d, k)
     
   def.symbol("dset") do (i: In):
     let vals = i.expect("'sym", "a", "dict")
@@ -54,7 +53,7 @@ proc dict_module*(i: In)=
     var res = newDict(i.scope)
     for k in q.qVal:
       if d.dhas(k):
-        i.dset(res, k, d.dget(k))
+        i.dset(res, k, i.dget(d, k))
     i.push res
 
   def.sigil("?") do (i: In):
