@@ -247,7 +247,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("dict")
     let err = vals[0]
     if err.dhas("error".newVal) and err.dhas("message".newVal):
-      raiseRuntime("($1) $2" % [err.dget("error".newVal).getString, err.dget("message".newVal).getString], err.qVal)
+      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err.qVal)
     else:
       raiseInvalid("Invalid error dictionary")
 
@@ -257,15 +257,15 @@ proc lang_module*(i: In) =
     if err.dhas("error".newVal) and err.dhas("message".newVal):
       var msg: string
       var list = newSeq[MinValue]()
-      list.add err.dget("message".newVal)
-      if err.qVal.contains("symbol".newVal):
-        list.add err.dget("symbol".newVal)
-      if err.qVal.contains("filename".newVal):
-        list.add err.dget("filename".newVal)
-      if err.qVal.contains("line".newVal):
-        list.add err.dget("line".newVal)
-      if err.qVal.contains("column".newVal):
-        list.add err.dget("column".newVal)
+      list.add i.dget(err, "message")
+      if err.dhas("symbol"):
+        list.add i.dget(err, "symbol")
+      if err.dhas("filename"):
+        list.add i.dget(err, "filename")
+      if err.dhas("line"):
+        list.add i.dget(err, "line")
+      if err.dhas("column"):
+        list.add i.dget(err, "column")
       if list.len <= 1:
         msg = "$1" % $$list[0]
       else:
