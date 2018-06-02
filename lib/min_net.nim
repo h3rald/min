@@ -51,7 +51,7 @@ proc net_module*(i: In)=
       elif (sProtocol == "icmp"):
         protocol = IPPROTO_ICMP
     var socket = newSocket(domain, sockettype, protocol)
-    var skt = newSeq[MinValue](0).newVal(i.scope)
+    var skt = newDict(i.scope)
     skt = i.dset(skt, "domain", sDomain.newVal)
     skt = i.dset(skt, "type", sSockType.newVal)
     skt = i.dset(skt, "protocol", sProtocol.newVal)
