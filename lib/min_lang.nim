@@ -246,7 +246,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("dict")
     let err = vals[0]
     if err.dhas("error".newVal) and err.dhas("message".newVal):
-      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err.qVal)
+      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err)
     else:
       raiseInvalid("Invalid error dictionary")
 
@@ -296,21 +296,22 @@ proc lang_module*(i: In) =
       if not hasCatch:
         return
       let e = (MinRuntimeError)getCurrentException()
-      i.push e.qVal.newVal(i.scope)
+      e.data = newDict(i.scope)
+      i.push e.data
       i.dequote(catch)
     except:
       if not hasCatch:
         return
       let e = getCurrentException()
-      var res = newSeq[MinValue](0)
+      var res = newDict(i.scope)
       let err = sgregex.replace($e.name, ":.+$", "")
-      res.add @["error".newVal, err.newVal].newVal(i.scope)
-      res.add @["message".newVal, e.msg.newVal].newVal(i.scope)
-      res.add @["symbol".newVal, i.currSym].newVal(i.scope)
-      res.add @["filename".newVal, i.currSym.filename.newVal].newVal(i.scope)
-      res.add @["line".newVal, i.currSym.line.newVal].newVal(i.scope)
-      res.add @["column".newVal, i.currSym.column.newVal].newVal(i.scope)
-      i.push res.newVal(i.scope)
+      i.dset(res, "error", err.newVal)
+      i.dset(res, "message", e.msg.newVal)
+      i.dset(res, "symbol", i.currSym)
+      i.dset(res, "filename", i.currSym.filename.newVal)
+      i.dset(res, "line", i.currSym.line.newVal)
+      i.dset(res, "column", i.currSym.column.newVal)
+      i.push res
       i.dequote(catch)
     finally:
       if hasFinally:
