@@ -170,7 +170,13 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
     of JObject:
       var res = newDict(i.scope)
       for key, value in json.pairs:
-        discard i.dset(res, key, i.fromJson(value))
+        var first = $key[0]
+        var rest = ""
+        if key.len > 1:
+          rest = key[1..key.len-1]
+        first = sgregex.replace(first, "[^a-zA-Z_]", "_")
+        rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
+        discard i.dset(res, first&rest, i.fromJson(value))
       return res
     of JArray:
       var res = newSeq[MinValue](0)

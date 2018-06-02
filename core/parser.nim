@@ -634,9 +634,13 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
     of minDictionary:
       var d = "{"
       for i in a.dVal.pairs:
-        var v = $i.val.val
-        if (not i.val.quotation):
-          v = v[1 .. v.len-2]
+        var v = ""
+        if i.val.kind == minProcOp:
+          v = "<compiled>"
+        else:
+          v = $i.val.val
+          if (not i.val.quotation):
+            v = v[1 .. v.len-2]
         d = d & v & " :" & $i.key & " "
       if not a.objType.isNil: 
         d = d & ";" & a.objType
