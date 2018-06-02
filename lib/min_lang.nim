@@ -204,7 +204,7 @@ proc lang_module*(i: In) =
         i.push v
 
   def.symbol("publish") do (i: In):
-    let vals = i.expect("dict", "'sym")
+    let vals = i.expect("dict:module", "'sym")
     let qscope = vals[0]
     let str = vals[1]
     let sym = str.getString
