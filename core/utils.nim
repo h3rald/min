@@ -52,7 +52,7 @@ proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_sym
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
-    raiseInvalid("Key '$1' is set to a compiled value that cannot be retrieved." % [s.getString])
+    raiseInvalid("Key '$1' is set to a native value that cannot be retrieved." % [s.getString])
   var val = q.dVal[s.getString].val
   result = i.call(val)
   if result.qVal.len == 1: 
@@ -62,7 +62,7 @@ proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbo
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s].kind == minProcOp:
-    raiseInvalid("Key $1 is set to a compiled value that cannot be retrieved." % [s])
+    raiseInvalid("Key $1 is set to a native value that cannot be retrieved." % [s])
   var val = q.dVal[s].val
   result = i.call(val)
   if result.qVal.len == 1 and result.qVal[0].kind != minQuotation:
@@ -120,7 +120,7 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   var r = newSeq[MinValue](0)
   for item in q.dVal.values:
     if item.kind == minProcOp:
-      raiseInvalid("Dictionary contains compiled values that cannot be accessed.")
+      raiseInvalid("Dictionary contains native values that cannot be accessed.")
     var v = item.val
     var val = i.call(v)
     if val.qVal.len == 1 and val.qVal[0].kind != minQuotation:

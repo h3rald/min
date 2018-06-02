@@ -59,7 +59,10 @@ proc sys_module*(i: In)=
     let vals = i.expect("'sym")
     let cmd = vals[0]
     let res = execCmdEx(cmd.getString)
-    i.push @[@["output".newVal, res.output.newVal].newVal(i.scope), @["code".newVal, res.exitCode.newVal].newVal(i.scope)].newVal(i.scope)
+    var d = newDict(i.scope)
+    i.dset(d, "output", res.output.newVal)
+    i.dset(d, "code", res.exitCode.newVal)
+    i.push(d)
   
   def.symbol("get-env") do (i: In):
     let vals = i.expect("'sym")

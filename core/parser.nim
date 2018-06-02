@@ -600,7 +600,7 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       for i in a.dVal.pairs:
         var v = ""
         if i.val.kind == minProcOp:
-          v = "<compiled>"
+          v = "<native>"
         else:
           v = $i.val.val
           if (not i.val.quotation):
@@ -636,7 +636,7 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       for i in a.dVal.pairs:
         var v = ""
         if i.val.kind == minProcOp:
-          v = "<compiled>"
+          v = "<native>"
         else:
           v = $i.val.val
           if (not i.val.quotation):

@@ -14,10 +14,10 @@ import
 type
   MinTrappedException* = ref object of SystemError
   MinRuntimeError* = ref object of SystemError
-    qVal*: seq[MinValue]
+    data*: MinValue
 
-proc raiseRuntime*(msg: string, qVal: var seq[MinValue]) {.extern:"min_exported_symbol_$1".}=
-  raise MinRuntimeError(msg: msg, qVal: qVal)
+proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
+  raise MinRuntimeError(msg: msg, data: data)
 
 proc dump*(i: MinInterpreter): string {.extern:"min_exported_symbol_$1".}=
   var s = ""

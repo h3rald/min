@@ -225,7 +225,7 @@ proc printResult(i: In, res: MinValue) =
       for item in res.dVal.pairs:
         var v = ""
         if item.val.kind == minProcOp:
-          v = "<compiled>"
+          v = "<native>"
         else:
           v = $item.val.val
           if (not item.val.quotation):
