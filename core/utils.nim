@@ -36,7 +36,7 @@ proc sigil*(scope: ref MinScope, sym: string, v: MinValue) {.extern:"min_exporte
   scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
 proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_symbol_$1".}=
-  var mdl = newSeq[MinValue](0).newVal(nil)
+  var mdl = newDict(scope)
   mdl.scope = scope
   let op = proc(i: In) {.closure.} =
     i.evaluating = true

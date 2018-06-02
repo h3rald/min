@@ -223,9 +223,13 @@ proc printResult(i: In, res: MinValue) =
     elif res.isDictionary and res.dVal.len > 1:
       echo "{$1} -> {" % n
       for item in res.dVal.pairs:
-        var v = $item.val.val
-        if (not item.val.quotation):
-          v = v[1 .. v.len-2]
+        var v = ""
+        if item.val.kind == minProcOp:
+          v = "<compiled>"
+        else:
+          v = $item.val.val
+          if (not item.val.quotation):
+            v = v[1 .. v.len-2]
         echo  "         " & v & " :" & $item.key
       if res.objType.isNil:
         echo " ".repeat(n.len) & "      }"

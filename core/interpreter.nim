@@ -196,10 +196,10 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
-    var v = val
-    if (v.kind == minDictionary):
-      i.dequote(v)
-    i.stack.add(v)
+    #var v = val
+    #if (v.kind == minDictionary):
+    #  i.dequote(v)
+    i.stack.add(val)
 
 proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   if i.stack.len > 0:
