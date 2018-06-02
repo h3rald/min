@@ -7,6 +7,7 @@ import
 proc copy*(s: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   var scope = newScope(s.parent)
   scope.symbols = s.symbols
+  scope.sigils = s.sigils
   new(result)
   result[] = scope
   

@@ -232,7 +232,7 @@ proc lang_module*(i: In) =
       raiseInvalid("No source available for native symbol '$1'." % str)
 
   def.symbol("call") do (i: In):
-    let vals = i.expect("'sym", "quot")
+    let vals = i.expect("'sym", "dict")
     let symbol = vals[0]
     let q = vals[1]
     let s = symbol.getString
@@ -668,7 +668,6 @@ proc lang_module*(i: In) =
     i.push("quote-define".newSym)
 
   # Shorthand symbol aliases
-
 
   def.symbol("#") do (i: In):
     i.push("quote-bind".newSym)

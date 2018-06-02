@@ -237,7 +237,7 @@ proc printResult(i: In, res: MinValue) =
         echo " ".repeat(n.len) & "        ;" & res.objType
         echo " ".repeat(n.len) & "      }"
     else:
-      echo "{$1} -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
+      echo "[$1] -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
 
 proc minRepl*(i: var MinInterpreter) =
   i.stdLib()

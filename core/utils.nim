@@ -38,6 +38,7 @@ proc sigil*(scope: ref MinScope, sym: string, v: MinValue) {.extern:"min_exporte
 proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_symbol_$1".}=
   var mdl = newDict(scope)
   mdl.scope = scope
+  mdl.objType = "module"
   let op = proc(i: In) {.closure.} =
     i.evaluating = true
     i.push mdl
@@ -50,14 +51,22 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
+  if q.dVal[s.getString].kind == minProcOp:
+    raiseInvalid("Key '$1' is set to a compiled value that cannot be retrieved." % [s.getString])
   var val = q.dVal[s.getString].val
-  return i.call(val)
+  result = i.call(val)
+  if result.qVal.len == 1: 
+    result = result.qVal[0]
 
 proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbol_$1_2".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
+  if q.dVal[s].kind == minProcOp:
+    raiseInvalid("Key $1 is set to a compiled value that cannot be retrieved." % [s])
   var val = q.dVal[s].val
-  return i.call(val)
+  result = i.call(val)
+  if result.qVal.len == 1 and result.qVal[0].kind != minQuotation:
+    result = result.qVal[0]
 
 proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
@@ -81,7 +90,7 @@ proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable, extern:"m
   excl(p.scope.symbols, s)
   return p
       
-proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
@@ -90,7 +99,7 @@ proc dset*(i: In, p: MinValue, s: MinValue, m: MinValue): MinValue {.discardable
   p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
-proc dset*(i: In, p: MinValue, s: string, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1_2".}=
+proc dset*(i: In, p: var MinValue, s: string, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1_2".}=
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
@@ -109,8 +118,14 @@ proc keys*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
 proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   # Assumes q is a dictionary
   var r = newSeq[MinValue](0)
-  for i in q.dVal.values:
-    r.add i.val
+  for item in q.dVal.values:
+    if item.kind == minProcOp:
+      raiseInvalid("Dictionary contains compiled values that cannot be accessed.")
+    var v = item.val
+    var val = i.call(v)
+    if val.qVal.len == 1 and val.qVal[0].kind != minQuotation:
+      val = val.qVal[0]
+    r.add val
   return r.newVal(i.scope)
 
 # JSON interop

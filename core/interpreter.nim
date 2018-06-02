@@ -162,11 +162,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symb
   try:
     i2.withScope(q): 
       for v in q.qVal:
-        if (v.kind == minQuotation):
-          var v2 = v
-          i2.dequote(v2)
-        else:
-          i2.push v
+        i2.push v
   except:
     i.currSym = i2.currSym
     i.trace = i2.trace
@@ -196,10 +192,12 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
-    #var v = val
-    #if (v.kind == minDictionary):
-    #  i.dequote(v)
-    i.stack.add(val)
+    var v = val
+    if (v.kind == minDictionary):
+      i.dequote(v)
+      # Clear the initial quotation; only used when parsing a dictionary for the first time
+      v.qVal = @[] 
+    i.stack.add(v)
 
 proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   if i.stack.len > 0:

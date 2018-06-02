@@ -27,7 +27,7 @@ proc dict_module*(i: In)=
     let vals = i.expect("'sym", "a", "dict")
     let k = vals[0]
     let m = vals[1]
-    let d = vals[2]
+    var d = vals[2]
     i.push i.dset(d, k, m) 
 
   def.symbol("ddel") do (i: In):
@@ -45,6 +45,14 @@ proc dict_module*(i: In)=
     let vals = i.expect("dict")
     let d = vals[0]
     i.push i.values(d)
+
+  def.symbol("ddup") do (i: In):
+    let vals = i.expect("dict")
+    let d = vals[0]
+    var r = newDict(i.scope)
+    for item in d.dVal.pairs:
+      r.scope.symbols[item.key] = item.val
+    i.push r
 
   def.symbol("dpick") do (i: In):
     let vals = i.expect("quot", "dict")
