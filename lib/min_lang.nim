@@ -558,7 +558,7 @@ proc lang_module*(i: In) =
     i.push args.newVal(i.scope)
 
   def.symbol("opts") do (i: In):
-    var opts = newVal(newSeq[MinValue](0), i.scope) 
+    var opts = newDict(i.scope) 
     for kind, key, val in getopt():
       case kind:
         of cmdLongOption, cmdShortOption:

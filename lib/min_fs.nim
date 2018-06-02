@@ -42,17 +42,17 @@ proc fs_module*(i: In) =
     let vals = i.expect("'sym")
     let s = vals[0]
     let fi = s.getString.getFileInfo
-    var info = newSeq[MinValue](0).newVal(i.scope)
-    info.qVal.add @["name".newVal, s].newVal(i.scope)
-    info.qVal.add @["device".newVal, fi.id.device.BiggestInt.newVal].newVal(i.scope)
-    info.qVal.add @["file".newVal, fi.id.file.BiggestInt.newVal].newVal(i.scope)
-    info.qVal.add @["type".newVal, fi.kind.filetype.newVal].newVal(i.scope)
-    info.qVal.add @["size".newVal, fi.size.newVal].newVal(i.scope)
-    info.qVal.add @["permissions".newVal, fi.permissions.unixPermissions.newVal].newVal(i.scope)
-    info.qVal.add @["nlinks".newVal, fi.linkCount.newVal].newVal(i.scope)
-    info.qVal.add @["ctime".newVal, fi.creationTime.toUnix.newVal].newVal(i.scope)
-    info.qVal.add @["atime".newVal, fi.lastAccessTime.toUnix.newVal].newVal(i.scope)
-    info.qVal.add @["mtime".newVal, fi.lastWriteTime.toUnix.newVal].newVal(i.scope)
+    var info = newDict(i.scope)
+    i.dset(info, "name", s)
+    i.dset(info, "device", fi.id.device.BiggestInt.newVal)
+    i.dset(info, "file", fi.id.file.BiggestInt.newVal)
+    i.dset(info, "type", fi.kind.filetype.newVal)
+    i.dset(info, "size", fi.size.newVal)
+    i.dset(info, "permissions", fi.permissions.unixPermissions.newVal)
+    i.dset(info, "nlinks", fi.linkCount.newVal)
+    i.dset(info, "ctime", fi.creationTime.toUnix.newVal)
+    i.dset(info, "atime", fi.lastAccessTime.toUnix.newVal)
+    i.dset(info, "mtime", fi.lastWriteTime.toUnix.newVal)
     i.push info
 
   def.symbol("ftype") do (i: In):
