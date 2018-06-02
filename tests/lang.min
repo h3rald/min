@@ -33,9 +33,9 @@
   ~five
   (symbols "five" in? false  ==) assert
 
-  (
+  {
     (+) :myplus
-  ) +mymath
+  } +mymath
 
   (symbols "mymath" in?) assert
   
@@ -99,8 +99,8 @@
 
   (
    (
-    ((("error" "TestError")("message" "Test Message")) raise) 
-    ('error dget)
+    ({"TestError" :error "Test Message" :message} raise)
+    (/error)
     ) try "TestError" ==) assert
 
   (
@@ -112,9 +112,9 @@
     (1)
     ) try 1 ==) assert
 
-  ((a b +) (4 :a 5 :b) with 9 ==) assert
+  ((a b +) {4 :a 5 :b} with 9 ==) assert
 
-  ("{\"a\": 1, \"b\": 2.3}" from-json (("a" 1) ("b" 2.3)) ==) assert
+  ("{\"a\": 1, \"b\": 2.3}" from-json {1 :a 2.3 :b} ==) assert
 
   ((1 2 3 "aaa" 'q q true) to-json "\r\n" "" replace "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) assert
 
@@ -142,9 +142,9 @@
 
   (sys module-sigils ("!" "$" "&") ==) assert
 
-  (opts () ==) assert
+  (opts {} ==) assert
 
-  (args first "all.min$" match) assert
+  (args first "\.min$" match) assert
 
   (3 string "3" ==) assert
   
@@ -175,20 +175,20 @@
   ("3.678" float 3.678 ==) assert
 
   (
-    (("a" 1) ("b" 2) ("c" 3)) (
+    {1 :a 2 :b 3 :c} (
       (dup /a  succ succ %a)
       (dup /b  succ %b)
     ) tap
-    (("a" 3) ("b" 3) ("c" 3)) ==
+    {3 :a 3 :b 3 :c} ==
   ) assert
 
   (
-    () =data
+    {} :data
     data (
       1 %a
       2 %b
     ) tap
-    (("a" 1) ("b" 2)) ==
+    {1 :a 2 :b} ==
   ) assert
 
   (
