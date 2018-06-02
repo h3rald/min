@@ -52,7 +52,7 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("module-symbols") do (i: In):
-    let vals = i.expect("quot")
+    let vals = i.expect("dict:module")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.symbols.keys:
@@ -60,7 +60,7 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("module-sigils") do (i: In):
-    let vals = i.expect("quot")
+    let vals = i.expect("dict:module")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.sigils.keys:
@@ -204,7 +204,7 @@ proc lang_module*(i: In) =
         i.push v
 
   def.symbol("publish") do (i: In):
-    let vals = i.expect("quot", "'sym")
+    let vals = i.expect("dict", "'sym")
     let qscope = vals[0]
     let str = vals[1]
     let sym = str.getString
@@ -296,7 +296,6 @@ proc lang_module*(i: In) =
       if not hasCatch:
         return
       let e = (MinRuntimeError)getCurrentException()
-      e.data = newDict(i.scope)
       i.push e.data
       i.dequote(catch)
     except:

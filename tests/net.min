@@ -37,9 +37,7 @@
   ;Content-Length: 34
   ;Via: 1.1 vegur
   ;
-  ;{ 
-  ;  "user-agent": "min v0.12.0"
-  ;}
+  ;{"user-agent": "min v0.16.0"}
 
   (response "\n\n" split 1 get from-json /user-agent user-agent ==) assert
 
