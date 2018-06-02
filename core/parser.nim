@@ -711,13 +711,29 @@ proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}
             c.inc
           else:
             return false
+        return true
+      else:
+        return false
+    elif a.kind == minDictionary:
+      let aVal = a.dVal
+      let bVal = b.dVal
+      if aVal.len != bVal.len:
+        return false
+      else:
+        for t in aVal.pairs:
+          if not bVal.hasKey(t.key):
+            return false
+          let v1 = t.val
+          let v2 = bVal[t.key]
+          if v1.kind != v2.kind:
+            return false
+          if v1.kind == minValOp:
+            return v1.val == v2.val
         if a.objType.isNil and b.objType.isNil:
           return true
         elif not a.objType.isNil and not b.objType.isNil:
           return a.objType == b.objType
         else:
           return false
-      else:
-        return false
   else:
     return false

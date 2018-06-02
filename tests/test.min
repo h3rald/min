@@ -1,6 +1,7 @@
 ;; test module
-(
+{
  'OK =ok
+
  ("  " print!) :padding
 
  ;; describe
@@ -60,4 +61,4 @@
   pop ;Remove results accomulator from get-stack
  ) :report
 
-) +test
+} +test

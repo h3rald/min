@@ -1,0 +1,29 @@
+'test load
+'test import
+
+"dict" describe
+
+  ((("a" 1)("b" 2)("c" 3)) dictionary? not) assert
+
+  ({1 :a 2 :b 3 :c} dictionary?) assert
+
+  ({1 :a 2 :b 3 :c} 'b dget 2 ==) assert
+
+  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict == and) assert
+
+  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) assert
+
+  ({1 :a 2 :b 3 :c} :dict1 dict1 'b ddel {1 :a 3 :c} ==) assert
+
+  ({1 :a 2 :b 3 :c} dkeys ("a" "b" "c") ==) assert
+
+  ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) assert
+
+  ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) assert
+
+  (2 2 {'+ :plus} ^plus 4 ==) assert
+
+  (2 {(2 3 +) :sum} /sum + 7 ==) assert
+
+  report
+  clear-stack
