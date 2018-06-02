@@ -76,9 +76,9 @@ proc lang_module*(i: In) =
     i.push i.fromJson(s.getString.parseJson)
 
   def.symbol("to-json") do (i: In):
-    let vals = i.expect "quot"
+    let vals = i.expect "a"
     let q = vals[0]
-    i.push(($((%q).pretty)).newVal)
+    i.push(($((i%q).pretty)).newVal)
 
   def.symbol("loglevel") do (i: In):
     let vals = i.expect("'sym")
@@ -485,7 +485,7 @@ proc lang_module*(i: In) =
     if op.kind == minProcOp:
       raiseInvalid("Symbol '$1' cannot be serialized." % sym)
     let json = MINSYMBOLS.readFile.parseJson
-    json[sym] = %op.val
+    json[sym] = i%op.val
     MINSYMBOLS.writeFile(json.pretty)
 
   def.symbol("load-symbol") do (i: In):

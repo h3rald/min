@@ -130,10 +130,7 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
 
 # JSON interop
 
-proc `%`*(p: MinOperatorProc): JsonNode {.extern:"min_exported_symbol_percent_1".}=
-  return %nil
-
-proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
+proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
   case a.kind:
     of minBool:
       return %a.boolVal
@@ -147,12 +144,12 @@ proc `%`*(a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
       return %a.floatVal
     of minQuotation:
       result = newJArray()
-      for i in a.qVal:
-        result.add %i
+      for it in a.qVal:
+        result.add(i%it)
     of minDictionary:
       result = newJObject()
-      for i in a.dVal.pairs: 
-        result[$i.key] = %i.val
+      for it in a.dVal.pairs: 
+        result[it.key] = i%i.dget(a, it.key)
 
 proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
   case json.kind:
@@ -171,11 +168,10 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
       else:
         result = json.getStr.newVal
     of JObject:
-      var res = newSeq[MinValue](0)
+      var res = newDict(i.scope)
       for key, value in json.pairs:
-        #TODO
-        res.add @[key.newVal, i.fromJson(value)].newVal(i.scope)
-      return res.newVal(i.scope)
+        discard i.dset(res, key, i.fromJson(value))
+      return res
     of JArray:
       var res = newSeq[MinValue](0)
       for value in json.items:
