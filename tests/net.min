@@ -3,13 +3,13 @@
 
 "net" describe
 
-  () socket =srv1
-  () socket =srv2
-  () socket =cli1
-  () socket =cli2
+  {} socket :srv1
+  {} socket :srv2
+  {} socket :cli1
+  {} socket :cli2
 
   
-  () socket "httpbin.org" 80 connect #cli1
+  {} socket "httpbin.org" 80 connect @cli1
   "min v$1" (version) => % :user-agent
 
   "GET /user-agent HTTP/1.1\r\nHost: httpbin.org\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :req
@@ -19,7 +19,7 @@
 
   cli1 recv-line :line
   (response line) => "\n" join @response 
-  (line "}" !=) 
+  (line "\}" match not) 
   (
     cli1 recv-line @line
     (response line) => "\n" join @response 
