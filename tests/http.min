@@ -11,25 +11,25 @@
   "tests/test1.json" rm
 
   (
-    () (
+    {} (
       ("$1/get?test=request" (url) => % %url) 
       ("GET" %method)
-      ((("Accept-Language" "it-it")) %headers)
+      ({"it-it" :Accept-Language} %headers)
       (request)
     ) tap /body from-json /headers /Accept-Language "it-it" ==
   ) assert
 
   (
-    () (
+    {} (
       ("$1/put" (url) => % %url) 
       ("PUT" %method)
-      ((("test" "put")) to-json %body)
+      ({"put" :test} to-json %body)
       (request)
-    ) tap /body from-json /json (("test" "put")) ==
+    ) tap /body from-json /json {"put" :test} ==
   ) assert
 
   (
-    () (
+    {} (
       ("$1/post" (url) => % %url) 
       ("POST" %method)
       ((("test" "post")) to-json %body)
@@ -38,16 +38,16 @@
   ) assert
 
   (
-    () (
+    {} (
       ("$1/patch" (url) => % %url) 
       ("PATCH" %method)
-      ((("test" "patch")) to-json %body)
+      ({"patch" :test} to-json %body)
       (request)
-    ) tap /body from-json /json (("test" "patch")) ==
+    ) tap /body from-json /json {"patch" :test} ==
   ) assert
 
   (
-    () (
+    {} (
       ("$1/delete" (url) => % %url) 
       ("DELETE" %method)
       (request)

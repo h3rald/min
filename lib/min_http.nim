@@ -1,4 +1,4 @@
-import httpclient, asynchttpserver, asyncdispatch, strutils, uri
+import httpclient, asynchttpserver, asyncdispatch, strutils, uri, critbits
 import 
   ../core/parser, 
   ../core/consts,
@@ -12,9 +12,9 @@ proc newCli(): HttpClient =
   return newHttpClient(userAgent = minUseragent)
 
 proc newVal(i: In, headers: HttpHeaders): MinValue = 
-  result = newVal(newSeq[MinValue](), i.scope)
+  result = newDict(i.scope)
   for k, v in headers:
-    result = i.dset(result, k.newVal, v.newVal)
+    result = i.dset(result, k, v.newVal)
 
 type MinServerExit = ref object of SystemError
 
@@ -38,14 +38,14 @@ proc http_module*(i: In)=
       rawHeaders = i.dget(req, "headers")
       if not rawHeaders.isDictionary:
         raiseInvalid("Headers must be specified as a dictionary")
-      for v in rawHeaders.qVal:
-        headers[v.qVal[0].getString] = v.qVal[1].getString
+      for item in rawHeaders.dVal.pairs:
+        headers[item.key] = i.dget(rawHeaders, item.key).getString
     if req.dhas("body"):
       body = i.dget(req, "body")
     meth = i.dget(req, "method")
     url = i.dget(req, "url")
     let resp = cli.request(url = url.getString, httpMethod = meth.getString, body = body.getString, headers = headers)
-    var res = newVal(newSeq[MinValue](), i.scope)
+    var res = newDict(i.scope)
     res = i.dset(res, "version", resp.version.newVal)
     res = i.dset(res, "status", resp.status[0..2].parseInt.newVal)
     res = i.dset(res, "headers", i.newVal(resp.headers))
@@ -85,7 +85,7 @@ proc http_module*(i: In)=
     var i {.threadvar.}: MinInterpreter
     i = ii
     proc handler(req: Request) {.async, gcsafe.} =
-      var qreq = newSeq[MinValue]().newVal(i.scope)
+      var qreq = newDict(i.scope)
       qreq = i.dset(qreq, "url", newVal($req.url))
       qreq = i.dset(qreq, "headers", i.newVal(req.headers))
       qreq = i.dset(qreq, "method", newVal($req.reqMethod))
