@@ -18,7 +18,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > 
 > > The following code constructs a {{req}} dictionary using the **tap** operator and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
-> >     () (
+> >     {} (
 > >       ("GET" %method)
 > >       ("http://httpbin.org/ip" %url)
 > >     ) tap request
@@ -42,7 +42,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:
 > > 
 > >     (
-> >      =req
+> >      :req
 > >      req /url :url
 > >      ;Set response body
 > >      "Invalid Request: $1" (url) => % :body
@@ -57,18 +57,16 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       stop-server
 > >      ) when
 > >      ;Prepare response
-> >      () (
-> >       (body %body)
-> >      ) tap 
+> >      {body :body}
 > >     ) =handler
 > > 
 > >     ;Start server
 > >     "Server started on port 5555." puts!
 > >     "Press Ctrl+C to stop." puts!
-> >     () (
-> >      (handler %handler)
-> >      (5555 %port)
-> >     ) tap start-server
+> >     {
+> >      handler :handler
+> >      5555 :port
+> >     } tap start-server
  #}
 
 {#op||stop-server||{{null}}||{{null}}||
