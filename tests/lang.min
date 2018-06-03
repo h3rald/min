@@ -142,7 +142,7 @@
 
   (sys scope-sigils ("!" "$" "&") ==) assert
 
-  ({3 :a 5 :b} ("a" "b") ==) assert
+  ({3 :a 5 :b} scope-symbols ("a" "b") ==) assert
 
   (opts {} ==) assert
 
