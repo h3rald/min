@@ -239,9 +239,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.
         if validate(value, t):
           res = true
           break
-      if res:
-        valid.add element
-      else:
+      if not res:
         raiseInvalid(message(value.typeName))
     elif not validate(value, element):
       raiseInvalid(message(value.typeName))

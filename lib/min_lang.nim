@@ -240,6 +240,13 @@ proc lang_module*(i: In) =
     i.apply(sym)
     i.scope = origScope
 
+  def.symbol("set-type") do (i: In):
+    let vals = i.expect("'sym", "dict")
+    let symbol = vals[0]
+    var d = vals[1]
+    d.objType = symbol.getString
+    i.push d
+
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
     let err = vals[0]
@@ -249,7 +256,7 @@ proc lang_module*(i: In) =
       raiseInvalid("Invalid error dictionary")
 
   def.symbol("format-error") do (i: In):
-    let vals = i.expect("dict")
+    let vals = i.expect("dict:error")
     let err = vals[0]
     if err.dhas("error".newVal) and err.dhas("message".newVal):
       var msg: string
@@ -302,6 +309,7 @@ proc lang_module*(i: In) =
       let e = getCurrentException()
       var res = newDict(i.scope)
       let err = sgregex.replace($e.name, ":.+$", "")
+      res.objType = "error"
       i.dset(res, "error", err.newVal)
       i.dset(res, "message", e.msg.newVal)
       i.dset(res, "symbol", i.currSym)

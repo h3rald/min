@@ -29,6 +29,7 @@ proc time_module*(i: In)=
       time = t.floatVal.int64.fromUnix
     let tinfo = time.local
     var info = newDict(i.scope)
+    info.objType = "timeinfo"
     i.dset info, "year", tinfo.year.newVal
     i.dset info, "month", (tinfo.month.int+1).newVal
     i.dset info, "day", tinfo.monthday.newVal
@@ -42,7 +43,7 @@ proc time_module*(i: In)=
     i.push info
 
   def.symbol("to-timestamp") do (i: In):
-    let vals = i.expect("dict")
+    let vals = i.expect("dict:timeinfo")
     let dict = vals[0]
     try:
       let year = i.dget(dict, "year").intVal.int

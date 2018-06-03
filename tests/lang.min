@@ -213,6 +213,8 @@
 
   (lite? false ==) assert
 
+  ({3 :x 5 :y} "point" set-type 'point type?) assert
+
   report
   ; Tidy up
   clear-stack
