@@ -35,6 +35,8 @@ min's parser started off as a fork of Nim's JSON parser -- adapted to process a 
 
 min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [Peter Munch-Ellingsen](https://peterme.net).
 
+Special thanks to [mwgkgk](https://github.com/mwgkgk) for contributing to the design of native dictionaries.
+
 ## When?
 
 min source code [repository](https://github.com/h3rald/min) was created on November 8^th 2014. This only means that I've been very slowly developing something that was actually made public at the end of July 2017.
