@@ -186,6 +186,37 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
 
 # Validators
 
+proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1".}=
+  case t:
+    of "bool":
+      return value.isBool
+    of "int":
+      return value.isInt
+    of "num":
+      return value.isNumber
+    of "quot":
+      return value.isQuotation
+    of "dict":
+      return value.isDictionary
+    of "'sym":
+      return value.isStringLike
+    of "sym":
+      return value.isSymbol
+    of "float":
+      return value.isFloat
+    of "string":
+      return value.isString
+    of "a":
+      return true
+    else:
+      var split = t.split(":")
+      # Typed dictionaries 
+      if split[0] == "dict":
+        if value.isTypedDictionary(split[1]):
+          return true
+      return false
+
+
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.extern:"min_exported_symbol_$1".}=
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
@@ -201,43 +232,19 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.
   for element in elements:
     let value = i.pop
     result.add value
-    case element:
-      of "bool":
-        if not value.isBool:
-          raiseInvalid(message(value.typeName))
-      of "int":
-        if not value.isInt:
-          raiseInvalid(message(value.typeName))
-      of "num":
-        if not value.isNumber:
-          raiseInvalid(message(value.typeName))
-      of "quot":
-        if not value.isQuotation:
-          raiseInvalid(message(value.typeName))
-      of "dict":
-        if not value.isDictionary:
-          raiseInvalid(message(value.typeName))
-      of "'sym":
-        if not value.isStringLike:
-          raiseInvalid(message(value.typeName))
-      of "sym":
-        if not value.isSymbol:
-          raiseInvalid(message(value.typeName))
-      of "float":
-        if not value.isFloat:
-          raiseInvalid(message(value.typeName))
-      of "string":
-        if not value.isString:
-          raiseInvalid(message(value.typeName))
-      of "a":
-        discard # any type
+    var split = element.split("|")
+    if split.len > 1:
+      var res = false
+      for t in split:
+        if validate(value, t):
+          res = true
+          break
+      if res:
+        valid.add element
       else:
-        var split = element.split(":")
-        if split[0] == "dict":
-          if not value.isTypedDictionary(split[1]):
-            raiseInvalid(message(value.typeName))
-        else:
-          raiseInvalid("Invalid type description: " & element)
+        raiseInvalid(message(value.typeName))
+    elif not validate(value, element):
+      raiseInvalid(message(value.typeName))
     valid.add element
 
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=

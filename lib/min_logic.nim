@@ -215,5 +215,12 @@ proc logic_module*(i: In)=
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
+  def.symbol("type?") do (i: In):
+    let vals = i.expect("'sym", "a")
+    if vals[1].isTypedDictionary(vals[0].getString):
+      i.push true.newVal
+    else:
+      i.push false.newVal
+
   def.finalize("logic")

@@ -51,16 +51,16 @@ proc lang_module*(i: In) =
       scope = scope.parent
     i.push q.newVal(i.scope)
 
-  def.symbol("module-symbols") do (i: In):
-    let vals = i.expect("dict:module")
+  def.symbol("scope-symbols") do (i: In):
+    let vals = i.expect("quot|dict")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.symbols.keys:
       q.add s.newVal
     i.push q.newVal(i.scope)
 
-  def.symbol("module-sigils") do (i: In):
-    let vals = i.expect("dict:module")
+  def.symbol("scope-sigils") do (i: In):
+    let vals = i.expect("quot|dict")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.sigils.keys:
@@ -134,9 +134,10 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym", "dict")
     let name = vals[0]
     var code = vals[1]
+    code.objType = "module"
     code.filename = i.filename
     info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
-    i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: @[code].newVal(i.scope), quotation: true)
+    i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: code)
 
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
@@ -145,7 +146,7 @@ proc lang_module*(i: In) =
     name = rawName.getString
     var op = i.scope.getSymbol(name)
     i.apply(op)
-    vals = i.expect("dict")
+    vals = i.expect("dict:module")
     let mdl = vals[0]
     info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.scope.symbols.len, $mdl.scope.sigils.len])
     for sym, val in mdl.scope.symbols.pairs:
@@ -196,15 +197,12 @@ proc lang_module*(i: In) =
     let vals = i.expect("dict", "quot")
     var qscope = vals[0]
     let qprog = vals[1]
-    #if qscope.qVal.len > 0:
-      # System modules are empty quotes and don't need to be dequoted
-    #  i.dequote(qscope)
     i.withScope(qscope):
       for v in qprog.qVal:
         i.push v
 
   def.symbol("publish") do (i: In):
-    let vals = i.expect("dict:module", "'sym")
+    let vals = i.expect("dict", "'sym")
     let qscope = vals[0]
     let str = vals[1]
     let sym = str.getString
