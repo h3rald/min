@@ -96,7 +96,7 @@ proc interpret(hs: HastySite, file: string) =
 > %warning%
 > Warning
 > 
-> This technique is currently experimental, it has not been tested extensively and it may not even work on Windows.
+> This technique is currently highly experimental, it has not been tested extensively and it may not even work properly.
 
 If you just want to add a new module to min providing functinalities that cannot be built natively with min operators, you can also implement a min module in Nim and compile it to a dynamic library which can be linked dynamically when min is started.
 

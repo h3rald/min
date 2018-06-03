@@ -11,7 +11,9 @@ min includes a small but powerful standard library organized into the following 
 {#link-module||stack#}
 : Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.
 {#link-module||seq#}
-: Defines operators for quotations and dictionaries, like map, filter, reduce, etc.
+: Defines operators for quotations, like map, filter, reduce, etc.
+{#link-module||dict#}
+: Defines operators for dictionaries, like dget, ddup, dset, etc.
 {#link-module||io#}
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
@@ -65,62 +67,65 @@ The following notation is used in the signature of all min operators:
 {{tinfo}}
 : A timeinfo dictionary:
 
-      (
-       ("year" 2017)
-       ("month" 7)
-       ("day" 8)
-       ("weekday" 6)
-       ("yearday" 188)
-       ("hour" 15)
-       ("minute" 16)
-       ("second" 25)
-       ("dst" true)
-       ("timezone" -3600)
-      )
+      {
+       2017 :year
+       7 :month
+       8 :day
+       6 :weekday
+       188 :yearday
+       15 :hour
+       16 :minute
+       25 :second
+       true :dst
+       -3600 :timezone
+       ;timeinfo
+      }
 {{e}}
 : An error dictionary:
 
-      (
-       ("error" "MyError")
-       ("message" "An error occurred")
-       ("symbol" "symbol1")
-       ("filename" "dir1/file1.min")
-       ("line" 3)
-       ("column" 13)
-      )
+      {
+       "MyError" :error
+       "An error occurred" :message
+       "symbol1" :symbol
+       "dir1/file1.min" :filename
+       3 :line
+       13 :column
+       ;error
+      }
 {{sock}}
 : A socket dictionary that must be created through the {#link-operator||net||socket#} operator:
 
-      (
-       ("domain" "ipv4")
-       ("type" "stream")
-       ("protocol" "tcp")
+      {
+       "ipv4" :domain
+       "stream" :type
+       "tcp" :protocol
        ;socket
-      )
+      }
 {{req}}
 : A request dictionary, representing an HTTP request to be performed through the operators exposed by the {#link-module||http#}:
 
-      (
-       ("url" "http://httpbin.org/put")
-       ("method" "PUT")
-       ("version" "1.1")         ;optional
-       ("hostname" "h3rald.com") ;optional
-       ("headers" (              ;optional
-        ("Accept-Language" "it-id")
-        ("Host" "httpbin.org")))
-       ("body" "test body")      ;optional
-      )
+      {
+       "http://httpbin.org/put" :url
+       "PUT" :method
+       "1.1" :version         ;optional
+       "h3rald.com" :hostname ;optional
+       {                      
+        "it-id" :Accept-Language
+        "httpbin.org" :Host
+       } :headers             ;optional
+       "test body" :body      ;optional
+      }
 {{res}}
 : A response dictionary, representing an HTTP response returned by some of the operators exposed by the {#link-module||http#}:
 
-      (
-        ("version" "1.1") ;optional
-        ("status" 200)    ;optional
-        ("headers"        ;optional
-         (("Content-Type" "application/json")))
-        ("body"           ;optional
-         "{\"test\": \"This is a test\"}")
-      )
+      {
+        "1.1" :version ;optional
+        200 :status    ;optional
+        {
+          "application/json" :Content-Type
+        } :headers     ;optional
+        "{\"test\": \"This is a test\"}" :body
+      }
 {{t}}
 : true (boolean type).
 {{f}}

@@ -57,8 +57,8 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 >  * If {{any}} is a non-empty quotation, it is converted to {{t}}, otherwise it is converted to {{f}}.
 >  * If {{any}} is a non-empty string or not `"false"`, it is converted to {{t}}, otherwise it is converted to {{f}}.#}
 
-{#op||call||{{q}} {{sl}}||{{a0p}}||
-Calls operator {{sl}} defined in scope {{q}}. #}
+{#op||call||{{d}} {{sl}}||{{a0p}}||
+Calls operator {{sl}} defined in dictionary {{d}}. #}
 
 {#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
 > This operator takes a quotation containing _n_ different conditional branches. 
@@ -98,7 +98,14 @@ Parses and interprets {{s}}. #}
 Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect||{{q1}}||{{q2}}||
-> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}} (in reverse order).
+> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}} (in reverse order). 
+
+> > %tip%
+> > Tips
+> > 
+> > * You can specify a typed dictionary by prepending the type name with `dict:`. Example: `dict:socket`
+> > * You can specify two or more matching types by separating the type names with a pipe: `string|quot`
+
 > > %sidebar%
 > > Example
 > > 
@@ -129,7 +136,7 @@ Applies the quotation {{q2}} to each element of {{q1}}.#}
 > > 
 > > The following: 
 > > 
-> > `((error "MyError") (message "This is a test error")) format-error`
+> > `{"MyError" :error "This is a test error" :message} 'error set-type format-error`
 > > 
 > > produces: `"This is a test error"`#}
 
@@ -191,14 +198,14 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > 
 > > The default logging level is _notice_.#}
 
-{#op||module||{{q}} {{sl}}||{{null}}||
-Creates a new module {{sl}} based on quotation {{q}}. #}
+{#op||module||{{d}} {{sl}}||{{null}}||
+Creates a new module {{sl}} based on dictionary {{d}}. #}
 
-{#op||module-sigils||{{q}}||({{s0p}})||
-Returns a list of all sigils defined in module {{q}}.#}
+{#op||scope-sigils||{{d}}||({{s0p}})||
+Returns a list of all sigils defined in dictionary {{d}}.#}
 
-{#op||module-symbols||{{q}}||({{s0p}})||
-Returns a list of all symbols defined in module {{q}}.#}
+{#op||scope-symbols||{{d}}||({{s0p}})||
+Returns a list of all symbols defined in dictionary {{d}}.#}
 
 {#op||opts||{{null}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
@@ -213,8 +220,8 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > 
 > Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.#}
 
-{#op||publish||{{sl}} {{q}}||{{null}}||
-> Publishes symbol {{sl}} to the scope of {{q}}.
+{#op||publish||{{sl}} {{d}}||{{null}}||
+> Publishes symbol {{sl}} to the scope of {{d}}.
 > 
 > > %sidebar%
 > > Example
@@ -254,6 +261,9 @@ Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
 {#op||seal||{{sl}}||{{null}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
+
+{#op||set-type||{{d}} {{sl}}||{{d}}||
+Sets the type for dictionary {{d}} to {{sl}}.#}
 
 {#op||sigils||{{null}}||({{s0p}})||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}

@@ -23,22 +23,22 @@ Returns the size in bytes of file/directory {{sl}}.#}
 > > 
 > > Assuming that `min` is a file, the following:
 > > 
-> > `'min fstats`
+> > `"min" fstats`
 > > 
 > > produces:
 > > 
-> >      (
-> >        ("name" (min))
-> >        ("device" 16777220)
-> >        ("file" 50112479)
-> >        ("type" "file")
-> >        ("size" 617068)
-> >        ("permissions" 755)
-> >        ("nlinks" 1)
-> >        ("ctime" 1496583112.0)
-> >        ("atime" 1496584370.0)
-> >        ("mtime" 1496583112.0)
-> >      )#}
+> >      {
+> >        "min" :name
+> >        16777220 :device
+> >        50112479 :file
+> >        "file" :type
+> >        617068 :size
+> >        755 :permissions
+> >        1 :nlinks
+> >        1496583112.0 :ctime
+> >        1496584370.0 :atime
+> >        1496583112.0 :mtime
+> >      }#}
 
 {#op||ftype||{{sl}}||{{s}}||
 Returns the type of file/directory {{sl}} (`"file"` or `"dir"`).#}

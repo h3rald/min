@@ -14,20 +14,20 @@ float
 string
 : A series of characters wrapped in double quotes: "Hello, World!".
 quotation
-: A list of elements, which may also contain symbols. Quotations can be be used to create heterogenous lists of elements of any data type, and also to create a block of code that will be evaluated later on (quoted program).
+: A list of elements, which may also contain symbols. Quotations can be be used to create heterogenous lists of elements of any data type, and also to create a block of code that will be evaluated later on (quoted program). Example: (1 2 3 + \*)
+dictionary
+: A key/value table. Dictionaries are implemented as an immediately-dequoted quotation, are enclosed in curly braces, and are represented by their symbol definitions. Note that dictionary keys are symbols and therefore can only contain characters allowed in symbols. The {#link-module||dict#} provides some operators on dictionaries.
 
-Additionally, quotations structured in a particular way can be used as dictionaries, and a few operators are available to manage them more easily (`dhas?`, `dget`, `ddel` and `dset`). A dictionary is a quotation containing zero or more quotations of two elements, the first of which is a string that has not already be used in any of the other inner quotations.
-
-> %sidebar%
-> Example
->
-> The following is a simple dictionary containing three keys: *name*, *paradigm*, and *first-release-year*:
->
->     (
->         ("name" "min")
->         ("paradigm" "concatenative")
->         ("first-release-year" 2017)
->     )
+  > %sidebar%
+  > Example
+  >
+  > The following is a simple dictionary containing three keys: *name*, *paradigm*, and *first-release-year*:
+  >
+  >     {
+  >         "min" :name
+  >         "concatenative" :paradigm
+  >         2017 :first-release-year
+  >     }
 
 The {#link-module||logic#} provides predicate operators to check if an element belong to a particular data type or pseudo-type (`boolean?`, `number?`, `integer?`, `float?`, `string?`, `quotation?`, `dictionary?`).
 

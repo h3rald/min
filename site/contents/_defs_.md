@@ -7,8 +7,8 @@
 {{2 => [<sub>2</sub>](class:kwd)}}
 {{3 => [<sub>3</sub>](class:kwd)}}
 {{4 => [<sub>4</sub>](class:kwd)}}
-{{e => [err](class:kwd)}}
-{{tinfo => [tinfo](class:kwd)}}
+{{e => [dict:error](class:kwd)}}
+{{tinfo => [dict:timeinfo](class:kwd)}}
 {{d => [dict](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
@@ -45,11 +45,11 @@
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
 {{null => &#x2205;}}
-{{sock => [socket](class:kwd)}}
+{{sock => [dict:socket](class:kwd)}}
 {{req => [request](class:kwd)}}
 {{res => [response](class:kwd)}}
-{{sock1 => [socket<sub>1</sub>](class:kwd)}}
-{{sock2 => [socket<sub>2</sub>](class:kwd)}}
+{{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}
+{{sock2 => [dict:socket<sub>2</sub>](class:kwd)}}
 {{m => _min_}}
 
 {{sgregex => [sgregex](https://github.com/snake5/sgregex).}}
