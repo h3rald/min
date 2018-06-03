@@ -76,8 +76,8 @@ type
       of minQuotation, minDictionary: 
         qVal*: seq[MinValue]
         scope*: ref MinScope
-        obj*: pointer
-        objType*: string
+        obj*: pointer # Used only for dicts
+        objType*: string # Used only for dicts
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool

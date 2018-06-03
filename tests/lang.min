@@ -138,9 +138,11 @@
     ) case
   ) assert
 
-  (time module-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) assert
+  (time scope-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) assert
 
-  (sys module-sigils ("!" "$" "&") ==) assert
+  (sys scope-sigils ("!" "$" "&") ==) assert
+
+  ({3 :a 5 :b} ("a" "b") ==) assert
 
   (opts {} ==) assert
 

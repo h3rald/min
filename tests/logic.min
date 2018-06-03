@@ -132,6 +132,11 @@
   (false quotation? false ==) assert
   (("a" 2 c) quotation?) assert
 
+  ({} 'module type? false ==) assert
+  ((1 2 3) 'module type? false ==) assert
+  (4 'module type? false ==) assert
+  (logic 'module type?) assert
+
   (7 0 / inf ==) assert
   (-7 0 / -inf ==) assert
   (0 0 / nan ==) assert
