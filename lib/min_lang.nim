@@ -52,7 +52,7 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("scope-symbols") do (i: In):
-    let vals = i.expect("quot|dict")
+    let vals = i.expect("dict")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.symbols.keys:
@@ -60,7 +60,7 @@ proc lang_module*(i: In) =
     i.push q.newVal(i.scope)
 
   def.symbol("scope-sigils") do (i: In):
-    let vals = i.expect("quot|dict")
+    let vals = i.expect("dict")
     let m = vals[0]
     var q = newSeq[MinValue](0)
     for s in m.scope.sigils.keys:
