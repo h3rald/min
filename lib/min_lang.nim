@@ -75,10 +75,22 @@ proc lang_module*(i: In) =
     let s = vals[0]
     i.push i.fromJson(s.getString.parseJson)
 
+  def.symbol("from-json-file") do (i: In):
+    let vals = i.expect("string")
+    let s = vals[0]
+    let j = s.getString.parseFile
+    i.push i.fromJson(j)
+
   def.symbol("to-json") do (i: In):
     let vals = i.expect "a"
     let q = vals[0]
     i.push(($((i%q).pretty)).newVal)
+
+  def.symbol("to-json-file") do (i: In):
+    let vals = i.expect("'sym", "a")
+    let f = vals[0]
+    let q = vals[1]
+    f.getString.writeFile($((i%q).pretty))
 
   def.symbol("loglevel") do (i: In):
     let vals = i.expect("'sym")

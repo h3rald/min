@@ -151,10 +151,12 @@ proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2"
       for it in a.dVal.pairs: 
         result[it.key] = i%i.dget(a, it.key)
 
+let nullScope = newScopeRef(nil)
+
 proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
   case json.kind:
     of JNull:
-      result = newSeq[MinValue](0).newVal(i.scope)
+      result = newSeq[MinValue](0).newVal(nullScope)
     of JBool: 
       result = json.getBool.newVal
     of JInt:
@@ -162,27 +164,29 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
     of JFloat:
       result = json.getFloat.newVal
     of JString:
-      let s = json.getStr
-      if s.match("^;sym:"):
-        result = sgregex.replace(s, "^;sym:", "").newSym
-      else:
-        result = json.getStr.newVal
+      #let s = json.getStr
+      #if s.match("^;sym:"):
+      #  result = sgregex.replace(s, "^;sym:", "").newSym
+      #else:
+      #  result = json.getStr.newVal
+      result = json.getStr.newVal
     of JObject:
-      var res = newDict(i.scope)
+      var res = newDict(nullScope)
       for key, value in json.pairs:
-        var first = $key[0]
-        var rest = ""
-        if key.len > 1:
-          rest = key[1..key.len-1]
-        first = sgregex.replace(first, "[^a-zA-Z_]", "_")
-        rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
-        discard i.dset(res, first&rest, i.fromJson(value))
+        #var first = $key[0]
+        #var rest = ""
+        #if key.len > 1:
+        #  rest = key[1..key.len-1]
+        #first = sgregex.replace(first, "[^a-zA-Z_]", "_")
+        #rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
+        #discard i.dset(res, first&rest, i.fromJson(value))
+        discard i.dset(res, $key, i.fromJson(value))
       return res
     of JArray:
       var res = newSeq[MinValue](0)
       for value in json.items:
         res.add i.fromJson(value)
-      return res.newVal(i.scope)
+      return res.newVal(nullScope)
 
 # Validators
 
