@@ -6,31 +6,35 @@ import
 
 proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case v.kind:
-    of minInt:
+    of JInt:
       return "int"
-    of minFloat:
+    ofJFloat:
       return "float"
-    of minDictionary: 
-      if v.isTypedDictionary:
-        return "dict:" & v.objType
+    of JObject: 
+      if v.isSymbol:
+        return "sym"
+      elif v.isTypedDictionary:
+        return "dict:"
+        # TODO 
+        #return "dict:" & v.objType
       else: 
         return "dict"
-    of minQuotation:
+    of JArray:
       return "quot"
-    of minString:
+    of Jtring:
       return "string"
-    of minSymbol:
-      return "sym"
-    of minBool:
+    of JNil:
+      return "nil"
+    of JBool:
       return "bool"
 
 # Constructors
 
 proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
-  return MinValue(kind: minString, strVal: s)
+  return %s
 
 proc newVal*(s: cstring): MinValue {.extern:"min_exported_symbol_$1_2".}=
-  return MinValue(kind: minString, strVal: $s)
+  return %$s
 
 proc newVal*(q: seq[MinValue], parentScope: ref MinScope, dictionary = false): MinValue {.extern:"min_exported_symbol_$1_3".}=
   if dictionary:

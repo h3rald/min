@@ -6,6 +6,7 @@ import
   streams, 
   unicode, 
   tables,
+  json,
   critbits,
   math,
   logging
@@ -24,14 +25,6 @@ type
     tkSymbol,
     tkTrue,
     tkFalse
-  MinKind* = enum
-    minInt,
-    minFloat,
-    minQuotation,
-    minDictionary,
-    minString,
-    minSymbol,
-    minBool
   MinEventKind* = enum     ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
     eMinEof,               ## end of file reached
@@ -65,28 +58,18 @@ type
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
-  MinValue* = ref MinValueObject
-  MinValueObject* = object
+  MinValue* = JsonNode 
+  MinScope* {.acyclic.} = object
     line*: int
     column*: int
     filename*: string
-    case kind*: MinKind
-      of minInt: intVal*: BiggestInt
-      of minFloat: floatVal*: BiggestFloat
-      of minQuotation, minDictionary: 
-        qVal*: seq[MinValue]
-        scope*: ref MinScope
-        obj*: pointer # Used only for dicts
-        objType*: string # Used only for dicts
-      of minString: strVal*: string
-      of minSymbol: symVal*: string
-      of minBool: boolVal*: bool
-  MinScope* = object
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
+    obj*: pointer # Used only for dicts
+    objType*: string # Used only for dicts
     parent*: ref MinScope
     name*: string
-    stack*: MinStack
+    val*: MinValue
   MinOperatorProc* = proc (i: In) {.closure.}
   MinOperatorKind* = enum
     minProcOp
@@ -130,10 +113,6 @@ proc raiseOutOfBounds*(msg: string) {.extern:"min_exported_symbol_$1".}=
 
 proc raiseEmptyStack*() {.extern:"min_exported_symbol_$1".}=
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
-
-proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.extern:"min_exported_symbol_$1".}=
-  if v.kind == minDictionary:
-    return v.scope.symbols
 
 const
   errorMessages: array[MinParserError, string] = [
@@ -530,23 +509,23 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
-    result = MinValue(kind: minBool, boolVal: true, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = %true
     discard getToken(p)
   of tkFalse:
-    result = MinValue(kind: minBool, boolVal: false, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = %false
     discard getToken(p)
   of tkString:
-    result = MinValue(kind: minString, strVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = %p.a
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = MinValue(kind: minInt, intVal: parseint(p.a), column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = %parseInt(p.a)
     discard getToken(p)
   of tkFloat:
-    result = MinValue(kind: minFloat, floatVal: parseFloat(p.a), column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = %parseFloat(p.a)
     discard getToken(p)
   of tkBracketLe:
-    var q = newSeq[MinValue](0)
+    var q = newJArray()
     var oldscope = i.scope
     var newscope = newScopeRef(i.scope)
     i.scope = newscope
@@ -554,10 +533,14 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     while p.token != tkBracketRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
+    i.scope.val = q
+    i.scope.line = p.lineNumber
+    i.scope.column = p.getColumn
+    i.scope.filename = p.filename
     i.scope = oldscope
-    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
+    result = q
   of tkBraceLe:
-    var q = newSeq[MinValue](0)
+    var q = newJArray()
     var oldscope = i.scope
     var newscope = newScopeRef(i.scope)
     i.scope = newscope
@@ -565,87 +548,71 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     while p.token != tkBraceRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBraceRi)
+    i.scope.val = newJObject() # To be populated by the interpreter
+    i.scope.line = p.lineNumber
+    i.scope.column = p.getColumn
+    i.scope.filename = p.filename
     i.scope = oldscope
-    result = MinValue(kind: minDictionary, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
+    result = q
   of tkSymbol:
-    result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = newJObject()
+    result.add(";symbol", %p.a)
+    result.add("line", %p.lineNumber)
+    result.add("column", %p.getColumn)
+    result.add("filename", %p.filename)
     p.a = ""
     discard getToken(p)
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
-  result.filename = p.filename
 
 proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:
-    of minBool:
-      return $a.boolVal
-    of minSymbol:
-      return a.symVal
-    of minString:
-      return "\"$1\"" % a.strVal.replace("\"", "\\\"")
-    of minInt:
-      return $a.intVal
-    of minFloat:
-      return $a.floatVal
-    of minQuotation:
+    of JObject:
+      if (a.hasKey(";symbol")):
+        return a[";symbol"].getstr
+      else:
+        # TODO: Handle typed dictionaries
+        var d = "{"
+        for key, val in a.pairs:
+          d &= $val & " " & $key & ":"
+        #if not a.objType.isNil: 
+        #  d &= ";" & a.objType
+        #d = d.strip & "}"
+        return d
+    of JArray:
       var q = "("
-      for i in a.qVal:
+      for i in a.elems:
         q = q & $i & " "
-      if not a.objType.isNil:
-        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
-    of minDictionary:
-      var d = "{"
-      for i in a.dVal.pairs:
-        var v = ""
-        if i.val.kind == minProcOp:
-          v = "<native>"
-        else:
-          v = $i.val.val
-          if (not i.val.quotation):
-            v = v[1 .. v.len-2]
-        d = d & v & " :" & $i.key & " "
-      if not a.objType.isNil: 
-        d = d & ";" & a.objType
-      d = d.strip & "}"
-      return d
+    else:
+      return $a
 
 proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:
-    of minBool:
-      return $a.boolVal
-    of minSymbol:
-      return a.symVal
-    of minString:
-      return a.strVal
-    of minInt:
-      return $a.intVal
-    of minFloat:
-      return $a.floatVal
-    of minQuotation:
+    of JObject:
+      if (a.hasKey(";symbol")):
+        return a[";symbol"].getstr
+      else:
+        # TODO: Handle typed dictionaries
+        var d = "{"
+        for key, val in a.pairs:
+          d &= $val & " " & $key & ":"
+        #if not a.objType.isNil: 
+        #  d &= ";" & a.objType
+        #d = d.strip & "}"
+        return d
+    of JArray:
       var q = "("
-      for i in a.qVal:
+      for i in a.elems:
         q = q & $i & " "
-      if not a.objType.isNil:
-        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
-    of minDictionary:
-      var d = "{"
-      for i in a.dVal.pairs:
-        var v = ""
-        if i.val.kind == minProcOp:
-          v = "<native>"
-        else:
-          v = $i.val.val
-          if (not i.val.quotation):
-            v = v[1 .. v.len-2]
-        d = d & v & " :" & $i.key & " "
-      if not a.objType.isNil: 
-        d = d & ";" & a.objType
-      d = d.strip & "}"
-      return d
+    of JString:
+      return a.getStr
+    else:
+      return $a
+  
 
 proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
   stdout.write($$a)
@@ -653,91 +620,38 @@ proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
 # Predicates
 
 proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minSymbol
+  return s.kind == JObject and s.hasKey(";symbol")
 
 proc isQuotation*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
-  return s.kind == minQuotation
+  return s.kind == JArray
 
 proc isString*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
-  return s.kind == minString
+  return s.kind == JString
 
 proc isFloat*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minFloat
+  return s.kind == JFloat
 
 proc isInt*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minInt
+  return s.kind == JInt
 
 proc isNumber*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.kind == minInt or s.kind == minFloat
+  return s.kind == JInt or s.kind == JFloat
 
 proc isBool*(s: MinValue): bool =
-  return s.kind == minBool
+  return s.kind == JBool
 
 proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
+  return s.isSymbol or s.isString or (s.isQuotation and s.elems.len == 1 and s.elems[0].isSymbol)
 
 proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  return q.kind == minDictionary
+  return q.kind == JObject and not q.hasKey(";symbol")
 
 proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if q.isDictionary:
-    return not q.objType.isNil
+    return 
   return false
 
 proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
   if q.isTypedDictionary:
-    return q.objType == t
+    return q.hasKey(";type")
   return false
-
-proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}=
-  if not (a.kind == b.kind or (a.isNumber and b.isNumber)):
-    return false
-  if a.kind == minSymbol and b.kind == minSymbol:
-    return a.symVal == b.symVal
-  elif a.kind == minInt and b.kind == minInt:
-    return a.intVal == b.intVal
-  elif a.kind == minInt and b.kind == minFloat:
-    return a.intVal.float == b.floatVal.float
-  elif a.kind == minFloat and b.kind == minFloat:
-    return a.floatVal == b.floatVal
-  elif a.kind == minFloat and b.kind == minInt:
-    return a.floatVal == b.intVal.float
-  elif a.kind == b.kind:
-    if a.kind == minString:
-      return a.strVal == b.strVal
-    elif a.kind == minBool:
-      return a.boolVal == b.boolVal
-    elif a.kind == minQuotation:
-      if a.qVal.len == b.qVal.len:
-        var c = 0
-        for item in a.qVal:
-          if item == b.qVal[c]:
-            c.inc
-          else:
-            return false
-        return true
-      else:
-        return false
-    elif a.kind == minDictionary:
-      let aVal = a.dVal
-      let bVal = b.dVal
-      if aVal.len != bVal.len:
-        return false
-      else:
-        for t in aVal.pairs:
-          if not bVal.hasKey(t.key):
-            return false
-          let v1 = t.val
-          let v2 = bVal[t.key]
-          if v1.kind != v2.kind:
-            return false
-          if v1.kind == minValOp:
-            return v1.val == v2.val
-        if a.objType.isNil and b.objType.isNil:
-          return true
-        elif not a.objType.isNil and not b.objType.isNil:
-          return a.objType == b.objType
-        else:
-          return false
-  else:
-    return false
