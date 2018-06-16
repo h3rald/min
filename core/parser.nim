@@ -23,6 +23,7 @@ type
     tkBraceLe,
     tkBraceRi,
     tkSymbol,
+    tkNil,
     tkTrue,
     tkFalse
   MinEventKind* = enum     ## enumeration of all events that may occur when parsing
@@ -80,7 +81,6 @@ type
     of minProcOp:
       prc*: MinOperatorProc
     of minValOp:
-      quotation*: bool
       val*: MinValue
   MinStack* = seq[MinValue]
   In* = var MinInterpreter
@@ -137,6 +137,7 @@ const
     "{",
     "}",
     "symbol",
+    "nil",
     "true",
     "false"
   ]
@@ -416,6 +417,7 @@ proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1
   else:
     result = parseSymbol(my)
     case my.a 
+    of "nil": result = tkNil
     of "true": result = tkTrue
     of "false": result = tkFalse
     else: 
@@ -435,7 +437,7 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
       my.err = errEofExpected
   of stateStart: 
     case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
+    of tkString, tkInt, tkFloat, tkNil, tkTrue, tkFalse:
       my.state[i] = stateEof # expect EOF next!
       my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
@@ -451,7 +453,7 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
       my.err = errEofExpected
   of stateQuotation:
     case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
+    of tkString, tkInt, tkFloat, tkNil, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
@@ -470,7 +472,7 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
       my.err = errBracketRiExpected
   of stateDictionary:
     case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
+    of tkString, tkInt, tkFloat, tkNil, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
@@ -489,7 +491,7 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
       my.err = errBraceRiExpected
   of stateExpectValue:
     case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
+    of tkString, tkInt, tkFloat, tkNil, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
     of tkBracketLe: 
       my.state.add(stateQuotation)
@@ -508,6 +510,8 @@ proc eat(p: var MinParser, token: MinTokenKind) {.extern:"min_exported_symbol_$1
 proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   #echo p.a, " (", p.token, ")"
   case p.token
+  of tkNil:
+    result = newJNull()
   of tkTrue:
     result = %true
     discard getToken(p)
@@ -540,15 +544,15 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     i.scope = oldscope
     result = q
   of tkBraceLe:
-    var q = newJArray()
+    var q = newJObject()
+    q[";raw"] = newJArray()
     var oldscope = i.scope
     var newscope = newScopeRef(i.scope)
     i.scope = newscope
     discard getToken(p)
     while p.token != tkBraceRi: 
-      q.add p.parseMinValue(i)
+      q[";raw"].add p.parseMinValue(i)
     eat(p, tkBraceRi)
-    i.scope.val = newJObject() # To be populated by the interpreter
     i.scope.line = p.lineNumber
     i.scope.column = p.getColumn
     i.scope.filename = p.filename
@@ -565,62 +569,13 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
-proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
-  case a.kind:
-    of JObject:
-      if (a.hasKey(";symbol")):
-        return a[";symbol"].getstr
-      else:
-        # TODO: Handle typed dictionaries
-        var d = "{"
-        for key, val in a.pairs:
-          d &= $val & " " & $key & ":"
-        #if not a.objType.isNil: 
-        #  d &= ";" & a.objType
-        #d = d.strip & "}"
-        return d
-    of JArray:
-      var q = "("
-      for i in a.elems:
-        q = q & $i & " "
-      q = q.strip & ")"
-      return q
-    else:
-      return $a
-
-proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
-  case a.kind:
-    of JObject:
-      if (a.hasKey(";symbol")):
-        return a[";symbol"].getstr
-      else:
-        # TODO: Handle typed dictionaries
-        var d = "{"
-        for key, val in a.pairs:
-          d &= $val & " " & $key & ":"
-        #if not a.objType.isNil: 
-        #  d &= ";" & a.objType
-        #d = d.strip & "}"
-        return d
-    of JArray:
-      var q = "("
-      for i in a.elems:
-        q = q & $i & " "
-      q = q.strip & ")"
-      return q
-    of JString:
-      return a.getStr
-    else:
-      return $a
-  
-
-proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
-  stdout.write($$a)
-
 # Predicates
 
 proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == JObject and s.hasKey(";symbol")
+
+proc isRawDictionary*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  return s.kind == JObject and s.hasKey(";raw")
 
 proc isQuotation*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
   return s.kind == JArray
@@ -655,3 +610,59 @@ proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_sym
   if q.isTypedDictionary:
     return q.hasKey(";type")
   return false
+
+proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
+  case a.kind:
+    of JObject:
+      if (a.hasKey(";symbol")):
+        return a[";symbol"].getstr
+      else:
+        # TODO: Handle typed dictionaries
+        var d = "{"
+        for key, val in a.pairs:
+          d &= $val & " " & $key & ":"
+        #if not a.objType.isNil: 
+        #  d &= ";" & a.objType
+        #d = d.strip & "}"
+        return d
+    of JArray:
+      var q = "("
+      for i in a.elems:
+        q = q & $i & " "
+      q = q.strip & ")"
+      return q
+    else:
+      return $a
+
+proc str*(a: MinValue): string {.extern:"min_exported_symbol_$1".} =
+  return $a
+
+proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
+  case a.kind:
+    of JObject:
+      if (a.isSymbol):
+        return a[";symbol"].getstr
+      else:
+        # TODO: Handle typed dictionaries
+        var d = "{"
+        for key, val in a.pairs:
+          d &= $val & " " & $key & ":"
+        #if not a.objType.isNil: 
+        #  d &= ";" & a.objType
+        #d = d.strip & "}"
+        return d
+    of JArray:
+      var q = "("
+      for i in a.elems:
+        q = q & $i & " "
+      q = q.strip & ")"
+      return q
+    of JString:
+      return a.getStr
+    else:
+      return $a
+  
+
+proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
+  stdout.write($$a)
+
