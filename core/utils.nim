@@ -36,10 +36,11 @@ proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.extern:"min_
 proc sigil*(scope: ref MinScope, sym: string, v: MinValue) {.extern:"min_exported_symbol_$1_2".}=
   scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_symbol_$1".}=
+proc finalize*(scope: ref MinScope, name: string) {.extern:"min_exported_symbol_$1".}=
   #TODO Review
   var mdl = newJObject()
-  mdl[";symbol"] = %name
+  mdl[";type"] = %"native-module"
+  mdl[";name"] = %name
   #var mdl = newDict(scope)
   #mdl.scope = scope
   #mdl.objType = "module"
@@ -47,54 +48,10 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
   #  i.evaluating = true
   #  i.push mdl
   #  i.evaluating = false
-  if name != "":
-    scope.previous.symbols[name] = MinOperator(kind: minValOp, val: mdl)
+  scope.previous.symbols[name] = MinOperator(kind: minValOp, val: mdl)
+  NativeModules[name] = scope 
 
 # Dictionary Methods
-
-proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
-  if not q.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  return q[s.getString]
-
-proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbol_$1_2".}=
-  if not q.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  return q[s]
-
-proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
-  if not q.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  return q.contains(s.getString)
-
-proc dhas*(q: MinValue, s: string): bool {.extern:"min_exported_symbol_$1_2".}=
-  if not q.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  return q.contains(s)
-
-proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
-  if not p.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  delete(p, s.getString)
-  return p
-      
-proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable, extern:"min_exported_symbol_$1_2".} =
-  if not p.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  delete(p, s)
-  return p
-      
-proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
-  if not p.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  p[s.getString] = m
-  return p
-
-proc dset*(i: In, p: var MinValue, s: string, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1_2".}=
-  if not p.isDictionary:
-    raiseInvalid("Value is not a dictionary")
-  p[s] = m
-  return p
 
 proc keys*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   # Assumes q is a dictionary

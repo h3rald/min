@@ -33,11 +33,12 @@ proc debug*(i: In, value: MinValue) {.extern:"min_exported_symbol_$1".}=
 proc debug*(i: In, value: string) {.extern:"min_exported_symbol_$1_2".}=
   debug(value)
 
-template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untyped =
+template withScope*(i: In, res:ref MinScope, body: untyped): untyped =
   let origScope = i.scope
   try:
     #TODO Review
     i.scope = new MinScope
+    i.scope.parent = origScope
     #i.scope = q.scope.copy
     #i.scope.parent = origScope
     body
@@ -45,16 +46,26 @@ template withScope*(i: In, q: MinValue, res:ref MinScope, body: untyped): untype
   finally:
     i.scope = origScope
 
-template withScope*(i: In, q: MinValue, body: untyped): untyped =
+template withScope*(i: In, body: untyped): untyped =
   let origScope = i.scope
   try:
     #TODO Review
     i.scope = new MinScope
+    i.scope.parent = origScope
     #i.scope = q.scope.copy
     #i.scope.parent = origScope
     body
     #TODO Review
     #q.scope = i.scope
+  finally:
+    i.scope = origScope
+
+template withModuleScope*(i: In, d: MinValue, body: untyped): untyped =
+  let origScope = i.scope
+  try:
+    i.scope = newScopeRefFromModule(d, origScope)
+    i.scope.parent = origScope
+    body
   finally:
     i.scope = origScope
 
@@ -132,7 +143,7 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   of minValOp:
     if op.val.kind == JArray:
       var q = op.val
-      i.withScope(q, newscope):
+      i.withScope(newscope):
         for e in q.elems:
           i.push e
     else:
@@ -142,16 +153,24 @@ proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
   if not q.isQuotation and not q.isRawDictionary:
     i.push(q)
   else:
-    i.withScope(q): 
+    i.withScope(): 
       for v in q.elems:
         i.push v
+
+proc dequoteToScope*(i: In, q: var MinValue): ref MinScope {.extern:"min_exported_symbol_$1".}=
+  if not q.isQuotation and not q.isRawDictionary:
+    raiseInvalid("Value is not a quotation: " & q.str)
+  i.withScope(): 
+    for v in q.elems:
+      i.push v
+    result = i.scope
 
 proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".}=
   var i2 = newMinInterpreter("<apply>")
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(q): 
+    i2.withScope(): 
       for v in q.elems:
         if (v.isQuotation):
           var v2 = v
@@ -169,7 +188,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symb
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(q): 
+    i2.withScope(): 
       for v in q.elems:
         i2.push v
   except:
@@ -203,9 +222,8 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   else:
     if (val.isRawDictionary):
       var v = val[";raw"]
-      i.dequote(v)
-      var d = newJObject();
-      # TODO Create dictionary based on defined symbols
+      let dscope = i.dequoteToScope(v)
+      var d = newVal(dscope.symbols)
       i.stack.add(d)
     else:
       i.stack.add(val)

@@ -77,6 +77,7 @@ type
     minValOp
   MinOperator* = object
     sealed*: bool
+    quotation*: bool
     case kind*: MinOperatorKind
     of minProcOp:
       prc*: MinOperatorProc
@@ -99,6 +100,8 @@ type
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
+
+var NativeModules*: CritBitTree[ref MinScope]
 
 # Helpers
 
@@ -148,6 +151,14 @@ proc newScope*(parent: ref MinScope): MinScope {.extern:"min_exported_symbol_$1"
 proc newScopeRef*(parent: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   new(result)
   result[] = newScope(parent)
+
+proc newScopeRefFromModule*(m: MinValue, parent: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
+  new(result)
+  result[] = newScope(parent)
+  # Assuming m is a module
+  for pair in m.pairs:
+    if pair.key[0] != ';':
+      result.symbols[pair.key] = MinOperator(kind: minValOp, val: pair.val)
 
 proc open*(my: var MinParser, input: Stream, filename: string) {.extern:"min_exported_symbol_$1".}=
   lexbase.open(my, input)
@@ -601,15 +612,27 @@ proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
 proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return q.kind == JObject and not q.hasKey(";symbol")
 
-proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1_2".}=
   if q.isDictionary:
-    return 
+    return q.hasKey(";type")
   return false
 
 proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
-  if q.isTypedDictionary:
-    return q.hasKey(";type")
+  if q.isDictionary:
+    return q.hasKey(";type") and q[";type"] == %t
   return false
+
+proc isModule*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  return q.isTypedDictionary("module")
+
+proc isNativeModule*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  return q.isTypedDictionary("native-module")
+
+proc name*(q: MinValue): string {.extern:"min_exported_symbol_$1".}=
+  return q[";name"].getStr
+
+proc sealed*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  return s.hasKey(";sealed")
 
 proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case a.kind:

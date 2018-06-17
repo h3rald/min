@@ -1,5 +1,6 @@
 import 
   critbits, 
+  tables,
   strutils, 
   sequtils,
   parseopt,
@@ -22,7 +23,7 @@ proc lang_module*(i: In) =
   let def = i.scope
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
-    quit(vals[0].intVal.int)
+    quit(vals[0].getInt)
    
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot")
@@ -30,42 +31,46 @@ proc lang_module*(i: In) =
     i.apply prog
 
   def.symbol("symbols") do (i: In):
-    var q = newSeq[MinValue](0)
+    var q = newJArray()
     var scope = i.scope
     while not scope.isNil:
       for s in scope.symbols.keys:
         q.add s.newVal
       scope = scope.parent
-    i.push q.newVal(i.scope)
+    i.push q
 
   def.symbol("defined?") do (i: In):
     let vals = i.expect("'sym")
     i.push(i.scope.hasSymbol(vals[0].getString).newVal)
 
   def.symbol("sigils") do (i: In):
-    var q = newSeq[MinValue](0)
+    var q = newJArray()
     var scope = i.scope
     while not scope.isNil:
       for s in scope.sigils.keys:
         q.add s.newVal
       scope = scope.parent
-    i.push q.newVal(i.scope)
+    i.push q
 
   def.symbol("scope-symbols") do (i: In):
-    let vals = i.expect("dict")
-    let m = vals[0]
-    var q = newSeq[MinValue](0)
-    for s in m.scope.symbols.keys:
-      q.add s.newVal
-    i.push q.newVal(i.scope)
+    #TODO Review
+    discard
+    #let vals = i.expect("dict")
+    #let m = vals[0]
+    #var q = newJArray()
+    #for s in m.scope.symbols.keys:
+    #  q.add s.newVal
+    #i.push q
 
   def.symbol("scope-sigils") do (i: In):
-    let vals = i.expect("dict")
-    let m = vals[0]
-    var q = newSeq[MinValue](0)
-    for s in m.scope.sigils.keys:
-      q.add s.newVal
-    i.push q.newVal(i.scope)
+    #TODO Review
+    discard
+    #let vals = i.expect("dict")
+    #let m = vals[0]
+    #var q = newJArray
+    #for s in m.scope.sigils.keys:
+    #  q.add s.newVal
+    #i.push q
 
   def.symbol("lite?") do (i: In):
     i.push defined(lite).newVal
@@ -73,24 +78,23 @@ proc lang_module*(i: In) =
   def.symbol("from-json") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push i.fromJson(s.getString.parseJson)
+    i.push s.getString.parseJson
 
   def.symbol("from-json-file") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    let j = s.getString.parseFile
-    i.push i.fromJson(j)
+    i.push s.getString.parseFile
 
   def.symbol("to-json") do (i: In):
     let vals = i.expect "a"
     let q = vals[0]
-    i.push(($((i%q).pretty)).newVal)
+    i.push(($((q).pretty)).newVal)
 
   def.symbol("to-json-file") do (i: In):
     let vals = i.expect("'sym", "a")
     let f = vals[0]
     let q = vals[1]
-    f.getString.writeFile($((i%q).pretty))
+    f.getString.writeFile($((q).pretty))
 
   def.symbol("loglevel") do (i: In):
     let vals = i.expect("'sym")
@@ -110,12 +114,12 @@ proc lang_module*(i: In) =
     var symbol: string
     var isQuot = true
     if not q1.isQuotation:
-      q1 = @[q1].newVal(i.scope)
+      q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
     if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-    info "[define] $1 = $2" % [symbol, $q1]
+    info "[define] $1 = $2" % [symbol, q1.str]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
@@ -127,10 +131,10 @@ proc lang_module*(i: In) =
     var symbol: string
     var isQuot = true
     if not q1.isQuotation:
-      q1 = @[q1].newVal(i.scope)
+      q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
-    info "[bind] $1 = $2" % [symbol, $q1]
+    info "[bind] $1 = $2" % [symbol, q1.str]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, quotation: isQuot))
     if not res:
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
@@ -146,9 +150,9 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym", "dict")
     let name = vals[0]
     var code = vals[1]
-    code.objType = "module"
-    code.filename = i.filename
-    info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
+    code[";type"] = %"module"
+    #code.filename = i.filename
+    info("[module] $1 ($2 symbols)" % [name.getString, $toSeq(code.getFields.keys).len])
     i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: code)
 
   def.symbol("import") do (i: In):
@@ -158,29 +162,41 @@ proc lang_module*(i: In) =
     name = rawName.getString
     var op = i.scope.getSymbol(name)
     i.apply(op)
-    vals = i.expect("dict:module")
-    let mdl = vals[0]
-    info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.scope.symbols.len, $mdl.scope.sigils.len])
-    for sym, val in mdl.scope.symbols.pairs:
-      if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
-        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
-      i.debug "[import] $1" % [sym]
-      i.scope.symbols[sym] = val
-    for sig, val in mdl.scope.sigils.pairs:
-      if i.scope.sigils.hasKey(sig) and i.scope.sigils[sig].sealed:
-        raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sig])
-      i.debug "[import] $1" % [sig]
-      i.scope.sigils[sig] = val
+    vals = i.expect("dict:module|dict:native-module")
+    let mref = vals[0]
+    if mref.isNativeModule:
+      if not NativeModules.contains(name):
+        raiseUndefined("Undefined native module: " & name)
+      let mdl = NativeModules[name]  
+      info("[import] Importing: $1 ($2 symbols, $3 sigils)" % [name, $mdl.symbols.len, $mdl.sigils.len])
+      for sig, val in mdl.sigils.pairs:
+        if i.scope.sigils.hasKey(sig) and i.scope.sigils[sig].sealed:
+          raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sig])
+        i.debug "[import] $1" % [sig]
+        i.scope.sigils[sig] = val
+      for sym, val in mdl.symbols.pairs:
+        if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
+          raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+        i.debug "[import] $1" % [sym]
+        i.scope.symbols[sym] = val
+    else:
+      info("[import] Importing: $1 ($2 symbols)" % [name, $(toSeq(mref.pairs).len)])
+      for pair in mref.pairs:
+        var sym = pair.key
+        if i.scope.symbols.hasKey(sym) and i.scope.symbols[sym].sealed:
+          raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+        i.debug "[import] $1" % [sym]
+        i.scope.symbols[sym] = MinOperator(kind: minValOp, val: pair.val)
   
   def.symbol("eval") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.eval s.strVal
+    i.eval s.getStr
 
   def.symbol("parse") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push i.parse s.strVal
+    i.push i.parse s.getStr
 
   def.symbol("load") do (i: In):
     let vals = i.expect("'sym")
@@ -206,30 +222,40 @@ proc lang_module*(i: In) =
     i.push i.read file
 
   def.symbol("with") do (i: In):
-    let vals = i.expect("dict", "quot")
-    var qscope = vals[0]
+    let vals = i.expect("dict:module|dict:native-module", "quot")
+    var mdl = vals[0]
     let qprog = vals[1]
-    i.withScope(qscope):
-      for v in qprog.qVal:
+    i.withModuleScope(mdl):
+      for v in qprog.elems:
         i.push v
 
   def.symbol("publish") do (i: In):
-    let vals = i.expect("dict", "'sym")
-    let qscope = vals[0]
+    let vals = i.expect("dict:module|dict:native-module", "'sym")
+    var d = vals[0]
     let str = vals[1]
     let sym = str.getString
-    if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
-      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
-    let scope = i.scope
-    info("[publish] Symbol: $2" % [sym])
-    let op = proc(i: In) {.closure.} =
-      let origscope = i.scope 
-      i.scope = scope
-      i.evaluating = true
-      i.push sym.newSym
-      i.evaluating = false
-      i.scope = origscope
-    qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
+    if d.isNativeModule:
+      var mdl = NativeModules[d.name]
+      if mdl.symbols.hasKey(sym) and mdl.symbols[sym].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+      let scope = i.scope
+      info("[publish] Symbol: $1" % [sym])
+      let op = proc(i: In) {.closure.} =
+        let origscope = i.scope 
+        i.scope = scope
+        i.evaluating = true
+        i.push sym.newSym
+        i.evaluating = false
+        i.scope = origscope
+      mdl.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
+    else:
+      if d.hasKey(sym) and d[sym].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+      let val = i.scope.getSymbol(sym)
+      if val.kind == minValOp:
+        d[sym] = val.val
+      else:
+        raiseUndefined("Unable to publish native symbol:" & sym)
 
   def.symbol("source") do (i: In):
     let vals = i.expect("'sym")
@@ -242,46 +268,55 @@ proc lang_module*(i: In) =
       raiseInvalid("No source available for native symbol '$1'." % str)
 
   def.symbol("call") do (i: In):
-    let vals = i.expect("'sym", "dict")
+    let vals = i.expect("'sym", "dict:module|dict:native-module")
     let symbol = vals[0]
-    let q = vals[1]
-    let s = symbol.getString
-    let origScope = i.scope
-    i.scope = q.scope
-    let sym = i.scope.getSymbol(s)
-    i.apply(sym)
-    i.scope = origScope
+    let d = vals[1]
+    let sym = symbol.getString
+    if d.isNativeModule:
+      let mdl = NativeModules[d.name]
+      if not mdl.symbols.hasKey(sym):
+        raiseUndefined("Symbol '$1' not defined in specified module." % [sym])
+      let origScope = i.scope
+      i.scope = mdl
+      let sym = i.scope.getSymbol(sym)
+      i.apply(sym)
+      i.scope = origScope
+    else:
+      if not d.hasKey(sym):
+        raiseUndefined("Symbol not defined in dictionary: " & sym)
+      i.withModuleScope(d):
+        i.push(d[sym])
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
     let symbol = vals[0]
     var d = vals[1]
-    d.objType = symbol.getString
+    d[";type"] = %symbol.getString
     i.push d
 
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
     let err = vals[0]
-    if err.dhas("error".newVal) and err.dhas("message".newVal):
-      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err)
+    if err.hasKey("error") and err.hasKey("message"):
+      raiseRuntime("($1) $2" % [err["error"].getString, err["message"].getString], err)
     else:
       raiseInvalid("Invalid error dictionary")
 
   def.symbol("format-error") do (i: In):
     let vals = i.expect("dict:error")
     let err = vals[0]
-    if err.dhas("error".newVal) and err.dhas("message".newVal):
+    if err.hasKey("error") and err.haskey("message"):
       var msg: string
-      var list = newSeq[MinValue]()
-      list.add i.dget(err, "message")
-      if err.dhas("symbol"):
-        list.add i.dget(err, "symbol")
-      if err.dhas("filename"):
-        list.add i.dget(err, "filename")
-      if err.dhas("line"):
-        list.add i.dget(err, "line")
-      if err.dhas("column"):
-        list.add i.dget(err, "column")
+      var list = newJArray()
+      list.add err["message"]
+      if err.hasKey("symbol"):
+        list.add err["symbol"]
+      if err.hasKey("filename"):
+        list.add err["filename"]
+      if err.hasKey("line"):
+        list.add err["line"]
+      if err.hasKey("column"):
+        list.add err["column"]
       if list.len <= 1:
         msg = "$1" % $$list[0]
       else:
@@ -293,17 +328,17 @@ proc lang_module*(i: In) =
   def.symbol("try") do (i: In):
     let vals = i.expect("quot")
     let prog = vals[0]
-    if prog.qVal.len == 0:
+    if prog.elems.len == 0:
       raiseInvalid("Quotation must contain at least one element")
-    var code = prog.qVal[0]
+    var code = prog.elems[0]
     var final, catch: MinValue
     var hasFinally = false
     var hasCatch = false
-    if prog.qVal.len > 1:
-      catch = prog.qVal[1]
+    if prog.elems.len > 1:
+      catch = prog.elems[1]
       hasCatch = true
-    if prog.qVal.len > 2:
-      final = prog.qVal[2]
+    if prog.elems.len > 2:
+      final = prog.elems[2]
       hasFinally = true
     if (not code.isQuotation) or (hasCatch and not catch.isQuotation) or (hasFinally and not final.isQuotation):
       raiseInvalid("Quotation must contain at least one quotation")
@@ -319,15 +354,16 @@ proc lang_module*(i: In) =
       if not hasCatch:
         return
       let e = getCurrentException()
-      var res = newDict(i.scope)
+      var res = newJObject()
       let err = sgregex.replace($e.name, ":.+$", "")
-      res.objType = "error"
-      i.dset(res, "error", err.newVal)
-      i.dset(res, "message", e.msg.newVal)
-      i.dset(res, "symbol", i.currSym)
-      i.dset(res, "filename", i.currSym.filename.newVal)
-      i.dset(res, "line", i.currSym.line.newVal)
-      i.dset(res, "column", i.currSym.column.newVal)
+      res[";type"] = %"error"
+      res["error"] = %err
+      res["message"] = %e.msg
+      res["symbol"] = i.currSym
+      #TODO Review
+      #res["filename"] = %i.currSym.filename
+      #res["line"] = %i.currSym.line
+      #res["column"] = %i.currSym.column
       i.push res
       i.dequote(catch)
     finally:
@@ -336,8 +372,9 @@ proc lang_module*(i: In) =
 
   def.symbol("quote") do (i: In):
     let vals = i.expect("a")
-    let a = vals[0]
-    i.push @[a].newVal(i.scope)
+    let q = newJArray()
+    q.add vals[0]
+    i.push q
   
   def.symbol("dequote") do (i: In):
     let vals = i.expect("quot")
@@ -348,7 +385,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot", "a")
     let programs = vals[0]
     var a = vals[1]
-    for program in programs.qVal:
+    for program in programs.elems:
       var p = program
       i.push(a)
       i.dequote(p)
@@ -359,7 +396,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot", "a")
     let programs = vals[0]
     var a = vals[1]
-    for program in programs.qVal:
+    for program in programs.elems:
       var p = program
       i.push(a)
       i.dequote(p)
@@ -378,7 +415,7 @@ proc lang_module*(i: In) =
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
-    if res.boolVal == true:
+    if res.getBool == true:
       i.dequote(tpath)
     else:
       i.dequote(fpath)
@@ -393,7 +430,7 @@ proc lang_module*(i: In) =
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
-    if res.boolVal == true:
+    if res.getBool == true:
       i.dequote(tpath)
 
   def.symbol("unless") do (i: In):
@@ -406,7 +443,7 @@ proc lang_module*(i: In) =
     i.stack = stack
     if not res.isBool:
       raiseInvalid("Result of check is not a boolean value")
-    if res.boolVal == false:
+    if res.getBool == false:
       i.dequote(tpath)
 
   # 4 (
@@ -417,24 +454,24 @@ proc lang_module*(i: In) =
   def.symbol("case") do (i: In):
     let vals = i.expect("quot")
     var cases = vals[0]
-    if cases.qVal.len == 0:
+    if cases.elems.len == 0:
       raiseInvalid("Empty case operator")
     var k = 0
     let stack = i.stack
-    for c in cases.qVal:
+    for c in cases.elems:
       i.stack = stack
       if not c.isQuotation:
         raiseInvalid("A quotation of quotations is required")
       k.inc
-      if c.qVal.len != 2 or not c.qVal[0].isQuotation or not c.qVal[1].isQuotation:
+      if c.elems.len != 2 or not c.elems[0].isQuotation or not c.elems[1].isQuotation:
         raiseInvalid("Inner quotations in case operator must contain two quotations")
-      var q = c.qVal[0]
+      var q = c.elems[0]
       i.dequote(q)
       let res = i.pop
       if not res.isBool():
         raiseInvalid("Result of case #$1 is not a boolean value" % $k)
-      if res.boolVal == true:
-        var t = c.qVal[1]
+      if res.getBool == true:
+        var t = c.elems[1]
         i.dequote(t)
         break
 
@@ -444,7 +481,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot", "quot")
     var prog = vals[0]
     var list = vals[1]
-    for litem in list.qVal:
+    for litem in list.elems:
       i.push litem
       i.dequote(prog)
   
@@ -452,20 +489,20 @@ proc lang_module*(i: In) =
     let vals = i.expect("int", "quot")
     var t = vals[0]
     var prog = vals[1]
-    if t.intVal < 1:
+    if t.getInt < 1:
       raiseInvalid("A non-zero natural number is required")
-    for c in 1..t.intVal:
+    for c in 1..t.getInt:
       i.dequote(prog)
   
   def.symbol("while") do (i: In):
     let vals = i.expect("quot", "quot")
     var d = vals[0]
     var b = vals[1]
-    for e in b.qVal:
+    for e in b.elems:
       i.push e
     i.dequote(b)
     var check = i.pop
-    while check.isBool and check.boolVal == true:
+    while check.isBool and check.getBool == true:
       i.dequote(d)
       i.dequote(b)
       check = i.pop
@@ -482,7 +519,7 @@ proc lang_module*(i: In) =
     proc linrec(i: In, p, t, r1, r2: var MinValue) =
       i.dequote(p)
       var check = i.pop
-      if check.isBool and check.boolVal == true:
+      if check.isBool and check.getBool == true:
         i.dequote(t)
       else:
         i.dequote(r1)
@@ -503,7 +540,7 @@ proc lang_module*(i: In) =
     if op.kind == minProcOp:
       raiseInvalid("Symbol '$1' cannot be serialized." % sym)
     let json = MINSYMBOLS.readFile.parseJson
-    json[sym] = i%op.val
+    json[sym] = op.val
     MINSYMBOLS.writeFile(json.pretty)
 
   def.symbol("load-symbol") do (i: In):
@@ -513,15 +550,15 @@ proc lang_module*(i: In) =
     let json = MINSYMBOLS.readFile.parseJson
     if not json.hasKey(sym):
       raiseUndefined("Symbol '$1' not found." % sym)
-    let val = i.fromJson(json[sym])
+    let val = json[sym]
     i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
 
   def.symbol("stored-symbols") do (i: In):
-    var q = newSeq[MinValue](0)
+    var q = newJArray()
     let json = MINSYMBOLS.readFile.parseJson
     for k,v in json.pairs:
-      q.add k.newVal
-    i.push q.newVal(i.scope)
+      q.add %k
+    i.push q
 
   def.symbol("remove-symbol") do (i: In):
     let vals = i.expect("'sym")
@@ -551,7 +588,9 @@ proc lang_module*(i: In) =
     let vals = i.expect("string", "a")
     let s = vals[0]
     let m = vals[1]
-    i.push @[m].newVal(i.scope)
+    var q = newJArray()
+    q.add m
+    i.push q
     i.push s
     i.push "bind".newSym
 
@@ -559,44 +598,49 @@ proc lang_module*(i: In) =
     let vals = i.expect("string", "a")
     let s = vals[0]
     let m = vals[1]
-    i.push @[m].newVal(i.scope)
+    var q = newJArray()
+    q.add m
+    i.push q
     i.push s
     i.push "define".newSym
 
 
   def.symbol("args") do (i: In):
-    var args = newSeq[MinValue](0)
+    var args = newJArray()
     for kind, key, val in getopt():
       case kind:
         of cmdArgument:
-          args.add key.newVal
+          args.add %key
         else:
           discard
-    i.push args.newVal(i.scope)
+    i.push args
 
   def.symbol("opts") do (i: In):
-    var opts = newDict(i.scope) 
+    var opts = newJObject()
     for kind, key, val in getopt():
       case kind:
         of cmdLongOption, cmdShortOption:
           if val == "":
-            opts = i.dset(opts, key.newVal, true.newVal)
+            opts[key] = %true
           else:
-            opts = i.dset(opts, key.newVal, val.newVal)
+            opts[key] = %val
         else:
           discard
     i.push opts
 
   def.symbol("raw-args") do (i: In):
-    var args = newSeq[MinValue](0)
+    var args = newJArray()
     for par in commandLineParams():
-        args.add par.newVal
-    i.push args.newVal(i.scope)
+        args.add %par
+    i.push args
 
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q
-    i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal(i.scope))
+    #i.push(i.expect(q.elems.mapIt(it.getString())).reversed.newVal(i.scope))
+    let res = newJArray()
+    res.elems = i.expect(q.elems.mapIt(it.getString())).reversed
+    i.push res
 
   # Converters
 
@@ -607,10 +651,10 @@ proc lang_module*(i: In) =
   def.symbol("bool") do (i: In):
     let v = i.pop
     let strcheck = (v.isString and (v.getString == "false" or v.getString == ""))
-    let intcheck = v.isInt and v.intVal == 0
-    let floatcheck = v.isFloat and v.floatVal == 0
-    let boolcheck = v.isBool and v.boolVal == false
-    let quotcheck = v.isQuotation and v.qVal.len == 0
+    let intcheck = v.isInt and v.getInt == 0
+    let floatcheck = v.isFloat and v.getFloat == 0
+    let boolcheck = v.isBool and v.getBool == false
+    let quotcheck = v.isQuotation and v.elems.len == 0
     if strcheck or intcheck or floatcheck or boolcheck or quotcheck:
       i.push false.newVal
     else:
@@ -621,11 +665,11 @@ proc lang_module*(i: In) =
     if s.isString:
       i.push s.getString.parseInt.newVal
     elif s.isFloat:
-      i.push s.floatVal.int.newVal
+      i.push s.getFloat.int.newVal
     elif s.isInt:
       i.push s
     elif s.isBool:
-      if s.boolVal == true:
+      if s.getBool == true:
         i.push 1.int.newVal
       else:
         i.push 0.int.newVal
@@ -637,11 +681,11 @@ proc lang_module*(i: In) =
     if s.isString:
       i.push s.getString.parseFloat.newVal
     elif s.isInt:
-      i.push s.intVal.float.newVal
+      i.push s.getInt.float.newVal
     elif s.isFloat:
       i.push s
     elif s.isBool:
-      if s.boolVal == true:
+      if s.getBool == true:
         i.push 1.float.newVal
       else:
         i.push 0.float.newVal
@@ -656,7 +700,9 @@ proc lang_module*(i: In) =
   def.sigil("'") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push(@[s.strVal.newSym].newVal(i.scope))
+    var res = newJArray()
+    res.add s.getStr.newSym
+    i.push res
 
   def.sigil(":") do (i: In):
     i.push("define".newSym)
