@@ -1,10 +1,10 @@
-import 
-  times, 
+import
+  times,
   tables
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
 # Time
@@ -12,13 +12,13 @@ import
 
 proc time_module*(i: In)=
   let def = i.define()
-  
+
   def.symbol("timestamp") do (i: In):
-    i.push getTime().int.newVal
-  
+    i.push getTime().toUnix().newVal
+
   def.symbol("now") do (i: In):
     i.push epochTime().newVal
-  
+
   def.symbol("timeinfo") do (i: In):
     let vals = i.expect("num")
     let t = vals[0]
@@ -79,5 +79,5 @@ proc time_module*(i: In)=
     else:
       time = t.floatVal.int64.fromUnix
     i.push time.local.format(s.getString).newVal
-  
+
   def.finalize("time")
