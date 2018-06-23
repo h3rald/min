@@ -530,20 +530,20 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
   #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
-    result = MinValue(kind: minBool, boolVal: true, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minBool, boolVal: true)
     discard getToken(p)
   of tkFalse:
-    result = MinValue(kind: minBool, boolVal: false, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minBool, boolVal: false)
     discard getToken(p)
   of tkString:
-    result = MinValue(kind: minString, strVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minString, strVal: p.a)
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = MinValue(kind: minInt, intVal: parseint(p.a), column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minInt, intVal: parseint(p.a))
     discard getToken(p)
   of tkFloat:
-    result = MinValue(kind: minFloat, floatVal: parseFloat(p.a), column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minFloat, floatVal: parseFloat(p.a))
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[MinValue](0)
@@ -555,7 +555,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
     i.scope = oldscope
-    result = MinValue(kind: minQuotation, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
+    result = MinValue(kind: minQuotation, qVal: q, scope: newscope)
   of tkBraceLe:
     var q = newSeq[MinValue](0)
     var oldscope = i.scope
@@ -566,7 +566,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
       q.add p.parseMinValue(i)
     eat(p, tkBraceRi)
     i.scope = oldscope
-    result = MinValue(kind: minDictionary, qVal: q, column: p.getColumn, line: p.lineNumber, scope: newscope, filename: p.filename)
+    result = MinValue(kind: minDictionary, qVal: q, scope: newscope)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
     p.a = ""
