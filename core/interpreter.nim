@@ -177,28 +177,23 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     if not i.evaluating:
       i.currSym = val
     let symbol = val.symVal
-    let sigil = "" & symbol[0]
-    let found = i.scope.hasSymbol(symbol)
-    if found:
-      let sym = i.scope.getSymbol(symbol) 
-      i.apply(sym)
+    if i.scope.hasSymbol(symbol):
+      i.apply i.scope.getSymbol(symbol) 
     else:
-      let found = i.scope.hasSigil(sigil)
-      if symbol.len > 1 and found:
-        let sig = i.scope.getSigil(sigil) 
-        let sym = symbol[1..symbol.len-1]
-        i.stack.add(MinValue(kind: minString, strVal: sym))
-        i.apply(sig)
+      let sigil = "" & symbol[0]
+      if symbol.len > 1 and i.scope.hasSigil(sigil):
+        i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+        i.apply(i.scope.getSigil(sigil))
       else:
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
-    var v = val
-    if (v.kind == minDictionary):
+    if (val.kind == minDictionary):
+      var v = val
       i.dequote(v)
       # Clear the initial quotation; only used when parsing a dictionary for the first time
       v.qVal = @[] 
-    i.stack.add(v)
+    i.stack.add(val)
 
 proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   if i.stack.len > 0:
