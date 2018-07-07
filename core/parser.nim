@@ -73,11 +73,13 @@ type
     case kind*: MinKind
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
-      of minQuotation, minDictionary: 
+      of minDictionary:
+        q*: seq[MinValue]
+        scope*: ref MinScope 
+        obj*: pointer 
+        objType*: string 
+      of minQuotation:
         qVal*: seq[MinValue]
-        scope*: ref MinScope
-        obj*: pointer # Used only for dicts
-        objType*: string # Used only for dicts
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool
@@ -131,9 +133,28 @@ proc raiseOutOfBounds*(msg: string) {.extern:"min_exported_symbol_$1".}=
 proc raiseEmptyStack*() {.extern:"min_exported_symbol_$1".}=
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
-proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.extern:"min_exported_symbol_$1".}=
+proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.inline, extern:"min_exported_symbol_$1".}=
+  if v.kind != minDictionary:
+    raiseInvalid("dVal - Dictionary expected, got " & $v.kind)
+  if v.scope.isNil:
+    return CritBitTree[MinOperator]()
+  return v.scope.symbols
+
+proc quot*(v: MinValue): var seq[MinValue]  {.inline, extern:"min_exported_symbol_$1".}=
+  if v.kind != minDictionary and v.kind != minQuotation:
+    raiseInvalid("quot - Dictionary or quotation expected, got " & $v.kind)
   if v.kind == minDictionary:
-    return v.scope.symbols
+    return v.q
+  else:
+    return v.qVal
+
+proc `quot=`*(v: var MinValue, quot: seq[MinValue]) {.inline, extern:"min_exported_symbol_qValEq".}=
+  if v.kind != minDictionary and v.kind != minQuotation:
+    raiseInvalid("quot= - Dictionary or quotation expected, got " & $v.kind)
+  if v.kind == minDictionary:
+    v.q = quot
+  else:
+    v.qVal = quot
 
 const
   errorMessages: array[MinParserError, string] = [
@@ -547,26 +568,26 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[MinValue](0)
-    var oldscope = i.scope
-    var newscope = newScopeRef(i.scope)
-    i.scope = newscope
+    #var oldscope = i.scope
+    #var newscope = newScopeRef(i.scope)
+    #i.scope = newscope
     discard getToken(p)
     while p.token != tkBracketRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
-    i.scope = oldscope
-    result = MinValue(kind: minQuotation, qVal: q, scope: newscope)
+    #i.scope = oldscope
+    result = MinValue(kind: minQuotation, qVal: q)#, scope: newscope)
   of tkBraceLe:
     var q = newSeq[MinValue](0)
-    var oldscope = i.scope
-    var newscope = newScopeRef(i.scope)
-    i.scope = newscope
+    #var oldscope = i.scope
+    #var newscope = newScopeRef(i.scope)
+    #i.scope = newscope
     discard getToken(p)
     while p.token != tkBraceRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBraceRi)
-    i.scope = oldscope
-    result = MinValue(kind: minDictionary, qVal: q, scope: newscope)
+    #i.scope = oldscope
+    result = MinValue(kind: minDictionary, q: q, scope: newScopeRef(nil))
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
     p.a = ""
@@ -591,8 +612,6 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       var q = "("
       for i in a.qVal:
         q = q & $i & " "
-      if not a.objType.isNil:
-        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
     of minDictionary:
@@ -627,8 +646,6 @@ proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       var q = "("
       for i in a.qVal:
         q = q & $i & " "
-      if not a.objType.isNil:
-        q = q & ";" & a.objType
       q = q.strip & ")"
       return q
     of minDictionary:

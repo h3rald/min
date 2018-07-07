@@ -197,7 +197,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("dict", "quot")
     var qscope = vals[0]
     let qprog = vals[1]
-    i.withScope(qscope):
+    i.withDictScope(qscope.scope):
       for v in qprog.qVal:
         i.push v
 
