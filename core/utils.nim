@@ -217,7 +217,6 @@ proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1
           return true
       return false
 
-
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.extern:"min_exported_symbol_$1".}=
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString

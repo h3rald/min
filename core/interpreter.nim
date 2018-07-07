@@ -124,12 +124,11 @@ proc close*(i: In) {.extern:"min_exported_symbol_$1_2".}=
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
 
 proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
-  var newscope = newScopeRef(i.scope)
-  case op.kind
-  of minProcOp:
+  if op.kind == minProcOp:
     op.prc(i)
-  of minValOp:
+  else:
     if op.val.kind == minQuotation:
+      var newscope = newScopeRef(i.scope)
       var q = op.val
       i.withScope(newscope):
         for e in q.quot:
@@ -200,8 +199,8 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     discard i.trace.pop
   else:
     if (val.kind == minDictionary):
-      var v = val
       if val.scope.symbols.len == 0:
+        var v = val
         i.dequote(v)
         # Clear the initial quotation; only used when parsing a dictionary for the first time
         v.quot = @[] 
