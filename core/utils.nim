@@ -39,6 +39,7 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
   var mdl = newDict(scope)
   mdl.scope = scope
   mdl.objType = "module"
+  mdl.quot = @[]
   let op = proc(i: In) {.closure.} =
     i.evaluating = true
     i.push mdl

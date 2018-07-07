@@ -3,47 +3,47 @@
 
 "http" describe
   
-  "http://httpbin.org" :url
+  "http://postman-echo.com" :url
 
-  ("$1/get" (url) => % get-content from-json /headers /User-Agent  "min http-module/$1" (version) => % ==) assert
+  ("$1/get" (url) => % get-content from-json /headers /user-agent  "min http-module/$1" (version) => % ==) assert
 
   ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json /args /test "Hello!" ==) assert
   "tests/test1.json" rm
 
   (
     {} (
-      ("$1/get?test=request" (url) => % %url) 
+      ("$1/get" (url) => % %url) 
       ("GET" %method)
       ({"it-it" :Accept-Language} %headers)
       (request)
-    ) tap /body from-json /headers /Accept-Language "it-it" ==
+    ) tap /body from-json /headers /accept-language "it-it" ==
   ) assert
 
   (
     {} (
       ("$1/put" (url) => % %url) 
       ("PUT" %method)
-      ({"put" :test} to-json %body)
+      ({} to-json %body)
       (request)
-    ) tap /body from-json /json {"put" :test} ==
+    ) tap /body from-json /data {} ==
   ) assert
 
   (
     {} (
       ("$1/post" (url) => % %url) 
       ("POST" %method)
-      ((("test" "post")) to-json %body)
+      ({"post" :test} to-json %body)
       (request)
-    ) tap /headers /content-type "application/json" ==
+    ) tap /headers /content-type "^application/json" match
   ) assert
 
   (
     {} (
       ("$1/patch" (url) => % %url) 
       ("PATCH" %method)
-      ({"patch" :test} to-json %body)
+      ({} to-json %body)
       (request)
-    ) tap /body from-json /json {"patch" :test} ==
+    ) tap /body from-json /data {} ==
   ) assert
 
   (

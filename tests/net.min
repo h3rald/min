@@ -9,37 +9,23 @@
   {} socket :cli2
 
   
-  {} socket "httpbin.org" 80 connect @cli1
+  {} socket "postman-echo.com" 80 connect @cli1
   "min v$1" (version) => % :user-agent
 
-  "GET /user-agent HTTP/1.1\r\nHost: httpbin.org\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :req
+  "GET /get HTTP/1.1\r\nHost: postman-echo.com\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :req
 
   "" :response
   cli1 req send 
 
   cli1 recv-line :line
   (response line) => "\n" join @response 
-  (line "\}" match not) 
+  (line "HTTP/1.1 200 OK" == not) 
   (
     cli1 recv-line @line
-    (response line) => "\n" join @response 
+    (response line) => "\n" join puts @response 
   ) while
 
-  ;HTTP/1.1 200 OK
-  ;Connection: keep-alive
-  ;Server: meinheld/0.6.1
-  ;Date: Sun, 19 Nov 2017 13:37:15 GMT
-  ;Content-Type: application/json
-  ;Access-Control-Allow-Origin: *
-  ;Access-Control-Allow-Credentials: true
-  ;X-Powered-By: Flask
-  ;X-Processed-Time: 0.00111794471741
-  ;Content-Length: 34
-  ;Via: 1.1 vegur
-  ;
-  ;{"user-agent": "min v0.16.0"}
-
-  (response "\n\n" split 1 get from-json /user-agent user-agent ==) assert
+  (response "200 OK" match) assert
 
   (srv1 srv2 ==) assert
   (cli1 cli2 !=) assert
