@@ -244,6 +244,7 @@ proc minRepl*(i: var MinInterpreter) =
   i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
+  DEV = true
   var line: string
   var ed = initEditor(historyFile = MINHISTORY)
   while true:
