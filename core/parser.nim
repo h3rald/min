@@ -85,10 +85,17 @@ type
       of minString: strVal*: string
       of minSymbol: symVal*: string
       of minBool: boolVal*: bool
+  MinScopeKind* = enum
+    minNativeScope,
+    minLangScope
   MinScope* = object
-    symbols*: CritBitTree[MinOperator]
-    sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
+    symbols*: CritBitTree[MinOperator]
+    case kind: MinScopeKind
+    of minNativeScope:
+      sigils*: CritBitTree[MinOperator]
+    of minLangScope:
+      discard 
   MinOperatorProc* = proc (i: In) {.closure.}
   MinOperatorKind* = enum
     minProcOp
@@ -183,12 +190,12 @@ const
     "false"
   ]
 
-proc newScope*(parent: ref MinScope): MinScope {.extern:"min_exported_symbol_$1".}=
-  result = MinScope(parent: parent)
+proc newScope*(parent: ref MinScope, kind = minLangScope): MinScope {.extern:"min_exported_symbol_$1".}=
+  result = MinScope(parent: parent, kind: kind)
 
-proc newScopeRef*(parent: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
+proc newScopeRef*(parent: ref MinScope, kind = minLangScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   new(result)
-  result[] = newScope(parent)
+  result[] = newScope(parent, kind)
 
 proc open*(my: var MinParser, input: Stream, filename: string) {.extern:"min_exported_symbol_$1".}=
   lexbase.open(my, input)
