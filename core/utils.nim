@@ -19,7 +19,7 @@ proc reverse[T](xs: openarray[T]): seq[T] =
 # Library methods
 
 proc define*(i: In): ref MinScope {.extern:"min_exported_symbol_$1".}=
-  var scope = new MinScope
+  var scope = newScopeRef(i.scope, minNativeScope)
   scope.parent = i.scope
   return scope
 

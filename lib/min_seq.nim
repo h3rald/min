@@ -170,27 +170,29 @@ proc seq_module*(i: In)=
     let vals = i.expect("quot", "quot")
     var filter = vals[0]
     let list = vals[1]
+    var res = false.newVal
     for e in list.qVal:
       i.push e
       i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == true:
-        i.push true.newVal
+        res = true.newVal
         return
-    i.push false.newVal
+    i.push res
 
   def.symbol("all?") do (i: In):
     let vals = i.expect("quot", "quot")
     var filter = vals[0]
     let list = vals[1]
+    var res = true.newVal
     for e in list.qVal:
       i.push e
       i.dequote(filter)
       var check = i.pop
       if check.isBool and check.boolVal == false:
-        i.push false.newVal
+        res = false.newVal
         break
-    i.push true.newVal
+    i.push res
 
   def.symbol("sort") do (i: In):
     let vals = i.expect("quot", "quot")

@@ -68,7 +68,7 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
   var pr:MinParser
-  var scope = new MinScope
+  var scope = newScopeRef(nil)
   var i:MinInterpreter = MinInterpreter(
     filename: filename, 
     pwd: path,

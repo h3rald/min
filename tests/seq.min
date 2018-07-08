@@ -65,5 +65,13 @@
 
   ((2 3 + 4 *) quote-map ('+ ==) find 2 ==) assert 
 
+  ((2 4 6 8) 'even? all?) assert
+
+  ((2 4 3 6 8) 'even? all? not) assert
+
+  ((1 2 3 4) 'odd? any?) assert
+
+  ((2 4 6 8) 'odd? any? not) assert
+
   report
   clear-stack
