@@ -32,11 +32,11 @@ proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
 proc newVal*(s: cstring): MinValue {.extern:"min_exported_symbol_$1_2".}=
   return MinValue(kind: minString, strVal: $s)
 
-proc newVal*(q: seq[MinValue], parentScope: ref MinScope, dictionary = false): MinValue {.extern:"min_exported_symbol_$1_3".}=
+proc newVal*(q: seq[MinValue], dictionary = false): MinValue {.extern:"min_exported_symbol_$1_3".}=
   if dictionary:
-    return MinValue(kind: minDictionary, q: q)#, scope: newScopeRef(parentScope))
+    return MinValue(kind: minDictionary, q: q)
   else:
-    return MinValue(kind: minQuotation, qVal: q)#, scope: newScopeRef(parentScope))
+    return MinValue(kind: minQuotation, qVal: q)
 
 proc newVal*(i: BiggestInt): MinValue {.extern:"min_exported_symbol_$1_4".}=
   return MinValue(kind: minInt, intVal: i)

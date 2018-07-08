@@ -96,7 +96,7 @@ proc http_module*(i: In)=
       i.dequote qhandler
       let qres = i.pop
       var body = "".newVal
-      var rawHeaders = newSeq[MinValue]().newVal(i.scope)
+      var rawHeaders = newSeq[MinValue]().newVal
       var v = "1.1"
       var status = 200.newVal
       if not qres.isDictionary():

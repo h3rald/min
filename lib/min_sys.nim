@@ -40,7 +40,7 @@ proc sys_module*(i: In)=
     var list = newSeq[MinValue](0)
     for i in walkDir(a.getString):
       list.add newVal(i.path.unix)
-    i.push list.newVal(i.scope)
+    i.push list.newVal
   
   def.symbol("ls-r") do (i: In):
     let vals = i.expect("'sym")
@@ -48,7 +48,7 @@ proc sys_module*(i: In)=
     var list = newSeq[MinValue](0)
     for i in walkDirRec(a.getString):
       list.add newVal(i.unix)
-    i.push list.newVal(i.scope)
+    i.push list.newVal
 
   def.symbol("system") do (i: In):
     let vals = i.expect("'sym")

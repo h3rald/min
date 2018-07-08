@@ -18,7 +18,7 @@ proc seq_module*(i: In)=
     let q1 = vals[0]
     let q2 = vals[1]
     let q = q2.qVal & q1.qVal
-    i.push q.newVal(i.scope)
+    i.push q.newVal
   
   def.symbol("first") do (i: In):
     let vals = i.expect("quot")
@@ -39,19 +39,19 @@ proc seq_module*(i: In)=
     let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
-    i.push q.qVal[1..q.qVal.len-1].newVal(i.scope)
+    i.push q.qVal[1..q.qVal.len-1].newVal
   
   def.symbol("append") do (i: In):
     let vals = i.expect("quot", "a")
     let q = vals[0]
     let v = vals[1]
-    i.push newVal(q.qVal & v, i.scope)
+    i.push newVal(q.qVal & v)
   
   def.symbol("prepend") do (i: In):
     let vals = i.expect("quot", "a")
     let q = vals[0]
     let v = vals[1]
-    i.push newVal(v & q.qVal, i.scope)
+    i.push newVal(v & q.qVal)
   
   def.symbol("get") do (i: In):
     let vals = i.expect("int", "quot")
@@ -85,7 +85,7 @@ proc seq_module*(i: In)=
       if x == ix:
         continue
       res.add q.qVal[x]
-    i.push res.newVal(i.scope)
+    i.push res.newVal
   
   def.symbol("insert") do (i: In):
     let vals = i.expect("int", "a", "quot")
@@ -100,7 +100,7 @@ proc seq_module*(i: In)=
       if x == ix:
         res.add val
       res.add q.qVal[x]
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("size") do (i: In):
     let vals = i.expect("quot")
@@ -122,15 +122,15 @@ proc seq_module*(i: In)=
       i.push litem
       i.dequote(prog)
       res.add i.pop
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("quote-map") do (i: In):
     let vals = i.expect("quot")
     let list = vals[0]
     var res = newSeq[MinValue](0)
     for litem in list.qVal:
-      res.add @[litem].newVal(i.scope)
-    i.push res.newVal(i.scope)
+      res.add @[litem].newVal
+    i.push res.newVal
 
   def.symbol("reverse") do (i: In):
     let vals = i.expect("quot")
@@ -138,7 +138,7 @@ proc seq_module*(i: In)=
     var res = newSeq[MinValue](0)
     for c in countdown(q.qVal.len-1, 0):
       res.add q.qVal[c]
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("filter") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -151,7 +151,7 @@ proc seq_module*(i: In)=
       var check = i.pop
       if check.isBool and check.boolVal == true:
         res.add e
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("reject") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -164,7 +164,7 @@ proc seq_module*(i: In)=
       var check = i.pop
       if check.isBool and check.boolVal == false:
         res.add e
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("any?") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -211,7 +211,7 @@ proc seq_module*(i: In)=
         raiseInvalid("Predicate quotation must return a boolean value")
     var qList = list.qVal
     sort[MinValue](qList, minCmp)
-    i.push qList.newVal(i.scope)
+    i.push qList.newVal
   
   def.symbol("shorten") do (i: In):
     let vals = i.expect("int", "quot")
@@ -219,7 +219,7 @@ proc seq_module*(i: In)=
     let q = vals[1]
     if n.intVal > q.qVal.len:
       raiseInvalid("Quotation is too short")
-    i.push q.qVal[0..n.intVal.int-1].newVal(i.scope)
+    i.push q.qVal[0..n.intVal.int-1].newVal
 
   def.symbol("take") do (i: In):
     let vals = i.expect("int", "quot")
@@ -228,7 +228,7 @@ proc seq_module*(i: In)=
     var nint = n.intVal
     if nint > q.qVal.len:
       nint = q.qVal.len
-    i.push q.qVal[0..nint-1].newVal(i.scope)
+    i.push q.qVal[0..nint-1].newVal
 
   def.symbol("drop") do (i: In):
     let vals = i.expect("int", "quot")
@@ -237,7 +237,7 @@ proc seq_module*(i: In)=
     var nint = n.intVal
     if nint > q.qVal.len:
       nint = q.qVal.len
-    i.push q.qVal[nint..q.qVal.len-1].newVal(i.scope)
+    i.push q.qVal[nint..q.qVal.len-1].newVal
 
   def.symbol("find") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -300,8 +300,8 @@ proc seq_module*(i: In)=
         tseq.add el
       else:
         fseq.add el
-    i.push tseq.newVal(i.scope)
-    i.push fseq.newVal(i.scope)
+    i.push tseq.newVal
+    i.push fseq.newVal
 
   def.symbol("slice") do (i: In):
     let vals = i.expect("int", "int", "quot")
@@ -315,7 +315,7 @@ proc seq_module*(i: In)=
     elif fn < st:
       raiseInvalid("End index must be greater than start index")
     let rng = q.qVal[st.int..fn.int]
-    i.push rng.newVal(i.scope)
+    i.push rng.newVal
 
   def.symbol("harvest") do (i: In):
     let vals = i.expect("quot")
@@ -325,7 +325,7 @@ proc seq_module*(i: In)=
       if el.isQuotation and el.qVal.len == 0:
         continue
       res.add el
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("flatten") do (i: In):
     let vals = i.expect("quot")
@@ -337,6 +337,6 @@ proc seq_module*(i: In)=
           res.add el2
       else:
         res.add el
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.finalize("seq")

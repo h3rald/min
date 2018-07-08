@@ -47,7 +47,7 @@ proc str_module*(i: In) =
     else:
       for e in s.split(sep):
         q.add e.newVal
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("join") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -107,7 +107,7 @@ proc str_module*(i: In) =
     var res = newSeq[MinValue](matches.len)
     for i in 0..matches.len-1:
       res[i] = matches[i].newVal
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("match") do (i: In):
     let vals = i.expect("string", "string")
@@ -133,7 +133,7 @@ proc str_module*(i: In) =
     var res = newSeq[MinValue](0)
     for r in results:
       res.add(r.newVal)
-    i.push res.newVal(i.scope)
+    i.push res.newVal
 
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)

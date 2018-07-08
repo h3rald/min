@@ -36,7 +36,7 @@ proc lang_module*(i: In) =
       for s in scope.symbols.keys:
         q.add s.newVal
       scope = scope.parent
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("defined?") do (i: In):
     let vals = i.expect("'sym")
@@ -49,7 +49,7 @@ proc lang_module*(i: In) =
       for s in scope.sigils.keys:
         q.add s.newVal
       scope = scope.parent
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("scope-symbols") do (i: In):
     let vals = i.expect("dict")
@@ -57,7 +57,7 @@ proc lang_module*(i: In) =
     var q = newSeq[MinValue](0)
     for s in m.scope.symbols.keys:
       q.add s.newVal
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("scope-sigils") do (i: In):
     let vals = i.expect("dict")
@@ -65,7 +65,7 @@ proc lang_module*(i: In) =
     var q = newSeq[MinValue](0)
     for s in m.scope.sigils.keys:
       q.add s.newVal
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("lite?") do (i: In):
     i.push defined(lite).newVal
@@ -98,7 +98,7 @@ proc lang_module*(i: In) =
     var symbol: string
     var isQuot = true
     if not q1.isQuotation:
-      q1 = @[q1].newVal(i.scope)
+      q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
     if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
@@ -115,7 +115,7 @@ proc lang_module*(i: In) =
     var symbol: string
     var isQuot = true
     if not q1.isQuotation:
-      q1 = @[q1].newVal(i.scope)
+      q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
@@ -325,7 +325,7 @@ proc lang_module*(i: In) =
   def.symbol("quote") do (i: In):
     let vals = i.expect("a")
     let a = vals[0]
-    i.push @[a].newVal(i.scope)
+    i.push @[a].newVal
   
   def.symbol("dequote") do (i: In):
     let vals = i.expect("quot")
@@ -509,7 +509,7 @@ proc lang_module*(i: In) =
     let json = MINSYMBOLS.readFile.parseJson
     for k,v in json.pairs:
       q.add k.newVal
-    i.push q.newVal(i.scope)
+    i.push q.newVal
 
   def.symbol("remove-symbol") do (i: In):
     let vals = i.expect("'sym")
@@ -539,7 +539,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("string", "a")
     let s = vals[0]
     let m = vals[1]
-    i.push @[m].newVal(i.scope)
+    i.push @[m].newVal
     i.push s
     i.push "bind".newSym
 
@@ -547,7 +547,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("string", "a")
     let s = vals[0]
     let m = vals[1]
-    i.push @[m].newVal(i.scope)
+    i.push @[m].newVal
     i.push s
     i.push "define".newSym
 
@@ -560,7 +560,7 @@ proc lang_module*(i: In) =
           args.add key.newVal
         else:
           discard
-    i.push args.newVal(i.scope)
+    i.push args.newVal
 
   def.symbol("opts") do (i: In):
     var opts = newDict(i.scope) 
@@ -579,12 +579,12 @@ proc lang_module*(i: In) =
     var args = newSeq[MinValue](0)
     for par in commandLineParams():
         args.add par.newVal
-    i.push args.newVal(i.scope)
+    i.push args.newVal
 
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q
-    i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal(i.scope))
+    i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal)
 
   # Converters
 
@@ -644,7 +644,7 @@ proc lang_module*(i: In) =
   def.sigil("'") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push(@[s.strVal.newSym].newVal(i.scope))
+    i.push(@[s.strVal.newSym].newVal)
 
   def.sigil(":") do (i: In):
     i.push("define".newSym)
