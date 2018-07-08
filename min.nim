@@ -289,6 +289,8 @@ when isMainModule:
     —-uninstall:<lib> Uninstall dynamic library file <lib>
     -l, --log         Set log level (debug|info|notice|warn|error|fatal)
                       Default: notice
+    -d, --dev         Run in development mode
+                      Default: false
     -e, --evaluate    Evaluate a $1 program inline
     -h, —-help        Print this help
     -v, —-version     Print the program version
@@ -306,6 +308,8 @@ when isMainModule:
           file = key 
       of cmdLongOption, cmdShortOption:
         case key:
+          of "dev", "d":
+            DEV = true
           of "log", "l":
             if file == "":
               var val = val

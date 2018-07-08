@@ -1,5 +1,6 @@
 import
   strutils,
+  sequtils, ##
   critbits
 import
   parser
@@ -11,13 +12,13 @@ proc copy*(s: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   new(result)
   result[] = scope
   
-proc getSymbol*(scope: ref MinScope, key: string): MinOperator {.extern:"min_exported_symbol_$1".}=
+proc getSymbol*(scope: ref MinScope, key: string, acc=0): MinOperator {.extern:"min_exported_symbol_$1".}=
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
-  elif not scope.parent.isNil:
-    return scope.parent.getSymbol(key)
   else:
-    raiseUndefined("Symbol '$1' not found." % key)
+    if scope.parent.isNil:
+      raiseUndefined("Symbol '$1' not found." % key)
+    return scope.parent.getSymbol(key, acc + 1)
 
 proc hasSymbol*(scope: ref MinScope, key: string): bool {.extern:"min_exported_symbol_$1".}=
   if scope.isNil:

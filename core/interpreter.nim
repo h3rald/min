@@ -5,6 +5,7 @@ import
   os,
   algorithm,
   ospaths,
+  times,
   logging
 import 
   value,
@@ -129,9 +130,8 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   else:
     if op.val.kind == minQuotation:
       var newscope = newScopeRef(i.scope)
-      var q = op.val
       i.withScope(newscope):
-        for e in q.quot:
+        for e in op.val.quot:
           i.push e
     else:
       i.push(op.val)
@@ -164,7 +164,7 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
     i.currSym = i2.currSym
     i.trace = i2.trace
     raise
-  i.push i2.stack.newVal(i.scope)
+  i.push i2.stack.newVal
 
 proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
   var i2 = newMinInterpreter("<call>")
@@ -178,7 +178,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symb
     i.currSym = i2.currSym
     i.trace = i2.trace
     raise
-  return i2.stack.newVal(i2.scope)
+  return i2.stack.newVal
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
@@ -220,7 +220,9 @@ proc peek*(i: MinInterpreter): MinValue {.extern:"min_exported_symbol_$1".}=
 
 proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   var val: MinValue
-  var q = newSeq[MinValue](0).newVal(i.scope)
+  var q: MinValue
+  if parseOnly:
+    q = newSeq[MinValue](0).newVal
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack

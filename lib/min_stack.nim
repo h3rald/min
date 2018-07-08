@@ -17,7 +17,7 @@ proc stack_module*(i: In)=
       discard i.pop
 
   def.symbol("get-stack") do (i: In):
-    i.push i.stack.newVal(i.scope)
+    i.push i.stack.newVal
 
   def.symbol("set-stack") do (i: In):
     let vals = i.expect("quot")

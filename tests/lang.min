@@ -104,7 +104,7 @@
     ) try "TestError" ==) assert
 
   (
-   (("test" (1 2) :)) try get-stack ("test") ==) assert
+   (("test" °test :)) try get-stack ("test") ==) assert
 
   (
    (

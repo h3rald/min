@@ -10,6 +10,8 @@ import
   math,
   logging
 
+var DEV* = false
+
 type
   MinTokenKind* = enum
     tkError,
@@ -568,25 +570,17 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     discard getToken(p)
   of tkBracketLe:
     var q = newSeq[MinValue](0)
-    #var oldscope = i.scope
-    #var newscope = newScopeRef(i.scope)
-    #i.scope = newscope
     discard getToken(p)
     while p.token != tkBracketRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
-    #i.scope = oldscope
     result = MinValue(kind: minQuotation, qVal: q)#, scope: newscope)
   of tkBraceLe:
     var q = newSeq[MinValue](0)
-    #var oldscope = i.scope
-    #var newscope = newScopeRef(i.scope)
-    #i.scope = newscope
     discard getToken(p)
     while p.token != tkBraceRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBraceRi)
-    #i.scope = oldscope
     result = MinValue(kind: minDictionary, q: q, scope: newScopeRef(nil))
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
@@ -596,7 +590,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
   result.filename = p.filename
 
-proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
+proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
     of minBool:
       return $a.boolVal
@@ -630,7 +624,7 @@ proc `$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
       d = d.strip & "}"
       return d
 
-proc `$$`*(a: MinValue): string {.extern:"min_exported_symbol_$1".}=
+proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
     of minBool:
       return $a.boolVal
@@ -706,7 +700,7 @@ proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_sym
     return q.objType == t
   return false
 
-proc `==`*(a: MinValue, b: MinValue): bool {.extern:"min_exported_symbol_eqeq".}=
+proc `==`*(a: MinValue, b: MinValue): bool {.inline, extern:"min_exported_symbol_eqeq".}=
   if not (a.kind == b.kind or (a.isNumber and b.isNumber)):
     return false
   if a.kind == minSymbol and b.kind == minSymbol:
