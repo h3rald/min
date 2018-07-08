@@ -67,8 +67,8 @@ type
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
-  MinValue* = ref MinValueObject
-  MinValueObject* = object
+  MinValue* = ref MinValueObject 
+  MinValueObject* = object {.acyclic, final.}
     line*: int
     column*: int
     filename*: string
@@ -88,7 +88,7 @@ type
   MinScopeKind* = enum
     minNativeScope,
     minLangScope
-  MinScope* = object
+  MinScope* = object {.acyclic, shallow, final.}
     parent*: ref MinScope
     symbols*: CritBitTree[MinOperator]
     case kind: MinScopeKind
