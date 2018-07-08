@@ -89,8 +89,6 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     parent*: ref MinScope
-    name*: string
-    stack*: MinStack
   MinOperatorProc* = proc (i: In) {.closure.}
   MinOperatorKind* = enum
     minProcOp
