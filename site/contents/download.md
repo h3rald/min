@@ -81,6 +81,12 @@ min also supports running programs from standard input, so the following command
 > 
 > [$](class:prompt) cat myfile.min | min
 
+## Development Mode
+
+By default, when you execute a min program it is run in _production mode_ meaning that some of the runtime checks and validation on the stack items expected by quotations are _not_ performed, essentially to speed up execution a little bit. By contrast, when executing min code from the min shell, it will be executed in _development mode_, with all runtime checks and validations enabled.
+
+To enable development mode when executing a program, run min specifying the **-d** or **--dev** flag.
+
 ## Syntax Highlighting
 
 * If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
