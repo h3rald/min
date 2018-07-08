@@ -177,7 +177,7 @@ proc seq_module*(i: In)=
       var check = i.pop
       if check.isBool and check.boolVal == true:
         res = true.newVal
-        return
+        break 
     i.push res
 
   def.symbol("all?") do (i: In):
