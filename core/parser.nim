@@ -10,8 +10,6 @@ import
   math,
   logging
 
-var DEV* = false
-
 type
   MinTokenKind* = enum
     tkError,
@@ -91,11 +89,8 @@ type
   MinScope* = object {.acyclic, shallow, final.}
     parent*: ref MinScope
     symbols*: CritBitTree[MinOperator]
-    case kind: MinScopeKind
-    of minNativeScope:
-      sigils*: CritBitTree[MinOperator]
-    of minLangScope:
-      discard 
+    sigils*: CritBitTree[MinOperator]
+    kind*: MinScopeKind
   MinOperatorProc* = proc (i: In) {.closure.}
   MinOperatorKind* = enum
     minProcOp

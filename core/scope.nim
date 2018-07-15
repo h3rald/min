@@ -1,6 +1,5 @@
 import
   strutils,
-  sequtils, ##
   critbits
 import
   parser

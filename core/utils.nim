@@ -218,11 +218,6 @@ proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1
       return false
 
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.extern:"min_exported_symbol_$1".}=
-  if not DEV:
-    result = newSeq[MinValue](0)
-    for e in elements:
-      result.add i.pop
-    return
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
@@ -252,8 +247,6 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.
 
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
-  if not DEV:
-    return
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
   for s in a.qVal:
@@ -262,8 +255,6 @@ proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:
 
 proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
-  if not DEV:
-    return
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
   for s in a.qVal:
@@ -272,8 +263,6 @@ proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) {.extern:"mi
 
 proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
-  if not DEV:
-    return
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
   for s in a.qVal:
@@ -283,22 +272,16 @@ proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) {.extern:"mi
 proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
   b = i.pop
-  if not DEV:
-    return
   if not (a.isString and b.isString or a.isNumber and b.isNumber):
     raiseInvalid("Two numbers or two strings are required on the stack")
 
 proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
-  if not DEV:
-    return
   if not a.isQuotation and not a.isString:
     raiseInvalid("A quotation or a string is required on the stack")
 
 proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.extern:"min_exported_symbol_$1".}=
   a = i.pop
   b = i.pop
-  if not DEV:
-    return
   if not (a.isQuotation and b.isQuotation or a.isString and b.isString):
     raiseInvalid("Two quotations or two strings are required on the stack")

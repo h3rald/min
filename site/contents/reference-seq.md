@@ -4,12 +4,6 @@ title: "seq Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||/||dget#}
-
-{#sig||?||dhas?#}
-
-{#sig||%||dset#}
-
 {#op||all?||{{q1}} {{q2}}||{{b}}||
 Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if all elements of {{q1}} satisfy predicate {{q2}}, {{f}} otherwise. #}
 
@@ -25,55 +19,8 @@ Returns the _n^th_ element of {{q}} (zero-based).#}
 {#op||concat||{{q1}} {{q2}}||{{q3}}||
 Concatenates {{q1}} with {{q2}}. #}
 
-{#op||ddel||{{d1}} {{sl}}||{{d2}}||
-Returns a copy of {{d1}} without the element with key {{sl}}. #}
-
-{#op||dget||{{d}} {{sl}}||{{any}}||
-Returns the value of key {{sl}} from dictionary {{d}}. #}
-
-{#op||dhas?||{{d}} {{sl}}||{{b}}||
-> Returns {{t}} if dictionary {{d}} contains the key {{sl}}, {{f}} otherwise.
-> 
-> > %sidebar%
-> > Example
-> >  
-> > The following program returns {{t}}:
-> > 
-> >     (("a1" true) ("a2" "aaa") ("a3" false)) 'a2 dhas?
- #}
-
-{#op||dkeys||{{d}}||({{s}}{{0p}})||
-Returns a quotation containing all the keys of dictionary {{d}}. #}
-
-{#op||dpick||{{d1}} {{q}}||{{d2}}||
-> Returns a new dictionary {{d2}} containing the elements of {{d1}} whose keys are included in {{q}}.
-> 
-> > %sidebar%
-> > Example
-> >  
-> > The following program returns `(("a" 4) ("d" 7))`:
-> > 
-> >     (("q" 5) ("a" 4) ("c" 6) ("d" 7)) ("a" "d") dpick
- #}
-
 {#op||drop||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the remaining elements after the first _n_ values of the input quotation {{q1}}, or an empty quotation if {{i}} is greater than the length of {{q1}}. #}
-
-{#op||dset||{{d1}} {{any}} {{sl}}||{{d2}}||
-Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified copy of the dictionary {{d2}}. #}
-
-{#op||dsort||{{d1}}||{{d2}}||
-> Returns a new dictionary {{d2}} containing all elements of {{d1}} sorted by key in ascending order.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program leaves `(("a" 342) ("b" true) ("c" -4) ("d" 22))` on the stack:
-> > 
-> >     (("b" true) ("d" 22) ("c" -4) ("a" 342)) dsort#}
-
-{#op||dvalues||{{d}}||({{a0p}})||
-Returns a quotation containing all the values of dictionary {{d}}. #}
 
 {#op||filter||{{q1}} {{q2}}||{{q3}}||
 > Returns a new quotation {{q3}} containing all elements of {{q1}} that satisfy predicate {{q2}}.
