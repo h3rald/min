@@ -42,6 +42,6 @@ This programs returns a new quotation containing all odd numbers contained in qu
 
 In this case, the second quotation is used to _quote_ the symbol `odd?` so that instead of being executed immediately, it will be executed by the symbol `filter` on each element of the first quotation. In this way, we may say that `(odd?)` is _dequoted_ by the symbol `filter`.
 
-The synbol {#link-operator||lang||dequote#} or its alias `->` can be used to dequote a quotation by pushing all its element on the main stack, while the symbol {#link-operator||lang||apply#} can be used to dequote a quotation by pushing its element on a separate stack.
+The synbol {#link-operator||lang||dequote#} or its alias `->` can be used to dequote a quotation by pushing all its element on the main stack, while the symbol {#link-operator||lang||apply#} can be used to dequote a quotation by pushing its elements on a separate stack.
 
 {#link-learn||definitions||Definitions#}
