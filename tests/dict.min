@@ -9,7 +9,7 @@
 
   ({1 :a 2 :b 3 :c} 'b dget 2 ==) assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict == and) assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) assert
 
   ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) assert
 
@@ -33,6 +33,19 @@
       article /a :code
       {code :code} =>  
       archives swap code dset @archives 
+    ) foreach
+    archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) assert
+
+  (
+    {} :archives
+    ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
+    (
+      :article
+      article /a :code
+      {}
+      code %code
+      :archive
+      archives archive code dset @archives 
     ) foreach
     archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) assert
 

@@ -151,11 +151,22 @@ proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe, extern:"min_exported
     raise
   return i2.stack[0]
 
-proc applyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
    # Assuming val is a dictionary
    var v = newDict(i.scope)
    for item in val.scope.symbols.pairs:
      v.scope.symbols[item.key] = item.val
+   for item in val.scope.sigils.pairs:
+     v.scope.sigils[item.key] = item.val
+   if not val.objType.isNil:
+     v.objType = val.objType
+   if not val.obj.isNil:
+     v.obj = val.obj
+   return v
+
+proc applyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+   # Assuming val is a dictionary
+   var v = i.copyDict(val)
    for item in v.dVal.pairs:
      var value = item.val.val
      v.scope.symbols[item.key] = MinOperator(kind: minValOp, val: i.callValue(value), sealed: false)
@@ -216,6 +227,10 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
       else:
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
+  elif val.kind == minDictionary and val.objType != "module":
+    # Dictionary must be copied every time they are interpreted, otherwise when they are used in cycles they reference each other.
+    var v = i.copyDict(val)
+    i.stack.add(v)
   else:
     i.stack.add(val)
 
