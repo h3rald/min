@@ -25,9 +25,12 @@ proc lang_module*(i: In) =
     quit(vals[0].intVal.int)
    
   def.symbol("apply") do (i: In):
-    let vals = i.expect("quot")
+    let vals = i.expect("quot|dict")
     var prog = vals[0]
-    i.apply prog
+    if prog.kind == minQuotation:
+      i.apply prog
+    else:
+      i.push i.applyDict(prog)
 
   def.symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
@@ -236,6 +239,7 @@ proc lang_module*(i: In) =
     let s = symbol.getString
     let origScope = i.scope
     i.scope = q.scope
+    i.scope.parent = origScope
     let sym = i.scope.getSymbol(s)
     i.apply(sym)
     i.scope = origScope
@@ -270,7 +274,7 @@ proc lang_module*(i: In) =
         list.add i.dget(err, "line")
       if err.dhas("column"):
         list.add i.dget(err, "column")
-      if list.len <= 1:
+      if list.len <= 3:
         msg = "$1" % $$list[0]
       else:
         msg = "$3($4,$5) `$2`: $1" % [$$list[0], $$list[1], $$list[2], $$list[3], $$list[4]]
@@ -312,8 +316,9 @@ proc lang_module*(i: In) =
       res.objType = "error"
       i.dset(res, "error", err.newVal)
       i.dset(res, "message", e.msg.newVal)
-      i.dset(res, "symbol", i.currSym)
-      i.dset(res, "filename", i.currSym.filename.newVal)
+      if i.currSym.getString != "": # TODO investigate when this happens
+        i.dset(res, "symbol", i.currSym)
+        i.dset(res, "filename", i.currSym.filename.newVal)
       i.dset(res, "line", i.currSym.line.newVal)
       i.dset(res, "column", i.currSym.column.newVal)
       i.push res

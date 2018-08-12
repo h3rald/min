@@ -21,9 +21,20 @@
 
   ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) assert
 
-  (2 2 {'+ :plus} ^plus 4 ==) assert
+  (2 2 {+ :plus} ^plus 4 ==) assert
 
-  (2 {(2 3 +) :sum} /sum + 7 ==) assert
+  (2 {(2 3 +) :sum} /sum -> + 7 ==) assert
+
+  (
+    {} :archives
+    ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
+    (
+      :article
+      article /a :code
+      {code :code} =>  
+      archives swap code dset @archives 
+    ) foreach
+    archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) assert
 
   report
   clear-stack
