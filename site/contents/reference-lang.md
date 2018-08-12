@@ -40,8 +40,11 @@ title: "lang Module"
 
 {#alias||=||quote-define#}
 
-{#op||apply||{{q}}||({{a0p}})||
-Returns a new quotation {{q}} obtained by evaluating each element of {{q}} in a separate stack.#}
+{#op||apply||{{q}}|{{d}}||({{a0p}})|{{{a0p}}}||
+> This operator can be used on quotations or dictionaries:
+> 
+> * If a quotation {{q}} is passed, it returns a new quotation obtained by evaluating each element of {{q}} in a separate stack.
+> * If a quotation {{d}} is passed, it returns a new dictionary obtained by evaluating each symbol of {{d}} in a separate stack.#}
 
 {#op||args||{{null}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
