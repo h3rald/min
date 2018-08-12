@@ -39,7 +39,6 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
   var mdl = newDict(scope)
   mdl.scope = scope
   mdl.objType = "module"
-  mdl.quot = @[]
   let op = proc(i: In) {.closure.} =
     i.evaluating = true
     i.push mdl
@@ -49,25 +48,21 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 
 # Dictionary Methods
 
+proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}
+
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
     raiseInvalid("Key '$1' is set to a native value that cannot be retrieved." % [s.getString])
-  var val = q.dVal[s.getString].val
-  result = i.call(val)
-  if result.qVal.len == 1: 
-    result = result.qVal[0]
+  result = q.dVal[s.getString].val
 
 proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbol_$1_2".}=
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s].kind == minProcOp:
     raiseInvalid("Key $1 is set to a native value that cannot be retrieved." % [s])
-  var val = q.dVal[s].val
-  result = i.call(val)
-  if result.qVal.len == 1 and result.qVal[0].kind != minQuotation:
-    result = result.qVal[0]
+  result = q.dVal[s].val
 
 proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
@@ -95,8 +90,6 @@ proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue): MinValue {.discard
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  if not q.isQuotation:
-    q = @[q].newVal
   p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
@@ -104,8 +97,6 @@ proc dset*(i: In, p: var MinValue, s: string, m: MinValue): MinValue {.discardab
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  if not q.isQuotation:
-    q = @[q].newVal
   p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
@@ -122,11 +113,7 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   for item in q.dVal.values:
     if item.kind == minProcOp:
       raiseInvalid("Dictionary contains native values that cannot be accessed.")
-    var v = item.val
-    var val = i.call(v)
-    if val.qVal.len == 1 and val.qVal[0].kind != minQuotation:
-      val = val.qVal[0]
-    r.add val
+    r.add item.val
   return r.newVal
 
 # JSON interop
@@ -175,7 +162,7 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
         var rest = ""
         if key.len > 1:
           rest = key[1..key.len-1]
-        first = sgregex.replace(first, "[^a-zA-Z_]", "_")
+        first = sgregex.replace(first, "[^a-zA-Z0-9_]", "_")
         rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
         discard i.dset(res, first&rest, i.fromJson(value))
       return res

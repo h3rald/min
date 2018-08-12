@@ -215,11 +215,7 @@ proc printResult(i: In, res: MinValue) =
       echo "{$1} -> (" % n
       for item in res.qVal:
         echo  "         " & $item
-      if res.objType.isNil:
-        echo " ".repeat(n.len) & "      )"
-      else:
-        echo " ".repeat(n.len) & "        ;" & res.objType
-        echo " ".repeat(n.len) & "      )"
+      echo " ".repeat(n.len) & "      )"
     elif res.isDictionary and res.dVal.len > 1:
       echo "{$1} -> {" % n
       for item in res.dVal.pairs:
@@ -228,8 +224,6 @@ proc printResult(i: In, res: MinValue) =
           v = "<native>"
         else:
           v = $item.val.val
-          if (not item.val.quotation):
-            v = v[1 .. v.len-2]
         echo  "         " & v & " :" & $item.key
       if res.objType.isNil:
         echo " ".repeat(n.len) & "      }"

@@ -124,6 +124,43 @@ proc close*(i: In) {.extern:"min_exported_symbol_$1_2".}=
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
 
+proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+  var i2 = newMinInterpreter("<call>")
+  i2.trace = i.trace
+  i2.scope = i.scope
+  try:
+    i2.withScope(): 
+      for v in q.qVal:
+        i2.push v
+  except:
+    i.currSym = i2.currSym
+    i.trace = i2.trace
+    raise
+  return i2.stack.newVal
+
+proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+  var i2 = newMinInterpreter("<call-value>")
+  i2.trace = i.trace
+  i2.scope = i.scope
+  try:
+    i2.withScope(): 
+      i2.push v
+  except:
+    i.currSym = i2.currSym
+    i.trace = i2.trace
+    raise
+  return i2.stack[0]
+
+proc applyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+   # Assuming val is a dictionary
+   var v = newDict(i.scope)
+   for item in val.scope.symbols.pairs:
+     v.scope.symbols[item.key] = item.val
+   for item in v.dVal.pairs:
+     var value = item.val.val
+     v.scope.symbols[item.key] = MinOperator(kind: minValOp, val: i.callValue(value), sealed: false)
+   return v
+
 proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if op.kind == minProcOp:
     op.prc(i)
@@ -131,19 +168,15 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
     if op.val.kind == minQuotation:
       var newscope = newScopeRef(i.scope)
       i.withScope(newscope):
-        for e in op.val.quot:
+        for e in op.val.qVal:
           i.push e
     else:
       i.push(op.val)
 
 proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
-  if q.kind == minDictionary:
-    i.withScope(q.scope): 
-      for v in q.quot:
-        i.push v
-  elif q.kind == minQuotation:
+  if q.kind == minQuotation:
     i.withScope(): 
-      for v in q.quot:
+      for v in q.qVal:
         i.push v
   else:
     i.push(q)
@@ -154,7 +187,7 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
   i2.scope = i.scope
   try:
     i2.withScope(): 
-      for v in q.quot:
+      for v in q.qVal:
         if (v.kind == minQuotation):
           var v2 = v
           i2.dequote(v2)
@@ -165,20 +198,6 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
     i.trace = i2.trace
     raise
   i.push i2.stack.newVal
-
-proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
-  var i2 = newMinInterpreter("<call>")
-  i2.trace = i.trace
-  i2.scope = i.scope
-  try:
-    i2.withScope(): 
-      for v in q.quot:
-        i2.push v
-  except:
-    i.currSym = i2.currSym
-    i.trace = i2.trace
-    raise
-  return i2.stack.newVal
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
@@ -198,12 +217,6 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
         raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   else:
-    if (val.kind == minDictionary):
-      if val.scope.symbols.len == 0:
-        var v = val
-        i.dequote(v)
-        # Clear the initial quotation; only used when parsing a dictionary for the first time
-        v.quot = @[] 
     i.stack.add(val)
 
 proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
@@ -229,7 +242,7 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
     try:
       val = i.parser.parseMinValue(i)
       if parseOnly:
-        q.quot.add val
+        q.qVal.add val
       else:
         i.push val
     except MinRuntimeError:
