@@ -16,7 +16,7 @@ proc newVal(i: In, headers: HttpHeaders): MinValue =
   for k, v in headers:
     result = i.dset(result, k, v.newVal)
 
-type MinServerExit = ref object of SystemError
+type MinServerExit = ref object of Exception
 
 # Http
 

@@ -65,7 +65,7 @@
     },
     "niftylogger.nim": {
       "name": "niftylogger.nim",
-      "src": "https://raw.githubusercontent.com/h3rald/nifty/master/lib/niftylogger.nim",
+      "src": "https://raw.githubusercontent.com/h3rald/nifty/master/src/niftypkg/niftylogger.nim",
       "curl": true
     }
   }

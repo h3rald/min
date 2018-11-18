@@ -190,7 +190,7 @@ proc minFile*(filename: string) =
   try:
     fileLines = filename.readFile().splitLines()
   except:
-    fatal("Cannot read from file: "& filename)
+    fatal("Cannot read from file: " & filename)
     quit(3)
 
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
@@ -202,7 +202,7 @@ proc minFile*(filename: string) =
 proc minFile*(file: File, filename="stdin") =
   var stream = newFileStream(stdin)
   if stream == nil:
-    fatal("Cannot read from file: "& filename)
+    fatal("Cannot read from file: " & filename)
     quit(3)
   minStream(stream, filename)
 
@@ -225,7 +225,7 @@ proc printResult(i: In, res: MinValue) =
         else:
           v = $item.val.val
         echo  "         " & v & " :" & $item.key
-      if res.objType.isNil:
+      if res.objType == "":
         echo " ".repeat(n.len) & "      }"
       else:
         echo " ".repeat(n.len) & "        ;" & res.objType
