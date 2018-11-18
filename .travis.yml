@@ -3,7 +3,7 @@ language: c
 env:
   # Build and test against the master branch of Nim
   - BRANCH=master
-  #- BRANCH=devel
+  - BRANCH=devel
 compiler:
   #- gcc
   - clang
@@ -35,7 +35,7 @@ install:
     cd ..
     if [ ! -x nifty/nifty ]; then
       git clone --depth 1 git://github.com/h3rald/nifty nifty/
-      cd nifty
+      cd nifty/src
       ../nim-$BRANCH/bin/nim c --cc:$CC --verbosity:0 -d:release nifty.nim
     else
       cd nifty
