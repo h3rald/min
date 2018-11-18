@@ -559,7 +559,7 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         else:
           v = $i.val.val
         d = d & v & " :" & $i.key & " "
-      if not a.objType.isNil: 
+      if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
       return d
@@ -591,7 +591,7 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         else:
           v = $i.val.val
         d = d & v & " :" & $i.key & " "
-      if not a.objType.isNil: 
+      if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
       return d
@@ -683,7 +683,7 @@ proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
 
 proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   if q.isDictionary:
-    return not q.objType.isNil
+    return q.objType != ""
   return false
 
 proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
@@ -735,9 +735,9 @@ proc `==`*(a: MinValue, b: MinValue): bool {.inline, extern:"min_exported_symbol
             return false
           if v1.kind == minValOp:
             return v1.val == v2.val
-        if a.objType.isNil and b.objType.isNil:
+        if a.objType == "" and b.objType == "":
           return true
-        elif not a.objType.isNil and not b.objType.isNil:
+        elif a.objType != "" and b.objType != "":
           return a.objType == b.objType
         else:
           return false

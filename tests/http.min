@@ -3,7 +3,8 @@
 
 "http" describe
   
-  "http://postman-echo.com" :url
+  "postman-echo.com"        :host
+  "http://$1" (host) => %   :url
 
   ("$1/get" (url) => % get-content from-json /headers /user-agent  "min http-module/$1" (version) => % ==) assert
 
@@ -51,7 +52,7 @@
       ("$1/delete" (url) => % %url) 
       ("DELETE" %method)
       (request)
-    ) tap /body from-json /url "$1/delete" (url) => % ==
+    ) tap /body from-json /url "https://$1/delete" (host) => % ==
   ) assert
 
   report

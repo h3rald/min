@@ -13,8 +13,8 @@ import
   parser
 
 type
-  MinTrappedException* = ref object of SystemError
-  MinRuntimeError* = ref object of SystemError
+  MinTrappedException* = ref object of Exception
+  MinRuntimeError* = ref object of Exception
     data*: MinValue
 
 proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
@@ -95,13 +95,13 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_ex
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
 proc formatError(sym: MinValue, message: string): string {.extern:"min_exported_symbol_$1".}=
-  if sym.filename.isNil or sym.filename == "":
+  if sym.filename == "":
     return "[$1]: $2" % [sym.symVal, message]
   else:
     return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
 
 proc formatTrace(sym: MinValue): string {.extern:"min_exported_symbol_$1".}=
-  if sym.filename.isNil or sym.filename == "":
+  if sym.filename == "":
     return "<native> in symbol: $1" % [sym.symVal]
   else:
     return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
@@ -158,7 +158,7 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_sy
      v.scope.symbols[item.key] = item.val
    for item in val.scope.sigils.pairs:
      v.scope.sigils[item.key] = item.val
-   if not val.objType.isNil:
+   if val.objType != "":
      v.objType = val.objType
    if not val.obj.isNil:
      v.obj = val.obj
