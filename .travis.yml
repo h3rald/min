@@ -46,7 +46,7 @@ install:
     fi
     cd ../..
 before_script:
-    - export PATH="$PATH:$PWD/nifty:$PWD/nim-$BRANCH/bin"
+    - export PATH="$PATH:$PWD/nifty/src:$PWD/nim-$BRANCH/bin"
 script:
     - nifty install
     - nim c --cc:$CC --verbosity:0 -d:release min.nim
