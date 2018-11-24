@@ -484,7 +484,7 @@ proc lang_module*(i: In) =
     i.linrec(p, t, r1, r2)
 
   def.symbol("version") do (i: In):
-    i.push version.newVal
+    i.push pkgVersion.newVal
 
   # Save/load symbols
   

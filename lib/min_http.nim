@@ -6,7 +6,7 @@ import
   ../core/interpreter, 
   ../core/utils
 
-let minUserAgent = "$1 http-module/$2" % [appname, version]
+let minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]
 
 proc newCli(): HttpClient =
   return newHttpClient(userAgent = minUseragent)
