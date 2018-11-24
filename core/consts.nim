@@ -1,41 +1,11 @@
 import
-  os,
-  parsecfg,
-  streams,
-  strutils,
-  logging
+  os
 
 const
-  cfgfile   = "../min.nimble".slurp
-
-var
-  appname*  = "min"
-  version*: string
-  f = newStringStream(cfgfile)
-
-if f != nil:
-  var p: CfgParser
-  open(p, f, "../min.nimble")
-  while true:
-    var e = next(p)
-    case e.kind
-    of cfgEof:
-      break
-    of cfgKeyValuePair:
-      case e.key:
-        of "version":
-          version = e.value
-        else:
-          discard
-    of cfgError:
-      fatal("Configuration error.")
-      quit(1)
-    else: 
-      discard
-  close(p)
-else:
-  fatal("Cannot process configuration file.")
-  quit(2)
+  pkgName*        = "min"
+  pkgVersion*     = "0.19.2"
+  pkgAuthor*      = "Fabio Cevasco"
+  pkgDescription* = "A tiny concatenative programming language and shell."
 
 
 var HOME*: string

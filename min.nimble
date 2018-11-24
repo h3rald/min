@@ -1,8 +1,11 @@
+import 
+  core/consts
+
 # Package
 
-version       = "0.19.1"
-author        = "Fabio Cevasco"
-description   = "A tiny concatenative programming language and shell."
+version       = pkgVersion
+author        = pkgAuthor
+description   = pkgDescription
 license       = "MIT"
 bin           = @["min"]
 

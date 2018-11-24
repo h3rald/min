@@ -286,7 +286,7 @@ when isMainModule:
     -e, --evaluate    Evaluate a $1 program inline
     -h, —-help        Print this help
     -v, —-version     Print the program version
-    -i, —-interactive Start $1 shell""" % [appname, version]
+    -i, —-interactive Start $1 shell""" % [pkgName, pkgVersion]
 
   var file, s: string = ""
   var args = newSeq[string](0)
@@ -313,7 +313,7 @@ when isMainModule:
               quit(0)
           of "version", "v":
             if file == "":
-              echo version
+              echo pkgVersion
               quit(0)
           of "interactive", "i":
             if file == "":
