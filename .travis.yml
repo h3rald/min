@@ -33,20 +33,20 @@ install:
       fi
     fi
     cd ..
-    if [ ! -x nifty/src/nifty ]; then
+    if [ ! -x nifty/nifty ]; then
       git clone --depth 1 git://github.com/h3rald/nifty nifty/
-      cd nifty/src
+      cd nifty
       ../nim-$BRANCH/bin/nim c --cc:$CC --verbosity:0 -d:release nifty.nim
     else
-      cd nifty/src
+      cd nifty
       git fetch origin
       if ! git merge FETCH_HEAD | grep "Already up-to-date"; then
         ../nim-$BRANCH/bin/nim c --cc:$CC --verbosity:0 -d:release nifty.nim
       fi
     fi
-    cd ../..
+    cd ..
 before_script:
-    - export PATH="$PATH:$PWD/nifty/src:$PWD/nim-$BRANCH/bin"
+    - export PATH="$PATH:$PWD/nifty:$PWD/nim-$BRANCH/bin"
 script:
     - nifty install
     - nim c --cc:$CC --verbosity:0 -d:release min.nim
