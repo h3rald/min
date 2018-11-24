@@ -6,7 +6,6 @@ import
   parseopt, 
   strutils, 
   os, 
-  ospaths,
   json, 
   sequtils,
   algorithm,
