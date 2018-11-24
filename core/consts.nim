@@ -1,5 +1,5 @@
 import
-  os
+  ospaths
 
 const
   pkgName*        = "min"
