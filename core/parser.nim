@@ -4,11 +4,12 @@ import
   sequtils,
   strutils, 
   streams, 
-  unicode, 
   tables,
   critbits,
   math,
   logging
+ 
+import unicode except strip
 
 type
   MinTokenKind* = enum
