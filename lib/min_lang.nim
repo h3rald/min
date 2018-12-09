@@ -8,6 +8,7 @@ import
   os, 
   logging
 import 
+  ../core/env,
   ../core/consts,
   ../core/parser, 
   ../core/value, 

@@ -15,6 +15,7 @@ import
 import 
   packages/nimline/nimline,
   packages/niftylogger,
+  core/env,
   core/consts,
   core/parser, 
   core/value, 
