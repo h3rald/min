@@ -13,7 +13,7 @@ import
   ../core/fileutils
 
 when not defined(lite):
-  import ../packages/nim-miniz/miniz
+  import ../packages/nim-miniz/src/nim_miniz
 
 proc unix(s: string): string =
   return s.replace("\\", "/")
@@ -212,13 +212,13 @@ proc sys_module*(i: In)=
       let vals = i.expect("'sym", "'sym")
       let dir = vals[0]
       let f = vals[1]
-      miniz.unzip(f.getString, dir.getString)
+      nim_miniz.unzip(f.getString, dir.getString)
 
     def.symbol("zip") do (i: In):
       let vals = i.expect("'sym", "quot")
       let file = vals[0]
       let files = vals[1]
-      miniz.zip(files.qVal.mapIt(it.getString), file.getString)
+      nim_miniz.zip(files.qVal.mapIt(it.getString), file.getString)
 
   def.finalize("sys")
     
