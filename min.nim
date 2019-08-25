@@ -252,7 +252,6 @@ proc minRepl*(i: var MinInterpreter) =
     line = ed.readLine(prompt)
     i.parser.bufpos = 0
     i.parser.buf = $line
-    i.parser.bufLen = i.parser.buf.len
     discard i.parser.getToken() 
     try:
       i.printResult i.interpret()
