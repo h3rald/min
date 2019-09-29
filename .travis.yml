@@ -1,4 +1,3 @@
-# Copied from https://github.com/nim-lang/Nim/wiki/TravisCI
 language: c
 cache:
   directories:
