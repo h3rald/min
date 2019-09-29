@@ -176,6 +176,15 @@ proc interpret*(i: In, s: Stream) =
     discard
   i.close()
 
+proc interpret*(i: In, s: string): MinValue = 
+  i.open(newStringStream(s), i.filename)
+  discard i.parser.getToken() 
+  try:
+    result = i.interpret()
+  except:
+    discard
+    i.close()
+
 proc minStream(s: Stream, filename: string) = 
   var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDir
@@ -250,13 +259,7 @@ proc minRepl*(i: var MinInterpreter) =
     let v = vals[0] 
     let prompt = v.getString()
     line = ed.readLine(prompt)
-    i.parser.bufpos = 0
-    i.parser.buf = $line
-    discard i.parser.getToken() 
-    try:
-      i.printResult i.interpret()
-    except:
-      discard
+    i.printResult i.interpret($line)
 
 proc minRepl*() = 
   var i = newMinInterpreter(filename = "<repl>")
