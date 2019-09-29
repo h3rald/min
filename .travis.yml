@@ -1,58 +1,19 @@
 # Copied from https://github.com/nim-lang/Nim/wiki/TravisCI
 language: c
-env:
-  # Build and test against the master branch of Nim
-  - BRANCH=master
-  - BRANCH=devel
-compiler:
-  #- gcc
-  - clang
-matrix:
-  allow_failures:
-    # Ignore failures when building against the devel Nim branch
-    - env: BRANCH=devel
-  fast_finish: true
-install:
-  - |
-    if [ ! -x nim-$BRANCH/bin/nim ]; then
-      git clone -b $BRANCH --depth 1 git://github.com/nim-lang/nim nim-$BRANCH/
-      cd nim-$BRANCH
-      git clone -b $BRANCH --depth 1 git://github.com/nim-lang/csources csources/
-      cd csources
-      sh build.sh
-      cd ..
-      rm -rf csources
-      bin/nim c koch
-      ./koch boot -d:release
-    else
-      cd nim-$BRANCH
-      git fetch origin
-      if ! git merge FETCH_HEAD | grep "Already up-to-date"; then
-        bin/nim c koch
-        ./koch boot -d:release
-      fi
-    fi
-    cd ..
-    if [ ! -x nifty/nifty ]; then
-      git clone --depth 1 git://github.com/h3rald/nifty nifty/
-      cd nifty
-      ../nim-$BRANCH/bin/nim c --cc:$CC --verbosity:0 -d:release src/nifty.nim
-    else
-      cd nifty
-      git fetch origin
-      if ! git merge FETCH_HEAD | grep "Already up-to-date"; then
-        ../nim-$BRANCH/bin/nim c --cc:$CC --verbosity:0 -d:release src/nifty.nim
-      fi
-    fi
-    cd ..
-before_script:
-    - export PATH="$PATH:$PWD/nifty/src:$PWD/nim-$BRANCH/bin"
-script:
-    - nifty install
-    - nim c --cc:$CC --verbosity:0 -d:release min.nim
-    - ./min tests/all.min
 cache:
   directories:
-    - nim-master
-    - nim-devel
-    - nifty
+    - "$HOME/.nimble"
+    - "$HOME/.choosenim"
+install:
+  - export CHOOSENIM_CHOOSE_VERSION="1.0.0"
+  - |
+      curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+      sh init.sh -y
+before_script:
+  - set -e
+  - set -x
+  - export PATH=$HOME/.nimble/bin:$PATH
+  - export CHOOSENIM_NO_ANALYTICS=1
+script:
+    - nimble build
+    - ./min tests/all.min
