@@ -1,7 +1,4 @@
 import 
-  tables,
-  random
-import 
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 

@@ -1,13 +1,9 @@
 # Adapted from: https://github.com/Araq/Nimrod/blob/v0.9.6/lib/pure/json.nim
 import 
   lexbase, 
-  sequtils,
   strutils, 
   streams, 
-  tables,
-  critbits,
-  math,
-  logging
+  critbits
  
 import unicode except strip
 
@@ -67,7 +63,7 @@ type
     err*: MinParserError
     filename*: string
   MinValue* = ref MinValueObject 
-  MinValueObject* = object {.acyclic, final.}
+  MinValueObject* {.acyclic, final.} = object
     line*: int
     column*: int
     filename*: string
@@ -86,7 +82,7 @@ type
   MinScopeKind* = enum
     minNativeScope,
     minLangScope
-  MinScope* = object {.acyclic, shallow, final.}
+  MinScope* {.acyclic, shallow, final.} = object
     parent*: ref MinScope
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]

@@ -1,6 +1,5 @@
 import 
   tables,
-  sequtils,
   algorithm
 import 
   ../core/parser, 
