@@ -15,5 +15,5 @@ before_script:
   - export PATH=$HOME/.nimble/bin:$PATH
   - export CHOOSENIM_NO_ANALYTICS=1
 script:
-    - nimble build
+    - nimble -y build
     - ./min tests/all.min
