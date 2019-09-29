@@ -1,5 +1,4 @@
 import 
-  tables,
   random
 import 
   ../core/parser, 

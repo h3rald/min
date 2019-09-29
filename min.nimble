@@ -12,7 +12,7 @@ installFiles  = @["core/consts.nim"]
 
 # Dependencies
 
-requires "nim >= 0.18.0"
+requires "nim >= 1.0.0"
 requires "nifty"
 
 before install:

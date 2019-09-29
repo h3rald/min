@@ -1,9 +1,7 @@
 import 
   strutils, 
-  sequtils,
   critbits,
-  json,
-  terminal
+  json
 import 
   ../packages/nim-sgregex/sgregex,
   parser, 

@@ -1,6 +1,5 @@
 import
-  times,
-  tables
+  times
 import
   ../core/parser,
   ../core/value,

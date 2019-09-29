@@ -16,7 +16,6 @@ import
   ../core/utils,
   ../packages/nim-sgregex/sgregex,
   ../packages/niftylogger,
-  ../packages/nimline/nimline,
   ../core/scope
 
 proc lang_module*(i: In) =

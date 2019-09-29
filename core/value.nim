@@ -1,8 +1,5 @@
 import
-  critbits
-import
-  parser,
-  scope
+  parser
 
 proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
   case v.kind:

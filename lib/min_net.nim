@@ -1,4 +1,4 @@
-import net, nativesockets, strutils
+import net, nativesockets
 import 
   ../core/parser, 
   ../core/value, 
