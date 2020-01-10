@@ -96,7 +96,7 @@ proc http_module*(i: In)=
       i.dequote qhandler
       let qres = i.pop
       var body = "".newVal
-      var rawHeaders = newSeq[MinValue]().newVal
+      var rawHeaders = newDict(i.scope)
       var v = "1.1"
       var status = 200.newVal
       if not qres.isDictionary():
@@ -116,8 +116,8 @@ proc http_module*(i: In)=
       if not rawHeaders.isDictionary():
         raiseInvalid("Response headers are not in a dictionary.")
       var headers = newHttpHeaders()
-      for v in rawHeaders.qVal:
-        headers[v.qVal[0].getString] = v.qVal[1].getString
+      for k in items(i.keys(rawHeaders).qVal):
+        headers[k.getString] = i.dget(rawHeaders, k.getString).getString
       await req.respond(status.intVal.HttpCode, body.getString, headers)
     try:
       waitFor server.serve(port = port.intVal.Port, callback = handler, address = address.getString)
