@@ -47,7 +47,7 @@ Key            | Effect
 
 ## Shell configuration files
 
-When the min interpreter is first launched, the following files are created automatically in the $HOME directory (%HOMEPROFILE% on Windows).
+When the min interpreter is first launched, the following files are created automatically in the $HOME directory (%USERPROFILE% on Windows).
 
 ### .minrc
 

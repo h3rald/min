@@ -5,7 +5,7 @@ title: "Learn: Definitions"
 {@ _defs_.md || 0 @}
 
 
-Being a concatenative language, min does not really need named parameters or variables: simbols just pop elements off the main stack in order, and that's normally enough. There is however one small problem with the traditional concatenative paradigm; consider the following program for example:
+Being a concatenative language, min does not really need named parameters or variables: symbols just pop elements off the main stack in order, and that's normally enough. There is however one small problem with the traditional concatenative paradigm; consider the following program for example:
 
      dup dup 
      "\.zip$" match 
@@ -29,7 +29,7 @@ In this case, the `filepath` symbol is defined and then used on the following th
 
 ## Lexical scoping and binding
 
-min, like many other programming languages, uses [lexical scoping](https://en.wikipedia.org/wiki/Scope_(computer_science)#Lexical_scope_vs._dynamic_scope) to resolve symbols.
+min, like many other programming languages, uses [lexical scoping](https://en.wikipedia.org/wiki/Scope_\(computer_science\)#Lexical_scope_vs._dynamic_scope) to resolve symbols.
 
 Consider the following program:
 
