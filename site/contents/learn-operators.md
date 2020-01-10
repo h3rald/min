@@ -21,7 +21,7 @@ It is possible to define symbols using the {#link-operator||lang||define#} symbo
 
      (dup *) "square" define
 
-Besides symbols, min provides a set of predefined _sigils_ for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
+Besides symbols, min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
 
      (dup *) :square
 
@@ -48,11 +48,11 @@ A sigil like `:` can be prepended to a single-word string instead of using the c
 \#
 : Alias for {#link-operator||lang||quote-define#}. 
 /
-: Alias for {#link-operator||seq||dget#}. 
+: Alias for {#link-operator||dict||dget#}. 
 %
-: Alias for {#link-operator||seq||dset#}. 
+: Alias for {#link-operator||dict||dset#}. 
 ?
-: Alias for {#link-operator||seq||dhas?#}.
+: Alias for {#link-operator||dict||dhas?#}.
 !
 : Alias for {#link-operator||sys||system#}.
 &

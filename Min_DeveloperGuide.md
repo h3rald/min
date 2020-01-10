@@ -97,6 +97,10 @@
 
 {@ site/contents/reference-seq.md || 1 @}
 
+### `dict` Module
+
+{@ site/contents/reference-dict.md || 1 @}
+
 ### `io` Module
 
 {@ site/contents/reference-io.md || 1 @}

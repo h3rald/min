@@ -7,6 +7,8 @@ title: "Learn: Data Types"
 
 The type system of min is very simple -- only the following data types are available:
 
+boolean
+: **true** or **false**.
 integer
 : An integer number like 1, 27 or -15.
 float

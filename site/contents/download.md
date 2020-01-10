@@ -64,7 +64,7 @@ The result of each operation will be placed on top of the stack, and it will be 
 > {1} -> 16
 > [[/Users/h3rald/test]$](class:prompt)
 
-To exit min shell, press [CTRL+C](class:kbd) or type [exit](class:cmd) and press [ENTER](class:kbd).
+To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and press [ENTER](class:kbd).
 
 ## Executing a min Program
 
