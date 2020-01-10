@@ -57,16 +57,17 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       stop-server
 > >      ) when
 > >      ;Prepare response
-> >      {body :body}
+> >      {} body %body
 > >     ) =handler
-> > 
+> >     
 > >     ;Start server
 > >     "Server started on port 5555." puts!
 > >     "Press Ctrl+C to stop." puts!
-> >     {
-> >      handler :handler
-> >      5555 :port
-> >     } tap start-server
+> >     
+> >     {}
+> >       handler %handler
+> >       5555 %port 
+> >     start-server
  #}
 
 {#op||stop-server||{{null}}||{{null}}||
