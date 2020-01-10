@@ -1,5 +1,7 @@
 import 
-  math
+  math,
+  strformat,
+  strutils
 import 
   ../core/parser, 
   ../core/value, 
@@ -28,7 +30,9 @@ proc math_module*(i: In)=
     let vals = i.expect("int", "num")
     let places = vals[0].intVal.int
     let n = vals[1].getFloat
-    i.push n.round(places).newVal
+    var res = ""
+    formatValue(res, n, "." & $places & "f")
+    i.push parseFloat(res).newVal
  
   def.symbol("e") do (i: In):
     i.push E.newVal
