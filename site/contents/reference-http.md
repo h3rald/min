@@ -16,12 +16,12 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > %sidebar%
 > > Example
 > > 
-> > The following code constructs a {{req}} dictionary using the **tap** operator and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
+> > The following code constructs a {{req}} dictionary and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
-> >     {} (
-> >       ("GET" %method)
-> >       ("http://httpbin.org/ip" %url)
-> >     ) tap request
+> >     {}
+> >       "GET" %method)
+> >       "http://httpbin.org/ip" %url
+> >     request
  #}
 
 {#op||start-server||{{d}}||{{null}}||
