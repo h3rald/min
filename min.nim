@@ -242,32 +242,43 @@ proc printResult(i: In, res: MinValue) =
     else:
       echo "[$1] -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
 
-proc minRepl*(i: var MinInterpreter) =
+proc minRepl*(i: var MinInterpreter, simple = false) =
   i.stdLib()
   i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
   var ed = initEditor(historyFile = MINHISTORY)
-  while true:
-    let symbols = toSeq(i.scope.symbols.keys)
-    ed.completionCallback = proc(ed: LineEditor): seq[string] =
-      return ed.getCompletions(symbols)
-    # evaluate prompt
-    i.push("prompt".newSym)
-    let vals = i.expect("string")
-    let v = vals[0] 
-    let prompt = v.getString()
-    line = ed.readLine(prompt)
-    i.printResult i.interpret($line)
+  if simple:
+    while true:
+      i.push("prompt".newSym)
+      let vals = i.expect("string")
+      let v = vals[0] 
+      let prompt = v.getString()
+      stdout.write(prompt)
+      line = stdin.readLine()
+      i.printResult i.interpret($line)
+  else:
+    while true:
+      let symbols = toSeq(i.scope.symbols.keys)
+      ed.completionCallback = proc(ed: LineEditor): seq[string] =
+        return ed.getCompletions(symbols)
+      # evaluate prompt
+      i.push("prompt".newSym)
+      let vals = i.expect("string")
+      let v = vals[0] 
+      let prompt = v.getString()
+      line = ed.readLine(prompt)
+      i.printResult i.interpret($line)
 
-proc minRepl*() = 
+proc minRepl*(simple = false) = 
   var i = newMinInterpreter(filename = "<repl>")
-  i.minRepl
+  i.minRepl(simple)
     
 when isMainModule:
 
   var REPL = false
+  var SIMPLEREPL = false
   var INSTALL = false
   var UNINSTALL = false
   var libfile = ""
@@ -281,14 +292,15 @@ when isMainModule:
   Arguments:
     filename  A $1 file to interpret (default: STDIN).
   Options:
-    -—install:<lib>   Install dynamic library file <lib>
-    —-uninstall:<lib> Uninstall dynamic library file <lib>
-    -l, --log         Set log level (debug|info|notice|warn|error|fatal)
-                      Default: notice
-    -e, --evaluate    Evaluate a $1 program inline
-    -h, —-help        Print this help
-    -v, —-version     Print the program version
-    -i, —-interactive Start $1 shell""" % [pkgName, pkgVersion]
+    -—install:<lib>           Install dynamic library file <lib>
+    —-uninstall:<lib>         Uninstall dynamic library file <lib>
+    -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
+                              Default: notice
+    -e, --evaluate            Evaluate a $1 program inline
+    -h, —-help                Print this help
+    -v, —-version             Print the program version
+    -i, —-interactive         Start $1 shell (with advanced prompt)
+    -j, --interactive-simple  Start $1 shell (without advanced prompt)""" % [pkgName, pkgVersion]
 
   var file, s: string = ""
   var args = newSeq[string](0)
@@ -320,6 +332,9 @@ when isMainModule:
           of "interactive", "i":
             if file == "":
               REPL = true
+          of "interactive-simple", "j":
+            if file == "":
+              SIMPLEREPL = true
           of "install":
             if file == "":
               INSTALL = true
@@ -359,8 +374,8 @@ when isMainModule:
       quit(6)
     notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
     quit(0)
-  elif REPL:
-    minRepl()
+  elif REPL or SIMPLEREPL:
+    minRepl(SIMPLEREPL)
     quit(0)
   else:
     minFile stdin, "stdin"
