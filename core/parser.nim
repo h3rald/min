@@ -623,8 +623,11 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     var scope = newScopeRef(nil)
     var val: MinValue
     discard getToken(p)
+    var c = 0
     while p.token != tkBraceRi: 
+      c = c+1
       let v = p.parseMinValue(i)
+      echo(c mod 2)
       if val.isNil:
         val = v
       elif v.kind == minSymbol:
@@ -637,6 +640,8 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
       else:
         raiseInvalid("Invalid dictionary key: " & $v)
     eat(p, tkBraceRi)
+    if c mod 2 != 0:
+      raiseInvalid("Invalid dictionary")
     result = MinValue(kind: minDictionary, scope: scope)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
