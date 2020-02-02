@@ -90,7 +90,7 @@ proc lang_module*(i: In) =
     echo "Log level: ", setLogLevel(str)
 
   def.symbol("loglevel?") do (i: In):
-    echo "Log level: ", getLogLevel()
+    i.push getLogLevel().newVal
 
   # Language constructs
 
