@@ -54,14 +54,14 @@ You can type min code and press [ENTER](class:kbd) to evaluate it immediately:
 
 > %min-terminal%
 > [[/Users/h3rald/test]$](class:prompt) 2 2 +
-> {1} -> 4 
+>  4 
 > [[/Users/h3rald/test]$](class:prompt)
 
 The result of each operation will be placed on top of the stack, and it will be available to subsequent operation
 
 > %min-terminal%
 > [[/Users/h3rald/test]$](class:prompt) dup *
-> {1} -> 16
+>  16
 > [[/Users/h3rald/test]$](class:prompt)
 
 To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and press [ENTER](class:kbd).
