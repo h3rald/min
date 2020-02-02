@@ -627,7 +627,6 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     while p.token != tkBraceRi: 
       c = c+1
       let v = p.parseMinValue(i)
-      echo(c mod 2)
       if val.isNil:
         val = v
       elif v.kind == minSymbol:

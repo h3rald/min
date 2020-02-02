@@ -221,26 +221,26 @@ proc printResult(i: In, res: MinValue) =
   if i.stack.len > 0:
     let n = $i.stack.len
     if res.isQuotation and res.qVal.len > 1:
-      echo "{$1} -> (" % n
+      echo " ("
       for item in res.qVal:
-        echo  "         " & $item
-      echo " ".repeat(n.len) & "      )"
+        echo  "   " & $item
+      echo " ".repeat(n.len) & ")"
     elif res.isDictionary and res.dVal.len > 1:
-      echo "{$1} -> {" % n
+      echo " {"
       for item in res.dVal.pairs:
         var v = ""
         if item.val.kind == minProcOp:
           v = "<native>"
         else:
           v = $item.val.val
-        echo  "         " & v & " :" & $item.key
+        echo  "   " & v & " :" & $item.key
       if res.objType == "":
-        echo " ".repeat(n.len) & "      }"
+        echo " ".repeat(n.len) & "}"
       else:
-        echo " ".repeat(n.len) & "        ;" & res.objType
-        echo " ".repeat(n.len) & "      }"
+        echo " ".repeat(n.len) & "  ;" & res.objType
+        echo " ".repeat(n.len) & "}"
     else:
-      echo "[$1] -> $2" % [$i.stack.len, $i.stack[i.stack.len - 1]]
+      echo " $1" % [$i.stack[i.stack.len - 1]]
 
 proc minRepl*(i: var MinInterpreter, simple = false) =
   i.stdLib()
@@ -257,7 +257,9 @@ proc minRepl*(i: var MinInterpreter, simple = false) =
       let prompt = v.getString()
       stdout.write(prompt)
       line = stdin.readLine()
-      i.printResult i.interpret($line)
+      let r = i.interpret($line)
+      if $line != "":
+        i.printResult(r)
   else:
     while true:
       let symbols = toSeq(i.scope.symbols.keys)
@@ -269,7 +271,9 @@ proc minRepl*(i: var MinInterpreter, simple = false) =
       let v = vals[0] 
       let prompt = v.getString()
       line = ed.readLine(prompt)
-      i.printResult i.interpret($line)
+      let r = i.interpret($line)
+      if $line != "":
+        i.printResult(r)
 
 proc minRepl*(simple = false) = 
   var i = newMinInterpreter(filename = "<repl>")
