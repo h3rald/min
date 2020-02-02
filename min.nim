@@ -51,6 +51,7 @@ export
   min_lang
 
 const PRELUDE* = "prelude.min".slurp.strip
+var customPrelude = ""
 
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
@@ -140,7 +141,13 @@ proc stdLib*(i: In) =
     i.net_module
     i.math_module
     i.http_module
-  i.eval PRELUDE, "<prelude>"
+  if customPrelude == "":
+    i.eval PRELUDE, "<prelude>"
+  else:
+    try:
+      i.eval customPrelude.readFile, customPrelude
+    except:
+      warn("Unable to process custom prelude code in $1" % customPrelude)
   i.eval MINRC.readFile()
 
 type
@@ -298,15 +305,16 @@ when isMainModule:
   Options:
     -—install:<lib>           Install dynamic library file <lib>
     —-uninstall:<lib>         Uninstall dynamic library file <lib>
-    -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
-                              Default: notice
     -e, --evaluate            Evaluate a $1 program inline
     -h, —-help                Print this help
-    -v, —-version             Print the program version
     -i, —-interactive         Start $1 shell (with advanced prompt)
-    -j, --interactive-simple  Start $1 shell (without advanced prompt)""" % [pkgName, pkgVersion]
+    -j, --interactive-simple  Start $1 shell (without advanced prompt)
+    -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
+                              Default: notice
+    -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
+    -v, —-version             Print the program version""" % [pkgName, pkgVersion]
 
-  var file, s: string = ""
+  var file, s, prelude: string = ""
   var args = newSeq[string](0)
   setLogFilter(lvlNotice)
   
@@ -318,6 +326,8 @@ when isMainModule:
           file = key 
       of cmdLongOption, cmdShortOption:
         case key:
+          of "prelude", "p":
+            customPrelude = val
           of "log", "l":
             if file == "":
               var val = val
