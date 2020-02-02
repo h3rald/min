@@ -201,6 +201,9 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > 
 > > The default logging level is _notice_.#}
 
+{#op||loglevel?||{{null}}||{{s}}||
+Returns the current log level (debug, info, notive, warn, error or fatal). #}
+
 {#op||module||{{d}} {{sl}}||{{null}}||
 Creates a new module {{sl}} based on dictionary {{d}}. #}
 
