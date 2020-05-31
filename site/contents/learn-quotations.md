@@ -38,7 +38,7 @@ Consider the following program:
 
      (1 2 3 4 5 6 7) (odd?) filter
 
-This programs returns a new quotation containing all odd numbers contained in quotation `(1 2 3 4 5 6 7)`.
+This program returns a new quotation containing all odd numbers contained in quotation `(1 2 3 4 5 6 7)`.
 
 In this case, the second quotation is used to _quote_ the symbol `odd?` so that instead of being executed immediately, it will be executed by the symbol `filter` on each element of the first quotation. In this way, we may say that `(odd?)` is _dequoted_ by the symbol `filter`.
 
