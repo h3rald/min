@@ -52,7 +52,7 @@
       ("$1/delete" (url) => % %url) 
       ("DELETE" %method)
       (request)
-    ) tap /body from-json /url "https://$1/delete" (host) => % ==
+    ) tap /body from-json /url "http://$1/delete" (host) => % ==
   ) assert
 
   report
