@@ -39,6 +39,39 @@ Save your code to a file (e.g. *quickpows.min*) and you can use it in other nim 
 2 pow3 pow2 puts ;prints 64
 ```
 
+## Specifying your custom prelude program
+
+By default, when min is started it loads the following *prelude.min* program:
+
+```
+; Imports
+'str       import
+'io        import
+'logic     import
+'num       import
+'sys       import
+'stack     import
+'seq       import
+'dict      import
+'time      import
+'fs        import
+'lite? (
+  (
+    'crypto    import
+    'math      import
+    'net       import
+    'http      import
+  ) ROOT with
+) unless
+; Unseal prompt symbol
+'prompt    unseal
+```
+
+Essentially, this causes min to import *all* the modules (except for some if the **lite** flag was defined at compilation time) and unseals the {#link-operator||lang||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
+
+> %min-terminal%
+> [$](class:prompt) min -i -p:myfile.min
+
 ## Embedding min in your Nim program
 
 If you'd like to use min as a scripting language within your own program, and maybe extend it by implementing additional operators, you can use min as a Nim library.
