@@ -19,14 +19,14 @@ When you just want to create more high-level min operator using functionalities 
 The {#link-operator||lang||module#} (and the **+** sigil) allows you to create a new min module:
 
 ```
-(
+{
   (dup *)             :pow2
 
   (dup dup * *)       :pow3
 
   (dup dup dup * * *) :pow4
   
-) +quickpows
+} +quickpows
 
 ```
 

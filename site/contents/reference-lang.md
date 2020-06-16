@@ -44,7 +44,7 @@ title: "lang Module"
 > This operator can be used on a quotation or a dictionary:
 > 
 > * If a quotation {{q}} is passed, it returns a new quotation obtained by evaluating each element of {{q}} in a separate stack.
-> * If a dictionary {{d}} is passed, it returns a new dictionary obtained by evaluating each symbol of {{d}} in a separate stack.#}
+> * If a dictionary {{d}} (with values and keys) is passed, it returns a new dictionary obtained by evaluating each value in the dict that is a symbol in a separate stack (values that aren't symbols stay as they are).#}
 
 {#op||args||{{null}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
@@ -56,9 +56,9 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 > Converts {{any}} to a boolean value based on the following rules:
 > 
 >  * If {{any}} is a boolean value, no conversion is performed.
->  * If {{any}} is a non-zero numeric value, it is converted to {{t}}, otherwise it is converted to {{f}}.
->  * If {{any}} is a non-empty quotation, it is converted to {{t}}, otherwise it is converted to {{f}}.
->  * If {{any}} is a non-empty string or not `"false"`, it is converted to {{t}}, otherwise it is converted to {{f}}.#}
+>  * If {{any}} is a numeric value, zero is converted to {{f}}, otherwise it is converted to {{t}}.
+>  * If {{any}} is a quotation or a dictionary, the empty quotation or dictionary is converted to {{f}}, otherwise it is converted to {{t}}.
+>  * If {{any}} is a string, the empty string, and `"false"` are converted to {{f}}, otherwise it is converted to {{t}}.#}
 
 {#op||call||{{d}} {{sl}}||{{a0p}}||
 Calls operator {{sl}} defined in dictionary {{d}}. #}
@@ -92,7 +92,9 @@ Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
 Deletes the specified symbol {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
-Pushes the contents of quotation {{q}} on the stack. #}
+Pushes the contents of quotation {{q}} on the stack. 
+
+Each element is pushed on the stack one by one. If any error occurs, {{q}} is restored on the stack.#}
 
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
