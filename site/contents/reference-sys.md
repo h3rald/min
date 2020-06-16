@@ -104,8 +104,8 @@ Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}
 {#op||system||{{sl}}||{{i}}||
 Executes the external command {{sl}} in the current directory and pushes its return code on the stack. #}
 
-{#op||unzip||{{sl}}||{{null}}||
-Decompresses zip file {{sl}}.#}
+{#op||unzip||{{sl}} {{s2}}||{{null}}||
+Decompresses zip file {{s2}} to directory {{s1}} (created if not present).#}
 
 {#op||which||{{sl}}||{{s}}||
 Returns the full path to the directory containing executable {{sl}}, or an empty string if the executable is not found in **$PATH**. #}
