@@ -40,6 +40,9 @@ Reads the file {{s}} and puts its contents on the top of the stack as a string.#
 {#op||fwrite||{{s1}} {{s2}}||{{null}}||
 Writes {{s1}} to the file {{s2}}, erasing all its contents first. #}
 
+{#op||getchr||{{null}}||{{i}}||
+Reads single character from STDIN without waiting for ENTER key and places its ASCII code on top of the stack.#}
+
 {#op||gets||{{null}}||{{s}}||
 Reads a line from STDIN and places it on top of the stack as a string.#}
 
@@ -60,6 +63,9 @@ Prints {{any}} to STDOUT.#}
 
 {#op||print!||{{any}}||{{null}}||
 Prints {{any}} to STDOUT and removes {{any}} from the stack.#}
+
+{#op||putchr||{{s}}||{{any}}||
+Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
 
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
