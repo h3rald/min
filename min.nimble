@@ -22,9 +22,7 @@ before install:
 
 const
   compile = "nim c -d:release"
-  linux_x86 = "--cpu:i386 --os:linux"
   linux_x64 = "--cpu:amd64 --os:linux"
-  linux_arm = "--cpu:arm --os:linux"
   windows_x64 = "--cpu:amd64 --os:windows"
   macosx_x64 = ""
   parallel = "--parallelBuild:1 --verbosity:3"

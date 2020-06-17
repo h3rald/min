@@ -295,7 +295,7 @@ when isMainModule:
   var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
-  (c) 2014-2018 Fabio Cevasco
+  (c) 2014-2020 Fabio Cevasco
   
   Usage:
     min [options] [filename]

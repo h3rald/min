@@ -11,8 +11,8 @@ import
   parser
 
 type
-  MinTrappedException* = ref object of Exception
-  MinRuntimeError* = ref object of Exception
+  MinTrappedException* = ref object of CatchableError
+  MinRuntimeError* = ref object of CatchableError
     data*: MinValue
 
 proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
