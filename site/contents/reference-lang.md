@@ -249,8 +249,8 @@ Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{
 {#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||ROOT||{{null}}||{{q}}||
-Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
+{#op||ROOT||{{null}}||{{d}}||
+Returns a module holding a reference to the [ROOT](class:kwd) scope.
 
 > > %tip%
 > > Tip
@@ -261,8 +261,8 @@ Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
 {#op||save-symbol||{{sl}}||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
-{#op||scope||{{null}}||({{m}})||
-> Returns a module {{m}} corresponding to the current scope.
+{#op||scope||{{null}}||{{d}}||
+> Returns a dictionary {{d}} holding a reference to the current scope.
 >  
 > This can be useful to save a reference to a given execution scope to access later on.
 >
@@ -401,7 +401,7 @@ Applies quotation {{q1}} within the scope of {{q2}}.
 > > %sidebar%
 > > Example
 > > 
-> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or a parent scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
+> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or another scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
 > > 
 > >     'lite? (
 > >      (

@@ -47,5 +47,8 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 {#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
 
+{#op||dtype||{{d}}||{{s}}||
+Returns a string set to the type of {{d}} (empty if the dictionary has no type). #}
+
 {#op||dvalues||{{d}}||({{a0p}})||
 Returns a quotation containing all the values of dictionary {{d}}. #}

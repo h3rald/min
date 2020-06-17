@@ -10,7 +10,6 @@
 {{e => [dict:error](class:kwd)}}
 {{tinfo => [dict:timeinfo](class:kwd)}}
 {{d => [dict](class:kwd)}}
-{{m => [module](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
 {{flt => [float](class:kwd)}}

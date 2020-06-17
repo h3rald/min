@@ -74,6 +74,19 @@ proc str_module*(i: In) =
     let s = vals[0]
     i.push s.getString.capitalizeAscii.newVal
 
+  def.symbol("ord") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0]
+    if s.getString.len != 1:
+      raiseInvalid("Symbol ord requires a string containing a single character.")
+    i.push s.getString[0].ord.newVal
+  
+  def.symbol("chr") do (i: In):
+    let vals = i.expect("int")
+    let n = vals[0]
+    let c = n.intVal.chr
+    i.push ($c).newVal
+
   def.symbol("titleize") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]

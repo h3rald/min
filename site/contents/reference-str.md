@@ -11,6 +11,9 @@ title: "str Module"
 {#op||capitalize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with the first character capitalized.#}
 
+{#op||chr||{{i}}||{{s}}||
+Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
+
 {#op||indent||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} indented with {{i}} spaces.#}
 
@@ -50,6 +53,9 @@ Returns a copy of {{sl}} converted to lowercase.#}
 > > Tip
 > > 
 > > {{s2}} can be a {{sgregex}}-compatible regular expression.#}
+
+{#op||chr||{{s}}||{{i}}||
+Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
 
 {#op||repeat||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} repeated {{i}} times.#}
