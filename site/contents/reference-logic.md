@@ -109,7 +109,7 @@ Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
 
 {#op||type?||{{any}} {{sl}}||{{b}}||
-Returns {{t}} if {{any}} is a dictionary of the specified type {{sl}}, {{f}} otherwise. #}
+Returns {{t}} if the data type of {{any}} is the specified type {{sl}}, {{f}} otherwise. #}
 
 {#op||xor||{{b1}} {{b2}}||{{b3}}||
 Returns {{t}} if {{b1}} and {{b2}} are different, {{f}} otherwise.#}
