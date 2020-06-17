@@ -64,6 +64,10 @@ proc dict_module*(i: In)=
         i.dset(res, k, i.dget(d, k))
     i.push res
 
+  def.symbol("dtype") do (i: In):
+    let vals = i.expect("dict")
+    i.push vals[0].objType.newVal
+
   def.sigil("?") do (i: In):
     i.push("dhas?".newSym)
 

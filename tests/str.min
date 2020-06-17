@@ -23,6 +23,10 @@
 
   ("test #1" "[0-9]" search ("1") ==) assert 
 
+  ("a" ord 97 ==) assert
+
+  (97 chr "a" ==) assert
+
   ("This is test #1" "test #([0-9])" search ("test #1" "1") ==) assert 
 
   ("This is a random string" "random" match true ==) assert

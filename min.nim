@@ -314,7 +314,7 @@ when isMainModule:
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
     -v, —-version             Print the program version""" % [pkgName, pkgVersion]
 
-  var file, s, prelude: string = ""
+  var file, s: string = ""
   var args = newSeq[string](0)
   setLogFilter(lvlNotice)
   

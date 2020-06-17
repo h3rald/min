@@ -10,9 +10,9 @@ The type system of min is very simple -- only the following data types are avail
 boolean
 : **true** or **false**.
 integer
-: An integer number like 1, 27 or -15.
+: A 64-bit integer number like 1, 27 or -15.
 float
-: A floating-point number like 3.14 or -56.9876.
+: A 64-bit floating-point number like 3.14 or -56.9876.
 string
 : A series of characters wrapped in double quotes: "Hello, World!".
 quotation

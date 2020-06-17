@@ -44,7 +44,7 @@ title: "lang Module"
 > This operator can be used on a quotation or a dictionary:
 > 
 > * If a quotation {{q}} is passed, it returns a new quotation obtained by evaluating each element of {{q}} in a separate stack.
-> * If a dictionary {{d}} is passed, it returns a new dictionary obtained by evaluating each symbol of {{d}} in a separate stack.#}
+> * If a dictionary {{d}} (with values and keys) is passed, it returns a new dictionary obtained by evaluating each value in the dict that is a symbol in a separate stack (values that aren't symbols stay as they are).#}
 
 {#op||args||{{null}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
@@ -56,9 +56,9 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 > Converts {{any}} to a boolean value based on the following rules:
 > 
 >  * If {{any}} is a boolean value, no conversion is performed.
->  * If {{any}} is a non-zero numeric value, it is converted to {{t}}, otherwise it is converted to {{f}}.
->  * If {{any}} is a non-empty quotation, it is converted to {{t}}, otherwise it is converted to {{f}}.
->  * If {{any}} is a non-empty string or not `"false"`, it is converted to {{t}}, otherwise it is converted to {{f}}.#}
+>  * If {{any}} is a numeric value, zero is converted to {{f}}, otherwise it is converted to {{t}}.
+>  * If {{any}} is a quotation or a dictionary, the empty quotation or dictionary is converted to {{f}}, otherwise it is converted to {{t}}.
+>  * If {{any}} is a string, the empty string, and `"false"` are converted to {{f}}, otherwise it is converted to {{t}}.#}
 
 {#op||call||{{d}} {{sl}}||{{a0p}}||
 Calls operator {{sl}} defined in dictionary {{d}}. #}
@@ -92,7 +92,9 @@ Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
 Deletes the specified symbol {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
-Pushes the contents of quotation {{q}} on the stack. #}
+Pushes the contents of quotation {{q}} on the stack. 
+
+Each element is pushed on the stack one by one. If any error occurs, {{q}} is restored on the stack.#}
 
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
@@ -174,7 +176,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > > 
 > > The following program leaves `120` on the stack, the factorial of 5:
 > > 
-> >     (dup 0 ==) 'succ (dup pred) '* linrec
+> >    5 (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
 {#op||lite?||{{null}}||{{b}}||
@@ -206,12 +208,6 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 
 {#op||module||{{d}} {{sl}}||{{null}}||
 Creates a new module {{sl}} based on dictionary {{d}}. #}
-
-{#op||scope-sigils||{{d}}||({{s0p}})||
-Returns a list of all sigils defined in dictionary {{d}}.#}
-
-{#op||scope-symbols||{{d}}||({{s0p}})||
-Returns a list of all symbols defined in dictionary {{d}}.#}
 
 {#op||opts||{{null}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
@@ -253,8 +249,8 @@ Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{
 {#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||ROOT||{{null}}||{{q}}||
-Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
+{#op||ROOT||{{null}}||{{d}}||
+Returns a module holding a reference to the [ROOT](class:kwd) scope.
 
 > > %tip%
 > > Tip
@@ -264,6 +260,25 @@ Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
 
 {#op||save-symbol||{{sl}}||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
+
+{#op||scope||{{null}}||{{d}}||
+> Returns a dictionary {{d}} holding a reference to the current scope.
+>  
+> This can be useful to save a reference to a given execution scope to access later on.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `{(2) :two ;module}` on the stack:
+> > 
+> >     {} :myscope (2 :due scope @myscope) ->
+ #}
+
+{#op||scope-sigils||{{d}}||({{s0p}})||
+Returns a list of all sigils defined in dictionary {{d}}.#}
+
+{#op||scope-symbols||{{d}}||({{s0p}})||
+Returns a list of all symbols defined in dictionary {{d}}.#}
 
 {#op||seal||{{sl}}||{{null}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
@@ -381,12 +396,12 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 > >     (count puts succ @count) while #}
 
 {#op||with||{{q1}} {{q2}}||{{a0p}}||
-Dequotes a quotation {{q1}} within the scope of {{q2}}. 
+Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. 
 
 > > %sidebar%
 > > Example
 > > 
-> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or a parent scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
+> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or another scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
 > > 
 > >     'lite? (
 > >      (

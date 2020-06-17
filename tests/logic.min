@@ -136,6 +136,9 @@
   ((1 2 3) 'module type? false ==) assert
   (4 'module type? false ==) assert
   (logic 'module type?) assert
+  (1 "int" type?) assert
+  ("test" "string" type?) assert
+  (ROOT "module" type?) assert
 
   (7 0 / inf ==) assert
   (-7 0 / -inf ==) assert

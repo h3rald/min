@@ -76,6 +76,9 @@
 
   ((2 3 >) ("YES") unless "YES" ==) assert
 
+  (1 type "int" ==) assert
+  ({} type "dict" ==) assert
+  (ROOT type "dict:module" ==) assert
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) assert ;factorial of 5
 
@@ -214,6 +217,8 @@
   (lite? false ==) assert
 
   ({3 :x 5 :y} "point" set-type 'point type?) assert
+
+  ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) assert
 
   report
   ; Tidy up

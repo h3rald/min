@@ -66,6 +66,15 @@ proc io_module*(i: In) =
     var ed = initEditor()
     i.push ed.readLine().newVal
 
+  def.symbol("getchr") do (i: In):
+    i.push getchr().newVal
+
+  def.symbol("putchr") do (i: In):
+    let ch = i.expect("string")
+    if ch[0].getString.len != 1:
+      raiseInvalid("Symbol putch requires a string containing a single character.")
+    putchr(ch[0].getString[0].cint)
+
   def.symbol("password") do (i: In):
     var ed = initEditor()
     i.push ed.password("Enter Password: ").newVal

@@ -19,6 +19,10 @@
 
   ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) assert
 
+  (ROOT dtype "module" ==) assert
+  
+  ({} dtype "" ==) assert 
+
   ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) assert
 
   (2 2 {+ :plus} ^plus 4 ==) assert
