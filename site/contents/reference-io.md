@@ -73,6 +73,9 @@ Prints {{any}} and a new line to STDOUT.#}
 {#op||puts!||{{any}}||{{null}}||
 Prints {{any}} and a new line to STDOUT, removing {{any}} from the stack.#}
 
+{#op||type||{{any}}||{{s}}||
+Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}
+
 {#op||warning||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.#}
 

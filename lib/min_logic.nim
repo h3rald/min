@@ -220,6 +220,6 @@ proc logic_module*(i: In)=
     if vals[1].isTypedDictionary(vals[0].getString):
       i.push true.newVal
     else:
-      i.push false.newVal
+      i.push (vals[1].typename == vals[0].getString).newVal
 
   def.finalize("logic")

@@ -149,6 +149,10 @@ proc lang_module*(i: In) =
     dict.scope = i.scope
     i.push dict
 
+  def.symbol("type") do (i: In):
+    let vals = i.expect("a")
+    i.push vals[0].typeName.newVal
+
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
     let rawName = vals[0]
