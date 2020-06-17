@@ -98,6 +98,7 @@
 > * [Operators](/learn-operators)
 > * [Quotations](/learn-quotations)
 > * [Definitions](/learn-definitions)
+> * [Scopes](/learn-scopes)
 > * [Control Flow](/learn-control-flow)
 > * [Shell](/learn-shell)
 > * [Extending min](/learn-extending)

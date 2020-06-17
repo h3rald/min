@@ -105,10 +105,10 @@ Finally, symbols can be sealed to prevent accidental updates or deletions. By de
 
 If you want, you can {#link-operator||lang||seal#} your own symbols so that they may not be redefined using the {#link-operator||lang||bind#} operator or deleted using the {#link-operator||lang||delete#}.
 
-> %info%
+> %note%
 > Note
 > 
 > The {#link-operator||lang||unseal#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
 
 
-{#link-learn||control-flow||Control Flow#}
+{#link-learn||scopes||Scopes#}

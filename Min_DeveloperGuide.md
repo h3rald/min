@@ -68,6 +68,10 @@
 
 {@ site/contents/learn-definitions.md || 2 @}
 
+### Scopes
+
+{@ site/contents/learn-scopes.md || 2 @}
+
 ### Control Flow
 
 {@ site/contents/learn-control-flow.md || 2 @}
