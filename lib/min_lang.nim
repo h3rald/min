@@ -142,6 +142,13 @@ proc lang_module*(i: In) =
     info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
     i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: code)
 
+  def.symbol("scope") do (i: In):
+    var dict = newDict(i.scope.parent)
+    dict.objType = "module"
+    dict.filename = i.filename
+    dict.scope = i.scope
+    i.push dict
+
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
     let rawName = vals[0]
@@ -199,10 +206,13 @@ proc lang_module*(i: In) =
   def.symbol("with") do (i: In):
     let vals = i.expect("dict", "quot")
     var qscope = vals[0]
-    let qprog = vals[1]
+    var qprog = vals[1]
     i.withDictScope(qscope.scope):
+      #i.apply qprog
       for v in qprog.qVal:
         i.push v
+    #var results = i.expect("quot")
+    #i.apply results[0]
 
   def.symbol("publish") do (i: In):
     let vals = i.expect("dict", "'sym")

@@ -51,9 +51,7 @@ template withScope*(i: In, body: untyped): untyped =
 template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
   let origScope = i.scope
   try:
-    var scope = s.copy
-    scope.parent = origscope
-    i.scope = scope
+    i.scope = s
     body
   finally:
     i.scope = origScope

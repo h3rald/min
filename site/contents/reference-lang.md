@@ -176,7 +176,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > > 
 > > The following program leaves `120` on the stack, the factorial of 5:
 > > 
-> >     (dup 0 ==) 'succ (dup pred) '* linrec
+> >    5 (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
 {#op||lite?||{{null}}||{{b}}||
@@ -208,12 +208,6 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 
 {#op||module||{{d}} {{sl}}||{{null}}||
 Creates a new module {{sl}} based on dictionary {{d}}. #}
-
-{#op||scope-sigils||{{d}}||({{s0p}})||
-Returns a list of all sigils defined in dictionary {{d}}.#}
-
-{#op||scope-symbols||{{d}}||({{s0p}})||
-Returns a list of all symbols defined in dictionary {{d}}.#}
 
 {#op||opts||{{null}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
@@ -266,6 +260,25 @@ Returns an empty quotation holding a reference to the [ROOT](class:kwd) scope.
 
 {#op||save-symbol||{{sl}}||{{null}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
+
+{#op||scope||{{null}}||({{m}})||
+> Returns a module {{m}} corresponding to the current scope.
+>  
+> This can be useful to save a reference to a given execution scope to access later on.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `{(2) :two ;module}` on the stack:
+> > 
+> >     {} :myscope (2 :due scope @myscope) ->
+ #}
+
+{#op||scope-sigils||{{d}}||({{s0p}})||
+Returns a list of all sigils defined in dictionary {{d}}.#}
+
+{#op||scope-symbols||{{d}}||({{s0p}})||
+Returns a list of all symbols defined in dictionary {{d}}.#}
 
 {#op||seal||{{sl}}||{{null}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
