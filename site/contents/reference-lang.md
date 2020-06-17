@@ -396,7 +396,7 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 > >     (count puts succ @count) while #}
 
 {#op||with||{{q1}} {{q2}}||{{a0p}}||
-Applies quotation {{q1}} within the scope of {{q2}}. 
+Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. 
 
 > > %sidebar%
 > > Example
