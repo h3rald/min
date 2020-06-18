@@ -54,7 +54,7 @@ Returns a copy of {{sl}} converted to lowercase.#}
 > > 
 > > {{s2}} can be a {{sgregex}}-compatible regular expression.#}
 
-{#op||chr||{{s}}||{{i}}||
+{#op||ord||{{s}}||{{i}}||
 Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
 
 {#op||repeat||{{sl}} {{i}}||{{s}}||
