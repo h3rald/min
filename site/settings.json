@@ -5,6 +5,6 @@
   "temp": "temp", 
   "output": "output", 
   "title": "min language", 
-  "version": "0.20.0",
+  "version": "0.20.1",
   "rules": "rules.min" 
 }
