@@ -123,11 +123,11 @@
 
   ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) assert
 
-  (((1 2 3)) :sym1 >sym1 stored-symbols "sym1" in?) assert
+  (((1 2 3)) :sym1 >sym1 saved-symbols "sym1" in?) assert
 
   (<sym1 symbols "sym1" in?) assert
 
-  ('sym1 remove-symbol stored-symbols "sym1" in? false ==) assert
+  ('sym1 remove-symbol saved-symbols "sym1" in? false ==) assert
 
   (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) assert
 
