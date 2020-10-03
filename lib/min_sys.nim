@@ -53,6 +53,11 @@ proc sys_module*(i: In)=
     let vals = i.expect("'sym")
     let a = vals[0]
     i.push execShellCmd(a.getString).newVal
+
+  def.symbol("system!") do (i: In):
+    let vals = i.expect("'sym")
+    let a = vals[0]
+    discard execShellCmd(a.getString)
   
   def.symbol("run") do (i: In):
     let vals = i.expect("'sym")
@@ -193,6 +198,9 @@ proc sys_module*(i: In)=
 
   def.symbol("!") do (i: In):
     i.push("system".newSym)
+
+  def.symbol("!!") do (i: In):
+    i.push("system!".newSym)
 
   def.symbol("&") do (i: In):
     i.push("run".newSym)

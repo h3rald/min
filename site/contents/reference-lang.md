@@ -92,9 +92,9 @@ Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
 Deletes the specified symbol {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
-Pushes the contents of quotation {{q}} on the stack. 
-
-Each element is pushed on the stack one by one. If any error occurs, {{q}} is restored on the stack.#}
+> Pushes the contents of quotation {{q}} on the stack.
+>
+> Each element is pushed on the stack one by one. If any error occurs, {{q}} is restored on the stack.#}
 
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
@@ -274,6 +274,9 @@ Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 > >     {} :myscope (2 :due scope @myscope) ->
  #}
 
+{#op||saved-symbols||{{null}}||({{s0p}})||
+Returns a quotation containing all symbols saved in the [.min\_symbols](class:file) file. #}
+
 {#op||scope-sigils||{{d}}||({{s0p}})||
 Returns a list of all sigils defined in dictionary {{d}}.#}
 
@@ -291,9 +294,6 @@ Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
 
 {#op||source||{{sl}}||{{q}}||
 Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
-
-{#op||stored-symbols||{{null}}||({{s0p}})||
-Returns a quotation containing all symbols stored in the [.min\_symbols](class:file) file. #}
 
 {#op||string||{{any}}||{{s}}||
 Converts {{any}} to its string representation.#}

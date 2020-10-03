@@ -520,7 +520,8 @@ proc lang_module*(i: In) =
     let val = i.fromJson(json[sym])
     i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
 
-  def.symbol("stored-symbols") do (i: In):
+
+  def.symbol("saved-symbols") do (i: In):
     var q = newSeq[MinValue](0)
     let json = MINSYMBOLS.readFile.parseJson
     for k,v in json.pairs:
