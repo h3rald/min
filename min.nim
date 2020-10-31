@@ -367,7 +367,7 @@ when isMainModule:
   elif file != "":
     minFile file
   elif INSTALL:
-    if not libfile.existsFile:
+    if not libfile.fileExists:
       fatal("Dynamic library file not found:" & libfile)
       quit(4)
     try:
@@ -378,7 +378,7 @@ when isMainModule:
     notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
     quit(0)
   elif UNINSTALL:
-    if not (MINLIBS/libfile.extractFilename).existsFile:
+    if not (MINLIBS/libfile.extractFilename).fileExists:
       fatal("Dynamic library file not found:" & libfile)
       quit(4)
     try:

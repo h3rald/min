@@ -114,7 +114,7 @@ proc sys_module*(i: In)=
     let vals = i.expect("'sym")
     let v = vals[0]
     let f = v.getString
-    if f.existsFile:
+    if f.fileExists:
       f.removeFile
     else:
       raiseInvalid("File '$1' does not exist." % f)
