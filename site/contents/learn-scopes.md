@@ -4,8 +4,8 @@ title: "Scopes"
 -----
 {@ _defs_.md || 0 @}
 
-As explained in [Definitions](/learn-definitions), min uses lexical scoping to resolve symbol. A *scope* is an execution context (a symbol table really) that:
-* is created while a a new quotation is being dequoted or a dictiionary is created.
+As explained in [Definitions](/learn-definitions), min uses lexical scoping to resolve symbols. A *scope* is an execution context (a symbol table really) that:
+* is created while a new quotation is being dequoted or a dictionary is created.
 * is destroyed after a quotation has been dequoted.
 * is attached to a dictionary.
 
@@ -55,6 +55,6 @@ In this case, when `with` is pushed on the stack, it will dequote `(4 2 minus)`.
 
      4 2 (-)
 
-At this points, the {#link-operator||lang||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
+At this point, the {#link-operator||lang||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
 
 {#link-learn||control-flow||Control Flow#}

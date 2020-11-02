@@ -10,7 +10,7 @@ The min executable also provide an interactive REPL (Read-Eval-Print Loop) when 
 > [$](class:prompt) min -i
 > <span class="prompt">&#91;/Users/h3rald/Development/min&#93;$</span>
 
-Although not as advanced, the min REPL is not dissimilar from an OS system shell like Bash, and as a matter of fact it provides many functionalities that are found in other shells or command prompts, such as:
+Although not as advanced, the min REPL is not dissimilar from an OS system shell like Bash, and as a matter of fact, it provides many functionalities that are found in other shells or command prompts, such as:
 
 * Auto-completion
 * Persistent line history

@@ -5,7 +5,7 @@ title: "Learn: Control Flow"
 {@ _defs_.md || 0 @}
 
 
-The {#link-module||lang#} provide some symbols that can be used for the most common control flow statements. Unlike most programming language, min does not differentiate between functions and statements -- control flow statements are just ordinary symbols that manipulate the main stack.
+The {#link-module||lang#} provide some symbols that can be used for the most common control flow statements. Unlike most programming languages, min does not differentiate between functions and statements -- control flow statements are just ordinary symbols that manipulate the main stack.
 
 
 ## Conditionals
@@ -31,7 +31,7 @@ For example, consider the following program:
        "This is a $1 file." (type) % echo
      ) :display-file-info
 
-This program defines a symbol `display-file-info` that takes a file name and outputs a message displaying its type, if known.
+This program defines a symbol `display-file-info` that takes a file name and outputs a message displaying its type if known.
 
 
 ## Loops
@@ -78,6 +78,6 @@ For example, consider the following program:
      ) map 
      1 (+) reduce
 
-This program calculates the size in bytes of all files included in the current directory. Because the {#link-operator||fs||fsize#} symbol throws an error if the argument provided is not a file (for example if it is a directory), the `try` symbol is used to remove the error from the stack and push `0` on the stack instead.
+This program calculates the size in bytes of all files included in the current directory. Because the {#link-operator||fs||fsize#} symbol throws an error if the argument provided is not a file (for example, if it is a directory), the `try` symbol is used to remove the error from the stack and push `0` on the stack instead.
 
 {#link-learn||shell||Shell#}
