@@ -45,7 +45,7 @@ Consider the following program:
 
 ...What is the value of the symbol `a` after executing it? 
 
-Simple: `4`. Every quotation defines its own scope, and in each scope a new variable called `a` is defined. In the innermost scope containing the quotation `(a dup * :a)` the value of `a` is set to `64`, but this value is not propagated to the outer scopes. Note also that the value of `a` in the innermost scope is first retrieved from the outer scope (8).
+Simple: `4`. Every quotation defines its own scope, and in each scope, a new variable called `a` is defined. In the innermost scope containing the quotation `(a dup * :a)` the value of `a` is set to `64`, but this value is not propagated to the outer scopes. Note also that the value of `a` in the innermost scope is first retrieved from the outer scope (8).
 
 If we want to change the value of the original `a` symbol defined in the outermost scope, we have to use the {#link-operator||lang||bind#} or its shorthand sigil `@`, so that the program becomes the following:
 
@@ -74,9 +74,9 @@ If run the program above in min shell by pasting the first and then the second l
      - got:      {top} quot int {bottom}
          <repl>(1,19) in symbol: map
 
-This error says that when the {#link-operator||lang||map#} operator was evaluated, there were incorrect values on the stack. Two quotations were expected, but instead a quotation and an integer were found. How did this happen? 
+This error says that when the {#link-operator||lang||map#} operator was evaluated, there were incorrect values on the stack. Two quotations were expected, but instead, a quotation and an integer were found. How did this happen? 
 
-Basically, when `my-list` was pushed on the stack, it pushed all its item on top of the stack. If you run {#link-operator||stack||get-stack#}, it will return the following list:
+Basically, when `my-list` was pushed on the stack, it pushed all its items on top of the stack. If you run {#link-operator||stack||get-stack#}, it will return the following list:
 
      (1 2 3 4 5 (dup *))
 
