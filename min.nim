@@ -263,6 +263,7 @@ proc minRepl*(i: var MinInterpreter, simple = false) =
       let v = vals[0] 
       let prompt = v.getString()
       stdout.write(prompt)
+      stdout.flushFile()
       line = stdin.readLine()
       let r = i.interpret($line)
       if $line != "":
