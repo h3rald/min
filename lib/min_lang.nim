@@ -602,6 +602,27 @@ proc lang_module*(i: In) =
     var q: MinValue
     i.reqQuotationOfSymbols q
     i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal)
+  
+  def.symbol("infix") do (i: In):
+    let vals = i.expect("quot")
+    let q = vals[0]
+    proc infix(i: In, q: MinValue): MinValue =
+      var ops = newSeq[MinValue](0)
+      var res = newSeq[MinValue](0).newVal
+      for x in q.qVal:
+        if x.isSymbol:
+          ops.add x
+        else:
+          if x.isQuotation:
+            res.qVal.add i.infix(x)
+          else:
+            res.qVal.add x
+          if ops.len > 0:
+            res.qVal.add ops.pop
+            i.dequote(res)
+            res = newSeq[MinValue](0).newVal
+      return i.pop
+    i.push i.infix(q)
 
   # Converters
 
