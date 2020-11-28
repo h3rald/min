@@ -623,6 +623,12 @@ proc lang_module*(i: In) =
             res = newSeq[MinValue](0).newVal
       return i.pop
     i.push i.infix(q)
+    
+  def.symbol("prefix") do (i: In):
+    let vals = i.expect("quot")
+    var q = vals[0]
+    q.qVal.reverse
+    i.dequote(q)
 
   # Converters
 
