@@ -13,9 +13,10 @@ installFiles  = @["core/consts.nim"]
 # Dependencies
 
 requires "nim >= 1.4.0"
-requires "nifty"
 
 before install:
+  exec "nimble install nifty"
+  exec "nifty remove -f"
   exec "nifty install"
 
 # Tasks
