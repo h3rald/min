@@ -603,7 +603,7 @@ proc lang_module*(i: In) =
     i.reqQuotationOfSymbols q
     i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal)
   
-  def.symbol("infix") do (i: In):
+  def.symbol("infix-dequote") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
     proc infix(i: In, q: MinValue): MinValue =
@@ -624,7 +624,7 @@ proc lang_module*(i: In) =
       return i.pop
     i.push i.infix(q)
     
-  def.symbol("prefix") do (i: In):
+  def.symbol("prefix-dequote") do (i: In):
     let vals = i.expect("quot")
     var q = vals[0]
     q.qVal.reverse
@@ -742,5 +742,11 @@ proc lang_module*(i: In) =
 
   def.symbol("=>") do (i: In):
     i.push("apply".newSym)
+    
+  def.symbol(">>") do (i: In):
+    i.push("prefix-dequote".newSym)
+    
+  def.symbol("><") do (i: In):
+    i.push("infix-dequote".newSym)
 
   def.finalize("ROOT")
