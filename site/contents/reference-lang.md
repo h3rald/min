@@ -161,19 +161,19 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 {#op||infix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using infix notation. 
 > 
-> > %note%
-> > No operator precedence
-> > 
-> > No special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.
+> Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.
 > 
-> > %sidebar% 
+> > %sidebar%
 > > Example
 > > 
 > > The following program leaves `17` on the stack:
-> >     (2 + (3 * 5)) infix-dequote
+> >
+> >      (2 + (3 * 5)) infix-dequote
 > >
 > > while this program leaves `25` on the stack:
-> >     (2 + 3 * 5) infix-dequote  #}
+> > 
+> >      (2 + 3 * 5) infix-dequote  
+ #}
 
 {#op||int||{{any}}||{{i}}||
 > Converts {{any}} to an integer value based on the following rules:
@@ -237,14 +237,15 @@ Returns a dictionary of all options passed to the current program, with their re
 Parses {{s}} and returns a quoted program {{q}}. #}
 
 {#op||prefix-dequote||{{q}}||{{any}}||
-> Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it.
+> Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it).
 > 
-> > %sidebar% 
+> > %sidebar%
 > > Example
 > > 
 > > The following program leaves `4` on the stack:
+> >
 > >     (* 8 4) prefix-dequote
-#}
+ #}
 
 {#op||prompt||{{null}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
