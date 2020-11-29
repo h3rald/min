@@ -19,7 +19,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > The following code constructs a {{req}} dictionary and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
 > >     {}
-> >       "GET" %method)
+> >       "GET" %method
 > >       "http://httpbin.org/ip" %url
 > >     request
  #}

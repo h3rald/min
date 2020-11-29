@@ -17,10 +17,18 @@ You can download one of the following pre-built min binaries:
 
 ## Building from Source
 
-Alternatively, you can build min from source as follows:
+Alternatively, you can build min from source in one of the following ways:
+
+### Using nimble
+
+If you already installed [nim](https://nim-lang.org), you probably already have the [nimble](https://github.com/nim-lang/nimble) package manager installed.
+
+If that's the case, simply run **nimble install min**. This will actually install and run [nifty](https://github.com/h3rald/nifty) which will download min dependencies for you before compiling. 
+
+### Without using nimble
 
 1. Download and install [nim](https://nim-lang.org).
-2. Download and build [Nifty](https://github.com/h3rald/nifty), and put the nifty executable somewhere in your [$PATH](class:kwd).
+2. Download and build [nifty](https://github.com/h3rald/nifty), and put the nifty executable somewhere in your [$PATH](class:kwd).
 3. Clone the min [repository](https://github.com/h3rald/min).
 4. Navigate to the min repository local folder.
 5. Run **nifty install** to download min’s dependencies.
