@@ -15,14 +15,14 @@ installFiles  = @["core/consts.nim"]
 requires "nim >= 1.4.0"
 
 before install:
-  exec "nimble install nifty"
+  exec "nimble install -y nifty"
   exec "nifty remove -f"
   exec "nifty install"
 
 # Tasks
 
 const
-  compile = "nim c -d:release"
+  compile = "nim c -d:release --opt:size"
   linux_x64 = "--cpu:amd64 --os:linux --passL:-static"
   windows_x64 = "--cpu:amd64 --os:windows"
   macosx_x64 = ""
