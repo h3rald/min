@@ -158,7 +158,7 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#
 {#op||import||{{sl}}||{{null}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
 
-{#op||infix-dequote||{{q}}||{{a}}||
+{#op||infix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using infix notation. 
 > 
 > > %note%
@@ -236,7 +236,7 @@ Returns a dictionary of all options passed to the current program, with their re
 {#op||parse||{{s}}||{{q}}||
 Parses {{s}} and returns a quoted program {{q}}. #}
 
-{#op||prefix-dequote||{{q}}||{{a}}||
+{#op||prefix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it.
 > 
 > > %sidebar% 
