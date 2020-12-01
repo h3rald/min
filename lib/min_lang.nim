@@ -681,7 +681,7 @@ proc lang_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]$$ " (.) => %""")
+    i.eval(""""[$1]\n$$ " (.) => %""")
 
   # Sigils
 

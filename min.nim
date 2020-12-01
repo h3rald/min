@@ -10,6 +10,8 @@ import
   sequtils,
   algorithm,
   logging,
+  asynchttpserver,
+  asyncdispatch,
   dynlib
 
 import 
@@ -117,6 +119,24 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
         dir = getCurrentDir()
         return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
   return symbols
+
+proc stdLibNoFiles*(i: In) = 
+  i.lang_module
+  i.stack_module
+  i.seq_module
+  i.dict_module
+  i.io_module
+  i.logic_module
+  i.num_module
+  i.str_module
+  i.sys_module
+  i.time_module
+  i.fs_module
+  when not defined(lite):
+    i.crypto_module
+    i.net_module
+    i.math_module
+    i.http_module
 
 proc stdLib*(i: In) =
   if not MINSYMBOLS.fileExists:
@@ -286,6 +306,39 @@ proc minRepl*(i: var MinInterpreter, simple = false) =
 proc minRepl*(simple = false) = 
   var i = newMinInterpreter(filename = "<repl>")
   i.minRepl(simple)
+
+
+proc jsonError(s: string): string =
+  let j = newJObject()
+  j["error"] = %s
+  return j.pretty
+
+proc jsonExecutionResult(r: MinValue): string =
+  let j = newJObject()
+  j["result"] = %($r)
+  return j.pretty
+
+proc minApiExecHandler*(req: Request): Future[void] {.async, gcsafe.} =
+  let j = req.body.parseJson
+  var i = newMinInterpreter(filename = "<server>")
+  i.stdLib()
+  i.dynLib()
+  var s = newStringStream("")
+  i.open(s, "<server>")
+  let r = i.interpret(j["data"].getStr)
+  let headers = newHttpHeaders([("Content-Type","application/json")])
+  await req.respond(Http200, jsonExecutionResult(r), headers)
+
+proc minServer*() = 
+  proc handleHttpRequest(req: Request) {.async.} =
+    if req.url.path == "/execute" and req.reqMethod == HttpPost:
+      await minApiExecHandler(req)
+    else:
+      let headers = newHttpHeaders([("Content-Type","application/json")])
+      await req.respond(Http400, jsonError("Bad Request"), headers)
+  var server = newAsyncHttpServer()
+  asyncCheck server.serve(Port(5555), handleHttpRequest, "127.0.0.1")
+  runForever()
     
 when isMainModule:
 
@@ -293,6 +346,7 @@ when isMainModule:
   var SIMPLEREPL = false
   var INSTALL = false
   var UNINSTALL = false
+  var SERVER = false
   var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
@@ -310,6 +364,7 @@ when isMainModule:
     -h, —-help                Print this help
     -i, —-interactive         Start $1 shell (with advanced prompt)
     -j, --interactive-simple  Start $1 shell (without advanced prompt)
+    -s, --server              Start the min HTTP server
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
@@ -344,6 +399,8 @@ when isMainModule:
             if file == "":
               echo pkgVersion
               quit(0)
+          of "server", "s":
+            SERVER = true
           of "interactive", "i":
             if file == "":
               REPL = true
@@ -389,6 +446,8 @@ when isMainModule:
       quit(6)
     notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
     quit(0)
+  elif SERVER:
+    minServer()
   elif REPL or SIMPLEREPL:
     minRepl(SIMPLEREPL)
     quit(0)
