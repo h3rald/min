@@ -73,10 +73,40 @@ proc lang_module*(i: In) =
   def.symbol("lite?") do (i: In):
     i.push defined(lite).newVal
 
+  def.symbol("from-yaml") do (i: In):
+    let vals = i.expect("string")
+    let s = vals[0]
+    try:
+      var dict = newDict(i.scope)
+      let lines = s.strVal.split("\n")
+      for line in lines:
+        let pair = line.split(":")
+        i.dset(dict, pair[0].strip, pair[1].strip.newVal)
+        i.push(dict)
+    except:
+      raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
+
   def.symbol("from-json") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
     i.push i.fromJson(s.getString.parseJson)
+
+  def.symbol("to-yaml") do (i: In):
+    let vals = i.expect "a"
+    let a = vals[0]
+    let err = "YAML conversion is only supported from dictionaries with string values"
+    if a.kind != minDictionary:
+      raiseInvalid(err)
+    var yaml = ""
+    try:
+      for key in i.keys(a).qVal:
+        let value = i.dget(a, key)
+        if value.kind != minString:
+          raiseInvalid(err)
+        yaml &= "$1: $2\n" % [key.strVal, value.strVal]
+      i.push(yaml.strip.newVal)
+    except:
+      raiseInvalid(err)
 
   def.symbol("to-json") do (i: In):
     let vals = i.expect "a"
@@ -681,7 +711,7 @@ proc lang_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]$$ " (.) => %""")
+    i.eval(""""[$1]\n$$ " (.) => %""")
 
   # Sigils
 
