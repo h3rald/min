@@ -22,6 +22,10 @@ proc str_module*(i: In) =
     let res = s.strVal % strings
     i.push res.newVal
 
+  def.symbol("apply-interpolate") do (i: In):
+    i.push "apply".newSym
+    i.push "interpolate".newSym
+
   def.symbol("strip") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -152,5 +156,8 @@ proc str_module*(i: In) =
 
   def.symbol("%") do (i: In):
     i.push("interpolate".newSym)
+
+  def.symbol("=%") do (i: In):
+    i.push("apply-interpolate".newSym)
 
   def.finalize("str")

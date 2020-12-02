@@ -6,7 +6,12 @@ title: "str Module"
 
 {#alias||%||interpolate#}
 
+{#alias||=%||apply-interpolate#}
+
 {#alias||=~||regex#}
+
+{#op||apply-interpolate||{{s}} {{q}}||{{s}}||
+The same as pushing `apply` and then `interpolate` on the stack.#}
 
 {#op||capitalize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with the first character capitalized.#}
@@ -23,9 +28,11 @@ If {{s2}} is contained in {{s1}}, returns the index of the first match or -1 if 
 {#op||interpolate||{{s}} {{q}}||{{s}}||
 > Substitutes the placeholders included in {{s}} with the values in {{q}}.
 > > %note%
-> > Note
+> > Notes
 > > 
-> > If {{q}} contains symbols or quotations, they are not interpreted. To do so, call `apply` before interpolating. 
+> > * If {{q}} contains symbols or quotations, they are not interpreted. To do so, call `apply` before interpolating or use `apply-interpolate` instead.
+> > * You can use the `$#` placeholder to indicate the next placeholder that has not been already referenced in the string.
+> > * You can use named placeholders like `$pwd`, but in this case {{q}} must contain a quotation containing both the placeholder names (odd items) and the values (even items).
 > 
 > > %sidebar%
 > > Example
@@ -74,7 +81,9 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > `"This is a stupid test. Is it really a stupid test?" " s[a-z]+" " simple" replace`
 > > 
-> > produces: `"This is a simple test. Is it really a simple test?"`#}
+> > produces:
+> > 
+> > `"This is a simple test. Is it really a simple test?"`#}
 
 {#op||regex||{{s1}} {{s2}}||{{q}}||
 > Performs a search and/or a search-and-replace operation using pattern {{s2}}.
