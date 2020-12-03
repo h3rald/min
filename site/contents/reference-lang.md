@@ -149,8 +149,15 @@ Applies the quotation {{q2}} to each element of {{q1}}.#}
 > > 
 > > produces: `"This is a test error"`#}
 
-{#op||from-json||{{s}}||{{a0p}}||
+{#op||from-json||{{s}}||{{any}}||
 Converts a JSON string into {{m}} data.#}
+
+{#op||from-yaml||{{s}}||{{any}}||
+> Converts a YAML string into {{m}} data.
+> > %note%
+> > Note
+> > 
+> > At present, only YAML objects containing string values are supported.#}
 
 {#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
 If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
@@ -380,8 +387,15 @@ Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
 
-{#op||to-json||{{q}}||{{s}}||
-Converts {{q}} into a JSON string {{s}}.#}
+{#op||to-json||{{any}}||{{s}}||
+Converts {{any}} into a JSON string.#}
+
+{#op||to-yaml||{{any}}||{{s}}||
+> Converts {{any}} into a YAML string.
+> > %note%
+> > Note
+> > 
+> > At present, only {{m}} dictionaries containing string values are supported.#}
 
 {#op||try||({{q1}} {{q}}{{2}}{{01}} {{q}}{{3}}{{01}})||{{a0p}}||
 > Evaluates a quotation as a try/catch/finally block. 

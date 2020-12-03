@@ -220,6 +220,10 @@
 
   ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) assert
 
+  ((2 < 3 and (4 > 2)) >< true) assert
+
+  ((float 3) >> 3.0 ==) assert
+
   report
   ; Tidy up
   clear-stack
