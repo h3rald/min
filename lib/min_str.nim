@@ -150,6 +150,30 @@ proc str_module*(i: In) =
     for r in results:
       res.add(r.newVal)
     i.push res.newVal
+    
+  def.symbol("from-semver") do (i: In):
+    let vals = i.expect("string")
+    let v = vals[0].strVal
+    let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
+    if parts[0].len == 0:
+      raiseInvalid("String '$1' is not a basic semver" % v)
+    var d = newDict(i.scope)
+    i.dset(d, "major", parts[1].parseInt.newVal)
+    i.dset(d, "minor", parts[2].parseInt.newVal)
+    i.dset(d, "patch", parts[3].parseInt.newVal)
+    i.push d
+    
+  def.symbol("to-semver") do (i: In):
+    let vals = i.expect("dict")
+    let v = vals[0]
+    if not v.dhas("major") or not v.dhas("minor") or not v.dhas("patch"):
+      raiseInvalid("Dictionary does not contain major, minor and patch keys")
+    let major = i.dget(v, "major")
+    let minor = i.dget(v, "minor")
+    let patch = i.dget(v, "patch") 
+    if major.kind != minInt or minor.kind != minInt or patch.kind != minInt:
+      raiseInvalid("major, minor, and patch values are not integers")
+    i.push(newVal("$#.$#.$#" % [$major, $minor, $patch]))
 
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)
