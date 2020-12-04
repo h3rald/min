@@ -32,7 +32,7 @@ else:
     switch("passL","-Lvendor/openssl/linux")
     switch("passL","-lssl")
     switch("passL","-lcrypto")
-  elif defined(macos):
-    switch("passL","-Lvendor/openssl/macos")
+  elif defined(macosx):
+    switch("passL","-Lvendor/openssl/macosx")
     switch("passL","-lssl")
     switch("passL","-lcrypto")

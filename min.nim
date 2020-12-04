@@ -207,7 +207,7 @@ proc minString*(buffer: string) =
 
 proc minFile*(filename: string) =
   var fn = filename
-  if fn != "stdin" and not filename.endsWith(".min"):
+  if not filename.endsWith(".min"):
     fn &= ".min"
   var fileLines = newSeq[string](0)
   var contents = ""
