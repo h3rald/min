@@ -6,7 +6,8 @@ import
   ../core/interpreter, 
   ../core/utils
 
-let minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]
+var minUserAgent {.threadvar.} : string
+minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]
 
 proc newCli(): HttpClient =
   return newHttpClient(userAgent = minUseragent)
@@ -23,7 +24,7 @@ type MinServerExit = ref object of CatchableError
 proc http_module*(i: In)=
   let def = i.define()
 
-  def.symbol("request") do (i: In):
+  def.symbol("request") do (i: In) {.gcsafe.}:
     let vals = i.expect "dict"
     let req = vals[0]
     let cli = newCli()
@@ -65,7 +66,7 @@ proc http_module*(i: In)=
     let cli = newCli()
     cli.downloadFile(url.getString, file.getString)
 
-  def.symbol("start-server") do (ii: In):
+  def.symbol("start-server") do (ii: In) {.gcsafe.}:
     let vals = ii.expect "dict"
     let cfg = vals[0]
     if not cfg.dhas("port"):

@@ -19,6 +19,10 @@ Returns a copy of {{sl}} with the first character capitalized.#}
 {#op||chr||{{i}}||{{s}}||
 Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
 
+{#op||from-semver||{{s}}||{{d}}||
+Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}}, 
+it pushes a dictionary {{d}} on the stack containing a **major**, **minor**, and **patch** key/value pairs.#}
+
 {#op||indent||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} indented with {{i}} spaces.#}
 
@@ -145,6 +149,15 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > produces: `("192.168.1.1", "1", "1")`#}
 
+{#op||semver-inc-major||{{s1}}||{{s2}}||
+Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-minor||{{s1}}||{{s2}}||
+Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-patch||{{s1}}||{{s2}}||
+Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
 {#op||split||{{sl1}} {{sl2}}||{{q}}||
 Splits {{sl1}} using separator {{sl2}} and returns the resulting strings within the quotation {{q}}. #}
 
@@ -156,6 +169,9 @@ Returns a substring {{s2}} obtained by retriving {{i2}} characters starting from
 
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
+
+{#op||to-semver||{{d}}||{{s}}||
+Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}} on the stack.#}
 
 {#op||uppercase||{{sl1}}||{{sl2}}||
 Returns a copy of {{sl}} converted to uppercase.#}

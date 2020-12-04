@@ -175,6 +175,33 @@ proc str_module*(i: In) =
       raiseInvalid("major, minor, and patch values are not integers")
     i.push(newVal("$#.$#.$#" % [$major, $minor, $patch]))
 
+  def.symbol("semver-inc-major") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "major")
+    let v = cv.intVal + 1
+    i.dset(d, "major", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
+  def.symbol("semver-inc-minor") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "minor")
+    let v = cv.intVal + 1
+    i.dset(d, "minor", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
+  def.symbol("semver-inc-patch") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "patch")
+    let v = cv.intVal + 1
+    i.dset(d, "patch", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)
 

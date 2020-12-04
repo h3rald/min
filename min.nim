@@ -50,6 +50,11 @@ export
   scope,
   min_lang
 
+
+
+#-d:ssl -p:. -d:noOpenSSLHacks --dynlibOverride:ssl- --dynlibOverride:crypto- -d:sslVersion:"(" --passL:-Lpath/to/openssl/lib 
+#--passL:-Bstatic --passL:-lssl --passL:-lcrypto --passL:-Bdynamic
+
 const PRELUDE* = "prelude.min".slurp.strip
 var customPrelude = ""
 
@@ -201,22 +206,24 @@ proc minString*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
 proc minFile*(filename: string) =
+  var fn = filename
+  if fn != "stdin" and not filename.endsWith(".min"):
+    fn &= ".min"
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
-    fileLines = filename.readFile().splitLines()
+    fileLines = fn.readFile().splitLines()
   except:
-    fatal("Cannot read from file: " & filename)
+    fatal("Cannot read from file: " & fn)
     quit(3)
-
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = fileLines[1..fileLines.len-1].join("\n")
   else:
     contents = fileLines.join("\n")
-  minStream(newStringStream(contents), filename)
+  minStream(newStringStream(contents), fn)
 
 proc minFile*(file: File, filename="stdin") =
-  var stream = newFileStream(stdin)
+  var stream = newFileStream(filename)
   if stream == nil:
     fatal("Cannot read from file: " & filename)
     quit(3)

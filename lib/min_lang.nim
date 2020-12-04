@@ -529,7 +529,7 @@ proc lang_module*(i: In) =
 
   # Save/load symbols
   
-  def.symbol("save-symbol") do (i: In):
+  def.symbol("save-symbol") do (i: In) {.gcsafe.}:
     let vals = i.expect("'sym")
     let s = vals[0]
     let sym = s.getString

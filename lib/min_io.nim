@@ -62,7 +62,7 @@ proc io_module*(i: In) =
         echo ""
     echo ""
   
-  def.symbol("gets") do (i: In):
+  def.symbol("gets") do (i: In) {.gcsafe.}:
     var ed = initEditor()
     i.push ed.readLine().newVal
 
@@ -75,17 +75,17 @@ proc io_module*(i: In) =
       raiseInvalid("Symbol putch requires a string containing a single character.")
     putchr(ch[0].getString[0].cint)
 
-  def.symbol("password") do (i: In):
+  def.symbol("password") do (i: In) {.gcsafe.}:
     var ed = initEditor()
     i.push ed.password("Enter Password: ").newVal
 
-  def.symbol("ask") do (i: In):
+  def.symbol("ask") do (i: In) {.gcsafe.}:
     var ed = initEditor()
     let vals = i.expect("string")
     let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
-  def.symbol("confirm") do (i: In):
+  def.symbol("confirm") do (i: In) {.gcsafe.}:
     var ed = initEditor()
     let vals = i.expect("string")
     let s = vals[0]
@@ -100,7 +100,7 @@ proc io_module*(i: In) =
         return confirm()
     i.push confirm().newVal
 
-  def.symbol("choose") do (i: In):
+  def.symbol("choose") do (i: In) {.gcsafe.}:
     var ed = initEditor()
     let vals = i.expect("'sym", "quot")
     let s = vals[0]

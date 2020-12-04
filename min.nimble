@@ -7,7 +7,7 @@ version       = pkgVersion
 author        = pkgAuthor
 description   = pkgDescription
 license       = "MIT"
-bin           = @["min"]
+bin           = @[pkgName]
 installFiles  = @["core/consts.nim"]
 
 # Dependencies
