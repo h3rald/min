@@ -5,12 +5,15 @@
 
 args 1 get ":" split =taskspec
 taskspec 0 get :task
-"" :subtask
+"default" :subtask
 (taskspec size 1 >) (taskspec 1 get @subtask) when
 
 "./tasks/$#.min" (task) =% :task-file
 
 (task-file exists? not) ("Task '$1' does not exist" (task) =% error 2 exit) when
 
-; Execute task
+; Load task module
 task-file load
+
+; Execute task
+"$#-tasks" (task) =% eval subtask ^

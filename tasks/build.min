@@ -1,25 +1,54 @@
 #!/usr/bin/env min
 
-; Define subtasks
-{} :subtasks
-subtasks
+"min.yml" fread from-yaml :config
+
+; Helpers
 (
-    ("nim" which "" ==) ("Nim is not available" error 1 exit) when
-    "nim c -d:release min" !
-) %native
+  :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
+) :required
 (
-    ("hastyscribe" which "" ==) ("HastyScribe is not available" error 2 exit) when
-    "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
+  :target-os
+  "nim" required
+  "Building - $# (x64)" (target-os) =% notice
+  "nim c -d:release --cpu:amd64 --os:$# min" (target-os) =% !
+  {}
+    target-os %os
+    config /version %version
+  pack
+) :cz
+(
+  :vdata 
+  "min" :exe
+  (vdata /os "windows" ==) ("min.exe" @exe) when
+  "min_v$version:_$os:_x64.zip" :fn
+  fn vdata dpairs % ":" "" replace @fn
+  "Compressing: $#" (fn) =% notice
+  (exe) => fn zip
+) :pack
+
+
+; Define module
+{}
+(
+  os cz
+) %default
+(
+  "linux" cz
+) %linux
+(
+  "macosx" cz
+) %macosx
+(
+  "windows" cz
+) %windows
+(
+  "hastyscribe" required
+  "Building - guide" notice
+  "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
 ) %guide
 (
-    ("hastysite" which "" ==) ("HastySite is not available" error 3 exit) when
-    "cd site && hastysite build && cd .." !
+  "hastysite" required 
+  "Building - site" notice
+  "cd site && hastysite build && cd .." !
 ) %site
-@subtasks
-
-(subtasks subtask dhas?)
-    ; Check if subtask exists, otherwise do a native build
-    (subtasks subtask dget ->)
-    ; Execute subtask
-    (subtasks /native ->)
-if
++build-tasks

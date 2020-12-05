@@ -1,0 +1,6 @@
+{}
+(
+  "Cleaning up build files" notice
+  . ls ("\.(html|zip)$" match filter) rm
+) %default
++clean-tasks

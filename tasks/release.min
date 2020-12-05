@@ -1,0 +1,11 @@
+"build" load
+
+{}
+( 
+  build-tasks ^guide
+  build-tasks ^site
+  build-tasks ^windows
+  build-tasks ^linux
+  build-tasks ^default
+) %default
++release-tasks

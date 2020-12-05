@@ -45,6 +45,11 @@ proc dict_module*(i: In)=
     let vals = i.expect("dict")
     let d = vals[0]
     i.push i.values(d)
+    
+  def.symbol("dpairs") do (i: In):
+    let vals = i.expect("dict")
+    let d = vals[0]
+    i.push i.pairs(d)
 
   def.symbol("ddup") do (i: In):
     let vals = i.expect("dict")
