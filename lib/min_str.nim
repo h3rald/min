@@ -150,6 +150,11 @@ proc str_module*(i: In) =
     for r in results:
       res.add(r.newVal)
     i.push res.newVal
+
+  def.symbol("semver?") do (i: In):
+    let vals = i.expect("string")
+    let v = vals[0].strVal
+    i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
     
   def.symbol("from-semver") do (i: In):
     let vals = i.expect("string")

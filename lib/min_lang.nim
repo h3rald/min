@@ -82,7 +82,7 @@ proc lang_module*(i: In) =
       for line in lines:
         let pair = line.split(":")
         i.dset(dict, pair[0].strip, pair[1].strip.newVal)
-      i.push(dict)
+        i.push(dict)
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 

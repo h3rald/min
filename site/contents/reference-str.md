@@ -158,6 +158,9 @@ Increments the minor digit of the [SemVer](https://semver.org)-compliant string 
 {#op||semver-inc-patch||{{s1}}||{{s2}}||
 Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
 
+{#op||semver?||{{s}}||{{b}}||
+Checks whether {{s}} is a [SemVer](https://semver.org)-compliant version or not. #}
+
 {#op||split||{{sl1}} {{sl2}}||{{q}}||
 Splits {{sl1}} using separator {{sl2}} and returns the resulting strings within the quotation {{q}}. #}
 

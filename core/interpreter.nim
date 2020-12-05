@@ -301,7 +301,6 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
-  echo contents
   i2.open(newStringStream(contents), s)
   discard i2.parser.getToken() 
   result = i2.interpret(parseOnly)
