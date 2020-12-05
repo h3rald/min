@@ -1,6 +1,7 @@
 {}
 (
   "Cleaning up build files" notice
-  . ls ("\.(html|zip)$" match filter) rm
+  . ls ("\.(htm|zip)$" match) filter =files
+  files 'rm foreach
 ) %default
 +clean-tasks

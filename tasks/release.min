@@ -7,5 +7,6 @@
   build-tasks ^windows
   build-tasks ^linux
   build-tasks ^default
+  "All done!" notice
 ) %default
 +release-tasks
