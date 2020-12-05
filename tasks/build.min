@@ -26,6 +26,16 @@
   (exe) => fn zip
 ) :pack
 
+(
+  "hastyscribe" required
+  "Building - guide" notice
+  "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
+) :build-guide
+(
+  "hastysite" required 
+  "Building - site" notice
+  "cd site && hastysite build && cd .." !
+) :build-site
 
 ; Define module
 {}
@@ -41,14 +51,10 @@
 (
   "windows" cz
 ) %windows
+'build-guide %guide
+'build-site %site
 (
-  "hastyscribe" required
-  "Building - guide" notice
-  "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
-) %guide
-(
-  "hastysite" required 
-  "Building - site" notice
-  "cd site && hastysite build && cd .." !
-) %site
+  build-guide
+  build-site
+) %docs
 +build-tasks
