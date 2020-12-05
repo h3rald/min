@@ -1,3 +1,5 @@
+#!/usr/bin/env min
+
 {}
 (
   "Cleaning up build files" notice

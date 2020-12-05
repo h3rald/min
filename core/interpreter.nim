@@ -297,10 +297,11 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   except:
     fatal("Cannot read from file: " & s)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
-    contents = fileLines[1..fileLines.len-1].join("\n")
+    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
+  echo contents
   i2.open(newStringStream(contents), s)
   discard i2.parser.getToken() 
   result = i2.interpret(parseOnly)

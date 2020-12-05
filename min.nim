@@ -217,7 +217,7 @@ proc minFile*(filename: string) =
     fatal("Cannot read from file: " & fn)
     quit(3)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
-    contents = fileLines[1..fileLines.len-1].join("\n")
+    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
   else:
     contents = fileLines.join("\n")
   minStream(newStringStream(contents), fn)
