@@ -1,6 +1,7 @@
 import 
   strutils, 
-  sequtils
+  sequtils,
+  json
 import 
   ../core/parser, 
   ../core/value, 
@@ -206,6 +207,13 @@ proc str_module*(i: In) =
     i.dset(d, "patch", v.newVal)
     i.push(d)
     i.push("to-semver".newSym)
+
+  def.symbol("escape") do (i: In):
+    let vals = i.expect("'sym")
+    let a = vals[0].getString
+    var s = ""
+    a.escapeJsonUnquoted(s)
+    i.push s.newVal
 
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)

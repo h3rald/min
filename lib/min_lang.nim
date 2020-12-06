@@ -81,6 +81,8 @@ proc lang_module*(i: In) =
       let lines = s.strVal.split("\n")
       for line in lines:
         let pair = line.split(":")
+        if pair.len == 1 and pair[0].len == 0:
+          continue
         i.dset(dict, pair[0].strip, pair[1].strip.newVal)
         i.push(dict)
     except:
@@ -208,6 +210,10 @@ proc lang_module*(i: In) =
     let vals = i.expect("string")
     let s = vals[0]
     i.eval s.strVal
+    
+  def.symbol("quit") do (i: In):
+    i.push 0.newVal
+    i.push "exit".newSym
 
   def.symbol("parse") do (i: In):
     let vals = i.expect("string")
@@ -549,7 +555,6 @@ proc lang_module*(i: In) =
       raiseUndefined("Symbol '$1' not found." % sym)
     let val = i.fromJson(json[sym])
     i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
-
 
   def.symbol("saved-symbols") do (i: In):
     var q = newSeq[MinValue](0)

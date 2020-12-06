@@ -1,0 +1,64 @@
+".env.yml" fread from-yaml :vars
+"min.yml" fread from-yaml :config
+config /version :min-version
+"current-release.md" fread escape :release-body
+"tasks/templates/draft-release.json" fread :draft-release-template 
+draft-release-template ("version" min-version "body" release-body) =% :draft-release-body
+
+config /version :minversion
+vars /github-token :token
+
+;"https://api.github.com/repos/h3rald/min/releases/$#/assets" (id) =% :assets-url
+"https://api.github.com/repos/h3rald/min/releases" :releases-url
+{}  
+  "token $#" (token) =% %Authorization  :headers
+headers
+
+(
+  response to-json "response.json" fwrite
+  response /body from-json :body
+  response /status :status
+  (status 300 >) (
+    body /message :message
+    status string @status
+    "Error $#: $#" (status message) =% error status int exit
+  ) when
+) :handle-errors
+
+(
+  :data
+  data /endpoint :endpoint
+  "https://api.github.com/repos/h3rald/min$#" (endpoint) =% :url
+  {}
+    url %url
+    data /method %method
+    headers %headers
+    (data ?body) (data /body %body) when
+  request :response 
+  response /status :status
+  response /body :body
+  handle-errors
+  body from-json
+) :gh-req
+(
+  {}
+    "/releases" %endpoint
+    "POST" %method
+    draft-release-body %body
+  gh-req /id string :id
+  ; Save Release ID to min.yml
+  config id %id to-yaml "min.yml" fwrite
+  "Draft release v$# ($#) created successfully" (minversion id) =% notice
+) %draft-release
+(
+  config /id :id
+  {}
+    "/releases/$#" (id) =% %endpoint
+    "PATCH" %method
+    draft-release-body %body
+  gh-req /id string :id
+  "Draft release v$# ($#) updated successfully" (minversion id) =% notice
+) %update-release
++github-tasks
+
+

@@ -1,0 +1,6 @@
+{
+  "name": "v$version",
+  "tag_name": "v$version",
+  "body": "$body",
+  "draft": true
+}

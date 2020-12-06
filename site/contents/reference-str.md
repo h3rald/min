@@ -19,6 +19,9 @@ Returns a copy of {{sl}} with the first character capitalized.#}
 {#op||chr||{{i}}||{{s}}||
 Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
 
+{#op||escape||{{sl}}||{{s}}||
+Returns a copy of {{sl}} with quotes and backslashes escaped with a backslash.#}
+
 {#op||from-semver||{{s}}||{{d}}||
 Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}}, 
 it pushes a dictionary {{d}} on the stack containing a **major**, **minor**, and **patch** key/value pairs.#}
