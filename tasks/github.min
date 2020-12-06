@@ -18,9 +18,9 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
 
 (
   response to-json "response.json" fwrite
-  response /body from-json :body
   response /status :status
   (status 300 >) (
+    response /body from-json :body
     body /message :message
     status string @status
     "Error $#: $#" (status message) =% error status int exit
@@ -30,7 +30,8 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
   :data
   data /endpoint :endpoint
   "api" :subdomain
-  "https://api.github.com/repos/h3rald/min$#" (endpoint) =% :url
+  (data ?subdomain) (data /subdomain @subdomain) when
+  "https://$#.github.com/repos/h3rald/min$#" (subdomain endpoint) =% :url
   {}
     url %url
     data /method %method
@@ -39,12 +40,34 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
       (headers %headers) 
     if
     (data ?body) (data /body %body) when
-  request :response 
+  request :response
   response /status :status
   response /body :body
-  handle-errors
-  body from-json
+  handle-errors 
+  (body length 0 >) (body from-json) ({}) if
 ) :gh-req
+
+(
+  :data
+  data /id :id
+  {}
+    "/releases/$#/assets" (id) =% %endpoint
+    "GET" %method
+  gh-req
+) :get-assets
+
+(
+ config get-assets =assets
+ config /id :id
+ assets (/id) map =assets-ids
+ assets-ids (
+  :asset
+  {}
+    "/releases/assets/$#" (asset) =% %endpoint
+    "DELETE" %method
+  gh-req
+ ) foreach
+) :delete-assets
 
 ; Module symbols
 (
@@ -67,27 +90,27 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
   "Draft release v$# ($#) updated successfully" (min-version id) =% notice
 ) %update
 (
-  config /id :id
-  {}
-    "/releases/$#/assets" (id) =% %endpoint
-    "GET" %method
-  gh-req =assets 
+  config get-assets =assets 
   assets size :total
-  "There are $# assets in release $#" (total min-version) =% notice
-  assets ("- $#" swap cons % notice) foreach 
+  "are" :verb
+  (total 1 ==) ("is" @verb) when
+  "There $# $# assets in release v$#" (verb total min-version) =% notice
+  assets (/name () cons "- $#" swap % notice) foreach 
   assets
 ) %assets
 (
   config /id :id
-  . ls ("\.zip$" match) filter
+  config delete-assets
+  . ls ("\.zip$" match) filter 
   (
     filename :file
     "Uploading: $#" (file) =% notice
     file fread :body
     headers "application/zip" %Content-Type :asset-headers
     {}
-      "/releases/$#/assets" (id) =% %endpoint
+      "/releases/$#/assets?name=$#" (id file) =% %endpoint
       asset-headers %headers
+      "uploads" %subdomain
       "POST" %method
       body %body
     gh-req 

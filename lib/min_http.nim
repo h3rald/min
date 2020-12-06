@@ -50,7 +50,10 @@ proc http_module*(i: In)=
     res = i.dset(res, "version", resp.version.newVal)
     res = i.dset(res, "status", resp.status[0..2].parseInt.newVal)
     res = i.dset(res, "headers", i.newVal(resp.headers))
-    res = i.dset(res, "body", resp.body.newVal)
+    var b = ""
+    if resp.status != $Http204:
+      b = resp.body
+    res = i.dset(res, "body", b.newVal)
     i.push res
   
   def.symbol("get-content") do (i: In):
