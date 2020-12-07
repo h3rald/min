@@ -14,7 +14,7 @@ switch("define", "ssl")
 switch("opt", "size")
 switch("threads", "on")
 
-switch("passL","-Bstatic")
+switch("passL","-static")
 when defined(windows): 
   # TODO",  change once issue nim#15220 is resolved
   switch("define", "noOpenSSLHacks")
