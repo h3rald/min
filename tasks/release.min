@@ -1,6 +1,7 @@
 #!/usr/bin/env min
 
 "build" load
+"github" load
 
 {}
 ( 
@@ -8,7 +9,9 @@
   build-tasks ^site
   build-tasks ^windows
   build-tasks ^linux
-  build-tasks ^default
+  build-tasks ^macosx
+  github-tasks ^update
+  github-tasks ^upload
   "All done!" notice
 ) %default
 +release-tasks
