@@ -9,3 +9,5 @@
 * Added **escape** operator to escape quotes and special characters in a string.
 * Added **quit** operator to exit with a 0 code.
 * Addes **prefix** and **suffix** operators to prepens and append one string to another.
+
+**BONUS!** Are you using Visual Studio Code? check out the new [official extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) for the min programming language!

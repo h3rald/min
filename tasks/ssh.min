@@ -1,8 +1,48 @@
 #!/usr/bin/env min
 
+".env.yml" fread from-yaml :env
 "min.yml" fread from-yaml :config
+
+env /ssh-host :host
+env /ssh-h3rald-dir :h3rald-dir
+env /ssh-min-dir :min-dir
+"Min_DeveloperGuide.htm" :guide-file
+"$#/assets/min/$#" (h3rald-dir guide-file) =% :h3rald-guide
+"cd " min-dir suffix :min-cd
+"cd " h3rald-dir suffix :h3rald-cd
 
 ; Helpers
 (
   :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
 ) :required
+
+{}
+(
+  "ssh" required
+  "ssh - build ($#)" (host) =% notice
+  "cp $# $#" (guide-file h3rald-guide) =% :cp-guide
+  ( 
+    "export PATH=~/bin:~/.nimble/bin:$PATH"
+    min-cd
+    cp-guide
+    h3rald-cd
+    "git pull"
+    "hastysite build"
+  ) => "; " join :cmds
+  "ssh $# \"$#\"" (host cmds) =% !!
+) %h3rald
+(
+  "ssh" required
+  "ssh - build ($#)" (host) =% notice
+  ( 
+    "export PATH=~/bin:~/.nimble/bin:$PATH"
+    min-cd
+    "git pull"
+    "nifty upgrade"
+    "min run build" 
+    "min run build:guide"
+    "min run build:site"
+  ) => "; " join :cmds
+  "ssh $# \"$#\"" (host cmds) =% !!
+) %build
++ssh-tasks
