@@ -36,6 +36,15 @@
   "Building - site" notice
   "cd site && hastysite build && cd .." !
 ) :build-site
+(
+  config /version :min-version
+  "tasks/templates/min.vim" fread :template
+  timestamp "dd MMM YYYY" tformat :date
+  min-symbols " " join :symbols
+  "min.vim" :out-file
+  "Building - min.vim" notice
+  template ("date" date "version" min-version "symbols" symbols) =% out-file fwrite 
+) :build-vim
 
 ; Define module
 {}
@@ -57,4 +66,7 @@
   build-guide
   build-site
 ) %docs
+(
+  build-vim
+) %vim
 +build-tasks

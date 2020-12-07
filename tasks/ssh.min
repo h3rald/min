@@ -1,0 +1,8 @@
+#!/usr/bin/env min
+
+"min.yml" fread from-yaml :config
+
+; Helpers
+(
+  :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
+) :required

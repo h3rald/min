@@ -1,5 +1,8 @@
 #!/usr/bin/env min
 
+;Capture a reference of default symbols before more are added
+symbols =min-symbols
+
 ; Validation
 (args size 2 <) ("No task specified" error 1 exit) when
 
