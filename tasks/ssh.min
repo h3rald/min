@@ -10,21 +10,34 @@ env /ssh-min-dir :min-dir
 "$#/assets/min/$#" (h3rald-dir guide-file) =% :h3rald-guide
 "cd " min-dir suffix :min-cd
 "cd " h3rald-dir suffix :h3rald-cd
+"$#/contents/min.md" (min-dir) =% :min-md
+"min.yml" fread from-yaml :config
+config /version :min-version
+
+"version:\\s+\\d+\\.\\d+\\.\\d+" :min-v-reg
+"version: $#" (min-version) =% :min-v-rep
 
 ; Helpers
 (
   :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
 ) :required
+(
+  "export PATH=~/bin:~/.nimble/bin:$PATH"
+  min-cd
+) :init
 
 {}
 (
+  ; This should be executed on the remote host
+  guide-file h3rald-guide cp
+  min-md fread "s/$#/$#/m" (min-v-reg min-v-rep) =% regex min-md fwrite
+) :h3rald-update
+(
   "ssh" required
   "ssh - build ($#)" (host) =% notice
-  "cp $# $#" (guide-file h3rald-guide) =% :cp-guide
   ( 
-    "export PATH=~/bin:~/.nimble/bin:$PATH"
-    min-cd
-    cp-guide
+    init
+    "min run ssh:h3rald-update"
     h3rald-cd
     "git pull"
     "hastysite build"
@@ -35,8 +48,7 @@ env /ssh-min-dir :min-dir
   "ssh" required
   "ssh - build ($#)" (host) =% notice
   ( 
-    "export PATH=~/bin:~/.nimble/bin:$PATH"
-    min-cd
+    init
     "git pull"
     "nifty upgrade"
     "min run build" 
