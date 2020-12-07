@@ -149,8 +149,15 @@ Applies the quotation {{q2}} to each element of {{q1}}.#}
 > > 
 > > produces: `"This is a test error"`#}
 
-{#op||from-json||{{s}}||{{a0p}}||
+{#op||from-json||{{s}}||{{any}}||
 Converts a JSON string into {{m}} data.#}
+
+{#op||from-yaml||{{s}}||{{any}}||
+> Converts a YAML string into {{m}} data.
+> > %note%
+> > Note
+> > 
+> > At present, only YAML objects containing string values are supported.#}
 
 {#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
 If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
@@ -161,19 +168,19 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 {#op||infix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using infix notation. 
 > 
-> > %note%
-> > No operator precedence
-> > 
-> > No special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.
+> Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.
 > 
-> > %sidebar% 
+> > %sidebar%
 > > Example
 > > 
 > > The following program leaves `17` on the stack:
-> >     (2 + (3 * 5)) infix-dequote
+> >
+> >      (2 + (3 * 5)) infix-dequote
 > >
 > > while this program leaves `25` on the stack:
-> >     (2 + 3 * 5) infix-dequote  #}
+> > 
+> >      (2 + 3 * 5) infix-dequote  
+ #}
 
 {#op||int||{{any}}||{{i}}||
 > Converts {{any}} to an integer value based on the following rules:
@@ -237,14 +244,15 @@ Returns a dictionary of all options passed to the current program, with their re
 Parses {{s}} and returns a quoted program {{q}}. #}
 
 {#op||prefix-dequote||{{q}}||{{any}}||
-> Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it.
+> Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it).
 > 
-> > %sidebar% 
+> > %sidebar%
 > > Example
 > > 
 > > The following program leaves `4` on the stack:
+> >
 > >     (* 8 4) prefix-dequote
-#}
+ #}
 
 {#op||prompt||{{null}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
@@ -261,6 +269,9 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > > 
 > Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
 > > `'my-local-symbol ROOT publish` #}
+
+{#op||quit||{{null}}||{{null}}||
+Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
@@ -379,8 +390,15 @@ Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
 
-{#op||to-json||{{q}}||{{s}}||
-Converts {{q}} into a JSON string {{s}}.#}
+{#op||to-json||{{any}}||{{s}}||
+Converts {{any}} into a JSON string.#}
+
+{#op||to-yaml||{{any}}||{{s}}||
+> Converts {{any}} into a YAML string.
+> > %note%
+> > Note
+> > 
+> > At present, only {{m}} dictionaries containing string values are supported.#}
 
 {#op||try||({{q1}} {{q}}{{2}}{{01}} {{q}}{{3}}{{01}})||{{a0p}}||
 > Evaluates a quotation as a try/catch/finally block. 

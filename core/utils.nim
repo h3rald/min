@@ -113,6 +113,16 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
       raiseInvalid("Dictionary contains native values that cannot be accessed.")
     r.add item.val
   return r.newVal
+  
+proc pairs*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+  # Assumes q is a dictionary
+  var r = newSeq[MinValue](0)
+  for key, value in q.dVal.pairs:
+    if value.kind == minProcOp:
+      raiseInvalid("Dictionary contains native values that cannot be accessed.")
+    r.add key.newVal
+    r.add value.val
+  return r.newVal
 
 # JSON interop
 

@@ -44,6 +44,9 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 > >     {5 :q 4 :a 6 :c 7 :d "d" :a} ("a" "d") dpick
  #}
 
+{#op||dpairs||{{d}}||({{a0p}})||
+Returns a quotation containing all the keys (odd items) and values (even items) of dictiionary {{d}}. #}
+
 {#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
 

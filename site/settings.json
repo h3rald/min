@@ -1,10 +1,10 @@
 {
-  "contents": "contents",
   "assets": "assets",
-  "templates": "templates",
-  "temp": "temp",
+  "contents": "contents",
   "output": "output",
+  "rules": "rules.min",
+  "temp": "temp",
+  "templates": "templates",
   "title": "min language",
-  "version": "0.22.0",
-  "rules": "rules.min"
+  "version": "0.24.0"
 }

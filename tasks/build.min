@@ -1,0 +1,72 @@
+#!/usr/bin/env min
+
+"min.yml" fread from-yaml :config
+
+; Helpers
+(
+  :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
+) :required
+(
+  :target-os
+  "nim" required
+  "Building - $# (x64)" (target-os) =% notice
+  "nim c -d:release --cpu:amd64 --os:$# min" (target-os) =% !
+  {}
+    target-os %os
+    config /version %version
+  pack
+) :cz
+(
+  :vdata 
+  "min" :exe
+  (vdata /os "windows" ==) ("min.exe" @exe) when
+  "min_v$version:_$os:_x64.zip" :fn
+  fn vdata dpairs % ":" "" replace @fn
+  "Compressing: $#" (fn) =% notice
+  (exe) => fn zip
+) :pack
+
+(
+  "hastyscribe" required
+  "Building - guide" notice
+  "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
+) :build-guide
+(
+  "hastysite" required 
+  "Building - site" notice
+  "cd site && hastysite build && cd .." !
+) :build-site
+(
+  config /version :min-version
+  "tasks/templates/min.vim" fread :template
+  timestamp "dd MMM YYYY" tformat :date
+  min-symbols " " join :symbols
+  "min.vim" :out-file
+  "Building - min.vim" notice
+  template ("date" date "version" min-version "symbols" symbols) =% out-file fwrite 
+) :build-vim
+
+; Define module
+{}
+(
+  os cz
+) %default
+(
+  "linux" cz
+) %linux
+(
+  "macosx" cz
+) %macosx
+(
+  "windows" cz
+) %windows
+'build-guide %guide
+'build-site %site
+(
+  build-guide
+  build-site
+) %docs
+(
+  build-vim
+) %vim
++build-tasks

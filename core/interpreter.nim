@@ -290,8 +290,18 @@ proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discard
   i.scope = i2.scope
 
 proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+  var fileLines = newSeq[string](0)
+  var contents = ""
+  try:
+    fileLines = s.readFile().splitLines()
+  except:
+    fatal("Cannot read from file: " & s)
+  if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
+    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
+  else:
+    contents = fileLines.join("\n")
   var i2 = i.copy(s)
-  i2.open(newStringStream(s.readFile), s)
+  i2.open(newStringStream(contents), s)
   discard i2.parser.getToken() 
   result = i2.interpret(parseOnly)
   i.trace = i2.trace

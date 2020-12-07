@@ -6,7 +6,11 @@ if defined(windows):
 if not defined(windows):
   HOME = getenv("HOME")
 
-let MINRC* = HOME / ".minrc"
-let MINSYMBOLS* = HOME / ".min_symbols"
-let MINHISTORY* = HOME / ".min_history"
-let MINLIBS* = HOME / ".minlibs"
+var MINRC* {.threadvar.} : string
+MINRC = HOME / ".minrc" 
+var MINSYMBOLS* {.threadvar.} : string 
+MINSYMBOLS = HOME / ".min_symbols"
+var MINHISTORY* {.threadvar.} : string
+MINHISTORY = HOME / ".min_history"
+var MINLIBS* {.threadvar.} : string
+MINLIBS  = HOME / ".minlibs"

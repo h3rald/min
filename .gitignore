@@ -12,3 +12,5 @@ packages/
 site/output/
 site/temp/
 dynlibs/
+.env.yml
+response.json

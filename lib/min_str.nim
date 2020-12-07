@@ -1,6 +1,7 @@
 import 
   strutils, 
-  sequtils
+  sequtils,
+  json
 import 
   ../core/parser, 
   ../core/value, 
@@ -21,6 +22,10 @@ proc str_module*(i: In) =
       strings.add $$el
     let res = s.strVal % strings
     i.push res.newVal
+
+  def.symbol("apply-interpolate") do (i: In):
+    i.push "apply".newSym
+    i.push "interpolate".newSym
 
   def.symbol("strip") do (i: In):
     let vals = i.expect("'sym")
@@ -147,10 +152,90 @@ proc str_module*(i: In) =
       res.add(r.newVal)
     i.push res.newVal
 
+  def.symbol("semver?") do (i: In):
+    let vals = i.expect("string")
+    let v = vals[0].strVal
+    i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
+    
+  def.symbol("from-semver") do (i: In):
+    let vals = i.expect("string")
+    let v = vals[0].strVal
+    let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
+    if parts[0].len == 0:
+      raiseInvalid("String '$1' is not a basic semver" % v)
+    var d = newDict(i.scope)
+    i.dset(d, "major", parts[1].parseInt.newVal)
+    i.dset(d, "minor", parts[2].parseInt.newVal)
+    i.dset(d, "patch", parts[3].parseInt.newVal)
+    i.push d
+    
+  def.symbol("to-semver") do (i: In):
+    let vals = i.expect("dict")
+    let v = vals[0]
+    if not v.dhas("major") or not v.dhas("minor") or not v.dhas("patch"):
+      raiseInvalid("Dictionary does not contain major, minor and patch keys")
+    let major = i.dget(v, "major")
+    let minor = i.dget(v, "minor")
+    let patch = i.dget(v, "patch") 
+    if major.kind != minInt or minor.kind != minInt or patch.kind != minInt:
+      raiseInvalid("major, minor, and patch values are not integers")
+    i.push(newVal("$#.$#.$#" % [$major, $minor, $patch]))
+
+  def.symbol("semver-inc-major") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "major")
+    let v = cv.intVal + 1
+    i.dset(d, "major", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
+  def.symbol("semver-inc-minor") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "minor")
+    let v = cv.intVal + 1
+    i.dset(d, "minor", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
+  def.symbol("semver-inc-patch") do (i: In):
+    i.push("from-semver".newSym)
+    var d = i.pop
+    let cv = i.dget(d, "patch")
+    let v = cv.intVal + 1
+    i.dset(d, "patch", v.newVal)
+    i.push(d)
+    i.push("to-semver".newSym)
+
+  def.symbol("escape") do (i: In):
+    let vals = i.expect("'sym")
+    let a = vals[0].getString
+    var s = ""
+    a.escapeJsonUnquoted(s)
+    i.push s.newVal
+    
+  def.symbol("prefix") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[1].getString
+    let b = vals[0].getString
+    var s = b & a
+    i.push s.newVal
+    
+  def.symbol("suffix") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[1].getString
+    let b = vals[0].getString
+    var s = a & b
+    i.push s.newVal
+
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)
 
   def.symbol("%") do (i: In):
     i.push("interpolate".newSym)
+
+  def.symbol("=%") do (i: In):
+    i.push("apply-interpolate".newSym)
 
   def.finalize("str")

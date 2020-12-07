@@ -1,0 +1,22 @@
+#!/usr/bin/env min
+
+;Capture a reference of default symbols before more are added
+symbols =min-symbols
+
+; Validation
+(args size 2 <) ("No task specified" error 1 exit) when
+
+args 1 get ":" split =taskspec
+taskspec 0 get :task
+"default" :subtask
+(taskspec size 1 >) (taskspec 1 get @subtask) when
+
+"./tasks/$#.min" (task) =% :task-file
+
+(task-file exists? not) ("Task '$1' does not exist" (task) =% error 2 exit) when
+
+; Load task module
+task-file load
+
+; Execute task
+"$#-tasks" (task) =% eval subtask ^

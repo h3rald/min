@@ -1,0 +1,121 @@
+#!/usr/bin/env min
+
+; Read files
+".env.yml" fread from-yaml :vars
+"min.yml" fread from-yaml :config
+"next-release.md" fread escape :release-body
+"tasks/templates/draft-release.json" fread :draft-release-template 
+
+config /version :min-version
+vars /github-token :token
+draft-release-template ("version" min-version "body" release-body) =% :draft-release-body
+
+; Helper symbols
+{}  
+  "application/vnd.github.v3+json" %Accept
+  "token $#" (token) =% %Authorization  
+:headers
+
+(
+  response to-json "response.json" fwrite
+  response /status :status
+  (status 300 >) (
+    response /body from-json :body
+    body /message :message
+    status string @status
+    "Error $#: $#" (status message) =% error status int exit
+  ) when
+) :handle-errors
+(
+  :data
+  data /endpoint :endpoint
+  "api" :subdomain
+  (data ?subdomain) (data /subdomain @subdomain) when
+  "https://$#.github.com/repos/h3rald/min$#" (subdomain endpoint) =% :url
+  {}
+    url %url
+    data /method %method
+    (data ?headers) 
+      (data /headers %headers) 
+      (headers %headers) 
+    if
+    (data ?body) (data /body %body) when
+  request :response
+  response /status :status
+  response /body :body
+  handle-errors 
+  (body length 0 >) (body from-json) ({}) if
+) :gh-req
+
+(
+  :data
+  data /id :id
+  {}
+    "/releases/$#/assets" (id) =% %endpoint
+    "GET" %method
+  gh-req
+) :get-assets
+
+(
+ config get-assets =assets
+ config /id :id
+ assets (/id) map =assets-ids
+ assets-ids (
+  :asset
+  {}
+    "/releases/assets/$#" (asset) =% %endpoint
+    "DELETE" %method
+  gh-req
+ ) foreach
+) :delete-assets
+
+; Module symbols
+(
+  {}
+    "/releases" %endpoint
+    "POST" %method
+    draft-release-body %body
+  gh-req /id string :id
+  ; Save Release ID to min.yml
+  config id %id to-yaml "min.yml" fwrite
+  "Draft release v$# ($#) created successfully" (min-version id) =% notice
+) %draft
+(
+  config /id :id
+  {}
+    "/releases/$#" (id) =% %endpoint
+    "PATCH" %method
+    draft-release-body %body
+  gh-req /id string :id
+  "Draft release v$# ($#) updated successfully" (min-version id) =% notice
+) %update
+(
+  config get-assets =assets 
+  assets size :total
+  "are" :verb
+  (total 1 ==) ("is" @verb) when
+  "There $# $# assets in release v$#" (verb total min-version) =% notice
+  assets (/name () cons "- $#" swap % notice) foreach 
+  assets
+) %assets
+(
+  config /id :id
+  config delete-assets
+  . ls ("\.zip$" match) filter 
+  (
+    filename :file
+    "Uploading: $#" (file) =% notice
+    file fread :body
+    headers "application/zip" %Content-Type :asset-headers
+    {}
+      "/releases/$#/assets?name=$#" (id file) =% %endpoint
+      asset-headers %headers
+      "uploads" %subdomain
+      "POST" %method
+      body %body
+    gh-req 
+  ) foreach
+) %upload
++github-tasks
+
+

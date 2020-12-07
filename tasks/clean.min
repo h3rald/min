@@ -1,0 +1,9 @@
+#!/usr/bin/env min
+
+{}
+(
+  "Cleaning up build files" notice
+  . ls ("\.(htm|zip)$" match) filter =files
+  files 'rm foreach
+) %default
++clean-tasks

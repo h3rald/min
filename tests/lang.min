@@ -45,14 +45,6 @@
 
   (2 3 mymath ^myplus 5 ==) assert
 
-  ; Extend an existing scope
-  ;(
-  ;  ('mymath import 
-  ;   (-) :myminus
-  ;  ) @mymath 5 2 mymath ^myminus 3 ==) assert
-  ; 
-  ;(mymath inspect ("myminus" "myplus") ==) assert
-
   ("3 4 +" eval 7 ==) assert
 
   ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
@@ -219,6 +211,10 @@
   ({3 :x 5 :y} "point" set-type 'point type?) assert
 
   ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) assert
+
+  ((2 < 3 and (4 > 2)) >< true) assert
+
+  ((float 3) >> 3.0 ==) assert
 
   report
   ; Tidy up

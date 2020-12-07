@@ -6,13 +6,25 @@ title: "str Module"
 
 {#alias||%||interpolate#}
 
+{#alias||=%||apply-interpolate#}
+
 {#alias||=~||regex#}
+
+{#op||apply-interpolate||{{s}} {{q}}||{{s}}||
+The same as pushing `apply` and then `interpolate` on the stack.#}
 
 {#op||capitalize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with the first character capitalized.#}
 
 {#op||chr||{{i}}||{{s}}||
 Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
+
+{#op||escape||{{sl}}||{{s}}||
+Returns a copy of {{sl}} with quotes and backslashes escaped with a backslash.#}
+
+{#op||from-semver||{{s}}||{{d}}||
+Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}}, 
+it pushes a dictionary {{d}} on the stack containing a **major**, **minor**, and **patch** key/value pairs.#}
 
 {#op||indent||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} indented with {{i}} spaces.#}
@@ -23,9 +35,11 @@ If {{s2}} is contained in {{s1}}, returns the index of the first match or -1 if 
 {#op||interpolate||{{s}} {{q}}||{{s}}||
 > Substitutes the placeholders included in {{s}} with the values in {{q}}.
 > > %note%
-> > Note
+> > Notes
 > > 
-> > If {{q}} contains symbols or quotations, they are not interpreted. To do so, call `apply` before interpolating. 
+> > * If {{q}} contains symbols or quotations, they are not interpreted. To do so, call `apply` before interpolating or use `apply-interpolate` instead.
+> > * You can use the `$#` placeholder to indicate the next placeholder that has not been already referenced in the string.
+> > * You can use named placeholders like `$pwd`, but in this case {{q}} must contain a quotation containing both the placeholder names (odd items) and the values (even items).
 > 
 > > %sidebar%
 > > Example
@@ -57,6 +71,9 @@ Returns a copy of {{sl}} converted to lowercase.#}
 {#op||ord||{{s}}||{{i}}||
 Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
 
+{#op||prefix||{{sl1}} {{sl2}}||{{s}}||
+Prepends {{sl2}} to {{sl1}}.#}
+
 {#op||repeat||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 
@@ -74,7 +91,9 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > `"This is a stupid test. Is it really a stupid test?" " s[a-z]+" " simple" replace`
 > > 
-> > produces: `"This is a simple test. Is it really a simple test?"`#}
+> > produces:
+> > 
+> > `"This is a simple test. Is it really a simple test?"`#}
 
 {#op||regex||{{s1}} {{s2}}||{{q}}||
 > Performs a search and/or a search-and-replace operation using pattern {{s2}}.
@@ -136,6 +155,18 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > produces: `("192.168.1.1", "1", "1")`#}
 
+{#op||semver-inc-major||{{s1}}||{{s2}}||
+Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-minor||{{s1}}||{{s2}}||
+Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-patch||{{s1}}||{{s2}}||
+Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver?||{{s}}||{{b}}||
+Checks whether {{s}} is a [SemVer](https://semver.org)-compliant version or not. #}
+
 {#op||split||{{sl1}} {{sl2}}||{{q}}||
 Splits {{sl1}} using separator {{sl2}} and returns the resulting strings within the quotation {{q}}. #}
 
@@ -145,8 +176,14 @@ Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#
 {#op||substr||{{s1}} {{i1}} {{i2}}||{{s2}}||
 Returns a substring {{s2}} obtained by retriving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
 
+{#op||suffix||{{sl1}} {{sl2}}||{{s}}||
+Appends {{sl2}} to {{sl1}}.#}
+
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
+
+{#op||to-semver||{{d}}||{{s}}||
+Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}} on the stack.#}
 
 {#op||uppercase||{{sl1}}||{{sl2}}||
 Returns a copy of {{sl}} converted to uppercase.#}
