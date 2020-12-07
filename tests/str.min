@@ -65,5 +65,13 @@
 
   ("2.3.6" semver-inc-patch "2.3.7" ==) assert
   
+  ("4.6.5" semver? true ==) assert
+  
+  ("4.6.5.3" semver? false ==) assert
+  
+  ("fix" "pre" prefix "prefix" ==) assert
+  
+  ("suf" "fix" suffix "suffix" ==) assert
+  
   report
   clear-stack

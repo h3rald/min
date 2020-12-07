@@ -214,6 +214,20 @@ proc str_module*(i: In) =
     var s = ""
     a.escapeJsonUnquoted(s)
     i.push s.newVal
+    
+  def.symbol("prefix") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[1].getString
+    let b = vals[0].getString
+    var s = b & a
+    i.push s.newVal
+    
+  def.symbol("suffix") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let a = vals[1].getString
+    let b = vals[0].getString
+    var s = a & b
+    i.push s.newVal
 
   def.symbol("=~") do (i: In):
     i.push("regex".newSym)

@@ -71,6 +71,9 @@ Returns a copy of {{sl}} converted to lowercase.#}
 {#op||ord||{{s}}||{{i}}||
 Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
 
+{#op||prefix||{{sl1}} {{sl2}}||{{s}}||
+Prepends {{sl2}} to {{sl1}}.#}
+
 {#op||repeat||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 
@@ -172,6 +175,9 @@ Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#
 
 {#op||substr||{{s1}} {{i1}} {{i2}}||{{s2}}||
 Returns a substring {{s2}} obtained by retriving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
+
+{#op||suffix||{{sl1}} {{sl2}}||{{s}}||
+Appends {{sl2}} to {{sl1}}.#}
 
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}

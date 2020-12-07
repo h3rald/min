@@ -270,6 +270,9 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
 > > `'my-local-symbol ROOT publish` #}
 
+{#op||quit||{{null}}||{{null}}||
+Exits the program or shell with 0 as return code. #}
+
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
 
