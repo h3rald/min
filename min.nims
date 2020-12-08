@@ -14,8 +14,9 @@ switch("define", "ssl")
 switch("opt", "size")
 switch("threads", "on")
 
-switch("passL","-static")
+
 when defined(windows): 
+  switch("passL","-static")
   # TODO",  change once issue nim#15220 is resolved
   switch("define", "noOpenSSLHacks")
   switch("dynlibOverride", "ssl-")
@@ -29,10 +30,13 @@ else:
   switch("dynlibOverride", "ssl")
   switch("dynlibOverride", "crypto")
   if defined(linux):
+    switch("passL","-static")
     switch("passL","-Lvendor/openssl/linux")
     switch("passL","-lssl")
     switch("passL","-lcrypto")
   elif defined(macosx):
+    switch("passL","-Bstatic")
     switch("passL","-Lvendor/openssl/macosx")
     switch("passL","-lssl")
     switch("passL","-lcrypto")
+    switch("passL","-Bdynamic")
