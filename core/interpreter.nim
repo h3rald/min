@@ -314,4 +314,3 @@ proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_s
 
 proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
   return i.load(s, true)
-

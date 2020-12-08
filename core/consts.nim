@@ -18,3 +18,4 @@ for line in ymlconfig.split("\n"):
     pkgAuthor = pair[1].strip
   if pair[0].strip == "description":
     pkgDescription = pair[1].strip
+

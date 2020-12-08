@@ -23,7 +23,8 @@ import
   core/value, 
   core/scope,
   core/interpreter, 
-  core/utils
+  core/utils,
+  core/niftyjsonlogger
 import 
   lib/min_lang, 
   lib/min_stack, 
@@ -58,7 +59,8 @@ export
 #--passL:-Bstatic --passL:-lssl --passL:-lcrypto --passL:-Bdynamic
 
 const PRELUDE* = "prelude.min".slurp.strip
-var customPrelude = ""
+var customPrelude {.threadvar.} : string
+customPrelude = ""
 
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
@@ -125,24 +127,6 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
         return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
   return symbols
 
-proc stdLibNoFiles*(i: In) = 
-  i.lang_module
-  i.stack_module
-  i.seq_module
-  i.dict_module
-  i.io_module
-  i.logic_module
-  i.num_module
-  i.str_module
-  i.sys_module
-  i.time_module
-  i.fs_module
-  when not defined(lite):
-    i.crypto_module
-    i.net_module
-    i.math_module
-    i.http_module
-
 proc stdLib*(i: In) =
   if not MINSYMBOLS.fileExists:
     MINSYMBOLS.writeFile("{}")
@@ -174,6 +158,24 @@ proc stdLib*(i: In) =
     except:
       warn("Unable to process custom prelude code in $1" % customPrelude)
   i.eval MINRC.readFile()
+
+proc stdLibNoFiles*(i: In) = 
+  i.lang_module
+  i.stack_module
+  i.seq_module
+  i.dict_module
+  i.io_module
+  i.logic_module
+  i.num_module
+  i.str_module
+  i.sys_module
+  i.time_module
+  i.fs_module
+  when not defined(lite):
+    i.crypto_module
+    i.net_module
+    i.math_module
+    i.http_module
 
 type
   LibProc = proc(i: In) {.nimcall.}
@@ -314,37 +316,45 @@ proc minRepl*(simple = false) =
   var i = newMinInterpreter(filename = "<repl>")
   i.minRepl(simple)
 
-
 proc jsonError(s: string): string =
   let j = newJObject()
   j["error"] = %s
   return j.pretty
 
-proc jsonExecutionResult(r: MinValue): string =
+proc jsonExecutionResult(i: var MinInterpreter, r: MinValue): string =
   let j = newJObject()
-  j["result"] = %($r)
+  j["result"] = newJNull()
+  if not r.isNil:
+    j["result"] = i%r
+  j["output"] = JSONLOG
   return j.pretty
-
+  
 proc minApiExecHandler*(req: Request): Future[void] {.async, gcsafe.} =
   let j = req.body.parseJson
   var i = newMinInterpreter(filename = "<server>")
   i.stdLib()
-  i.dynLib()
   var s = newStringStream("")
   i.open(s, "<server>")
-  let r = i.interpret(j["data"].getStr)
+  var r: MinValue
+  try:
+    r = i.interpret(j["data"].getStr)
+  except:
+    discard
   let headers = newHttpHeaders([("Content-Type","application/json")])
-  await req.respond(Http200, jsonExecutionResult(r), headers)
+  var iv = i
+  await req.respond(Http200, jsonExecutionResult(iv, r), headers)
 
-proc minServer*() = 
+proc minServer*(address: string, port: int) = 
+  newNiftyJsonLogger().addHandler()
   proc handleHttpRequest(req: Request) {.async.} =
-    if req.url.path == "/execute" and req.reqMethod == HttpPost:
+    JSONLOG = newJArray()
+    if req.url.path == "/api/execute" and req.reqMethod == HttpPost:
       await minApiExecHandler(req)
     else:
       let headers = newHttpHeaders([("Content-Type","application/json")])
       await req.respond(Http400, jsonError("Bad Request"), headers)
   var server = newAsyncHttpServer()
-  asyncCheck server.serve(Port(5555), handleHttpRequest, "127.0.0.1")
+  asyncCheck server.serve(Port(port), handleHttpRequest, address)
   runForever()
     
 when isMainModule:
@@ -354,6 +364,8 @@ when isMainModule:
   var INSTALL = false
   var UNINSTALL = false
   var SERVER = false
+  let ADDRESS = "127.0.0.1"
+  var PORT = 5555
   var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
@@ -372,6 +384,7 @@ when isMainModule:
     -i, —-interactive         Start $1 shell (with advanced prompt)
     -j, --interactive-simple  Start $1 shell (without advanced prompt)
     -s, --server              Start the min HTTP server
+    --port                    Specify the server port (default: 5555)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
@@ -395,6 +408,9 @@ when isMainModule:
             if file == "":
               var val = val
               setLogLevel(val)
+          of "port":
+            if file == "":
+              PORT = val.parseInt
           of "evaluate", "e":
             if file == "":
               s = val
@@ -407,7 +423,8 @@ when isMainModule:
               echo pkgVersion
               quit(0)
           of "server", "s":
-            SERVER = true
+            if file == "":
+              SERVER = true
           of "interactive", "i":
             if file == "":
               REPL = true
@@ -454,7 +471,7 @@ when isMainModule:
     notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
     quit(0)
   elif SERVER:
-    minServer()
+    minServer(ADDRESS, PORT)
   elif REPL or SIMPLEREPL:
     minRepl(SIMPLEREPL)
     quit(0)
