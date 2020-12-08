@@ -2,6 +2,9 @@
 import 
   lexbase, 
   strutils, 
+  sequtils,
+  json,
+  oids,
   streams, 
   critbits
  
@@ -594,7 +597,6 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
       return d
 
 proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_symbol_$1".}=
-  #echo p.a, " (", p.token, ")"
   case p.token
   of tkTrue:
     result = MinValue(kind: minBool, boolVal: true)
@@ -618,7 +620,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     while p.token != tkBracketRi: 
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
-    result = MinValue(kind: minQuotation, qVal: q)#, scope: newscope)
+    result = MinValue(kind: minQuotation, qVal: q)
   of tkBraceLe:
     var scope = newScopeRef(nil)
     var val: MinValue
@@ -649,6 +651,77 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
   result.filename = p.filename
+  
+proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.extern:"min_exported_symbol_$1".}=
+  var op = ""
+  if push:
+    op = "i.push "
+  result = newSeq[string](0)
+  case p.token
+  of tkTrue:
+    result = @[op&"MinValue(kind: minBool, boolVal: true)"]
+    discard getToken(p)
+  of tkFalse:
+    result = @[op&"MinValue(kind: minBool, boolVal: false)"]
+    discard getToken(p)
+  of tkString:
+    result = @[op&"MinValue(kind: minString, strVal: "&p.a.escapeJson&")"]
+    p.a = ""
+    discard getToken(p)
+  of tkInt:
+    result = @[op&"MinValue(kind: minInt, intVal: "&p.a&")"]
+    discard getToken(p)
+  of tkFloat:
+    result = @[op&"MinValue(kind: minFloat, floatVal: "&p.a&")"]
+    discard getToken(p)
+  of tkBracketLe:
+    var qvar = "q" & $genOid()
+    result.add "var "&qvar&" = newSeq[MinValue](0)"
+    discard getToken(p)
+    while p.token != tkBracketRi: 
+      var instructions = p.compileMinValue(i, false)
+      let v = instructions.pop
+      result = result.concat(instructions)
+      result.add qvar&".add "&v
+    eat(p, tkBracketRi)
+    result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")" 
+  of tkBraceLe:
+    result = newSeq[string](0)
+    var val: MinValue
+    var scopevar = "scope" & $genOid()
+    var valvar = "val" & $genOid()
+    result.add "var "&scopevar&" = newScopeRef(nil)"
+    result.add "var "&valvar&": MinValue"
+    discard getToken(p)
+    var c = 0
+    while p.token != tkBraceRi: 
+      c = c+1
+      var instructions = p.compileMinValue(i, false)
+      let v = p.parseMinValue(i)
+      let vs = instructions.pop
+      result = result.concat(instructions)
+      if val.isNil:
+        result.add valvar&" = "&vs
+      elif v.kind == minSymbol:
+        let key = v.symVal
+        if key[0] == ':':
+          result.add scopevar&".symbols["&key[1 .. key.len-1]&"] = MinOperator(kind: minValOp, val: "&valvar&", sealed: false)"
+          val = nil
+        else:
+          raiseInvalid("Invalid dictionary key: " & key)
+      else:
+        raiseInvalid("Invalid dictionary key: " & $v)
+    eat(p, tkBraceRi)
+    if c mod 2 != 0:
+      raiseInvalid("Invalid dictionary")
+    # TODO: check
+    result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
+  of tkSymbol:
+    result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeJson&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeJson&")"]
+    p.a = ""
+    discard getToken(p)
+  else:
+    raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
 proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
   stdout.write($$a)

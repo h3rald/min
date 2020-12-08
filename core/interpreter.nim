@@ -278,6 +278,32 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
     return q
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
+    
+proc compile*(i: In): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  result = newSeq[string](0)
+  result.add "import min"
+  result.add "var i = newMinInterpreter(\"$#\")" % i.filename
+  while i.parser.token != tkEof: 
+    if i.trace.len == 0:
+      i.stackcopy = i.stack
+    try:
+      result.add i.parser.compileMinValue(i)
+    except MinRuntimeError:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+      i.stackTrace
+      i.trace = @[]
+      raise MinTrappedException(msg: msg)
+    except MinTrappedException:
+      raise
+    except:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      i.error(msg)
+      i.stackTrace
+      i.trace = @[]
+      raise MinTrappedException(msg: msg)
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)

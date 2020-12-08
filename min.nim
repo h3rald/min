@@ -51,10 +51,6 @@ export
   min_lang
 
 
-
-#-d:ssl -p:. -d:noOpenSSLHacks --dynlibOverride:ssl- --dynlibOverride:crypto- -d:sslVersion:"(" --passL:-Lpath/to/openssl/lib 
-#--passL:-Bstatic --passL:-lssl --passL:-lcrypto --passL:-Bdynamic
-
 const PRELUDE* = "prelude.min".slurp.strip
 var customPrelude = ""
 
@@ -196,16 +192,30 @@ proc interpret*(i: In, s: string): MinValue =
   except:
     discard
     i.close()
+    
+proc compile*(i: In, s: Stream) = 
+  i.open(s, i.filename)
+  discard i.parser.getToken() 
+  try:
+    let r = i.compile()
+    for line in r:
+      echo line
+  except:
+    discard
+    i.close()
 
-proc minStream(s: Stream, filename: string) = 
+proc minStream(s: Stream, filename: string, op = "interpret") = 
   var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDir
-  i.interpret(s)
+  if op == "interpret":
+    i.interpret(s)
+  else:
+    i.compile(s)
 
 proc minString*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
-proc minFile*(filename: string) =
+proc minFile*(filename: string, op = "interpret") =
   var fn = filename
   if not filename.endsWith(".min"):
     fn &= ".min"
@@ -220,14 +230,14 @@ proc minFile*(filename: string) =
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
   else:
     contents = fileLines.join("\n")
-  minStream(newStringStream(contents), fn)
+  minStream(newStringStream(contents), fn, op)
 
-proc minFile*(file: File, filename="stdin") =
+proc minFile*(file: File, filename="stdin", op = "interpret") =
   var stream = newFileStream(filename)
   if stream == nil:
     fatal("Cannot read from file: " & filename)
     quit(3)
-  minStream(stream, filename)
+  minStream(stream, filename, op)
 
 proc printResult(i: In, res: MinValue) =
   if res.isNil:
@@ -300,6 +310,7 @@ when isMainModule:
   var SIMPLEREPL = false
   var INSTALL = false
   var UNINSTALL = false
+  var COMPILE = false
   var libfile = ""
 
   let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
@@ -309,13 +320,14 @@ when isMainModule:
     min [options] [filename]
 
   Arguments:
-    filename  A $1 file to interpret (default: STDIN).
+    filename  A $1 file to interpret or compile (default: STDIN).
   Options:
     -—install:<lib>           Install dynamic library file <lib>
     —-uninstall:<lib>         Uninstall dynamic library file <lib>
+    -c, --compile             Compile the specified file
     -e, --evaluate            Evaluate a $1 program inline
-    -h, —-help                Print this help
-    -i, —-interactive         Start $1 shell (with advanced prompt)
+    -h, --help                Print this help
+    -i, --interactive         Start $1 shell (with advanced prompt)
     -j, --interactive-simple  Start $1 shell (without advanced prompt)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
@@ -334,6 +346,8 @@ when isMainModule:
           file = key 
       of cmdLongOption, cmdShortOption:
         case key:
+          of "compile", "c":
+            COMPILE = true
           of "prelude", "p":
             customPrelude = val
           of "log", "l":
@@ -369,11 +383,13 @@ when isMainModule:
             discard
       else:
         discard
-  
+  var op = "interpret"
+  if COMPILE:
+    op = "compile"
   if s != "":
     minString(s)
   elif file != "":
-    minFile file
+    minFile file, op
   elif INSTALL:
     if not libfile.fileExists:
       fatal("Dynamic library file not found:" & libfile)
@@ -400,4 +416,4 @@ when isMainModule:
     minRepl(SIMPLEREPL)
     quit(0)
   else:
-    minFile stdin, "stdin"
+    minFile stdin, "stdin", op
