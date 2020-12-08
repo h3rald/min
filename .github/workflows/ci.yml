@@ -43,7 +43,7 @@ jobs:
         run: nifty install
       
       - name: Build
-        run: nimble -i build
+        run: nimble -y build
       
       - name: Test
         run: ./min tests/all
