@@ -36,11 +36,6 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
-
-#### -d:ssl
-
-If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to perform HTTPS requests with the {#link-module||http#}. This means that the resulting **min** executable will no longer be self-contained and it will require the OpenSSL dynamic library to be available on your system.
-
 #### -d:lite
 
 If the **d:lite** flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:
