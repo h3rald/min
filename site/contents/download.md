@@ -70,8 +70,9 @@ The result of each operation will be placed on top of the stack, and it will be 
 To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and press [ENTER](class:kbd).
 
 > %tip%
+> Tip
 > 
-> By default, the min shell provides advanced features like tab-completion, history, etc. If however, you run into problems, you can disable these features by running [min -i](class:cmd) instead, and run min shell with a bare-bones REPL. 
+> By default, the min shell provides advanced features like tab-completion, history, etc. If however, you run into problems, you can disable these features by running [min -j](class:cmd) instead, and run min shell with a bare-bones REPL. 
 
 ## Executing a min Program
 
