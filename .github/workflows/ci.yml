@@ -21,13 +21,15 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CHOOSENIM_CHOOSE_VERSION: stable
-      PATH: $HOME/.nimble/bin:$PATH
       CHOOSENIM_NO_ANALYTICS: 1
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Update $PATH
+        run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
 
       - name: Install Nim
         run: |
