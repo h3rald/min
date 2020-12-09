@@ -3,7 +3,6 @@ when not defined(windows):
 import 
   streams, 
   critbits, 
-  parseopt, 
   strutils, 
   os, 
   json, 
@@ -16,7 +15,6 @@ import
   packages/nimline/nimline,
   packages/niftylogger,
   core/env,
-  core/consts,
   core/parser, 
   core/value, 
   core/scope,
@@ -42,6 +40,7 @@ when not defined(lite):
   import lib/min_math
 
 export 
+  env,
   parser,
   interpreter,
   utils,
@@ -52,6 +51,7 @@ export
 
 
 const PRELUDE* = "prelude.min".slurp.strip
+var NIMOPTIONS* = ""
 var customPrelude = ""
 
 if logging.getHandlers().len == 0:
@@ -120,6 +120,7 @@ proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
   return symbols
 
 proc stdLib*(i: In) =
+  setLogFilter(lvlNotice)
   if not MINSYMBOLS.fileExists:
     MINSYMBOLS.writeFile("{}")
   if not MINHISTORY.fileExists:
@@ -194,12 +195,21 @@ proc interpret*(i: In, s: string): MinValue =
     i.close()
     
 proc compile*(i: In, s: Stream) = 
+  if "nim".findExe == "":
+    error "Nim compiler not found, unable to compile."
+    quit(7)
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
+    MINCOMPILED = true
+    let nimFile = i.filename.changeFileExt("nim")
+    notice("Generating $#..." % nimFile)
     let r = i.compile()
-    for line in r:
-      echo line
+    writeFile(nimFile, r.join("\n"))
+    let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
+    notice("Calling Nim compiler:")
+    notice(cmd)
+    discard execShellCmd(cmd)
   except:
     discard
     i.close()
@@ -212,7 +222,7 @@ proc minStream(s: Stream, filename: string, op = "interpret") =
   else:
     i.compile(s)
 
-proc minString*(buffer: string) =
+proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
 proc minFile*(filename: string, op = "interpret") =
@@ -306,6 +316,10 @@ proc minRepl*(simple = false) =
     
 when isMainModule:
 
+  import 
+    parseopt, 
+    core/consts
+
   var REPL = false
   var SIMPLEREPL = false
   var INSTALL = false
@@ -331,6 +345,7 @@ when isMainModule:
     -j, --interactive-simple  Start $1 shell (without advanced prompt)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
+    -n, --passN               Pass options to the nim compiler (if -c is set)
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
     -v, —-version             Print the program version""" % [pkgName, pkgVersion]
 
@@ -354,6 +369,8 @@ when isMainModule:
             if file == "":
               var val = val
               setLogLevel(val)
+          of "passN", "n":
+              NIMOPTIONS = val
           of "evaluate", "e":
             if file == "":
               s = val
@@ -387,7 +404,7 @@ when isMainModule:
   if COMPILE:
     op = "compile"
   if s != "":
-    minString(s)
+    minStr(s)
   elif file != "":
     minFile file, op
   elif INSTALL:

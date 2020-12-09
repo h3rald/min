@@ -688,12 +688,11 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
   of tkBraceLe:
     result = newSeq[string](0)
     var val: MinValue
-    var scopevar = "scope" & $genOid()
-    var valvar = "val" & $genOid()
-    result.add "var "&scopevar&" = newScopeRef(nil)"
-    result.add "var "&valvar&": MinValue"
     discard getToken(p)
     var c = 0
+    var valInitialized = false
+    var scopevar = "scope" & $genOid()
+    var valvar = "val" & $genOid()
     while p.token != tkBraceRi: 
       c = c+1
       var instructions = p.compileMinValue(i, false)
@@ -701,6 +700,9 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
       let vs = instructions.pop
       result = result.concat(instructions)
       if val.isNil:
+        if not valInitialized:
+          result.add "var "&valvar&": MinValue"
+          valInitialized = true
         result.add valvar&" = "&vs
       elif v.kind == minSymbol:
         let key = v.symVal
@@ -714,7 +716,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
     eat(p, tkBraceRi)
     if c mod 2 != 0:
       raiseInvalid("Invalid dictionary")
-    # TODO: check
+    result.add "var "&scopevar&" = newScopeRef(nil)"
     result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
   of tkSymbol:
     result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeJson&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeJson&")"]

@@ -282,7 +282,9 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
 proc compile*(i: In): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
   result.add "import min"
+  result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
+  result.add "i.stdLib()"
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack

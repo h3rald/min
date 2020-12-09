@@ -665,6 +665,9 @@ proc lang_module*(i: In) =
     q.qVal.reverse
     i.dequote(q)
 
+  def.symbol("compiled?") do (i: In):
+    i.push MINCOMPILED.newVal
+
   # Converters
 
   def.symbol("string") do (i: In):
