@@ -1,18 +1,18 @@
-when not defined(windows):
-  {.passL: "-rdynamic".}
 import 
   streams, 
   critbits, 
   strutils, 
   os, 
-  json, 
   sequtils,
-  algorithm,
-  logging,
-  dynlib
+  logging
+
+when not defined(mini):
+  import 
+    json,
+    algorithm,
+    dynlib
 
 import 
-  packages/nimline/nimline,
   packages/niftylogger,
   core/env,
   core/parser, 
@@ -28,16 +28,21 @@ import
   lib/min_num,
   lib/min_str,
   lib/min_logic,
-  lib/min_time, 
-  lib/min_io,
-  lib/min_sys,
-  lib/min_fs
+  lib/min_time
 
-when not defined(lite):
-  import lib/min_http
-  import lib/min_net
-  import lib/min_crypto
-  import lib/min_math
+when not defined(mini):
+  import
+    packages/nimline/nimline,
+    lib/min_io,
+    lib/min_sys,
+    lib/min_fs
+
+when not defined(lite) and not defined(mini):
+  import 
+    lib/min_http,
+    lib/min_net,
+    lib/min_crypto,
+    lib/min_math
 
 export 
   env,
@@ -52,72 +57,75 @@ export
 
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
+var MINMODULES* = newSeq[string](0)
 var customPrelude = ""
 
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
 
-proc getExecs(): seq[string] =
-  var res = newSeq[string](0)
-  let getFiles = proc(dir: string) =
-    for c, s in walkDir(dir, true):
-      if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
-        res.add s
-  getFiles(getCurrentDir())
-  for dir in "PATH".getEnv.split(PathSep):
-    getFiles(dir)
-  res.sort(system.cmp)
-  return res
+when not defined(mini):
+  proc getExecs(): seq[string] =
+    var res = newSeq[string](0)
+    let getFiles = proc(dir: string) =
+      for c, s in walkDir(dir, true):
+        if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
+          res.add s
+    getFiles(getCurrentDir())
+    for dir in "PATH".getEnv.split(PathSep):
+      getFiles(dir)
+    res.sort(system.cmp)
+    return res
 
-proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
-  var words = ed.lineText.split(" ")
-  var word: string
-  if words.len == 0:
-    word = ed.lineText
-  else:
-    word = words[words.len-1]
-  if word.startsWith("’"):
-    return symbols.mapIt("’" & $it)
-  elif word.startsWith("~"):
-    return symbols.mapIt("~" & $it)
-  if word.startsWith("@"):
-    return symbols.mapIt("@" & $it)
-  if word.startsWith("#"):
-    return symbols.mapIt("#" & $it)
-  if word.startsWith(">"):
-    return symbols.mapIt(">" & $it)
-  if word.startsWith("*"):
-    return symbols.mapIt("*" & $it)
-  if word.startsWith("("):
-    return symbols.mapIt("(" & $it)
-  if word.startsWith("<"):
-    return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
-  if word.startsWith("$"):
-    return toSeq(envPairs()).mapIt("$" & $it[0])
-  if word.startsWith("!"):
-    return getExecs().mapIt("!" & $it)
-  if word.startsWith("&"):
-    return getExecs().mapIt("&" & $it)
-  if word.startsWith("\""):
-    var f = word[1..^1]
-    if f == "":
-      f = getCurrentDir().replace("\\", "/")  
-      return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
-    elif f.dirExists:
-      f = f.replace("\\", "/")
-      if f[f.len-1] != '/':
-        f = f & "/"
-      return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
+when not defined(mini):
+  proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
+    var words = ed.lineText.split(" ")
+    var word: string
+    if words.len == 0:
+      word = ed.lineText
     else:
-      var dir: string
-      if f.contains("/") or dir.contains("\\"):
-        dir = f.parentDir
-        let file = f.extractFileName
-        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
+      word = words[words.len-1]
+    if word.startsWith("’"):
+      return symbols.mapIt("’" & $it)
+    elif word.startsWith("~"):
+      return symbols.mapIt("~" & $it)
+    if word.startsWith("@"):
+      return symbols.mapIt("@" & $it)
+    if word.startsWith("#"):
+      return symbols.mapIt("#" & $it)
+    if word.startsWith(">"):
+      return symbols.mapIt(">" & $it)
+    if word.startsWith("*"):
+      return symbols.mapIt("*" & $it)
+    if word.startsWith("("):
+      return symbols.mapIt("(" & $it)
+    if word.startsWith("<"):
+      return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
+    if word.startsWith("$"):
+      return toSeq(envPairs()).mapIt("$" & $it[0])
+    if word.startsWith("!"):
+      return getExecs().mapIt("!" & $it)
+    if word.startsWith("&"):
+      return getExecs().mapIt("&" & $it)
+    if word.startsWith("\""):
+      var f = word[1..^1]
+      if f == "":
+        f = getCurrentDir().replace("\\", "/")  
+        return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
+      elif f.dirExists:
+        f = f.replace("\\", "/")
+        if f[f.len-1] != '/':
+          f = f & "/"
+        return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
       else:
-        dir = getCurrentDir()
-        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
-  return symbols
+        var dir: string
+        if f.contains("/") or dir.contains("\\"):
+          dir = f.parentDir
+          let file = f.extractFileName
+          return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
+        else:
+          dir = getCurrentDir()
+          return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
+    return symbols
 
 proc stdLib*(i: In) =
   setLogFilter(lvlNotice)
@@ -131,14 +139,15 @@ proc stdLib*(i: In) =
   i.stack_module
   i.seq_module
   i.dict_module
-  i.io_module
   i.logic_module
   i.num_module
   i.str_module
-  i.sys_module
   i.time_module
-  i.fs_module
-  when not defined(lite):
+  when not defined(mini):
+    i.sys_module
+    i.fs_module
+    i.io_module
+  when not defined(lite) and not defined(mini):
     i.crypto_module
     i.net_module
     i.math_module
@@ -152,31 +161,33 @@ proc stdLib*(i: In) =
       warn("Unable to process custom prelude code in $1" % customPrelude)
   i.eval MINRC.readFile()
 
-type
-  LibProc = proc(i: In) {.nimcall.}
+when not defined(mini):
+  type
+    LibProc = proc(i: In) {.nimcall.}
 
-proc dynLib*(i: In) =
-  discard MINLIBS.existsOrCreateDir
-  for library in walkFiles(MINLIBS & "/*"):
-    var modname = library.splitFile.name
-    var libfile = library.splitFile.name & library.splitFile.ext
-    if modname.len > 3 and modname[0..2] == "lib":
-      modname = modname[3..modname.len-1]
-    let dll = library.loadLib()
-    if dll != nil:
-      let modsym = dll.symAddr(modname)
-      if modsym != nil:
-        let modproc = cast[LibProc](dll.symAddr(modname))
-        i.modproc()
-        info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
+  proc dynLib*(i: In) =
+    discard MINLIBS.existsOrCreateDir
+    for library in walkFiles(MINLIBS & "/*"):
+      var modname = library.splitFile.name
+      var libfile = library.splitFile.name & library.splitFile.ext
+      if modname.len > 3 and modname[0..2] == "lib":
+        modname = modname[3..modname.len-1]
+      let dll = library.loadLib()
+      if dll != nil:
+        let modsym = dll.symAddr(modname)
+        if modsym != nil:
+          let modproc = cast[LibProc](dll.symAddr(modname))
+          i.modproc()
+          info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
+        else:
+          warn("[$1] Library does not contain symbol $2" % [libfile, modname])
       else:
-        warn("[$1] Library does not contain symbol $2" % [libfile, modname])
-    else:
-      warn("Unable to load dynamic library: " & libfile)
+        warn("Unable to load dynamic library: " & libfile)
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
-  i.dynLib()
+  when not defined(mini):
+    i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -194,38 +205,52 @@ proc interpret*(i: In, s: string): MinValue =
     discard
     i.close()
     
-proc compile*(i: In, s: Stream) = 
+proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.}
+
+proc compile*(i: In, s: Stream, main = true): seq[string] = 
   if "nim".findExe == "":
     error "Nim compiler not found, unable to compile."
     quit(7)
+  result = newSeq[string](0)
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
     MINCOMPILED = true
     let nimFile = i.filename.changeFileExt("nim")
-    notice("Generating $#..." % nimFile)
-    let r = i.compile()
-    writeFile(nimFile, r.join("\n"))
-    let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
-    notice("Calling Nim compiler:")
-    notice(cmd)
-    discard execShellCmd(cmd)
+    if main:
+      notice("Generating $#..." % nimFile)
+      result = i.initCompiledFile(MINMODULES)
+      for m in MINMODULES:
+        let f = m.replace("\\", "/")
+        result.add "### $#" % f
+        notice("- Including: $#" % f)
+        result = result.concat(minFile(f, "compile", main = false))
+      result.add "### $# (main)" % i.filename
+      result = result.concat(i.compileFile(main))
+      writeFile(nimFile, result.join("\n"))
+      let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
+      notice("Calling Nim compiler:")
+      notice(cmd)
+      discard execShellCmd(cmd)
+    else:
+      result = result.concat(i.compileFile(main))
   except:
     discard
-    i.close()
+  i.close()
 
-proc minStream(s: Stream, filename: string, op = "interpret") = 
+proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[string] {.discardable.}= 
   var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDir
   if op == "interpret":
     i.interpret(s)
+    newSeq[string](0)
   else:
-    i.compile(s)
+    i.compile(s, main)
 
 proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
-proc minFile*(filename: string, op = "interpret") =
+proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.} =
   var fn = filename
   if not filename.endsWith(".min"):
     fn &= ".min"
@@ -240,7 +265,7 @@ proc minFile*(filename: string, op = "interpret") =
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
   else:
     contents = fileLines.join("\n")
-  minStream(newStringStream(contents), fn, op)
+  minStream(newStringStream(contents), fn, op, main)
 
 proc minFile*(file: File, filename="stdin", op = "interpret") =
   var stream = newFileStream(filename)
@@ -276,26 +301,33 @@ proc printResult(i: In, res: MinValue) =
     else:
       echo " $1" % [$i.stack[i.stack.len - 1]]
 
-proc minRepl*(i: var MinInterpreter, simple = false) =
+proc minSimpleRepl*(i: var MinInterpreter) =
   i.stdLib()
-  i.dynLib()
+  when not defined(mini):
+    i.dynLib()
   var s = newStringStream("")
   i.open(s, "<repl>")
   var line: string
-  var ed = initEditor(historyFile = MINHISTORY)
-  if simple:
-    while true:
-      i.push("prompt".newSym)
-      let vals = i.expect("string")
-      let v = vals[0] 
-      let prompt = v.getString()
-      stdout.write(prompt)
-      stdout.flushFile()
-      line = stdin.readLine()
-      let r = i.interpret($line)
-      if $line != "":
-        i.printResult(r)
-  else:
+  while true:
+    i.push("prompt".newSym)
+    let vals = i.expect("string")
+    let v = vals[0] 
+    let prompt = v.getString()
+    stdout.write(prompt)
+    stdout.flushFile()
+    line = stdin.readLine()
+    let r = i.interpret($line)
+    if $line != "":
+      i.printResult(r)
+
+when not defined(mini):
+  proc minRepl*(i: var MinInterpreter) =
+    i.stdLib()
+    i.dynLib()
+    var s = newStringStream("")
+    i.open(s, "<repl>")
+    var line: string
+    var ed = initEditor(historyFile = MINHISTORY)
     while true:
       let symbols = toSeq(i.scope.symbols.keys)
       ed.completionCallback = proc(ed: LineEditor): seq[string] =
@@ -310,9 +342,13 @@ proc minRepl*(i: var MinInterpreter, simple = false) =
       if $line != "":
         i.printResult(r)
 
-proc minRepl*(simple = false) = 
+  proc minRepl*() = 
+    var i = newMinInterpreter(filename = "<repl>")
+    i.minRepl()
+
+proc minSimpleRepl*() = 
   var i = newMinInterpreter(filename = "<repl>")
-  i.minRepl(simple)
+  i.minSimpleRepl()
     
 when isMainModule:
 
@@ -326,28 +362,44 @@ when isMainModule:
   var UNINSTALL = false
   var COMPILE = false
   var libfile = ""
+  var exeName = "min"
+  var installOpt = "\n    -—install:<lib>           Install dynamic library file <lib>\n" 
+  var uninstallOpt = "\n    —-uninstall:<lib>         Uninstall dynamic library file <lib>\n"
+  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt)\n"
+  when defined(lite):
+    exeName = "litemin"
+  when defined(mini):
+    installOpt = ""
+    uninstallOpt = ""
+    iOpt = ""
+    exeName = "minimin"
 
-  let usage* = """  $1 v$2 - a tiny concatenative shell and programming language
+  let usage* = """  $exe v$version - a tiny concatenative programming language
   (c) 2014-2020 Fabio Cevasco
   
   Usage:
-    min [options] [filename]
+    $exe [options] [filename]
 
   Arguments:
-    filename  A $1 file to interpret or compile (default: STDIN).
-  Options:
-    -—install:<lib>           Install dynamic library file <lib>
-    —-uninstall:<lib>         Uninstall dynamic library file <lib>
+    filename  A $exe file to interpret or compile (default: STDIN).
+  Options:$installOpt$uninstallOpt
     -c, --compile             Compile the specified file
-    -e, --evaluate            Evaluate a $1 program inline
-    -h, --help                Print this help
-    -i, --interactive         Start $1 shell (with advanced prompt)
-    -j, --interactive-simple  Start $1 shell (without advanced prompt)
+    -e, --evaluate            Evaluate a $exe program inline
+    -h, --help                Print this help$iOpt
+    -j, --interactive-simple  Start $exe shell (without advanced prompt)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
+    -m, --module-path         Specify a directory containing the .min files to include in the
+                              compiled executable (if -c is set)
     -n, --passN               Pass options to the nim compiler (if -c is set)
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
-    -v, —-version             Print the program version""" % [pkgName, pkgVersion]
+    -v, —-version             Print the program version""" % [
+      "exe", exeName, 
+      "version", pkgVersion, 
+      "installOpt", installOpt, 
+      "uninstallOpt", uninstallOpt, 
+      "iOpt", iOpt
+  ]
 
   var file, s: string = ""
   var args = newSeq[string](0)
@@ -363,6 +415,10 @@ when isMainModule:
         case key:
           of "compile", "c":
             COMPILE = true
+          of "module-path", "m":
+            for f in walkDirRec(val):
+              if f.endsWith(".min"):
+                MINMODULES.add f
           of "prelude", "p":
             customPrelude = val
           of "log", "l":
@@ -429,8 +485,14 @@ when isMainModule:
       quit(6)
     notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
     quit(0)
-  elif REPL or SIMPLEREPL:
-    minRepl(SIMPLEREPL)
+  elif REPL:
+    when defined(mini):
+      minSimpleRepl()
+    else:
+      minRepl()
+    quit(0)
+  elif SIMPLEREPL:
+    minSimpleRepl()
     quit(0)
   else:
     minFile stdin, "stdin", op

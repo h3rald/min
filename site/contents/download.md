@@ -38,13 +38,40 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 #### -d:lite
 
-If the **d:lite** flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:
+If the **d:lite** flag is specified, a more minimal executable file ("litemin") will be generated, however the following functionalities will not be available:
 
 * The {#link-module||crypto#}
 * The {#link-module||net#}
 * The {#link-module||http#}
 * The {#link-module||math#}
 * The {#link-operator||sys||zip#} and {#link-operator||sys||unzip#} operators.
+
+#### -d:mini
+
+If the **d:mini** flag is specified, an even more minimal executable file ("minimin") will be generated, however the following functionalities will not be available:
+
+* The {#link-module||io#}
+* The {#link-module||fs#}
+* The {#link-module||sys#}
+* The {#link-module||net#}
+* The {#link-module||http#}
+* The {#link-module||math#}
+* The following operators:
+  * {#link-operator||lang||load#}
+  * {#link-operator||lang||read#}
+  * {#link-operator||lang||raw-args#}
+  * {#link-operator||str||search#}
+  * {#link-operator||str||match#}
+  * {#link-operator||str||replace#}
+  * {#link-operator||str||regex#}
+  * {#link-operator||str||semver?#}
+  * {#link-operator||str||from-semver#}
+
+Additionally:
+
+* No checks will be performed when defining symbols
+* Only the simple REPL will be available
+* There will be no support for dynamic libraries
 
 ## Running then min Shell
 
@@ -105,10 +132,18 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 > 
 > [$](class:prompt) min -c myfile.min -n:-d:release
 
+Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} symbol is used to load an external [.min](class:ext) file, it will attempt to load from the pre-loaded files first before searching the filesystem.
+
+For example, the following command executed in the root folder of the min project will compile [run.min](class:file) along with all [.min](class:ext) files included in the [task](class:dir) and its subfolders:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c run.min -m:tasks
+
 > %note%
 > Note
 > 
-> In order to successfully compile min files, Nim must be installed on your system and min must be installed via nimble.
+> In order to successfully compile [.min](class.ext) files, Nim must be installed on your system and min must be installed via nimble.
 
 ## Syntax Highlighting
 

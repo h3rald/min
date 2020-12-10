@@ -10,8 +10,14 @@
   build-tasks ^site
   build-tasks ^vim
   build-tasks ^windows
+  build-tasks ^windows-lite
+  build-tasks ^windows-mini
   build-tasks ^linux
+  build-tasks ^linux-lite
+  build-tasks ^linux-mini
   build-tasks ^macosx
+  build-tasks ^macosx-lite
+  build-tasks ^macosx-mini
   github-tasks ^update
   github-tasks ^upload
   ssh-tasks ^build

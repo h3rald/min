@@ -1,7 +1,8 @@
 import 
   streams, 
   strutils, 
-  critbits, 
+  sequtils,
+  critbits,
   os,
   algorithm,
   logging
@@ -14,6 +15,8 @@ type
   MinTrappedException* = ref object of CatchableError
   MinRuntimeError* = ref object of CatchableError
     data*: MinValue
+
+var MINCOMPILEDFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 
 proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
   data.objType = "error"
@@ -278,18 +281,13 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
     return q
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
-    
-proc compile*(i: In): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
-  result = newSeq[string](0)
-  result.add "import min"
-  result.add "MINCOMPILED = true"
-  result.add "var i = newMinInterpreter(\"$#\")" % i.filename
-  result.add "i.stdLib()"
+
+proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
     try:
-      result.add i.parser.compileMinValue(i)
+      result.add i.parser.compileMinValue(i, push = true, indent)
     except MinRuntimeError:
       let msg = getCurrentExceptionMsg()
       i.stack = i.stackcopy
@@ -306,6 +304,22 @@ proc compile*(i: In): seq[string] {.discardable, extern:"min_exported_symbol_$1"
       i.stackTrace
       i.trace = @[]
       raise MinTrappedException(msg: msg)
+    
+proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  result = newSeq[string](0)
+  if not main:
+    result.add "MINCOMPILEDFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
+    result = result.concat(i.rawCompile("  "))
+  else:
+    result = i.rawCompile("")
+
+proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  result = newSeq[string](0)
+  result.add "import min, critbits"
+  result.add "MINCOMPILED = true"
+  if files.len > 0:
+    result.add "var i = newMinInterpreter(\"$#\")" % i.filename
+  result.add "i.stdLib()"
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)

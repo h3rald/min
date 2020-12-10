@@ -4,9 +4,12 @@ import
   sequtils,
   parseopt,
   algorithm,
-  json,
-  os, 
-  logging
+  logging,
+  json
+when not defined(mini):
+  import 
+    os,
+    ../packages/nim-sgregex/sgregex
 import 
   ../core/env,
   ../core/consts,
@@ -14,7 +17,6 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../packages/nim-sgregex/sgregex,
   ../packages/niftylogger,
   ../core/scope
 
@@ -72,6 +74,9 @@ proc lang_module*(i: In) =
 
   def.symbol("lite?") do (i: In):
     i.push defined(lite).newVal
+
+  def.symbol("mini?") do (i: In):
+    i.push defined(mini).newVal
 
   def.symbol("from-yaml") do (i: In):
     let vals = i.expect("string")
@@ -136,8 +141,9 @@ proc lang_module*(i: In) =
       q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
-    if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
-      raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
+    when not defined(mini):
+      if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
@@ -220,28 +226,40 @@ proc lang_module*(i: In) =
     let s = vals[0]
     i.push i.parse s.strVal
 
-  def.symbol("load") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    var file = s.getString
-    if not file.endsWith(".min"):
-      file = file & ".min"
-    file = i.pwd.joinPath(file)
-    info("[load] File: ", file)
-    if not file.fileExists:
-      raiseInvalid("File '$1' does not exist." % file)
-    i.load file
+  when not defined(mini):
+    def.symbol("load") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[load] File: ", file)
+      if MINCOMPILED:
+        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        if MINCOMPILEDFILES.hasKey(compiledFile):
+          MINCOMPILEDFILES[compiledFile](i)
+          return
+      file = i.pwd.joinPath(file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.load file
 
-  def.symbol("read") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    var file = s.getString
-    if not file.endsWith(".min"):
-      file = file & ".min"
-    info("[read] File: ", file)
-    if not file.fileExists:
-      raiseInvalid("File '$1' does not exist." % file)
-    i.push i.read file
+    def.symbol("read") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[read] File: ", file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.push i.read file
+
+    def.symbol("raw-args") do (i: In):
+      var args = newSeq[MinValue](0)
+      for par in commandLineParams():
+          args.add par.newVal
+      i.push args.newVal
 
   def.symbol("with") do (i: In):
     let vals = i.expect("dict", "quot")
@@ -359,7 +377,10 @@ proc lang_module*(i: In) =
         return
       let e = getCurrentException()
       var res = newDict(i.scope)
-      let err = sgregex.replace($e.name, ":.+$", "")
+      var err = $e.name
+      let col = err.find(":")
+      if col >= 0:
+        err = err[0..col-1]
       res.objType = "error"
       i.dset(res, "error", err.newVal)
       i.dset(res, "message", e.msg.newVal)
@@ -627,12 +648,6 @@ proc lang_module*(i: In) =
           discard
     i.push opts
 
-  def.symbol("raw-args") do (i: In):
-    var args = newSeq[MinValue](0)
-    for par in commandLineParams():
-        args.add par.newVal
-    i.push args.newVal
-
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q
@@ -719,7 +734,10 @@ proc lang_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]\n$$ " (.) => %""")
+    when defined(mini):
+      i.push "$ ".newVal
+    else:
+      i.eval(""""[$1]\n$$ " (.) => %""")
 
   # Sigils
 

@@ -1,7 +1,9 @@
 nimcache/
 build/
-min.exe
+*.exe
 min
+litemin
+minimin
 nakefile
 Min_DeveloperGuide.htm
 nimsuggest.log
@@ -14,4 +16,5 @@ site/temp/
 dynlibs/
 .env.yml
 response.json
-_*
+run
+run.nim

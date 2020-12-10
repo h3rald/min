@@ -3,7 +3,6 @@ import
   critbits,
   json
 import 
-  ../packages/nim-sgregex/sgregex,
   parser, 
   value,
   scope,
@@ -159,8 +158,8 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
       result = json.getFloat.newVal
     of JString:
       let s = json.getStr
-      if s.match("^;sym:"):
-        result = sgregex.replace(s, "^;sym:", "").newSym
+      if s.startsWith(";sym:"):
+        result = s.replace(";sym:", "").newSym
       else:
         result = json.getStr.newVal
     of JObject:
@@ -170,8 +169,8 @@ proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1
         var rest = ""
         if key.len > 1:
           rest = key[1..key.len-1]
-        first = sgregex.replace(first, "[^a-zA-Z0-9_]", "_")
-        rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
+        #first = sgregex.replace(first, peg"[^a-zA-Z0-9_]", "_")
+        #rest = sgregex.replace(rest, peg"[^a-zA-Z0-9/!?+*._-]", "_")
         discard i.dset(res, first&rest, i.fromJson(value))
       return res
     of JArray:

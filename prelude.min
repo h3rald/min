@@ -1,20 +1,24 @@
 ; Imports
 'str       import
-'io        import
 'logic     import
 'num       import
-'sys       import
 'stack     import
 'seq       import
 'dict      import
 'time      import
-'fs        import
-'lite? (
+(mini?) (
   (
-    'crypto    import
-    'math      import
-    'net       import
-    'http      import
+    'io     import
+    'fs     import
+    'sys    import
+  ) ROOT with
+) unless
+(lite? mini? or) (
+  (
+    'crypto import
+    'math   import
+    'net    import
+    'http   import
   ) ROOT with
 ) unless
 ; Unseal prompt symbol

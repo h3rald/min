@@ -652,10 +652,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
   result.filename = p.filename
   
-proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.extern:"min_exported_symbol_$1".}=
-  var op = ""
+proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] {.extern:"min_exported_symbol_$1".}=
+  var op = indent
   if push:
-    op = "i.push "
+    op = indent&"i.push "
   result = newSeq[string](0)
   case p.token
   of tkTrue:
@@ -676,13 +676,13 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
     discard getToken(p)
   of tkBracketLe:
     var qvar = "q" & $genOid()
-    result.add "var "&qvar&" = newSeq[MinValue](0)"
+    result.add indent&"var "&qvar&" = newSeq[MinValue](0)"
     discard getToken(p)
     while p.token != tkBracketRi: 
-      var instructions = p.compileMinValue(i, false)
+      var instructions = p.compileMinValue(i, false, indent)
       let v = instructions.pop
       result = result.concat(instructions)
-      result.add qvar&".add "&v
+      result.add indent&qvar&".add "&v
     eat(p, tkBracketRi)
     result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")" 
   of tkBraceLe:
@@ -695,19 +695,19 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
     var valvar = "val" & $genOid()
     while p.token != tkBraceRi: 
       c = c+1
-      var instructions = p.compileMinValue(i, false)
+      var instructions = p.compileMinValue(i, false, indent)
       let v = p.parseMinValue(i)
       let vs = instructions.pop
       result = result.concat(instructions)
       if val.isNil:
         if not valInitialized:
-          result.add "var "&valvar&": MinValue"
+          result.add indent&"var "&valvar&": MinValue"
           valInitialized = true
-        result.add valvar&" = "&vs
+        result.add indent&valvar&" = "&vs
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
-          result.add scopevar&".symbols["&key[1 .. key.len-1]&"] = MinOperator(kind: minValOp, val: "&valvar&", sealed: false)"
+          result.add indent&scopevar&".symbols["&key[1 .. key.len-1]&"] = MinOperator(kind: minValOp, val: "&valvar&", sealed: false)"
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -716,7 +716,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true): seq[string] {.exter
     eat(p, tkBraceRi)
     if c mod 2 != 0:
       raiseInvalid("Invalid dictionary")
-    result.add "var "&scopevar&" = newScopeRef(nil)"
+    result.add indent&"var "&scopevar&" = newScopeRef(nil)"
     result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
   of tkSymbol:
     result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeJson&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeJson&")"]

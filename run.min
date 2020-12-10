@@ -23,8 +23,6 @@ taskspec 0 get :task
 
 "./tasks/$#.min" (task) =% :task-file
 
-(task-file exists? not) ("Task '$1' does not exist" (task) =% error 2 exit) when
-
 ; Load task module
 task-file load
 
