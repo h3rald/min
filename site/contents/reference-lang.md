@@ -86,6 +86,9 @@ Calls operator {{sl}} defined in dictionary {{d}}. #}
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
+{#op||compiled?||{{null}}||{{b}}||
+Returns {{t}} if the current program has been compiled.#}
+
 {#op||define||{{any}} {{sl}}||{{null}}||
 Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 

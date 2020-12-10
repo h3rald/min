@@ -36,11 +36,6 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
-
-#### -d:ssl
-
-If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to perform HTTPS requests with the {#link-module||http#}. This means that the resulting **min** executable will no longer be self-contained and it will require the OpenSSL dynamic library to be available on your system.
-
 #### -d:lite
 
 If the **d:lite** flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:
@@ -90,6 +85,30 @@ min also supports running programs from standard input, so the following command
 > %min-terminal%
 > 
 > [$](class:prompt) cat myfile.min | min
+
+## Compiling a min Program
+
+min programs can be compiled to a single executable simply by specifying the `-c` (or `--compile`) flag when executing a min file:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c myfile.min
+
+Essentially, this will:
+
+1. Generate a [myfile.nim](class:file) containing the equivalent Nim code of your min program.
+2. Call the Nim compiler to do the rest ;)
+
+If you want to pass any options to the Nim compiler (like `-d:release` for example) you can do so by using the `-n` (or `--passN`) option:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c myfile.min -n:-d:release
+
+> %note%
+> Note
+> 
+> In order to successfully compile min files, Nim must be installed on your system and min must be installed via nimble.
 
 ## Syntax Highlighting
 
