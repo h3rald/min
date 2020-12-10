@@ -82,7 +82,7 @@
 ) %macosx-lite
 (
   "mini" "macosx" cz
-) %macosx-min
+) %macosx-mini
 (
   "" "windows" cz
 ) %windows
