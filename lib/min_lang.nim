@@ -4,11 +4,17 @@ import
   sequtils,
   parseopt,
   algorithm,
-  logging,
   json
-when not defined(mini):
+when defined(mini):
+  import
+    rdstdin,
+    ../core/minilogger
+else:
   import 
     os,
+    logging,
+    ../packages/niftylogger,
+    ../packages/nimline/nimline,
     ../packages/nim-sgregex/sgregex
 import 
   ../core/env,
@@ -17,7 +23,6 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../packages/niftylogger,
   ../core/scope
 
 proc lang_module*(i: In) =
@@ -25,6 +30,20 @@ proc lang_module*(i: In) =
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
     quit(vals[0].intVal.int)
+
+  def.symbol("puts") do (i: In):
+    let a = i.peek
+    echo $$a
+  
+  def.symbol("puts!") do (i: In):
+    echo $$i.pop
+
+  def.symbol("gets") do (i: In) {.gcsafe.}:
+    when defined(mini):
+      i.push readLineFromStdin("").newVal 
+    else:
+      var ed = initEditor()
+      i.push ed.readLine().newVal
    
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot|dict")
@@ -124,10 +143,16 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     let s = vals[0]
     var str = s.getString
-    echo "Log level: ", setLogLevel(str)
+    when defined(mini):
+      echo "Log level: ", minilogger.setLogLevel(str)
+    else:
+      echo "Log level: ", niftylogger.setLogLevel(str)
 
   def.symbol("loglevel?") do (i: In):
-    i.push getLogLevel().newVal
+    when defined(mini):
+      i.push minilogger.getLogLevel().newVal
+    else:
+      i.push niftylogger.getLogLevel().newVal
 
   # Language constructs
 
@@ -227,6 +252,46 @@ proc lang_module*(i: In) =
     i.push i.parse s.strVal
 
   when not defined(mini):
+    # Save/load symbols
+  
+    def.symbol("save-symbol") do (i: In) {.gcsafe.}:
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let op = i.scope.getSymbol(sym)
+      if op.kind == minProcOp:
+        raiseInvalid("Symbol '$1' cannot be serialized." % sym)
+      let json = MINSYMBOLS.readFile.parseJson
+      json[sym] = i%op.val
+      MINSYMBOLS.writeFile(json.pretty)
+
+    def.symbol("load-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      let val = i.fromJson(json[sym])
+      i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
+
+    def.symbol("saved-symbols") do (i: In):
+      var q = newSeq[MinValue](0)
+      let json = MINSYMBOLS.readFile.parseJson
+      for k,v in json.pairs:
+        q.add k.newVal
+      i.push q.newVal
+
+    def.symbol("remove-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      var json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      json.delete(sym)
+      MINSYMBOLS.writeFile(json.pretty)
+
     def.symbol("load") do (i: In):
       let vals = i.expect("'sym")
       let s = vals[0]
@@ -553,46 +618,6 @@ proc lang_module*(i: In) =
 
   def.symbol("version") do (i: In):
     i.push pkgVersion.newVal
-
-  # Save/load symbols
-  
-  def.symbol("save-symbol") do (i: In) {.gcsafe.}:
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    let op = i.scope.getSymbol(sym)
-    if op.kind == minProcOp:
-      raiseInvalid("Symbol '$1' cannot be serialized." % sym)
-    let json = MINSYMBOLS.readFile.parseJson
-    json[sym] = i%op.val
-    MINSYMBOLS.writeFile(json.pretty)
-
-  def.symbol("load-symbol") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    let json = MINSYMBOLS.readFile.parseJson
-    if not json.hasKey(sym):
-      raiseUndefined("Symbol '$1' not found." % sym)
-    let val = i.fromJson(json[sym])
-    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
-
-  def.symbol("saved-symbols") do (i: In):
-    var q = newSeq[MinValue](0)
-    let json = MINSYMBOLS.readFile.parseJson
-    for k,v in json.pairs:
-      q.add k.newVal
-    i.push q.newVal
-
-  def.symbol("remove-symbol") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    var json = MINSYMBOLS.readFile.parseJson
-    if not json.hasKey(sym):
-      raiseUndefined("Symbol '$1' not found." % sym)
-    json.delete(sym)
-    MINSYMBOLS.writeFile(json.pretty)
 
   def.symbol("seal") do (i: In):
     let vals = i.expect("'sym")

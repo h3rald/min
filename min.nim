@@ -2,18 +2,21 @@ import
   streams, 
   critbits, 
   strutils, 
-  os, 
-  sequtils,
-  logging
+  sequtils
 
-when not defined(mini):
+when defined(mini):
+  import
+    core/minilogger
+else:
   import 
     json,
+    os,
     algorithm,
-    dynlib
-
+    dynlib,
+    logging,
+    packages/niftylogger
 import 
-  packages/niftylogger,
+  core/baseutils,
   core/env,
   core/parser, 
   core/value, 
@@ -49,10 +52,13 @@ export
   parser,
   interpreter,
   utils,
-  niftylogger,
   value,
-  scope,
-  min_lang
+  scope#,
+  #min_lang
+when defined(mini):
+  export minilogger
+else:
+  export niftylogger
 
 
 const PRELUDE* = "prelude.min".slurp.strip
@@ -60,10 +66,10 @@ var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
 var customPrelude = ""
 
-if logging.getHandlers().len == 0:
-  newNiftyLogger().addHandler()
-
 when not defined(mini):
+  if logging.getHandlers().len == 0:
+    newNiftyLogger().addHandler()
+
   proc getExecs(): seq[string] =
     var res = newSeq[string](0)
     let getFiles = proc(dir: string) =
@@ -76,7 +82,6 @@ when not defined(mini):
     res.sort(system.cmp)
     return res
 
-when not defined(mini):
   proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
     var words = ed.lineText.split(" ")
     var word: string
@@ -127,14 +132,38 @@ when not defined(mini):
           return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
     return symbols
 
+  type
+    LibProc = proc(i: In) {.nimcall.}
+
+  proc dynLib*(i: In) =
+    discard MINLIBS.existsOrCreateDir
+    for library in walkFiles(MINLIBS & "/*"):
+      var modname = library.splitFile.name
+      var libfile = library.splitFile.name & library.splitFile.ext
+      if modname.len > 3 and modname[0..2] == "lib":
+        modname = modname[3..modname.len-1]
+      let dll = library.loadLib()
+      if dll != nil:
+        let modsym = dll.symAddr(modname)
+        if modsym != nil:
+          let modproc = cast[LibProc](dll.symAddr(modname))
+          i.modproc()
+          logging.info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
+        else:
+          logging.warn("[$1] Library does not contain symbol $2" % [libfile, modname])
+      else:
+        logging.warn("Unable to load dynamic library: " & libfile)
+
+
 proc stdLib*(i: In) =
-  setLogFilter(lvlNotice)
-  if not MINSYMBOLS.fileExists:
-    MINSYMBOLS.writeFile("{}")
-  if not MINHISTORY.fileExists:
-    MINHISTORY.writeFile("")
-  if not MINRC.fileExists:
-    MINRC.writeFile("")
+  when not defined(mini):
+    setLogFilter(logging.lvlNotice)
+    if not MINSYMBOLS.fileExists:
+      MINSYMBOLS.writeFile("{}")
+    if not MINHISTORY.fileExists:
+      MINHISTORY.writeFile("")
+    if not MINRC.fileExists:
+      MINRC.writeFile("")
   i.lang_module
   i.stack_module
   i.seq_module
@@ -158,31 +187,12 @@ proc stdLib*(i: In) =
     try:
       i.eval customPrelude.readFile, customPrelude
     except:
-      warn("Unable to process custom prelude code in $1" % customPrelude)
-  i.eval MINRC.readFile()
-
-when not defined(mini):
-  type
-    LibProc = proc(i: In) {.nimcall.}
-
-  proc dynLib*(i: In) =
-    discard MINLIBS.existsOrCreateDir
-    for library in walkFiles(MINLIBS & "/*"):
-      var modname = library.splitFile.name
-      var libfile = library.splitFile.name & library.splitFile.ext
-      if modname.len > 3 and modname[0..2] == "lib":
-        modname = modname[3..modname.len-1]
-      let dll = library.loadLib()
-      if dll != nil:
-        let modsym = dll.symAddr(modname)
-        if modsym != nil:
-          let modproc = cast[LibProc](dll.symAddr(modname))
-          i.modproc()
-          info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
-        else:
-          warn("[$1] Library does not contain symbol $2" % [libfile, modname])
+      when defined(mini):
+        minilogger.warn("Unable to process custom prelude code in $1" % customPrelude)
       else:
-        warn("Unable to load dynamic library: " & libfile)
+        logging.warn("Unable to process custom prelude code in $1" % customPrelude)
+  when not defined(mini):
+    i.eval MINRC.readFile()
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
@@ -208,30 +218,41 @@ proc interpret*(i: In, s: string): MinValue =
 proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.}
 
 proc compile*(i: In, s: Stream, main = true): seq[string] = 
-  if "nim".findExe == "":
-    error "Nim compiler not found, unable to compile."
-    quit(7)
+  when not defined(mini):
+    if "nim".findExe == "":
+      logging.error "Nim compiler not found, unable to compile."
+      quit(7)
   result = newSeq[string](0)
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
     MINCOMPILED = true
-    let nimFile = i.filename.changeFileExt("nim")
+    let dotindex = i.filename.rfind(".")
+    let nimFile = i.filename[0..dotindex-1] & ".nim"
     if main:
-      notice("Generating $#..." % nimFile)
+      when defined(mini):
+        minilogger.notice("Generating $#..." % nimFile)
+      else:
+        logging.notice("Generating $#..." % nimFile)
       result = i.initCompiledFile(MINMODULES)
       for m in MINMODULES:
         let f = m.replace("\\", "/")
         result.add "### $#" % f
-        notice("- Including: $#" % f)
+        when defined(mini):
+          minilogger.notice("- Including: $#" % f)
+        else:
+          logging.notice("- Including: $#" % f)
         result = result.concat(minFile(f, "compile", main = false))
       result.add "### $# (main)" % i.filename
       result = result.concat(i.compileFile(main))
       writeFile(nimFile, result.join("\n"))
-      let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
-      notice("Calling Nim compiler:")
-      notice(cmd)
-      discard execShellCmd(cmd)
+      when not defined(mini):
+        let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
+        logging.notice("Calling Nim compiler:")
+        logging.notice(cmd)
+        discard execShellCmd(cmd)
+      else:
+        minilogger.notice("$# generated successfully, call the nim compiler to compile it.")
     else:
       result = result.concat(i.compileFile(main))
   except:
@@ -240,7 +261,7 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
 
 proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[string] {.discardable.}= 
   var i = newMinInterpreter(filename = filename)
-  i.pwd = filename.parentDir
+  i.pwd = filename.parentDirEx
   if op == "interpret":
     i.interpret(s)
     newSeq[string](0)
@@ -259,7 +280,10 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   try:
     fileLines = fn.readFile().splitLines()
   except:
-    fatal("Cannot read from file: " & fn)
+    when defined(mini):
+      minilogger.fatal("Cannot read from file: " & fn)
+    else:
+      logging.fatal("Cannot read from file: " & fn)
     quit(3)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
@@ -270,90 +294,17 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
 proc minFile*(file: File, filename="stdin", op = "interpret") =
   var stream = newFileStream(filename)
   if stream == nil:
-    fatal("Cannot read from file: " & filename)
+    when defined(mini):
+      minilogger.fatal("Cannot read from file: " & filename)
+    else:
+      logging.fatal("Cannot read from file: " & filename)
     quit(3)
   minStream(stream, filename, op)
 
-proc printResult(i: In, res: MinValue) =
-  if res.isNil:
-    return
-  if i.stack.len > 0:
-    let n = $i.stack.len
-    if res.isQuotation and res.qVal.len > 1:
-      echo " ("
-      for item in res.qVal:
-        echo  "   " & $item
-      echo " ".repeat(n.len) & ")"
-    elif res.isDictionary and res.dVal.len > 1:
-      echo " {"
-      for item in res.dVal.pairs:
-        var v = ""
-        if item.val.kind == minProcOp:
-          v = "<native>"
-        else:
-          v = $item.val.val
-        echo  "   " & v & " :" & $item.key
-      if res.objType == "":
-        echo " ".repeat(n.len) & "}"
-      else:
-        echo " ".repeat(n.len) & "  ;" & res.objType
-        echo " ".repeat(n.len) & "}"
-    else:
-      echo " $1" % [$i.stack[i.stack.len - 1]]
-
-proc minSimpleRepl*(i: var MinInterpreter) =
-  i.stdLib()
-  when not defined(mini):
-    i.dynLib()
-  var s = newStringStream("")
-  i.open(s, "<repl>")
-  var line: string
-  while true:
-    i.push("prompt".newSym)
-    let vals = i.expect("string")
-    let v = vals[0] 
-    let prompt = v.getString()
-    stdout.write(prompt)
-    stdout.flushFile()
-    line = stdin.readLine()
-    let r = i.interpret($line)
-    if $line != "":
-      i.printResult(r)
-
-when not defined(mini):
-  proc minRepl*(i: var MinInterpreter) =
-    i.stdLib()
-    i.dynLib()
-    var s = newStringStream("")
-    i.open(s, "<repl>")
-    var line: string
-    var ed = initEditor(historyFile = MINHISTORY)
-    while true:
-      let symbols = toSeq(i.scope.symbols.keys)
-      ed.completionCallback = proc(ed: LineEditor): seq[string] =
-        return ed.getCompletions(symbols)
-      # evaluate prompt
-      i.push("prompt".newSym)
-      let vals = i.expect("string")
-      let v = vals[0] 
-      let prompt = v.getString()
-      line = ed.readLine(prompt)
-      let r = i.interpret($line)
-      if $line != "":
-        i.printResult(r)
-
-  proc minRepl*() = 
-    var i = newMinInterpreter(filename = "<repl>")
-    i.minRepl()
-
-proc minSimpleRepl*() = 
-  var i = newMinInterpreter(filename = "<repl>")
-  i.minSimpleRepl()
-    
 when isMainModule:
 
   import 
-    parseopt, 
+    parseopt,
     core/consts
 
   var REPL = false
@@ -361,6 +312,7 @@ when isMainModule:
   var INSTALL = false
   var UNINSTALL = false
   var COMPILE = false
+  var MODULEPATH = ""
   var libfile = ""
   var exeName = "min"
   var installOpt = "\n    -—install:<lib>           Install dynamic library file <lib>\n" 
@@ -373,6 +325,83 @@ when isMainModule:
     uninstallOpt = ""
     iOpt = ""
     exeName = "minimin"
+
+  proc printResult(i: In, res: MinValue) =
+    if res.isNil:
+      return
+    if i.stack.len > 0:
+      let n = $i.stack.len
+      if res.isQuotation and res.qVal.len > 1:
+        echo " ("
+        for item in res.qVal:
+          echo  "   " & $item
+        echo " ".repeat(n.len) & ")"
+      elif res.isDictionary and res.dVal.len > 1:
+        echo " {"
+        for item in res.dVal.pairs:
+          var v = ""
+          if item.val.kind == minProcOp:
+            v = "<native>"
+          else:
+            v = $item.val.val
+          echo  "   " & v & " :" & $item.key
+        if res.objType == "":
+          echo " ".repeat(n.len) & "}"
+        else:
+          echo " ".repeat(n.len) & "  ;" & res.objType
+          echo " ".repeat(n.len) & "}"
+      else:
+        echo " $1" % [$i.stack[i.stack.len - 1]]
+
+  proc minSimpleRepl*(i: var MinInterpreter) =
+    i.stdLib()
+    when not defined(mini):
+      i.dynLib()
+    var s = newStringStream("")
+    i.open(s, "<repl>")
+    var line: string
+    while true:
+      i.push("prompt".newSym)
+      let vals = i.expect("string")
+      let v = vals[0] 
+      let prompt = v.getString()
+      stdout.write(prompt)
+      stdout.flushFile()
+      line = stdin.readLine()
+      let r = i.interpret($line)
+      if $line != "":
+        i.printResult(r)
+
+  when not defined(mini):
+    proc minRepl*(i: var MinInterpreter) =
+      i.stdLib()
+      i.dynLib()
+      var s = newStringStream("")
+      i.open(s, "<repl>")
+      var line: string
+      var ed = initEditor(historyFile = MINHISTORY)
+      while true:
+        let symbols = toSeq(i.scope.symbols.keys)
+        ed.completionCallback = proc(ed: LineEditor): seq[string] =
+          return ed.getCompletions(symbols)
+        # evaluate prompt
+        i.push("prompt".newSym)
+        let vals = i.expect("string")
+        let v = vals[0] 
+        let prompt = v.getString()
+        line = ed.readLine(prompt)
+        let r = i.interpret($line)
+        if $line != "":
+          i.printResult(r)
+
+    proc minRepl*() = 
+      var i = newMinInterpreter(filename = "<repl>")
+      i.minRepl()
+
+  proc minSimpleRepl*() = 
+    var i = newMinInterpreter(filename = "<repl>")
+    i.minSimpleRepl()
+      
 
   let usage* = """  $exe v$version - a tiny concatenative programming language
   (c) 2014-2020 Fabio Cevasco
@@ -403,9 +432,13 @@ when isMainModule:
 
   var file, s: string = ""
   var args = newSeq[string](0)
-  setLogFilter(lvlNotice)
+  when defined(mini):
+    minilogger.setLogFilter(minilogger.lvlNotice)
+  else:
+    logging.setLogFilter(logging.lvlNotice)
+  var p = initOptParser()
   
-  for kind, key, val in getopt():
+  for kind, key, val in getopt(p):
     case kind:
       of cmdArgument:
         args.add key
@@ -416,15 +449,16 @@ when isMainModule:
           of "compile", "c":
             COMPILE = true
           of "module-path", "m":
-            for f in walkDirRec(val):
-              if f.endsWith(".min"):
-                MINMODULES.add f
+            MODULEPATH = val
           of "prelude", "p":
             customPrelude = val
           of "log", "l":
             if file == "":
               var val = val
-              setLogLevel(val)
+              when defined(mini):
+                minilogger.setLogLevel(val)
+              else:
+                niftylogger.setLogLevel(val)
           of "passN", "n":
               NIMOPTIONS = val
           of "evaluate", "e":
@@ -439,17 +473,17 @@ when isMainModule:
               echo pkgVersion
               quit(0)
           of "interactive", "i":
-            if file == "":
+            if file == "" and not defined(mini):
               REPL = true
           of "interactive-simple", "j":
             if file == "":
               SIMPLEREPL = true
           of "install":
-            if file == "":
+            if file == "" and not defined(mini):
               INSTALL = true
               libfile = val
           of "uninstall":
-            if file == "":
+            if file == "" and not defined(mini):
               UNINSTALL = true
               libfile = val
           else:
@@ -459,38 +493,41 @@ when isMainModule:
   var op = "interpret"
   if COMPILE:
     op = "compile"
+
+  when not defined(mini):
+    if MODULEPATH.len > 0:
+      for f in walkDirRec(MODULEPATH):
+        if f.endsWith(".min"):
+          MINMODULES.add f
+    if INSTALL:
+      if not libfile.fileExists:
+        logging.fatal("Dynamic library file not found:" & libfile)
+        quit(4)
+      try:
+        libfile.copyFile(MINLIBS/libfile.extractFilename)
+      except:
+        logging.fatal("Unable to install library file: " & libfile)
+        quit(5)
+      logging.notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
+      quit(0)
+    elif UNINSTALL:
+      if not (MINLIBS/libfile.extractFilename).fileExists:
+        logging.fatal("Dynamic library file not found:" & libfile)
+        quit(4)
+      try:
+        removeFile(MINLIBS/libfile.extractFilename)
+      except:
+        logging.fatal("Unable to uninstall library file: " & libfile)
+        quit(6)
+      logging.notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
+      quit(0)
+    elif REPL:
+      minRepl()
+      quit(0)
   if s != "":
     minStr(s)
   elif file != "":
     minFile file, op
-  elif INSTALL:
-    if not libfile.fileExists:
-      fatal("Dynamic library file not found:" & libfile)
-      quit(4)
-    try:
-      libfile.copyFile(MINLIBS/libfile.extractFilename)
-    except:
-      fatal("Unable to install library file: " & libfile)
-      quit(5)
-    notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
-    quit(0)
-  elif UNINSTALL:
-    if not (MINLIBS/libfile.extractFilename).fileExists:
-      fatal("Dynamic library file not found:" & libfile)
-      quit(4)
-    try:
-      removeFile(MINLIBS/libfile.extractFilename)
-    except:
-      fatal("Unable to uninstall library file: " & libfile)
-      quit(6)
-    notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
-    quit(0)
-  elif REPL:
-    when defined(mini):
-      minSimpleRepl()
-    else:
-      minRepl()
-    quit(0)
   elif SIMPLEREPL:
     minSimpleRepl()
     quit(0)

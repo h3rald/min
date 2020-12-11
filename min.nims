@@ -10,16 +10,17 @@ switch("amd64.linux.gcc.path", "/usr/local/bin")
 switch("amd64.linux.gcc.exe", "x86_64-linux-musl-gcc")
 switch("amd64.linux.gcc.linkerexe", "x86_64-linux-musl-gcc")
 
-switch("define", "ssl")
 switch("opt", "size")
-switch("threads", "on")
 
-when defined(windows): 
-  # TODO",  change once issue nim#15220 is resolved
-  switch("define", "noOpenSSLHacks")
-  switch("dynlibOverride", "ssl-")
-  switch("dynlibOverride", "crypto-")
-  switch("define", "sslVersion:(")
-else:
-  switch("dynlibOverride", "ssl")
-  switch("dynlibOverride", "crypto")
+when not defined(mini):
+  switch("define", "ssl")
+  switch("threads", "on")
+  when defined(windows): 
+    # TODO",  change once issue nim#15220 is resolved
+    switch("define", "noOpenSSLHacks")
+    switch("define", "sslVersion:(")
+    switch("dynlibOverride", "ssl-")
+    switch("dynlibOverride", "crypto-")
+  else:
+    switch("dynlibOverride", "ssl")
+    switch("dynlibOverride", "crypto")

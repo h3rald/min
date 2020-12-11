@@ -4,3 +4,4 @@
 * Added the possibility to compile a bare-bones version of min specifying the **-d:mini** compilation flag.
 * Added **mini?** symbol which returns true if min was compiled specifying **-d:mini**.
 * Now distributing precompiled **litemin** and **minimin** executables as well.
+* Moved **puts**, **puts!** and **gets** from io module to lang module.

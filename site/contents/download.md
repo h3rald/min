@@ -7,11 +7,13 @@ title: "Download"
 
 You can download one of the following pre-built min binaries:
 
-* {#release||{{$version}}||macosx||macOS||x64#}
-* {#release||{{$version}}||windows||Windows||x64#}
-* {#release||{{$version}}||linux||Linux||x64#}
+* {#release||{{$version}}||macosx||macOS||x64#} <small>[{#lite-release||{{$version}}||macosx||macOS||x64#}, {#mini-release||{{$version}}||macosx||macOS||x64#}]</small>
+* {#release||{{$version}}||windows||Windows||x64#} <small>[{#lite-release||{{$version}}||windows||Windows||x64#}, {#mini-release||{{$version}}||windows||Windows||x64#}]</small>
+* {#release||{{$version}}||linux||Linux||x64#} <small>[{#lite-release||{{$version}}||linux||Linux||x64#}, {#mini-release||{{$version}}||linux||Linux||x64#}]</small>
 
 {#release -> [min v$1 for $3 ($4)](https://github.com/h3rald/min/releases/download/v$1/min\_v$1\_$2\_$4.zip) #}
+{#lite-release -> [lite](https://github.com/h3rald/min/releases/download/v$1/litemin\_v$1\_$2\_$4.zip) #}
+{#mini-release -> [mini](https://github.com/h3rald/min/releases/download/v$1/minimin\_v$1\_$2\_$4.zip) #}
 
 {{guide-download}}
 
@@ -38,7 +40,7 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 #### -d:lite
 
-If the **d:lite** flag is specified, a more minimal executable file ("litemin") will be generated, however the following functionalities will not be available:
+If the **d:lite** flag is specified, a more minimal executable file will be generated (typically, it should be called "litemin"), however the following functionalities will not be available:
 
 * The {#link-module||crypto#}
 * The {#link-module||net#}
@@ -48,32 +50,41 @@ If the **d:lite** flag is specified, a more minimal executable file ("litemin") 
 
 #### -d:mini
 
-If the **d:mini** flag is specified, an even more minimal executable file ("minimin") will be generated, however the following functionalities will not be available:
+If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called litemin), however the following functionalities will not be available:
 
-* The {#link-module||io#}
-* The {#link-module||fs#}
-* The {#link-module||sys#}
+* The {#link-module||crypto#}
 * The {#link-module||net#}
 * The {#link-module||http#}
 * The {#link-module||math#}
+* The {#link-module||io#}
+* The {#link-module||fs#}
+* The {#link-module||sys#}
 * The following operators:
   * {#link-operator||lang||load#}
   * {#link-operator||lang||read#}
   * {#link-operator||lang||raw-args#}
+  * {#link-operator||lang||save-symbol#}
+  * {#link-operator||lang||load-symbol#}
+  * {#link-operator||lang||saved-symbol#}
+  * {#link-operator||lang||loaded-symbol#}
   * {#link-operator||str||search#}
   * {#link-operator||str||match#}
   * {#link-operator||str||replace#}
   * {#link-operator||str||regex#}
   * {#link-operator||str||semver?#}
   * {#link-operator||str||from-semver#}
+  * {#link-operator||sys||zip#}
+  * {#link-operator||sys||unzip#}
 
 Additionally:
 
-* No checks will be performed when defining symbols
-* Only the simple REPL will be available
-* There will be no support for dynamic libraries
+* No checks will be performed when defining symbols.
+* Only the simple REPL will be available.
+* There will be no support for dynamic libraries.
+* The **-m, \-\-module-path** option has no effect.
+* No environment configuration files ([.minrc](class.file), [.min_symbols](class:file)) are used.
 
-## Running then min Shell
+## Running the min Shell
 
 To start min shell, run [min -i](class:cmd). You will be presented with a prompt displaying the path to the current directory:
 

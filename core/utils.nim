@@ -3,15 +3,11 @@ import
   critbits,
   json
 import 
+  baseutils,
   parser, 
   value,
   scope,
   interpreter
-
-proc reverse[T](xs: openarray[T]): seq[T] =
-  result = newSeq[T](xs.len)
-  for i, x in xs:
-    result[result.len-i-1] = x 
 
 # Library methods
 

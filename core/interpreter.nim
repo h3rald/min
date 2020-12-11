@@ -3,10 +3,16 @@ import
   strutils, 
   sequtils,
   critbits,
-  os,
-  algorithm,
-  logging
+  algorithm
+when defined(mini):
+  import
+    minilogger
+else:
+  import 
+    os,
+    logging
 import 
+  baseutils,
   value,
   scope,
   parser
@@ -61,8 +67,9 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
   var path = pwd
-  if not pwd.isAbsolute:
-    path = joinPath(getCurrentDir(), pwd)
+  when not defined(mini): #TODO investigate impact
+    if not pwd.isAbsolute:
+      path = joinPath(getCurrentDir(), pwd)
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -82,11 +89,12 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
 
 proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_exported_symbol_$1_2".}=
   var path = filename
-  if not filename.isAbsolute:
-    path = joinPath(getCurrentDir(), filename)
+  when not defined(mini): 
+    if not filename.isAbsolute:
+      path = joinPath(getCurrentDir(), filename)
   result = newMinInterpreter()
   result.filename = filename
-  result.pwd =  path.parentDir
+  result.pwd =  path.parentDirEx
   result.stack = i.stack
   result.trace = i.trace
   result.stackcopy = i.stackcopy
@@ -315,10 +323,11 @@ proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exp
 
 proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
-  result.add "import min, critbits"
-  result.add "MINCOMPILED = true"
+  result.add "import min"
   if files.len > 0:
-    result.add "var i = newMinInterpreter(\"$#\")" % i.filename
+    result.add "import critbits"
+  result.add "MINCOMPILED = true"
+  result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=

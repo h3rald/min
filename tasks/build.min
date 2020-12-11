@@ -1,11 +1,8 @@
 #!/usr/bin/env min
 
-"min.yml" fread from-yaml :config
+"_helpers" load 
+'helpers import
 
-; Helpers
-(
-  :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
-) :required
 (
   :target-os
   :variant
@@ -54,7 +51,7 @@
   template ("date" date "version" min-version "symbols" symbols) =% out-file fwrite 
 ) :build-vim
 
-; Define module
+; Module symbols
 {}
 (
   "lite" os cz
