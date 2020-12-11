@@ -3,8 +3,7 @@ import
   strutils, 
   sequtils,
   parseopt,
-  algorithm,
-  json
+  algorithm
 when defined(mini):
   import
     rdstdin,
@@ -12,6 +11,7 @@ when defined(mini):
 else:
   import 
     os,
+    json,
     logging,
     ../packages/niftylogger,
     ../packages/nimline/nimline,
@@ -112,10 +112,7 @@ proc lang_module*(i: In) =
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
-  def.symbol("from-json") do (i: In):
-    let vals = i.expect("string")
-    let s = vals[0]
-    i.push i.fromJson(s.getString.parseJson)
+  
 
   def.symbol("to-yaml") do (i: In):
     let vals = i.expect "a"
@@ -133,11 +130,6 @@ proc lang_module*(i: In) =
       i.push(yaml.strip.newVal)
     except:
       raiseInvalid(err)
-
-  def.symbol("to-json") do (i: In):
-    let vals = i.expect "a"
-    let q = vals[0]
-    i.push(($((i%q).pretty)).newVal)
 
   def.symbol("loglevel") do (i: In):
     let vals = i.expect("'sym")
@@ -252,6 +244,17 @@ proc lang_module*(i: In) =
     i.push i.parse s.strVal
 
   when not defined(mini):
+  
+    def.symbol("from-json") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0]
+      i.push i.fromJson(s.getString.parseJson)
+      
+    def.symbol("to-json") do (i: In):
+      let vals = i.expect "a"
+      let q = vals[0]
+      i.push(($((i%q).pretty)).newVal)
+  
     # Save/load symbols
   
     def.symbol("save-symbol") do (i: In) {.gcsafe.}:

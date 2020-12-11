@@ -3,11 +3,11 @@ import
   lexbase, 
   strutils, 
   sequtils,
-  json,
   oids,
   streams, 
-  critbits
- 
+  critbits,
+  baseutils
+
 import unicode except strip
 
 type
@@ -665,7 +665,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result = @[op&"MinValue(kind: minBool, boolVal: false)"]
     discard getToken(p)
   of tkString:
-    result = @[op&"MinValue(kind: minString, strVal: "&p.a.escapeJson&")"]
+    result = @[op&"MinValue(kind: minString, strVal: "&p.a.escapeEx&")"]
     p.a = ""
     discard getToken(p)
   of tkInt:
@@ -719,7 +719,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result.add indent&"var "&scopevar&" = newScopeRef(nil)"
     result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
   of tkSymbol:
-    result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeJson&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeJson&")"]
+    result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeEx&")"]
     p.a = ""
     discard getToken(p)
   else:

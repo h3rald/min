@@ -1,11 +1,11 @@
 import 
   strutils, 
-  sequtils,
-  json
+  sequtils 
 import 
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
+  ../core/baseutils,
   ../core/utils
 
 when not defined(mini):
@@ -215,9 +215,7 @@ proc str_module*(i: In) =
   def.symbol("escape") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0].getString
-    var s = ""
-    a.escapeJsonUnquoted(s)
-    i.push s.newVal
+    i.push a.escapeEx(true).newVal
     
   def.symbol("prefix") do (i: In):
     let vals = i.expect("'sym", "'sym")

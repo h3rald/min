@@ -21,8 +21,9 @@
   build-tasks ^macosx-mini
   github-tasks ^update
   github-tasks ^upload
+) %default
+(
   ssh-tasks ^build
   ssh-tasks ^h3rald
-  "All done!" notice
-) %default
+) %sites
 +release-tasks
