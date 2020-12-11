@@ -168,8 +168,8 @@ when not defined(mini):
           var rest = ""
           if key.len > 1:
             rest = key[1..key.len-1]
-          first = sgregex.replace(first, peg"[^a-zA-Z0-9_]", "_")
-          rest = sgregex.replace(rest, peg"[^a-zA-Z0-9/!?+*._-]", "_")
+          #first = sgregex.replace(first, peg"[^a-zA-Z0-9_]", "_")
+          #rest = sgregex.replace(rest, peg"[^a-zA-Z0-9/!?+*._-]", "_")
           discard i.dset(res, first&rest, i.fromJson(value))
         return res
       of JArray:
