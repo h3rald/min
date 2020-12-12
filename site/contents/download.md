@@ -7,11 +7,13 @@ title: "Download"
 
 You can download one of the following pre-built min binaries:
 
-* {#release||{{$version}}||macosx||macOS||x64#}
-* {#release||{{$version}}||windows||Windows||x64#}
-* {#release||{{$version}}||linux||Linux||x64#}
+* {#release||{{$version}}||macosx||macOS||x64#} <small>[{#lite-release||{{$version}}||macosx||macOS||x64#}, {#mini-release||{{$version}}||macosx||macOS||x64#}]</small>
+* {#release||{{$version}}||windows||Windows||x64#} <small>[{#lite-release||{{$version}}||windows||Windows||x64#}, {#mini-release||{{$version}}||windows||Windows||x64#}]</small>
+* {#release||{{$version}}||linux||Linux||x64#} <small>[{#lite-release||{{$version}}||linux||Linux||x64#}, {#mini-release||{{$version}}||linux||Linux||x64#}]</small>
 
 {#release -> [min v$1 for $3 ($4)](https://github.com/h3rald/min/releases/download/v$1/min\_v$1\_$2\_$4.zip) #}
+{#lite-release -> [lite](https://github.com/h3rald/min/releases/download/v$1/litemin\_v$1\_$2\_$4.zip) #}
+{#mini-release -> [mini](https://github.com/h3rald/min/releases/download/v$1/minimin\_v$1\_$2\_$4.zip) #}
 
 {{guide-download}}
 
@@ -36,14 +38,9 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
-
-#### -d:ssl
-
-If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to perform HTTPS requests with the {#link-module||http#}. This means that the resulting **min** executable will no longer be self-contained and it will require the OpenSSL dynamic library to be available on your system.
-
 #### -d:lite
 
-If the **d:lite** flag is specified, an even more minimal executable file will be generated, however the following functionalities will not be available:
+If the **d:lite** flag is specified, a more minimal executable file will be generated (typically, it should be called "litemin"), however the following functionalities will not be available:
 
 * The {#link-module||crypto#}
 * The {#link-module||net#}
@@ -51,7 +48,45 @@ If the **d:lite** flag is specified, an even more minimal executable file will b
 * The {#link-module||math#}
 * The {#link-operator||sys||zip#} and {#link-operator||sys||unzip#} operators.
 
-## Running then min Shell
+#### -d:mini
+
+If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called litemin), however the following functionalities will not be available:
+
+* The {#link-module||crypto#}
+* The {#link-module||net#}
+* The {#link-module||http#}
+* The {#link-module||math#}
+* The {#link-module||io#}
+* The {#link-module||fs#}
+* The {#link-module||sys#}
+* The following operators:
+  * {#link-operator||lang||load#}
+  * {#link-operator||lang||read#}
+  * {#link-operator||lang||to-json#}
+  * {#link-operator||lang||from-json#}
+  * {#link-operator||lang||raw-args#}
+  * {#link-operator||lang||save-symbol#}
+  * {#link-operator||lang||load-symbol#}
+  * {#link-operator||lang||saved-symbol#}
+  * {#link-operator||lang||loaded-symbol#}
+  * {#link-operator||str||search#}
+  * {#link-operator||str||match#}
+  * {#link-operator||str||replace#}
+  * {#link-operator||str||regex#}
+  * {#link-operator||str||semver?#}
+  * {#link-operator||str||from-semver#}
+  * {#link-operator||sys||zip#}
+  * {#link-operator||sys||unzip#}
+
+Additionally:
+
+* No checks will be performed when defining symbols.
+* Only the simple REPL will be available.
+* There will be no support for dynamic libraries.
+* The **-m, \-\-module-path** option has no effect.
+* No environment configuration files ([.minrc](class.file), [.min_symbols](class:file)) are used.
+
+## Running the min Shell
 
 To start min shell, run [min -i](class:cmd). You will be presented with a prompt displaying the path to the current directory:
 
@@ -90,6 +125,38 @@ min also supports running programs from standard input, so the following command
 > %min-terminal%
 > 
 > [$](class:prompt) cat myfile.min | min
+
+## Compiling a min Program
+
+min programs can be compiled to a single executable simply by specifying the `-c` (or `--compile`) flag when executing a min file:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c myfile.min
+
+Essentially, this will:
+
+1. Generate a [myfile.nim](class:file) containing the equivalent Nim code of your min program.
+2. Call the Nim compiler to do the rest ;)
+
+If you want to pass any options to the Nim compiler (like `-d:release` for example) you can do so by using the `-n` (or `--passN`) option:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c myfile.min -n:-d:release
+
+Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} symbol is used to load an external [.min](class:ext) file, it will attempt to load from the pre-loaded files first before searching the filesystem.
+
+For example, the following command executed in the root folder of the min project will compile [run.min](class:file) along with all [.min](class:ext) files included in the [task](class:dir) and its subfolders:
+
+> %min-terminal%
+> 
+> [$](class:prompt) min -c run.min -m:tasks
+
+> %note%
+> Note
+> 
+> In order to successfully compile [.min](class.ext) files, Nim must be installed on your system and min must be installed via nimble.
 
 ## Syntax Highlighting
 

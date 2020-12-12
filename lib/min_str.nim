@@ -1,13 +1,16 @@
 import 
   strutils, 
-  sequtils,
-  json
+  sequtils 
 import 
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
-  ../core/utils,
-  ../packages/nim-sgregex/sgregex
+  ../core/baseutils,
+  ../core/utils
+
+when not defined(mini):
+  import 
+    ../packages/nim-sgregex/sgregex
 
 
 proc str_module*(i: In) = 
@@ -116,58 +119,59 @@ proc str_module*(i: In) =
     let index = str.strVal.find(reg.strVal)
     i.push index.newVal
 
-  def.symbol("search") do (i: In):
-    let vals = i.expect("string", "string")
-    let reg = vals[0]
-    let str = vals[1]
-    var matches = str.strVal.search(reg.strVal)
-    var res = newSeq[MinValue](matches.len)
-    for i in 0..matches.len-1:
-      res[i] = matches[i].newVal
-    i.push res.newVal
+  when not defined(mini):
+    def.symbol("search") do (i: In):
+      let vals = i.expect("string", "string")
+      let reg = vals[0]
+      let str = vals[1]
+      var matches = str.strVal.search(reg.strVal)
+      var res = newSeq[MinValue](matches.len)
+      for i in 0..matches.len-1:
+        res[i] = matches[i].newVal
+      i.push res.newVal
 
-  def.symbol("match") do (i: In):
-    let vals = i.expect("string", "string")
-    let reg = vals[0]
-    let str = vals[1]
-    if str.strVal.match(reg.strVal):
-      i.push true.newVal
-    else:
-      i.push false.newVal
+    def.symbol("match") do (i: In):
+      let vals = i.expect("string", "string")
+      let reg = vals[0]
+      let str = vals[1]
+      if str.strVal.match(reg.strVal):
+        i.push true.newVal
+      else:
+        i.push false.newVal
 
-  def.symbol("replace") do (i: In):
-    let vals = i.expect("string", "string", "string")
-    let s_replace = vals[0]
-    let reg = vals[1]
-    let s_find = vals[2]
-    i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
+    def.symbol("replace") do (i: In):
+      let vals = i.expect("string", "string", "string")
+      let s_replace = vals[0]
+      let reg = vals[1]
+      let s_find = vals[2]
+      i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
 
-  def.symbol("regex") do (i: In):
-    let vals = i.expect("string", "string")
-    let reg = vals[0]
-    let str = vals[1]
-    let results = str.strVal =~ reg.strVal
-    var res = newSeq[MinValue](0)
-    for r in results:
-      res.add(r.newVal)
-    i.push res.newVal
+    def.symbol("regex") do (i: In):
+      let vals = i.expect("string", "string")
+      let reg = vals[0]
+      let str = vals[1]
+      let results = str.strVal =~ reg.strVal
+      var res = newSeq[MinValue](0)
+      for r in results:
+        res.add(r.newVal)
+      i.push res.newVal
 
-  def.symbol("semver?") do (i: In):
-    let vals = i.expect("string")
-    let v = vals[0].strVal
-    i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
-    
-  def.symbol("from-semver") do (i: In):
-    let vals = i.expect("string")
-    let v = vals[0].strVal
-    let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
-    if parts[0].len == 0:
-      raiseInvalid("String '$1' is not a basic semver" % v)
-    var d = newDict(i.scope)
-    i.dset(d, "major", parts[1].parseInt.newVal)
-    i.dset(d, "minor", parts[2].parseInt.newVal)
-    i.dset(d, "patch", parts[3].parseInt.newVal)
-    i.push d
+    def.symbol("semver?") do (i: In):
+      let vals = i.expect("string")
+      let v = vals[0].strVal
+      i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
+      
+    def.symbol("from-semver") do (i: In):
+      let vals = i.expect("string")
+      let v = vals[0].strVal
+      let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
+      if parts[0].len == 0:
+        raiseInvalid("String '$1' is not a basic semver" % v)
+      var d = newDict(i.scope)
+      i.dset(d, "major", parts[1].parseInt.newVal)
+      i.dset(d, "minor", parts[2].parseInt.newVal)
+      i.dset(d, "patch", parts[3].parseInt.newVal)
+      i.push d
     
   def.symbol("to-semver") do (i: In):
     let vals = i.expect("dict")
@@ -211,9 +215,7 @@ proc str_module*(i: In) =
   def.symbol("escape") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0].getString
-    var s = ""
-    a.escapeJsonUnquoted(s)
-    i.push s.newVal
+    i.push a.escapeEx(true).newVal
     
   def.symbol("prefix") do (i: In):
     let vals = i.expect("'sym", "'sym")

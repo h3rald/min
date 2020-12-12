@@ -86,6 +86,9 @@ Calls operator {{sl}} defined in dictionary {{d}}. #}
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
+{#op||compiled?||{{null}}||{{b}}||
+Returns {{t}} if the current program has been compiled.#}
+
 {#op||define||{{any}} {{sl}}||{{null}}||
 Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
@@ -158,6 +161,9 @@ Converts a JSON string into {{m}} data.#}
 > > Note
 > > 
 > > At present, only YAML objects containing string values are supported.#}
+
+{#op||gets||{{null}}||{{s}}||
+Reads a line from STDIN and places it on top of the stack as a string.#}
 
 {#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
 If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
@@ -269,6 +275,12 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > > 
 > Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
 > > `'my-local-symbol ROOT publish` #}
+
+{#op||puts||{{any}}||{{any}}||
+Prints {{any}} and a new line to STDOUT.#}
+
+{#op||puts!||{{any}}||{{null}}||
+Prints {{any}} and a new line to STDOUT, removing {{any}} from the stack.#}
 
 {#op||quit||{{null}}||{{null}}||
 Exits the program or shell with 0 as return code. #}

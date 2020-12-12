@@ -43,9 +43,6 @@ Writes {{s1}} to the file {{s2}}, erasing all its contents first. #}
 {#op||getchr||{{null}}||{{i}}||
 Reads single character from STDIN without waiting for ENTER key and places its ASCII code on top of the stack.#}
 
-{#op||gets||{{null}}||{{s}}||
-Reads a line from STDIN and places it on top of the stack as a string.#}
-
 {#op||info||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.#}
 
@@ -66,12 +63,6 @@ Prints {{any}} to STDOUT and removes {{any}} from the stack.#}
 
 {#op||putchr||{{s}}||{{any}}||
 Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
-
-{#op||puts||{{any}}||{{any}}||
-Prints {{any}} and a new line to STDOUT.#}
-
-{#op||puts!||{{any}}||{{null}}||
-Prints {{any}} and a new line to STDOUT, removing {{any}} from the stack.#}
 
 {#op||type||{{any}}||{{s}}||
 Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}

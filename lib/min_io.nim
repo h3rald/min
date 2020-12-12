@@ -18,13 +18,6 @@ proc io_module*(i: In) =
   def.symbol("newline") do (i: In):
     echo ""
   
-  def.symbol("puts") do (i: In):
-    let a = i.peek
-    echo $$a
-  
-  def.symbol("puts!") do (i: In):
-    echo $$i.pop
-
   def.symbol("notice") do (i: In):
     let a = i.peek
     notice $$a
@@ -61,10 +54,6 @@ proc io_module*(i: In) =
       if c mod n.intVal == 0:
         echo ""
     echo ""
-  
-  def.symbol("gets") do (i: In) {.gcsafe.}:
-    var ed = initEditor()
-    i.push ed.readLine().newVal
 
   def.symbol("getchr") do (i: In):
     i.push getchr().newVal

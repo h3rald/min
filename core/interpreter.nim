@@ -1,11 +1,18 @@
 import 
   streams, 
   strutils, 
-  critbits, 
-  os,
-  algorithm,
-  logging
+  sequtils,
+  critbits,
+  algorithm
+when defined(mini):
+  import
+    minilogger
+else:
+  import 
+    os,
+    logging
 import 
+  baseutils,
   value,
   scope,
   parser
@@ -14,6 +21,8 @@ type
   MinTrappedException* = ref object of CatchableError
   MinRuntimeError* = ref object of CatchableError
     data*: MinValue
+
+var MINCOMPILEDFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 
 proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
   data.objType = "error"
@@ -58,8 +67,9 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
   var path = pwd
-  if not pwd.isAbsolute:
-    path = joinPath(getCurrentDir(), pwd)
+  when not defined(mini): #TODO investigate impact
+    if not pwd.isAbsolute:
+      path = joinPath(getCurrentDir(), pwd)
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -79,11 +89,12 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
 
 proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_exported_symbol_$1_2".}=
   var path = filename
-  if not filename.isAbsolute:
-    path = joinPath(getCurrentDir(), filename)
+  when not defined(mini): 
+    if not filename.isAbsolute:
+      path = joinPath(getCurrentDir(), filename)
   result = newMinInterpreter()
   result.filename = filename
-  result.pwd =  path.parentDir
+  result.pwd =  path.parentDirEx
   result.stack = i.stack
   result.trace = i.trace
   result.stackcopy = i.stackcopy
@@ -278,6 +289,46 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
     return q
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
+
+proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  while i.parser.token != tkEof: 
+    if i.trace.len == 0:
+      i.stackcopy = i.stack
+    try:
+      result.add i.parser.compileMinValue(i, push = true, indent)
+    except MinRuntimeError:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+      i.stackTrace
+      i.trace = @[]
+      raise MinTrappedException(msg: msg)
+    except MinTrappedException:
+      raise
+    except:
+      let msg = getCurrentExceptionMsg()
+      i.stack = i.stackcopy
+      i.error(msg)
+      i.stackTrace
+      i.trace = @[]
+      raise MinTrappedException(msg: msg)
+    
+proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  result = newSeq[string](0)
+  if not main:
+    result.add "MINCOMPILEDFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
+    result = result.concat(i.rawCompile("  "))
+  else:
+    result = i.rawCompile("")
+
+proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+  result = newSeq[string](0)
+  result.add "import min"
+  if files.len > 0:
+    result.add "import critbits"
+  result.add "MINCOMPILED = true"
+  result.add "var i = newMinInterpreter(\"$#\")" % i.filename
+  result.add "i.stdLib()"
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)

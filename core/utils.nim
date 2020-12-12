@@ -1,18 +1,16 @@
 import 
   strutils, 
-  critbits,
-  json
+  critbits
 import 
-  ../packages/nim-sgregex/sgregex,
+  baseutils,
   parser, 
   value,
   scope,
   interpreter
-
-proc reverse[T](xs: openarray[T]): seq[T] =
-  result = newSeq[T](xs.len)
-  for i, x in xs:
-    result[result.len-i-1] = x 
+  
+when not defined(mini):
+  import
+    json
 
 # Library methods
 
@@ -45,8 +43,6 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
     scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
 
 # Dictionary Methods
-
-proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}
 
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
   if not q.isDictionary:
@@ -124,61 +120,63 @@ proc pairs*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
     r.add value.val
   return r.newVal
 
-# JSON interop
+when not defined(mini):
 
-proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
-  case a.kind:
-    of minBool:
-      return %a.boolVal
-    of minSymbol:
-      return %(";sym:$1" % [a.getstring])
-    of minString:
-      return %a.strVal
-    of minInt:
-      return %a.intVal
-    of minFloat:
-      return %a.floatVal
-    of minQuotation:
-      result = newJArray()
-      for it in a.qVal:
-        result.add(i%it)
-    of minDictionary:
-      result = newJObject()
-      for it in a.dVal.pairs: 
-        result[it.key] = i%i.dget(a, it.key)
+  # JSON interop
 
-proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
-  case json.kind:
-    of JNull:
-      result = newSeq[MinValue](0).newVal
-    of JBool: 
-      result = json.getBool.newVal
-    of JInt:
-      result = json.getBiggestInt.newVal
-    of JFloat:
-      result = json.getFloat.newVal
-    of JString:
-      let s = json.getStr
-      if s.match("^;sym:"):
-        result = sgregex.replace(s, "^;sym:", "").newSym
-      else:
-        result = json.getStr.newVal
-    of JObject:
-      var res = newDict(i.scope)
-      for key, value in json.pairs:
-        var first = $key[0]
-        var rest = ""
-        if key.len > 1:
-          rest = key[1..key.len-1]
-        first = sgregex.replace(first, "[^a-zA-Z0-9_]", "_")
-        rest = sgregex.replace(rest, "[^a-zA-Z0-9/!?+*._-]", "_")
-        discard i.dset(res, first&rest, i.fromJson(value))
-      return res
-    of JArray:
-      var res = newSeq[MinValue](0)
-      for value in json.items:
-        res.add i.fromJson(value)
-      return res.newVal
+  proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
+    case a.kind:
+      of minBool:
+        return %a.boolVal
+      of minSymbol:
+        return %(";sym:$1" % [a.getstring])
+      of minString:
+        return %a.strVal
+      of minInt:
+        return %a.intVal
+      of minFloat:
+        return %a.floatVal
+      of minQuotation:
+        result = newJArray()
+        for it in a.qVal:
+          result.add(i%it)
+      of minDictionary:
+        result = newJObject()
+        for it in a.dVal.pairs: 
+          result[it.key] = i%i.dget(a, it.key)
+
+  proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
+    case json.kind:
+      of JNull:
+        result = newSeq[MinValue](0).newVal
+      of JBool: 
+        result = json.getBool.newVal
+      of JInt:
+        result = json.getBiggestInt.newVal
+      of JFloat:
+        result = json.getFloat.newVal
+      of JString:
+        let s = json.getStr
+        if s.startsWith(";sym:"):
+          result = s.replace(";sym:", "").newSym
+        else:
+          result = json.getStr.newVal
+      of JObject:
+        var res = newDict(i.scope)
+        for key, value in json.pairs:
+          var first = $key[0]
+          var rest = ""
+          if key.len > 1:
+            rest = key[1..key.len-1]
+          #first = sgregex.replace(first, peg"[^a-zA-Z0-9_]", "_")
+          #rest = sgregex.replace(rest, peg"[^a-zA-Z0-9/!?+*._-]", "_")
+          discard i.dset(res, first&rest, i.fromJson(value))
+        return res
+      of JArray:
+        var res = newSeq[MinValue](0)
+        for value in json.items:
+          res.add i.fromJson(value)
+        return res.newVal
 
 # Validators
 

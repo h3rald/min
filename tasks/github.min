@@ -1,16 +1,15 @@
 #!/usr/bin/env min
 
-; Read files
-".env.yml" fread from-yaml :vars
-"min.yml" fread from-yaml :config
+"_helpers" load 
+'helpers import
+
 "next-release.md" fread escape :release-body
 "tasks/templates/draft-release.json" fread :draft-release-template 
 
 config /version :min-version
-vars /github-token :token
+env /github-token :token
 draft-release-template ("version" min-version "body" release-body) =% :draft-release-body
 
-; Helper symbols
 {}  
   "application/vnd.github.v3+json" %Accept
   "token $#" (token) =% %Authorization  

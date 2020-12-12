@@ -2,8 +2,9 @@ import
   os, 
   osproc, 
   strutils,
-  sequtils,
   logging
+when not defined(lite):
+  import sequtils
 import 
   ../core/parser, 
   ../core/value, 
