@@ -5,7 +5,7 @@
 
 config /version :min-version
 "Min_DeveloperGuide.htm" :guide-file
-"../h3rald/assets/min/$#" guide-file suffix :h3rald-guide
+"../h3rald/assets/min/" guide-file suffix :h3rald-guide
 "../h3rald/contents/min.md" :h3rald-min-md
 "version:\\s+\\d+\\.\\d+\\.\\d+" :min-v-reg
 "version: $#" (min-version) =% :min-v-rep

@@ -84,7 +84,7 @@ Additionally:
 * Only the simple REPL will be available.
 * There will be no support for dynamic libraries.
 * The **-m, \-\-module-path** option has no effect.
-* No environment configuration files ([.minrc](class.file), [.min_symbols](class:file)) are used.
+* No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
 
 ## Running the min Shell
 
