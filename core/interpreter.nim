@@ -228,13 +228,21 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     let symbol = val.symVal
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol) 
-    else:
-      let sigil = "" & symbol[0]
-      if symbol.len > 1 and i.scope.hasSigil(sigil):
-        i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+    else: 
+      var qIndex = symbol.find('"')
+      if qIndex > 0:
+        let sigil = symbol[0..qIndex-1]
+        if not i.scope.hasSigil(sigil):
+          raiseUndefined("Undefined sigil '$1'"%sigil)
+        i.stack.add(MinValue(kind: minString, strVal: symbol[qIndex+1..symbol.len-2]))
         i.apply(i.scope.getSigil(sigil))
       else:
-        raiseUndefined("Undefined symbol '$1'" % [val.symVal])
+        let sigil = "" & symbol[0]
+        if symbol.len > 1 and i.scope.hasSigil(sigil):
+          i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+          i.apply(i.scope.getSigil(sigil))
+        else:
+          raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   elif val.kind == minDictionary and val.objType != "module":
     # Dictionary must be copied every time they are interpreted, otherwise when they are used in cycles they reference each other.
