@@ -644,7 +644,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
-          scope.symbols[key[1 .. key.len-1]] = MinOperator(kind: minValOp, val: val, sealed: false)
+          var offset = 0
+          if key[1] == '"':
+            offset = 1
+          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false)
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
