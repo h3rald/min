@@ -568,7 +568,10 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
           v = "<native>"
         else:
           v = $i.val.val
-        d = d & v & " :" & $i.key & " "
+        var k = $i.key
+        if k.contains(" "):
+          k = "\"$1\"" % k
+        d = d & v & " :" & k & " "
       if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -600,7 +603,10 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
           v = "<native>"
         else:
           v = $i.val.val
-        d = d & v & " :" & $i.key & " "
+        var k = $i.key
+        if k.contains(" "):
+          k = "\"$1\"" % k
+        d = d & v & " :" & k & " "
       if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
