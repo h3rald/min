@@ -4,18 +4,26 @@
 "github" load
 "ssh" load
 
+; Module symbols
 {}
 ( 
   build-tasks ^guide
   build-tasks ^site
   build-tasks ^vim
   build-tasks ^windows
+  build-tasks ^windows-lite
+  build-tasks ^windows-mini
   build-tasks ^linux
+  build-tasks ^linux-lite
+  build-tasks ^linux-mini
   build-tasks ^macosx
+  build-tasks ^macosx-lite
+  build-tasks ^macosx-mini
   github-tasks ^update
   github-tasks ^upload
+) %default
+(
   ssh-tasks ^build
   ssh-tasks ^h3rald
-  "All done!" notice
-) %default
+) %sites
 +release-tasks

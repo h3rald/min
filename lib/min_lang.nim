@@ -3,10 +3,19 @@ import
   strutils, 
   sequtils,
   parseopt,
-  algorithm,
-  json,
-  os, 
-  logging
+  algorithm
+when defined(mini):
+  import
+    rdstdin,
+    ../core/minilogger
+else:
+  import 
+    os,
+    json,
+    logging,
+    ../packages/niftylogger,
+    ../packages/nimline/nimline,
+    ../packages/nim-sgregex/sgregex
 import 
   ../core/env,
   ../core/consts,
@@ -14,8 +23,6 @@ import
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
-  ../packages/nim-sgregex/sgregex,
-  ../packages/niftylogger,
   ../core/scope
 
 proc lang_module*(i: In) =
@@ -23,6 +30,20 @@ proc lang_module*(i: In) =
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
     quit(vals[0].intVal.int)
+
+  def.symbol("puts") do (i: In):
+    let a = i.peek
+    echo $$a
+  
+  def.symbol("puts!") do (i: In):
+    echo $$i.pop
+
+  def.symbol("gets") do (i: In) {.gcsafe.}:
+    when defined(mini):
+      i.push readLineFromStdin("").newVal 
+    else:
+      var ed = initEditor()
+      i.push ed.readLine().newVal
    
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot|dict")
@@ -73,6 +94,9 @@ proc lang_module*(i: In) =
   def.symbol("lite?") do (i: In):
     i.push defined(lite).newVal
 
+  def.symbol("mini?") do (i: In):
+    i.push defined(mini).newVal
+
   def.symbol("from-yaml") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
@@ -88,10 +112,7 @@ proc lang_module*(i: In) =
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
-  def.symbol("from-json") do (i: In):
-    let vals = i.expect("string")
-    let s = vals[0]
-    i.push i.fromJson(s.getString.parseJson)
+  
 
   def.symbol("to-yaml") do (i: In):
     let vals = i.expect "a"
@@ -110,19 +131,20 @@ proc lang_module*(i: In) =
     except:
       raiseInvalid(err)
 
-  def.symbol("to-json") do (i: In):
-    let vals = i.expect "a"
-    let q = vals[0]
-    i.push(($((i%q).pretty)).newVal)
-
   def.symbol("loglevel") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     var str = s.getString
-    echo "Log level: ", setLogLevel(str)
+    when defined(mini):
+      echo "Log level: ", minilogger.setLogLevel(str)
+    else:
+      echo "Log level: ", niftylogger.setLogLevel(str)
 
   def.symbol("loglevel?") do (i: In):
-    i.push getLogLevel().newVal
+    when defined(mini):
+      i.push minilogger.getLogLevel().newVal
+    else:
+      i.push niftylogger.getLogLevel().newVal
 
   # Language constructs
 
@@ -136,8 +158,9 @@ proc lang_module*(i: In) =
       q1 = @[q1].newVal
       isQuot = false
     symbol = sym.getString
-    if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
-      raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
+    when not defined(mini):
+      if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
@@ -220,28 +243,91 @@ proc lang_module*(i: In) =
     let s = vals[0]
     i.push i.parse s.strVal
 
-  def.symbol("load") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    var file = s.getString
-    if not file.endsWith(".min"):
-      file = file & ".min"
-    file = i.pwd.joinPath(file)
-    info("[load] File: ", file)
-    if not file.fileExists:
-      raiseInvalid("File '$1' does not exist." % file)
-    i.load file
+  when not defined(mini):
+  
+    def.symbol("from-json") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0]
+      i.push i.fromJson(s.getString.parseJson)
+      
+    def.symbol("to-json") do (i: In):
+      let vals = i.expect "a"
+      let q = vals[0]
+      i.push(($((i%q).pretty)).newVal)
+  
+    # Save/load symbols
+  
+    def.symbol("save-symbol") do (i: In) {.gcsafe.}:
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let op = i.scope.getSymbol(sym)
+      if op.kind == minProcOp:
+        raiseInvalid("Symbol '$1' cannot be serialized." % sym)
+      let json = MINSYMBOLS.readFile.parseJson
+      json[sym] = i%op.val
+      MINSYMBOLS.writeFile(json.pretty)
 
-  def.symbol("read") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    var file = s.getString
-    if not file.endsWith(".min"):
-      file = file & ".min"
-    info("[read] File: ", file)
-    if not file.fileExists:
-      raiseInvalid("File '$1' does not exist." % file)
-    i.push i.read file
+    def.symbol("load-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      let val = i.fromJson(json[sym])
+      i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
+
+    def.symbol("saved-symbols") do (i: In):
+      var q = newSeq[MinValue](0)
+      let json = MINSYMBOLS.readFile.parseJson
+      for k,v in json.pairs:
+        q.add k.newVal
+      i.push q.newVal
+
+    def.symbol("remove-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      var json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      json.delete(sym)
+      MINSYMBOLS.writeFile(json.pretty)
+
+    def.symbol("load") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[load] File: ", file)
+      if MINCOMPILED:
+        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        if MINCOMPILEDFILES.hasKey(compiledFile):
+          MINCOMPILEDFILES[compiledFile](i)
+          return
+      file = i.pwd.joinPath(file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.load file
+
+    def.symbol("read") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[read] File: ", file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.push i.read file
+
+    def.symbol("raw-args") do (i: In):
+      var args = newSeq[MinValue](0)
+      for par in commandLineParams():
+          args.add par.newVal
+      i.push args.newVal
 
   def.symbol("with") do (i: In):
     let vals = i.expect("dict", "quot")
@@ -359,7 +445,10 @@ proc lang_module*(i: In) =
         return
       let e = getCurrentException()
       var res = newDict(i.scope)
-      let err = sgregex.replace($e.name, ":.+$", "")
+      var err = $e.name
+      let col = err.find(":")
+      if col >= 0:
+        err = err[0..col-1]
       res.objType = "error"
       i.dset(res, "error", err.newVal)
       i.dset(res, "message", e.msg.newVal)
@@ -533,46 +622,6 @@ proc lang_module*(i: In) =
   def.symbol("version") do (i: In):
     i.push pkgVersion.newVal
 
-  # Save/load symbols
-  
-  def.symbol("save-symbol") do (i: In) {.gcsafe.}:
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    let op = i.scope.getSymbol(sym)
-    if op.kind == minProcOp:
-      raiseInvalid("Symbol '$1' cannot be serialized." % sym)
-    let json = MINSYMBOLS.readFile.parseJson
-    json[sym] = i%op.val
-    MINSYMBOLS.writeFile(json.pretty)
-
-  def.symbol("load-symbol") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    let json = MINSYMBOLS.readFile.parseJson
-    if not json.hasKey(sym):
-      raiseUndefined("Symbol '$1' not found." % sym)
-    let val = i.fromJson(json[sym])
-    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
-
-  def.symbol("saved-symbols") do (i: In):
-    var q = newSeq[MinValue](0)
-    let json = MINSYMBOLS.readFile.parseJson
-    for k,v in json.pairs:
-      q.add k.newVal
-    i.push q.newVal
-
-  def.symbol("remove-symbol") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    let sym = s.getString
-    var json = MINSYMBOLS.readFile.parseJson
-    if not json.hasKey(sym):
-      raiseUndefined("Symbol '$1' not found." % sym)
-    json.delete(sym)
-    MINSYMBOLS.writeFile(json.pretty)
-
   def.symbol("seal") do (i: In):
     let vals = i.expect("'sym")
     let sym = vals[0]
@@ -627,12 +676,6 @@ proc lang_module*(i: In) =
           discard
     i.push opts
 
-  def.symbol("raw-args") do (i: In):
-    var args = newSeq[MinValue](0)
-    for par in commandLineParams():
-        args.add par.newVal
-    i.push args.newVal
-
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q
@@ -664,6 +707,9 @@ proc lang_module*(i: In) =
     var q = vals[0]
     q.qVal.reverse
     i.dequote(q)
+
+  def.symbol("compiled?") do (i: In):
+    i.push MINCOMPILED.newVal
 
   # Converters
 
@@ -716,7 +762,10 @@ proc lang_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]\n$$ " (.) => %""")
+    when defined(mini):
+      i.push "$ ".newVal
+    else:
+      i.eval(""""[$1]\n$$ " (.) => %""")
 
   # Sigils
 

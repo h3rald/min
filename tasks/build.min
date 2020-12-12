@@ -1,26 +1,31 @@
 #!/usr/bin/env min
 
-"min.yml" fread from-yaml :config
+"_helpers" load 
+'helpers import
 
-; Helpers
-(
-  :prog (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
-) :required
 (
   :target-os
+  :variant
+  " " :d-variant
+  "min" :o-variant
+  (variant length 0 >) (
+    "-d:$# " (variant) =% @d-variant
+    "$#min" (variant) =% @o-variant
+  ) when
   "nim" required
-  "Building - $# (x64)" (target-os) =% notice
-  "nim c -d:release --cpu:amd64 --os:$# min" (target-os) =% !
+  "Building $# - $# (x64)" (o-variant target-os) =% notice
+  "nim c -d:release --cpu:amd64 --os:$# $#-o:$# min" (target-os d-variant o-variant) =% puts !
   {}
     target-os %os
     config /version %version
+    o-variant %exe
   pack
 ) :cz
 (
   :vdata 
-  "min" :exe
-  (vdata /os "windows" ==) ("min.exe" @exe) when
-  "min_v$version:_$os:_x64.zip" :fn
+  vdata /exe :exe
+  (vdata /os "windows" ==) ("$#.exe" (exe) =% @exe) when
+  "$exe:_v$version:_$os:_x64.zip" :fn
   fn vdata dpairs % ":" "" replace @fn
   "Compressing: $#" (fn) =% notice
   (exe) => fn zip
@@ -46,20 +51,44 @@
   template ("date" date "version" min-version "symbols" symbols) =% out-file fwrite 
 ) :build-vim
 
-; Define module
+; Module symbols
 {}
 (
-  os cz
+  "lite" os cz
+) %lite
+(
+  "mini" os cz
+) %mini
+(
+  "" os cz
 ) %default
 (
-  "linux" cz
+  "" "linux" cz
 ) %linux
 (
-  "macosx" cz
+  "lite" "linux" cz
+) %linux-lite
+(
+  "mini" "linux" cz
+) %linux-mini
+(
+  "" "macosx" cz
 ) %macosx
 (
-  "windows" cz
+  "lite" "macosx" cz
+) %macosx-lite
+(
+  "mini" "macosx" cz
+) %macosx-mini
+(
+  "" "windows" cz
 ) %windows
+(
+  "lite" "windows" cz
+) %windows-lite
+(
+  "mini" "windows" cz
+) %windows-mini
 'build-guide %guide
 'build-site %site
 (

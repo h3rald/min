@@ -1,13 +1,7 @@
-* Added **apply-interpolate** (alias: **=%**) operator.
-* Documented that it is possible also to interpolate with named placeholders, like this: `"Current Directory: $pwd" ("pwd" .) =%`
-* Added **from-yaml** and **to-yaml** operators. Note that they only support dictionaries containing string values (primarily intended to access extremely simple YAML files containing just key/value pairs).
-* Added **from-semver**, **to-semver**, **semver-major**, **semver-minor**, **semver-patch**, **semver** operators to manage version strings conforming to [Semantic Versioning](https://semver.org/) (additional labels are not yet supported).
-* Automatically adding **.min** to files supplied to the min executable if they don't already end in .min.
-* Fixed GC safety issues.
-* Now statically linking libssl and libcrypto on all platform to provide HTTPS support out of the box.
-* Now using a set of min tasks to perform a min release and other common operations.
-* Added **escape** operator to escape quotes and special characters in a string.
-* Added **quit** operator to exit with a 0 code.
-* Addes **prefix** and **suffix** operators to prepens and append one string to another.
-
-**BONUS!** Are you using Visual Studio Code? check out the new [official extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) for the min programming language!
+* Added the possibility to "compile" min files into single executables. This is achieved by converting the specified min file to its raw Nim code equivalent and then calling the Nim compiler (which in turns calls the C compiler).
+* Added **compiled?** symbol which returns true if the program has been compiled.
+* Added the possibility of including a path containing additional **.min** files to compile along with the main file (**-m**, **--module-path**).
+* Added the possibility to compile a bare-bones version of min specifying the **-d:mini** compilation flag.
+* Added **mini?** symbol which returns true if min was compiled specifying **-d:mini**.
+* Now distributing precompiled **litemin** and **minimin** executables as well.
+* Moved **puts**, **puts!** and **gets** from io module to lang module.

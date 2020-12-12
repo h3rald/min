@@ -114,11 +114,11 @@ b, strong, dt {
   font-weight: 400;
 }
 
-code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .min-terminal {
+code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal {
   font-family: 'Inconsolata',  monospace;
 }
 
-.kwd, .kwd, .cmd, .file, .dir, kbd, .kbd {
+.kwd, .kwd, .cmd, .file, .dir, .ext, kbd, .kbd {
   font-weight: bold;  
 }
 
