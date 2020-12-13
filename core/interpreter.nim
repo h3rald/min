@@ -24,6 +24,8 @@ type
 
 var MINCOMPILEDFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 
+const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
+
 proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
   data.objType = "error"
   raise MinRuntimeError(msg: msg, data: data)

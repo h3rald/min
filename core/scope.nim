@@ -68,6 +68,27 @@ proc hasSigil*(scope: ref MinScope, key: string): bool {.extern:"min_exported_sy
   else:
     return false
 
+proc delSigil*(scope: ref MinScope, key: string): bool {.discardable, extern:"min_exported_symbol_$1".}=
+  if scope.sigils.hasKey(key):
+    if scope.sigils[key].sealed:
+      raiseInvalid("Sigil '$1' is sealed." % key) 
+    scope.sigils.excl(key)
+    return true
+  return false
+
+proc setSigil*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.discardable, extern:"min_exported_symbol_$1".}=
+  result = false
+  # check if a sigil already exists in current scope
+  if not scope.isNil and scope.sigils.hasKey(key):
+    if not override and scope.sigils[key].sealed:
+      raiseInvalid("Sigil '$1' is sealed." % key) 
+    scope.sigils[key] = value
+    result = true
+  else:
+    # Go up the scope chain and attempt to find the sigil
+    if not scope.parent.isNil:
+      result = scope.parent.setSymbol(key, value)
+
 proc previous*(scope: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
   if scope.parent.isNil:
     return scope 
