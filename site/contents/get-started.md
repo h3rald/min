@@ -1,6 +1,6 @@
 -----
 content-type: "page"
-title: "Download"
+title: "Get Started"
 -----
 {@ _defs_.md || 0 @}
 

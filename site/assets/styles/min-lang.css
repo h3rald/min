@@ -80,6 +80,7 @@ header .luxbar-menu i {
   background-color: var(--primary-foreground);
 }
 
+
 .pure-button-primary, .pure-button-selected, a.pure-button-primary, a.pure-button-selected {
   background: var(--primary-accent);
   color: var(--primary-background);

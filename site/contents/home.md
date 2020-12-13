@@ -9,7 +9,7 @@ title: "Welcome to the min programming language"
     REPL. All packed in a single file<sup>*</sup>.
   </section>
   <section class="centered pure-u-1 pure-u-md-1-3">
-    <a class="pure-button pure-button-primary" href="/download/"><i class="ti-download"></i> download min v{{$version}}</a><br />
+    <a class="pure-button pure-button-primary" href="/get-started/"><i class="ti-download"></i> download min v{{$version}}</a><br />
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 
       <a href="https://github.com/h3rald/min/issues">Issue Tracking</a> |
