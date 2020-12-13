@@ -66,6 +66,10 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     i.push(i.scope.hasSymbol(vals[0].getString).newVal)
 
+  def.symbol("defined-sigil?") do (i: In):
+    let vals = i.expect("'sym")
+    i.push(i.scope.hasSigil(vals[0].getString).newVal)
+  
   def.symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
     var scope = i.scope
@@ -112,8 +116,6 @@ proc lang_module*(i: In) =
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
-  
-
   def.symbol("to-yaml") do (i: In):
     let vals = i.expect "a"
     let a = vals[0]
@@ -159,12 +161,30 @@ proc lang_module*(i: In) =
       isQuot = false
     symbol = sym.getString
     when not defined(mini):
-      if not symbol.match "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$":
+      if not symbol.match USER_SYMBOL_REGEX:
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
+    
+  def.symbol("define-sigil") do (i: In):
+    let vals = i.expect("'sym", "a")
+    let sym = vals[0]
+    var q1 = vals[1] # existing (auto-quoted)
+    var sigil: string
+    var isQuot = true
+    if not q1.isQuotation:
+      q1 = @[q1].newVal
+      isQuot = false
+    sigil = sym.getString
+    when not defined(mini):
+      if not sigil.match USER_SYMBOL_REGEX:
+        raiseInvalid("Sigil identifier '$1' contains invalid characters." % sigil)
+    info "[sigil] $1 = $2" % [sigil, $q1]
+    if i.scope.sigils.hasKey(sigil) and i.scope.sigils[sigil].sealed:
+      raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sigil])
+    i.scope.sigils[sigil] = MinOperator(kind: minValOp, val: q1, sealed: true, quotation: isQuot)
 
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
@@ -187,6 +207,13 @@ proc lang_module*(i: In) =
     let res = i.scope.delSymbol(sym.getString) 
     if not res:
       raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
+      
+  def.symbol("delete-sigil") do (i: In):
+    let vals = i.expect("'sym")
+    let sym = vals[0]
+    let res = i.scope.delSigil(sym.getString) 
+    if not res:
+      raiseUndefined("Attempting to delete undefined sigil: " & sym.getString)
 
   def.symbol("module") do (i: In):
     let vals = i.expect("'sym", "dict")
@@ -624,18 +651,36 @@ proc lang_module*(i: In) =
 
   def.symbol("seal") do (i: In):
     let vals = i.expect("'sym")
-    let sym = vals[0]
-    var s = i.scope.getSymbol(sym.getString) 
+    let sym = vals[0].getString
+    var s = i.scope.getSymbol(sym) 
     s.sealed = true
-    i.scope.setSymbol(sym.getString, s)
+    i.scope.setSymbol(sym, s)
+    
+  def.symbol("seal-sigil") do (i: In):
+    let vals = i.expect("'sym")
+    let sym = vals[0].getString
+    var s = i.scope.getSigil(sym) 
+    s.sealed = true
+    i.scope.setSigil(sym, s)
 
   def.symbol("unseal") do (i: In):
     let vals = i.expect("'sym")
-    let sym = vals[0]
-    var s = i.scope.getSymbol(sym.getString) 
+    let sym = vals[0].getString
+    var s = i.scope.getSymbol(sym) 
     s.sealed = false
-    i.scope.setSymbol(sym.getString, s, true)
-
+    i.scope.setSymbol(sym, s, true)
+  
+  def.symbol("unseal-sigil") do (i: In):
+    let vals = i.expect("'sym")
+    let sym = vals[0].getString
+    var s = i.scope.getSigil(sym) 
+    if not sym.match USER_SYMBOL_REGEX:
+      # Prevent accidentally unsealing system sigils
+      # Not that they can redefined, but still
+      raiseInvalid("Attempting to unseal system sigil: " & sym)
+    s.sealed = false
+    i.scope.setSigil(sym, s, true)
+  
   def.symbol("quote-bind") do (i: In):
     let vals = i.expect("string", "a")
     let s = vals[0]

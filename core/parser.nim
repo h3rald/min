@@ -148,7 +148,7 @@ const
     "string expected",
     "')' expected",
     "'}' expected",
-    "'\"' or \"'\" expected",
+    "'\"' expected",
     "'*/' expected",
     "EOF expected",
     "expression expected"
@@ -326,8 +326,18 @@ proc parseSymbol(my: var MinParser): MinTokenKind =
   var buf = my.buf
   if not(buf[pos] in Whitespace):
     while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}', '{']):
-        add(my.a, buf[pos])
-        inc(pos)
+        if buf[pos] == '"':
+          add(my.a, buf[pos])
+          my.bufpos = pos
+          let r = parseString(my)
+          if r == tkError:
+            result = tkError
+            return
+          add(my.a, buf[pos])
+          return
+        else:
+          add(my.a, buf[pos])
+          inc(pos)
   my.bufpos = pos
 
 proc skip(my: var MinParser) = 
@@ -558,7 +568,10 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
           v = "<native>"
         else:
           v = $i.val.val
-        d = d & v & " :" & $i.key & " "
+        var k = $i.key
+        if k.contains(" "):
+          k = "\"$1\"" % k
+        d = d & v & " :" & k & " "
       if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -590,7 +603,10 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
           v = "<native>"
         else:
           v = $i.val.val
-        d = d & v & " :" & $i.key & " "
+        var k = $i.key
+        if k.contains(" "):
+          k = "\"$1\"" % k
+        d = d & v & " :" & k & " "
       if a.objType != "": 
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -634,7 +650,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
-          scope.symbols[key[1 .. key.len-1]] = MinOperator(kind: minValOp, val: val, sealed: false)
+          var offset = 0
+          if key[1] == '"':
+            offset = 1
+          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false)
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -649,7 +668,8 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     p.a = ""
     discard getToken(p)
   else:
-    raiseUndefined(p, "Undefined value: '"&p.a&"'")
+    let err = "Undefined or invalid value: "&p.a
+    raiseUndefined(p, err)
   result.filename = p.filename
   
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] {.extern:"min_exported_symbol_$1".}=

@@ -92,11 +92,20 @@ Returns {{t}} if the current program has been compiled.#}
 {#op||define||{{any}} {{sl}}||{{null}}||
 Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
+{#op||define-sigil||{{any}} {{sl}}||{{null}}||
+Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
+
 {#op||defined?||{{sl}}||{{b}}||
-Returns {{t}} if {{sl}} is defined, {{f}} otherwise.#}
+Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
+
+{#op||defined-sigil?||{{sl}}||{{b}}||
+Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
 {#op||delete||{{sl}}||{{null}}||
 Deletes the specified symbol {{sl}}.#}
+
+{#op||delete-sigil||{{sl}}||{{null}}||
+Deletes the specified user-defined sigil {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
 > Pushes the contents of quotation {{q}} on the stack.
@@ -340,6 +349,9 @@ Returns a list of all symbols defined in dictionary {{d}}.#}
 {#op||seal||{{sl}}||{{null}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 
+{#op||seal-sigil||{{sl}}||{{null}}||
+Seals the user-defined sigil {{sl}}, so that it cannot be re-defined. #}
+
 {#op||set-type||{{d}} {{sl}}||{{d}}||
 Sets the type for dictionary {{d}} to {{sl}}.#}
 
@@ -436,7 +448,10 @@ Converts {{any}} into a JSON string.#}
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
 {#op||unseal||{{sl}}||{{null}}||
-Unseals symbol {{sl}}, so that it can be re-assigned. #}
+Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
+
+{#op||unseal-sigil||{{sl}}||{{null}}||
+Unseals sigil {{sl}}, so that it can be re-defined (system sigils cannot be unsealed). #}
 
 {#op||version||{{null}}||{{s}}||
 Returns the current min version number. #}
