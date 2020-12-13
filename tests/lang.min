@@ -215,6 +215,17 @@
   ((2 < 3 and (4 > 2)) >< true) assert
 
   ((float 3) >> 3.0 ==) assert
+  
+  (
+    ("--" suffix "--" prefix) 'del define-sigil
+    del"test" "--test--" ==
+  ) assert
+  
+  (
+    ("x" prefix) 'x define-sigil
+    'x unseal-sigil 'x delete-sigil 
+    'x defined-sigil? false ==
+  ) assert
 
   report
   ; Tidy up

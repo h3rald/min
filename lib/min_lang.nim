@@ -66,6 +66,10 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     i.push(i.scope.hasSymbol(vals[0].getString).newVal)
 
+  def.symbol("defined-sigil?") do (i: In):
+    let vals = i.expect("'sym")
+    i.push(i.scope.hasSigil(vals[0].getString).newVal)
+  
   def.symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
     var scope = i.scope
