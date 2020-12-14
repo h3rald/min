@@ -25,7 +25,7 @@ import
   core/scope,
   core/interpreter, 
   core/utils,
-  core/niftyjsonlogger
+  core/jsonlogger
 import 
   lib/min_lang, 
   lib/min_stack, 
@@ -317,8 +317,7 @@ when isMainModule:
   var UNINSTALL = false
   var COMPILE = false
   var MODULEPATH = ""
-  var SERVER = false
-  let ADDRESS = "127.0.0.1"
+  let ADDRESS = "0.0.0.0"
   var MINPORT = 5555
   var libfile = ""
   var exeName = "min"
@@ -392,6 +391,7 @@ when isMainModule:
       j["result"] = newJNull()
       if not r.isNil:
         j["result"] = i%r
+      j["stack"] = i%(i.stack.newVal)
       j["output"] = JSONLOG
       return j.pretty
       
@@ -400,7 +400,7 @@ when isMainModule:
       var i = newMinInterpreter(filename = "<server>")
       i.stdLib()
       var s = newStringStream("")
-      i.open(s, "<server>")
+      i.open(s, "<api>")
       var r: MinValue
       try:
         r = i.interpret(j["data"].getStr)
@@ -411,7 +411,6 @@ when isMainModule:
       await req.respond(Http200, jsonExecutionResult(iv, r), headers)
 
     proc minServer*(address: string, port: int) = 
-      newNiftyJsonLogger().addHandler()
       proc handleHttpRequest(req: Request) {.async.} =
         JSONLOG = newJArray()
         if req.url.path == "/api/execute" and req.reqMethod == HttpPost:
@@ -528,7 +527,7 @@ when isMainModule:
               quit(0)
           of "server", "s":
             if file == "":
-              SERVER = true
+              MINSERVER = true
           of "interactive", "i":
             if file == "" and not defined(mini):
               REPL = true
@@ -556,7 +555,8 @@ when isMainModule:
       for f in walkDirRec(MODULEPATH):
         if f.endsWith(".min"):
           MINMODULES.add f
-    if SERVER:
+    if MINSERVER:
+      newJsonLogger().addHandler()
       minServer(ADDRESS, MINPORT)
     if INSTALL:
       if not libfile.fileExists:

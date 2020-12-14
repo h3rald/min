@@ -17,3 +17,5 @@ when not defined(mini):
 
 var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false
+var MINSERVER* {.threadvar.}: bool
+MINSERVER = false

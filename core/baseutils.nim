@@ -1,12 +1,18 @@
+import
+  env
+
+
 proc reverse*[T](xs: openarray[T]): seq[T] =
   result = newSeq[T](xs.len)
   for i, x in xs:
     result[result.len-i-1] = x 
 
-
 when defined(mini):
   import
     strutils
+    
+  proc puts*(args: varargs[string, `$`]) = 
+    echo args
   
   proc parentDirEx*(s: string): string =
     let fslash = s.rfind("/")
@@ -39,7 +45,13 @@ when defined(mini):
     return "\"" & result & "\""
     
 else:
-  import os, json
+  import os, json, logging
+      
+  proc puts*(args: varargs[string, `$`]) =
+    if MINSERVER:
+      log(lvlAll, args)
+    else:
+      echo args
   
   proc parentDirEx*(s: string): string =
     return s.parentDir

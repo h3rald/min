@@ -110,7 +110,7 @@ The following notation is used in the signature of all min operators:
        "1.1" :version         ;optional
        "h3rald.com" :hostname ;optional
        {                      
-        "it-id" :Accept-Language
+        "it-it" :Accept-Language
         "httpbin.org" :Host
        } :headers             ;optional
        "test body" :body      ;optional
