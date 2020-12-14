@@ -50,7 +50,7 @@ If the **d:lite** flag is specified, a more minimal executable file will be gene
 
 #### -d:mini
 
-If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called litemin), however the following functionalities will not be available:
+If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called "minimin"), however the following functionalities will not be available:
 
 * The {#link-module||crypto#}
 * The {#link-module||net#}
@@ -84,7 +84,7 @@ Additionally:
 * Only the simple REPL will be available.
 * There will be no support for dynamic libraries.
 * The **-m, \-\-module-path** option has no effect.
-* No environment configuration files ([.minrc](class.file), [.min_symbols](class:file)) are used.
+* No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
 
 ## Running the min Shell
 
@@ -110,8 +110,9 @@ The result of each operation will be placed on top of the stack, and it will be 
 To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and press [ENTER](class:kbd).
 
 > %tip%
+> Tip
 > 
-> By default, the min shell provides advanced features like tab-completion, history, etc. If however, you run into problems, you can disable these features by running [min -i](class:cmd) instead, and run min shell with a bare-bones REPL. 
+> By default, the min shell provides advanced features like tab-completion, history, etc. If however, you run into problems, you can disable these features by running [min -j](class:cmd) instead, and run min shell with a bare-bones REPL. 
 
 ## Executing a min Program
 
