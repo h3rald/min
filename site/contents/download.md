@@ -50,7 +50,7 @@ If the **d:lite** flag is specified, a more minimal executable file will be gene
 
 #### -d:mini
 
-If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called litemin), however the following functionalities will not be available:
+If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called "minimin"), however the following functionalities will not be available:
 
 * The {#link-module||crypto#}
 * The {#link-module||net#}
