@@ -22,6 +22,7 @@ import
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
+  ../core/baseutils,
   ../core/utils,
   ../core/scope
 
@@ -33,12 +34,13 @@ proc lang_module*(i: In) =
 
   def.symbol("puts") do (i: In):
     let a = i.peek
-    echo $$a
+    puts $$a
   
   def.symbol("puts!") do (i: In):
-    echo $$i.pop
+    puts $$i.pop
 
   def.symbol("gets") do (i: In) {.gcsafe.}:
+    notSupportedByAPI()
     when defined(mini):
       i.push readLineFromStdin("").newVal 
     else:
@@ -138,9 +140,9 @@ proc lang_module*(i: In) =
     let s = vals[0]
     var str = s.getString
     when defined(mini):
-      echo "Log level: ", minilogger.setLogLevel(str)
+      puts "Log level: ", minilogger.setLogLevel(str)
     else:
-      echo "Log level: ", niftylogger.setLogLevel(str)
+      puts "Log level: ", niftylogger.setLogLevel(str)
 
   def.symbol("loglevel?") do (i: In):
     when defined(mini):

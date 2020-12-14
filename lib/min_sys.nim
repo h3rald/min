@@ -9,6 +9,8 @@ import
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
+  ../core/baseutils,
+  ../core/env,
   ../core/utils,
   ../core/fileutils
 
@@ -53,12 +55,23 @@ proc sys_module*(i: In)=
   def.symbol("system") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0]
-    i.push execShellCmd(a.getString).newVal
+    if MINSERVER:
+      let res = execCmdEx(a.getString)
+      for line in res.output.split("\n"):
+        puts line
+      i.push res.exitCode.newVal
+    else:
+      i.push execShellCmd(a.getString).newVal
 
   def.symbol("system!") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0]
-    discard execShellCmd(a.getString)
+    if MINSERVER:
+      let res = execCmdEx(a.getString)
+      for line in res.output.split("\n"):
+        puts line
+    else:
+      discard execShellCmd(a.getString).newVal
   
   def.symbol("run") do (i: In):
     let vals = i.expect("'sym")

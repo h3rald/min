@@ -14,8 +14,6 @@ else:
     algorithm,
     dynlib,
     logging,
-    asynchttpserver,
-    asyncdispatch,
     packages/niftylogger
 import 
   core/baseutils,
@@ -209,15 +207,6 @@ proc interpret*(i: In, s: Stream) =
   except:
     discard
   i.close()
-
-proc interpret*(i: In, s: string): MinValue = 
-  i.open(newStringStream(s), i.filename)
-  discard i.parser.getToken() 
-  try:
-    result = i.interpret()
-  except:
-    discard
-    i.close()
     
 proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.}
 
@@ -310,6 +299,9 @@ when isMainModule:
   import 
     parseopt,
     core/consts
+  when not defined(mini):
+    import
+      core/server  
 
   var REPL = false
   var SIMPLEREPL = false
@@ -317,8 +309,6 @@ when isMainModule:
   var UNINSTALL = false
   var COMPILE = false
   var MODULEPATH = ""
-  let ADDRESS = "0.0.0.0"
-  var MINPORT = 5555
   var libfile = ""
   var exeName = "min"
   var installOpt = "\n    -—install:<lib>           Install dynamic library file <lib>\n" 
@@ -379,49 +369,12 @@ when isMainModule:
       let r = i.interpret($line)
       if $line != "":
         i.printResult(r)
+
+  proc minSimpleRepl*() = 
+    var i = newMinInterpreter(filename = "<repl>")
+    i.minSimpleRepl()
     
   when not defined(mini):
-    proc jsonError(s: string): string =
-      let j = newJObject()
-      j["error"] = %s
-      return j.pretty
-
-    proc jsonExecutionResult(i: var MinInterpreter, r: MinValue): string =
-      let j = newJObject()
-      j["result"] = newJNull()
-      if not r.isNil:
-        j["result"] = i%r
-      j["stack"] = i%(i.stack.newVal)
-      j["output"] = JSONLOG
-      return j.pretty
-      
-    proc minApiExecHandler*(req: Request): Future[void] {.async, gcsafe.} =
-      let j = req.body.parseJson
-      var i = newMinInterpreter(filename = "<server>")
-      i.stdLib()
-      var s = newStringStream("")
-      i.open(s, "<api>")
-      var r: MinValue
-      try:
-        r = i.interpret(j["data"].getStr)
-      except:
-        discard
-      let headers = newHttpHeaders([("Content-Type","application/json")])
-      var iv = i
-      await req.respond(Http200, jsonExecutionResult(iv, r), headers)
-
-    proc minServer*(address: string, port: int) = 
-      proc handleHttpRequest(req: Request) {.async.} =
-        JSONLOG = newJArray()
-        if req.url.path == "/api/execute" and req.reqMethod == HttpPost:
-          await minApiExecHandler(req)
-        else:
-          let headers = newHttpHeaders([("Content-Type","application/json")])
-          await req.respond(Http400, jsonError("Bad Request"), headers)
-      var server = newAsyncHttpServer()
-      asyncCheck server.serve(Port(port), handleHttpRequest, address)
-      runForever()
-
     proc minRepl*(i: var MinInterpreter) =
       i.stdLib()
       i.dynLib()
@@ -445,12 +398,7 @@ when isMainModule:
 
     proc minRepl*() = 
       var i = newMinInterpreter(filename = "<repl>")
-      i.minRepl()
-
-  proc minSimpleRepl*() = 
-    var i = newMinInterpreter(filename = "<repl>")
-    i.minSimpleRepl()
-      
+      i.minRepl()  
 
   let usage* = """  $exe v$version - a tiny concatenative programming language
   (c) 2014-2020 Fabio Cevasco
@@ -511,7 +459,7 @@ when isMainModule:
                 niftylogger.setLogLevel(v)
           of "port":
             if file == "":
-              MINPORT = val.parseInt
+              SRVPORT = val.parseInt
           of "passN", "n":
               NIMOPTIONS = val
           of "evaluate", "e":
@@ -557,7 +505,10 @@ when isMainModule:
           MINMODULES.add f
     if MINSERVER:
       newJsonLogger().addHandler()
-      minServer(ADDRESS, MINPORT)
+      SRVINTERPRETER = newMinInterpreter(filename = "<api>")
+      SRVINTERPRETER.stdLib()
+      SRVINTERPRETER.open(newStringStream(""), "<api>")
+      minServer(SRVADDRESS, SRVPORT)
     if INSTALL:
       if not libfile.fileExists:
         logging.fatal("Dynamic library file not found:" & libfile)

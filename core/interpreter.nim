@@ -370,6 +370,15 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   i.stack = i2.stack
   i.scope = i2.scope
 
+proc interpret*(i: In, s: string): MinValue = 
+  i.open(newStringStream(s), i.filename)
+  discard i.parser.getToken() 
+  try:
+    result = i.interpret()
+  except:
+    discard
+    i.close()
+
 proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_symbol_$1".}=
   return i.eval(s, name, true)
 

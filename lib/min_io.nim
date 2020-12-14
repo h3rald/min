@@ -7,6 +7,7 @@ import
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
+  ../core/baseutils,
   ../core/utils
 
 # I/O 
@@ -16,7 +17,7 @@ proc io_module*(i: In) =
   let def = i.define()
   
   def.symbol("newline") do (i: In):
-    echo ""
+    puts ""
   
   def.symbol("notice") do (i: In):
     let a = i.peek
@@ -44,6 +45,7 @@ proc io_module*(i: In) =
     quit(100)
 
   def.symbol("column-print") do (i: In):
+    notSupportedByAPI()
     let vals = i.expect("int", "quot")
     let n = vals[0]
     let q = vals[1]
@@ -52,29 +54,34 @@ proc io_module*(i: In) =
       c.inc
       stdout.write $$s & spaces(max(0, 15 - ($$s).len))
       if c mod n.intVal == 0:
-        echo ""
-    echo ""
+        puts ""
+    puts ""
 
   def.symbol("getchr") do (i: In):
+    notSupportedByAPI()
     i.push getchr().newVal
 
   def.symbol("putchr") do (i: In):
+    notSupportedByAPI()
     let ch = i.expect("string")
     if ch[0].getString.len != 1:
       raiseInvalid("Symbol putch requires a string containing a single character.")
     putchr(ch[0].getString[0].cint)
 
   def.symbol("password") do (i: In) {.gcsafe.}:
+    notSupportedByAPI()
     var ed = initEditor()
     i.push ed.password("Enter Password: ").newVal
 
   def.symbol("ask") do (i: In) {.gcsafe.}:
+    notSupportedByAPI()
     var ed = initEditor()
     let vals = i.expect("string")
     let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
   def.symbol("confirm") do (i: In) {.gcsafe.}:
+    notSupportedByAPI()
     var ed = initEditor()
     let vals = i.expect("string")
     let s = vals[0]
@@ -90,6 +97,7 @@ proc io_module*(i: In) =
     i.push confirm().newVal
 
   def.symbol("choose") do (i: In) {.gcsafe.}:
+    notSupportedByAPI()
     var ed = initEditor()
     let vals = i.expect("'sym", "quot")
     let s = vals[0]
@@ -103,7 +111,7 @@ proc io_module*(i: In) =
         if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[0].isString or not item.qVal[1].isQuotation:
           raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
         c.inc
-        echo "$1 - $2" % [$c, item.qVal[0].getString]
+        puts "$1 - $2" % [$c, item.qVal[0].getString]
       let answer = ed.readLine("Enter your choice ($1 - $2): " % ["1", $c])
       var choice: int
       try:
@@ -111,7 +119,7 @@ proc io_module*(i: In) =
       except:
         choice = 0
       if choice <= 0 or choice > c:
-        echo "Invalid choice."
+        puts "Invalid choice."
         return choose()
       else:
         return choice
@@ -119,10 +127,12 @@ proc io_module*(i: In) =
     i.dequote(q.qVal[choice-1].qVal[1])
 
   def.symbol("print") do (i: In):
+    notSupportedByAPI()
     let a = i.peek
     a.print
   
   def.symbol("print!") do (i: In):
+    notSupportedByAPI()
     i.pop.print
 
   def.symbol("fread") do (i: In):

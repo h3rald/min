@@ -6,6 +6,7 @@ import
   parser, 
   value,
   scope,
+  env,
   interpreter
   
 when not defined(mini):
@@ -179,6 +180,10 @@ when not defined(mini):
         return res.newVal
 
 # Validators
+
+proc notSupportedByAPI*() =
+  if MINSERVER:
+    raiseInvalid("This operator is not supported by the min API.")
 
 proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1".}=
   case t:

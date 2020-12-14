@@ -1,7 +1,6 @@
 import
   env
 
-
 proc reverse*[T](xs: openarray[T]): seq[T] =
   result = newSeq[T](xs.len)
   for i, x in xs:
@@ -49,7 +48,7 @@ else:
       
   proc puts*(args: varargs[string, `$`]) =
     if MINSERVER:
-      log(lvlAll, args)
+      log(lvlNone, args)
     else:
       echo args
   
