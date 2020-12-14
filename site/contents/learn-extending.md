@@ -85,7 +85,7 @@ To do so:
 The following code is taken from [HastySite](https://github.com/h3rald/hastysite) and shows how to define a new `hastysite` module containing some symbols (`preprocess`, `postprocess`, `process-rules`, ...):
 
 ```
-import packages/min/min
+import min
 
 proc hastysite_module*(i: In, hs1: HastySite) =
   var hs = hs1
@@ -167,12 +167,14 @@ Note that the `mindym.nim` file contains the signatures of all the `proc`s that 
 You can compile the following library by running the following command:
 
 > %min-terminal%
-> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain dyntest.nim
+> [$](class:prompt) nim c \-\-app:lib -d:release \
+> \-\-noMain dyntest.nim
 
 If you are using [clang](https://clang.llvm.org/) to compile Nim code, you may need to run the following command instead:
 
 > %min-terminal%
-> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain  -l:&#34;-undefined dynamic\_lookup&#34; dyntest.nim
+> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain \
+> -l:&#34;-undefined dynamic\_lookup&#34; dyntest.nim
 
 Now you should have a `libdyntest.so|dyn|dll` file. To make min load it and link it automatically when it starts, just run:
 
