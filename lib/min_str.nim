@@ -191,6 +191,8 @@ proc str_module*(i: In) =
     let cv = i.dget(d, "major")
     let v = cv.intVal + 1
     i.dset(d, "major", v.newVal)
+    i.dset(d, "minor", 0.newVal)
+    i.dset(d, "patch", 0.newVal)
     i.push(d)
     i.push("to-semver".newSym)
 
@@ -200,6 +202,7 @@ proc str_module*(i: In) =
     let cv = i.dget(d, "minor")
     let v = cv.intVal + 1
     i.dset(d, "minor", v.newVal)
+    i.dset(d, "patch", 0.newVal)
     i.push(d)
     i.push("to-semver".newSym)
 

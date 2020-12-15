@@ -59,9 +59,9 @@
 
   ({2 :major 25 :minor 300 :patch} to-semver "2.25.300" ==) assert
 
-  ("2.3.6" semver-inc-major "3.3.6" ==) assert
+  ("2.3.6" semver-inc-major "3.0.0" ==) assert
   
-  ("2.3.6" semver-inc-minor "2.4.6" ==) assert
+  ("2.3.6" semver-inc-minor "2.4.0" ==) assert
 
   ("2.3.6" semver-inc-patch "2.3.7" ==) assert
   
