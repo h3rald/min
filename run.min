@@ -2,7 +2,6 @@
 
 ;Capture a reference of default symbols before more are added
 symbols =min-symbols
-
 2 :n-args
 1 :taskspec-arg
 
