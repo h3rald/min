@@ -4,7 +4,6 @@ import
   ../core/interpreter, 
   ../core/utils
 
-# Operations on the whole stack
 proc stack_module*(i: In)=
 
   let def = i.define()

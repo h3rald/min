@@ -12,7 +12,6 @@ when not defined(mini):
   import 
     ../packages/nim-sgregex/sgregex
 
-
 proc str_module*(i: In) = 
   let def = i.define()
 

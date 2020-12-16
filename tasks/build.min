@@ -14,7 +14,7 @@
   ) when
   "nim" required
   "Building $# - $# (x64)" (o-variant target-os) =% notice
-  "nim c -d:release --cpu:amd64 --os:$# $#-o:$# min" (target-os d-variant o-variant) =% puts !
+  "nim c -d:release -d:ssl --cpu:amd64 --os:$# $#-o:$# min" (target-os d-variant o-variant) =% puts !
   {}
     target-os %os
     config /version %version

@@ -6,7 +6,6 @@ import
   ../core/interpreter, 
   ../core/utils
   
-# Operations on dictionaries
 proc dict_module*(i: In)=
 
   let def = i.define()

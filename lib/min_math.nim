@@ -8,8 +8,6 @@ import
   ../core/interpreter, 
   ../core/utils
 
-  # Math
-  
 proc math_module*(i: In)=
 
   let def = i.define()

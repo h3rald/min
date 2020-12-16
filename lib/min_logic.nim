@@ -6,8 +6,6 @@ import
   ../core/interpreter, 
   ../core/utils
 
-# Comparison operators
-
 proc floatCompare(n1, n2: MinValue): bool =
   let
     a:float = if n1.kind != minFloat: n1.intVal.float else: n1.floatVal
@@ -112,8 +110,6 @@ proc logic_module*(i: In)=
     if (n1.kind == minFloat or n2.kind == minFloat) and n1.isNumber and n2.isNumber:
       i.push newVal(not floatCompare(n1, n2))
     i.push newVal(not (n1 == n2))
-  
-  # Boolean Logic
   
   def.symbol("not") do (i: In):
     let vals = i.expect("bool")

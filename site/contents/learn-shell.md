@@ -28,21 +28,26 @@ The following behaviors are implemented when pressing the `TAB` key within:
 Context                                                        | Result
 ---------------------------------------------------------------|--------------
 ...a string                                                    | Auto-completes the current word using file and directory names.
-...a word starting with `!` or `&`                             | Auto-completes the current word using executable file names.
+...a word starting with `!`, `!!`, `!"` `!!"`, `&`, `&"`       | Auto-completes the current word using executable file names.
 ...a word starting with `$`                                    | Auto-completes the current word using environment variable names.
 ...a word starting with `'`, `~`, `@`, `#`, `>`, `<`, `*`, `(` | Auto-completes the current word using symbol names.
 
-Additionally, at least some of the following systems should also be available, depending on your operating system:
+Additionally, the following common shortcuts are also available:
 
 Key            | Effect
 ---------------|------------------------
 `INSERT`       | Switches between insert and replace mode.
 `UP`           | Displays the previous history entry.
 `DOWN`         | Displays the next history entry.
-`CTRL+c`       | Terminates min shell.
-`CTRL+x`       | Clears the current line.
+`CTRL+d`       | Terminates the min shell.
+`CTRL+u`       | Clears the current line.
 `CTRL+b`       | Goes to the beginning of the line.
 `CTRL+e`       | Goes to the end of the line.
+
+> %tip%
+> Tip
+> 
+> If you want, you can define your own keyboard shortcuts using the {#link-operator||io||mapkey#} operator.
 
 
 ## Shell configuration files

@@ -38,6 +38,17 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
+#### -d:ssl
+
+If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
+* perform HTTPS requests with the {#link-module||http#}.
+* use the cryptographic symbols defined in the {#link-module||crypto#}.
+
+> %note%
+> Note
+> 
+> By default, this flag is enabled when compiling the executable files included with official releases.
+
 #### -d:lite
 
 If the **d:lite** flag is specified, a more minimal executable file will be generated (typically, it should be called "litemin"), however the following functionalities will not be available:

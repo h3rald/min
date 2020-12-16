@@ -1,5 +1,5 @@
 import 
-  core/consts
+  core/meta
 
 # Package
 
@@ -8,7 +8,7 @@ author        = pkgAuthor
 description   = pkgDescription
 license       = "MIT"
 bin           = @[pkgName]
-installFiles  = @["core/consts.nim"]
+installFiles  = @["core/meta.nim"]
 
 # Dependencies
 

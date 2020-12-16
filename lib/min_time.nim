@@ -6,9 +6,6 @@ import
   ../core/interpreter,
   ../core/utils
 
-# Time
-
-
 proc time_module*(i: In)=
   let def = i.define()
 
