@@ -1,5 +1,8 @@
 when not defined(mini):
-  import os
+  import 
+    os, 
+    ../packages/nimline/nimline
+  
   var HOME*: string
   if defined(windows):
     HOME = getenv("USERPROFILE")
@@ -14,6 +17,9 @@ when not defined(mini):
   MINHISTORY = HOME / ".min_history"
   var MINLIBS* {.threadvar.} : string
   MINLIBS  = HOME / ".minlibs"
+ 
+  var EDITOR* {.threadvar.}: LineEditor
+  EDITOR = initEditor(historyFile = MINHISTORY)
 
 var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false

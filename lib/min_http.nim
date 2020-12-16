@@ -1,12 +1,12 @@
 import httpclient, asynchttpserver, asyncdispatch, strutils, uri, critbits
 import 
   ../core/parser, 
-  ../core/consts,
+  ../core/meta,
   ../core/value, 
   ../core/interpreter, 
   ../core/utils
 
-when defined(amd64):
+when defined(ssl) and defined(amd64):
   when defined(windows): 
     {.passL: "-static -Lvendor/openssl/windows -lssl -lcrypto -lws2_32".}
   elif defined(linux):
@@ -26,8 +26,6 @@ proc newVal(i: In, headers: HttpHeaders): MinValue =
     result = i.dset(result, k, v.newVal)
 
 type MinServerExit = ref object of CatchableError 
-
-# Http
 
 proc http_module*(i: In)=
   let def = i.define()
@@ -138,6 +136,5 @@ proc http_module*(i: In)=
 
   def.symbol("stop-server") do (i: In):
     raise MinServerExit()
-    
 
   def.finalize("http")

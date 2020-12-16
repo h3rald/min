@@ -11,6 +11,9 @@ Prints {{s1}} (prompt), reads a line from STDIN and places it on top of the stac
 > Prints {{s2}}, then prints all {{s1}} included in the quotation prepended with a number, and waits from valid input from the user.
 > 
 > If the user enters a number that matches one of the choices, then the corresponding quotation {{q1}} is executed, otherwise the choice menu is displayed again until a valid choice is made. #}
+
+{#op||clear||{{null}}||{{null}}||
+Clears the screen.#}
  
 {#op||column-print||{{q}} {{i}}||{{any}}||
 Prints all elements of {{q}} to STDOUT, in {{i}} columns.#}
@@ -46,6 +49,23 @@ Reads single character from STDIN without waiting for ENTER key and places its A
 {#op||info||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.#}
 
+{#op||mapkey||{{q}} {{sl}}||{{null}}||
+> Maps the named key/key combination {{sl}} to the quotation {{q}}, so that {{q}} is executed when key {{sl}} is pressed. 
+>
+> > %note%
+> > Note
+> >
+> > At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program:
+> > 
+> >     (clear) 'ctrl+l keymap
+> > 
+> > causes the `CTRL+L` key to clear the screen. #}
+
 {#op||newline||{{null}}||{{null}}||
 Prints a new line to STDOUT.#}
 
@@ -66,6 +86,16 @@ Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one 
 
 {#op||type||{{any}}||{{s}}||
 Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}
+
+{#op||unmapkey||{{sl}}||{{null}}||
+> Unmaps a previously-mapped key or key-combination {{sl}}, restoring the default mapping if available.
+>
+> > %note%
+> > Notes
+> >
+> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
+> > * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.
+#}
 
 {#op||warning||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.#}

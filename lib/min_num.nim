@@ -6,8 +6,6 @@ import
   ../core/interpreter, 
   ../core/utils
 
-  # Arithmetic
-  
 proc num_module*(i: In)=
 
   let def = i.define()

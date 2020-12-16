@@ -7,7 +7,6 @@ import
   ../core/interpreter, 
   ../core/utils
   
-# Operations on sequences (data quotations)
 proc seq_module*(i: In)=
 
   let def = i.define()

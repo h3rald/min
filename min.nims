@@ -12,7 +12,7 @@ switch("amd64.linux.gcc.linkerexe", "x86_64-linux-musl-gcc")
 
 switch("opt", "size")
 
-when not defined(mini):
+when defined(ssl) and not defined(mini):
   switch("define", "ssl")
   switch("threads", "on")
   when defined(windows): 

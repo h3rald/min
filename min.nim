@@ -36,8 +36,8 @@ import
 when not defined(mini):
   import
     packages/nimline/nimline,
-    lib/min_io,
     lib/min_sys,
+    lib/min_io,
     lib/min_fs
 
 when not defined(lite) and not defined(mini):
@@ -53,8 +53,9 @@ export
   interpreter,
   utils,
   value,
-  scope#,
-  #min_lang
+  scope,
+  min_lang
+
 when defined(mini):
   export minilogger
 else:
@@ -89,9 +90,9 @@ when not defined(mini):
       word = ed.lineText
     else:
       word = words[words.len-1]
-    if word.startsWith("’"):
-      return symbols.mapIt("’" & $it)
-    elif word.startsWith("~"):
+    if word.startsWith("'"):
+      return symbols.mapIt("'" & $it)
+    if word.startsWith("~"):
       return symbols.mapIt("~" & $it)
     if word.startsWith("@"):
       return symbols.mapIt("@" & $it)
@@ -109,6 +110,14 @@ when not defined(mini):
       return toSeq(envPairs()).mapIt("$" & $it[0])
     if word.startsWith("!"):
       return getExecs().mapIt("!" & $it)
+    if word.startsWith("!!"):
+      return getExecs().mapIt("!!" & $it)
+    if word.startsWith("!\""):
+      return getExecs().mapIt("!\"" & $it)
+    if word.startsWith("!!\""):
+      return getExecs().mapIt("!!\"" & $it)
+    if word.startsWith("&\""):
+      return getExecs().mapIt("&\"" & $it)
     if word.startsWith("&"):
       return getExecs().mapIt("&" & $it)
     if word.startsWith("\""):
@@ -305,7 +314,7 @@ when isMainModule:
 
   import 
     parseopt,
-    core/consts
+    core/meta
 
   var REPL = false
   var SIMPLEREPL = false
@@ -373,23 +382,23 @@ when isMainModule:
         i.printResult(r)
 
   when not defined(mini):
+
     proc minRepl*(i: var MinInterpreter) =
       i.stdLib()
       i.dynLib()
       var s = newStringStream("")
       i.open(s, "<repl>")
       var line: string
-      var ed = initEditor(historyFile = MINHISTORY)
       while true:
         let symbols = toSeq(i.scope.symbols.keys)
-        ed.completionCallback = proc(ed: LineEditor): seq[string] =
+        EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
           return ed.getCompletions(symbols)
         # evaluate prompt
         i.push("prompt".newSym)
         let vals = i.expect("string")
         let v = vals[0] 
         let prompt = v.getString()
-        line = ed.readLine(prompt)
+        line = EDITOR.readLine(prompt)
         let r = i.interpret($line)
         if $line != "":
           i.printResult(r)

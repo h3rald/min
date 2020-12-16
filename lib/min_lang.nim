@@ -18,7 +18,7 @@ else:
     ../packages/nim-sgregex/sgregex
 import 
   ../core/env,
-  ../core/consts,
+  ../core/meta,
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
@@ -27,6 +27,121 @@ import
 
 proc lang_module*(i: In) =
   let def = i.scope
+
+  when not defined(mini):
+  
+    def.symbol("from-json") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0]
+      i.push i.fromJson(s.getString.parseJson)
+      
+    def.symbol("to-json") do (i: In):
+      let vals = i.expect "a"
+      let q = vals[0]
+      i.push(($((i%q).pretty)).newVal)
+  
+    # Save/load symbols
+  
+    def.symbol("save-symbol") do (i: In) {.gcsafe.}:
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let op = i.scope.getSymbol(sym)
+      if op.kind == minProcOp:
+        raiseInvalid("Symbol '$1' cannot be serialized." % sym)
+      let json = MINSYMBOLS.readFile.parseJson
+      json[sym] = i%op.val
+      MINSYMBOLS.writeFile(json.pretty)
+
+    def.symbol("load-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      let json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      let val = i.fromJson(json[sym])
+      i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
+
+    def.symbol("saved-symbols") do (i: In):
+      var q = newSeq[MinValue](0)
+      let json = MINSYMBOLS.readFile.parseJson
+      for k,v in json.pairs:
+        q.add k.newVal
+      i.push q.newVal
+
+    def.symbol("remove-symbol") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      let sym = s.getString
+      var json = MINSYMBOLS.readFile.parseJson
+      if not json.hasKey(sym):
+        raiseUndefined("Symbol '$1' not found." % sym)
+      json.delete(sym)
+      MINSYMBOLS.writeFile(json.pretty)
+
+    def.symbol("load") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[load] File: ", file)
+      if MINCOMPILED:
+        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        if MINCOMPILEDFILES.hasKey(compiledFile):
+          MINCOMPILEDFILES[compiledFile](i)
+          return
+      file = i.pwd.joinPath(file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.load file
+
+    def.symbol("read") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[read] File: ", file)
+      if not file.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.push i.read file
+
+    def.symbol("raw-args") do (i: In):
+      var args = newSeq[MinValue](0)
+      for par in commandLineParams():
+          args.add par.newVal
+      i.push args.newVal
+
+  def.symbol("with") do (i: In):
+    let vals = i.expect("dict", "quot")
+    var qscope = vals[0]
+    var qprog = vals[1]
+    i.withDictScope(qscope.scope):
+      for v in qprog.qVal:
+        i.push v
+
+  def.symbol("publish") do (i: In):
+    let vals = i.expect("dict", "'sym")
+    let qscope = vals[0]
+    let str = vals[1]
+    let sym = str.getString
+    if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
+      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
+    let scope = i.scope
+    info("[publish] Symbol: $2" % [sym])
+    let op = proc(i: In) {.closure.} =
+      let origscope = i.scope 
+      i.scope = scope
+      i.evaluating = true
+      i.push sym.newSym
+      i.evaluating = false
+      i.scope = origscope
+    qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
+
+  ### End of symbols not present in minimin
+
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
     quit(vals[0].intVal.int)
@@ -269,118 +384,6 @@ proc lang_module*(i: In) =
     let vals = i.expect("string")
     let s = vals[0]
     i.push i.parse s.strVal
-
-  when not defined(mini):
-  
-    def.symbol("from-json") do (i: In):
-      let vals = i.expect("string")
-      let s = vals[0]
-      i.push i.fromJson(s.getString.parseJson)
-      
-    def.symbol("to-json") do (i: In):
-      let vals = i.expect "a"
-      let q = vals[0]
-      i.push(($((i%q).pretty)).newVal)
-  
-    # Save/load symbols
-  
-    def.symbol("save-symbol") do (i: In) {.gcsafe.}:
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      let sym = s.getString
-      let op = i.scope.getSymbol(sym)
-      if op.kind == minProcOp:
-        raiseInvalid("Symbol '$1' cannot be serialized." % sym)
-      let json = MINSYMBOLS.readFile.parseJson
-      json[sym] = i%op.val
-      MINSYMBOLS.writeFile(json.pretty)
-
-    def.symbol("load-symbol") do (i: In):
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      let sym = s.getString
-      let json = MINSYMBOLS.readFile.parseJson
-      if not json.hasKey(sym):
-        raiseUndefined("Symbol '$1' not found." % sym)
-      let val = i.fromJson(json[sym])
-      i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val, quotation: true)
-
-    def.symbol("saved-symbols") do (i: In):
-      var q = newSeq[MinValue](0)
-      let json = MINSYMBOLS.readFile.parseJson
-      for k,v in json.pairs:
-        q.add k.newVal
-      i.push q.newVal
-
-    def.symbol("remove-symbol") do (i: In):
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      let sym = s.getString
-      var json = MINSYMBOLS.readFile.parseJson
-      if not json.hasKey(sym):
-        raiseUndefined("Symbol '$1' not found." % sym)
-      json.delete(sym)
-      MINSYMBOLS.writeFile(json.pretty)
-
-    def.symbol("load") do (i: In):
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      var file = s.getString
-      if not file.endsWith(".min"):
-        file = file & ".min"
-      info("[load] File: ", file)
-      if MINCOMPILED:
-        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
-        if MINCOMPILEDFILES.hasKey(compiledFile):
-          MINCOMPILEDFILES[compiledFile](i)
-          return
-      file = i.pwd.joinPath(file)
-      if not file.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
-      i.load file
-
-    def.symbol("read") do (i: In):
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      var file = s.getString
-      if not file.endsWith(".min"):
-        file = file & ".min"
-      info("[read] File: ", file)
-      if not file.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
-      i.push i.read file
-
-    def.symbol("raw-args") do (i: In):
-      var args = newSeq[MinValue](0)
-      for par in commandLineParams():
-          args.add par.newVal
-      i.push args.newVal
-
-  def.symbol("with") do (i: In):
-    let vals = i.expect("dict", "quot")
-    var qscope = vals[0]
-    var qprog = vals[1]
-    i.withDictScope(qscope.scope):
-      for v in qprog.qVal:
-        i.push v
-
-  def.symbol("publish") do (i: In):
-    let vals = i.expect("dict", "'sym")
-    let qscope = vals[0]
-    let str = vals[1]
-    let sym = str.getString
-    if qscope.scope.symbols.hasKey(sym) and qscope.scope.symbols[sym].sealed:
-      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [sym])
-    let scope = i.scope
-    info("[publish] Symbol: $2" % [sym])
-    let op = proc(i: In) {.closure.} =
-      let origscope = i.scope 
-      i.scope = scope
-      i.evaluating = true
-      i.push sym.newSym
-      i.evaluating = false
-      i.scope = origscope
-    qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
 
   def.symbol("source") do (i: In):
     let vals = i.expect("'sym")

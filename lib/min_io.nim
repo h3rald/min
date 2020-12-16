@@ -1,6 +1,8 @@
 import 
   strutils,
-  logging
+  logging,
+  critbits,
+  terminal
 import 
   ../packages/nimline/nimline,
   ../packages/nim-sgregex/sgregex,
@@ -9,11 +11,37 @@ import
   ../core/interpreter, 
   ../core/utils
 
-# I/O 
-
+var ORIGKEYMAP {.threadvar.}: CritBitTree[KeyCallback] 
+for key, value in KEYMAP.pairs:
+  ORIGKEYMAP[key] = value
 
 proc io_module*(i: In) =
   let def = i.define()
+
+  def.symbol("clear") do (i: In):
+    stdout.eraseScreen
+    stdout.setCursorPos(0, 0)
+
+  def.symbol("unmapkey") do (i: In):
+    let vals = i.expect("'sym")
+    let key = vals[0].getString.toLowerAscii
+    if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
+      raiseInvalid("Unrecognized key: " & key)
+    if KEYMAP.hasKey(key):
+      if ORIGKEYMAP.hasKey(key):
+        KEYMAP[key] = ORIGKEYMAP[key]
+      else:
+        KEYMAP.excl(key)
+
+  def.symbol("mapkey") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let key = vals[0].getString.toLowerAscii
+    var q = vals[1]
+    if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
+      raiseInvalid("Unrecognized key: " & key)
+    var ic = i.copy(i.filename)
+    KEYMAP[key] = proc (ed: var LineEditor) {.gcsafe.} =
+      ic.apply(q)
   
   def.symbol("newline") do (i: In):
     echo ""

@@ -5,11 +5,8 @@ import
   ../core/interpreter, 
   ../core/utils
 
-# Net
-
 proc toSocket(q: MinValue): Socket =
   return cast[Socket](q.obj)
-
 
 proc net_module*(i: In)=
   let def = i.define()

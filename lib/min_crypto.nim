@@ -1,79 +1,48 @@
 import
-  base64,
-  strutils,
-  openssl,
-  times
+  base64
 import
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
   ../core/utils
-import
-  ../vendor/aes/aes
 
-{.compile: "../vendor/aes/libaes.c".}
 
-when defined(windows): 
-  {.passL: "-static -Lvendor/openssl/windows -lssl -lcrypto -lws2_32".}
-elif defined(linux):
-  {.passL: "-static -Lvendor/openssl/linux -lssl -lcrypto".}
-elif defined(macosx):
-  {.passL: "-Bstatic -Lvendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+when defined(ssl):
+  import
+    strutils,
+    openssl,
+    times,
+    ../vendor/aes/aes
+  
+  {.compile: "../vendor/aes/libaes.c".}
+  
+  when defined(windows): 
+    {.passL: "-static -Lvendor/openssl/windows -lssl -lcrypto -lws2_32".}
+  elif defined(linux):
+    {.passL: "-static -Lvendor/openssl/linux -lssl -lcrypto".}
+  elif defined(macosx):
+    {.passL: "-Bstatic -Lvendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
-proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
-proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
+  proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
+  proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
 
-proc hash(s: string, kind: EVP_MD, size: int): string =
-  var hash_length: cuint = 0
-  var hash = alloc[ptr cuchar](size)
-  let ctx = EVP_MD_CTX_new()
-  discard EVP_DigestInit_ex(ctx, kind, nil)
-  discard EVP_DigestUpdate(ctx, unsafeAddr s[0], s.len.cuint)
-  discard EVP_DigestFinal_ex(ctx, hash, cast[ptr cuint](hash_length))
-  EVP_MD_CTX_free(ctx)
-  var hashStr = newString(size)
-  copyMem(addr(hashStr[0]), hash, size)
-  dealloc(hash)
-  return hashStr.toHex.toLowerAscii[0..size-1]
+  proc hash(s: string, kind: EVP_MD, size: int): string =
+    var hash_length: cuint = 0
+    var hash = alloc[ptr cuchar](size)
+    let ctx = EVP_MD_CTX_new()
+    discard EVP_DigestInit_ex(ctx, kind, nil)
+    discard EVP_DigestUpdate(ctx, unsafeAddr s[0], s.len.cuint)
+    discard EVP_DigestFinal_ex(ctx, hash, cast[ptr cuint](hash_length))
+    EVP_MD_CTX_free(ctx)
+    var hashStr = newString(size)
+    copyMem(addr(hashStr[0]), hash, size)
+    dealloc(hash)
+    return hashStr.toHex.toLowerAscii[0..size-1]
 
 proc crypto_module*(i: In)=
   let def = i.define()
 
-  def.symbol("md5") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_md5(), 32).newVal
-
-  def.symbol("md4") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_md4(), 32).newVal
-
-  def.symbol("sha1") do (i: In):
-    let vals = i.expect("'sym")
-    var s = vals[0].getString
-    i.push hash(s, EVP_sha1(), 40).newVal
-
-  def.symbol("sha224") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_sha224(), 56).newVal
-
-  def.symbol("sha256") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_sha256(), 64).newVal
-
-  def.symbol("sha384") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_sha384(), 96).newVal
-
-  def.symbol("sha512") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    i.push hash(s, EVP_sha512(), 128).newVal
-
+  
   def.symbol("encode") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -83,18 +52,55 @@ proc crypto_module*(i: In)=
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.decode.newVal
-  
-  def.symbol("aes") do (i: In):
-    let vals = i.expect("'sym", "'sym")
-    let k = vals[0]
-    let s = vals[1]
-    var text = s.getString
-    var key = hash(k.getString, EVP_sha1(), 40)
-    var iv = hash((key & $getTime().toUnix), EVP_sha1(), 40)
-    var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
-    AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[0].addr));
-    var input = cast[ptr uint8](text[0].addr)
-    AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
-    i.push text.newVal
+
+  when defined(ssl):
+
+    def.symbol("md5") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_md5(), 32).newVal
+
+    def.symbol("md4") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_md4(), 32).newVal
+
+    def.symbol("sha1") do (i: In):
+      let vals = i.expect("'sym")
+      var s = vals[0].getString
+      i.push hash(s, EVP_sha1(), 40).newVal
+
+    def.symbol("sha224") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_sha224(), 56).newVal
+
+    def.symbol("sha256") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_sha256(), 64).newVal
+
+    def.symbol("sha384") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_sha384(), 96).newVal
+
+    def.symbol("sha512") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0].getString
+      i.push hash(s, EVP_sha512(), 128).newVal
+    
+    def.symbol("aes") do (i: In):
+      let vals = i.expect("'sym", "'sym")
+      let k = vals[0]
+      let s = vals[1]
+      var text = s.getString
+      var key = hash(k.getString, EVP_sha1(), 40)
+      var iv = hash((key & $getTime().toUnix), EVP_sha1(), 40)
+      var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
+      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[0].addr));
+      var input = cast[ptr uint8](text[0].addr)
+      AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
+      i.push text.newVal
 
   def.finalize("crypto")

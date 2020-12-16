@@ -69,7 +69,7 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
   var path = pwd
-  when not defined(mini): #TODO investigate impact
+  when not defined(mini): 
     if not pwd.isAbsolute:
       path = joinPath(getCurrentDir(), pwd)
   var stack:MinStack = newSeq[MinValue](0)

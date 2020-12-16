@@ -1,13 +1,9 @@
 <svg width="588" height="588" xmlns="http://www.w3.org/2000/svg">
  <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
  <g>
-  <title>background</title>
-  <rect fill="#fff" id="canvas_background" height="590" width="590" y="-1" x="-1"/>
- </g>
- <g>
   <title>Layer 1</title>
   <g id="widget" transform="rotate(-0.0926624983549118 294.3764648437568,302.3101196289116) matrix(7.224760791089692,0,0,7.224760791089692,1091.8911354197558,1091.8773791888611) ">
-   <path d="m-66.986304,-65.886277l-86.8,0l0,-86.8l86.8,0l0,86.8z" fill="#2B4737" id="svg_1"/>
+
    <path d="m-110.235944,-85.470377l-36.91286,6.2079l36.91286,6.1644l36.61214,-6.1644l-36.61214,-6.2079z" fill="#36a631" id="svg_2"/>
    <path d="m-110.235944,-91.847177l-36.91286,6.2079l36.91286,6.1644l36.61214,-6.1644l-36.61214,-6.2079z" fill="#6bbc57" id="svg_3"/>
    <path d="m-110.235944,-97.842677l-36.91286,6.2079l36.91286,6.1644l36.61214,-6.1644l-36.61214,-6.2079z" fill="#8dd97f" id="svg_4"/>
