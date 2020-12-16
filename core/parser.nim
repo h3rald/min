@@ -3,7 +3,6 @@ import
   lexbase, 
   strutils, 
   sequtils,
-  oids,
   streams, 
   critbits,
   baseutils
@@ -119,6 +118,8 @@ type
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
+  
+var CVARCOUNT = 0
 
 # Helpers
 
@@ -695,7 +696,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result = @[op&"MinValue(kind: minFloat, floatVal: "&p.a&")"]
     discard getToken(p)
   of tkBracketLe:
-    var qvar = "q" & $genOid()
+    CVARCOUNT.inc
+    var qvar = "q" & $CVARCOUNT
     result.add indent&"var "&qvar&" = newSeq[MinValue](0)"
     discard getToken(p)
     while p.token != tkBracketRi: 
@@ -711,8 +713,10 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     discard getToken(p)
     var c = 0
     var valInitialized = false
-    var scopevar = "scope" & $genOid()
-    var valvar = "val" & $genOid()
+    CVARCOUNT.inc
+    var scopevar = "scope" & $CVARCOUNT
+    CVARCOUNT.inc
+    var valvar = "val" & $CVARCOUNT
     while p.token != tkBraceRi: 
       c = c+1
       var instructions = p.compileMinValue(i, false, indent)
