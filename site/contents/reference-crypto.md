@@ -13,6 +13,9 @@ Decodes the Base64-encoded string {{sl}}. #}
 {#op||encode||{{sl}}||{{s}}||
 Base64-encodes {{sl}}. #}
 
+{#op||md4||{{sl}}||{{s}}||
+Returns the MD4 hash of {{sl}}. #}
+
 {#op||md5||{{sl}}||{{s}}||
 Returns the MD5 hash of {{sl}}. #}
 

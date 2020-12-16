@@ -48,16 +48,6 @@
       "src": "https://github.com/h3rald/nim-miniz.git",
       "git": true
     },
-    "nimSHA2": {
-      "name": "nimSHA2",
-      "src": "https://github.com/jangko/nimSHA2.git",
-      "git": true
-    },
-    "sha1": {
-      "name": "sha1",
-      "src": "https://github.com/onionhammer/sha1.git",
-      "git": true
-    },
     "nimline": {
       "name": "nimline",
       "src": "https://github.com/h3rald/nimline.git",
