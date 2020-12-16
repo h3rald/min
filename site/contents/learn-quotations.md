@@ -49,6 +49,7 @@ For example, the following program leaves the elements `1` and `-1` on the stack
      (1 2 3 -) ->
 
 Alternatively, the symbol {#link-operator||lang||apply#} or its alias `=>` can also be used to dequote a quotation but in this case it will not push its elements on the main stack, instead it will:
+
 1. Create a temporary empty stack.
 2. Push all elements on it, one by one.
 3. Push the entire temporary stack as a quotation back on the main stack.
