@@ -300,16 +300,6 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
     contents = fileLines.join("\n")
   minStream(newStringStream(contents), fn, op, main)
 
-proc minFile*(file: File, filename="stdin", op = "interpret") =
-  var stream = newFileStream(filename)
-  if stream == nil:
-    when defined(mini):
-      minilogger.fatal("Cannot read from file: " & filename)
-    else:
-      logging.fatal("Cannot read from file: " & filename)
-    quit(3)
-  minStream(stream, filename, op)
-
 when isMainModule:
 
   import 
@@ -541,4 +531,4 @@ when isMainModule:
     minSimpleRepl()
     quit(0)
   else:
-    minFile stdin, "stdin", op
+    minStream newFileStream(stdin), "stdin", op

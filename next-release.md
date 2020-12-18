@@ -7,3 +7,4 @@
 * Re-added the possibility to exclude OpenSSL by not defining the **ssl** flag.
 * Added **clear** symbol to clear the screen.
 * Added the **mapkey** and the **unmapkey** symbols to configure key mappings.
+* Fixed execution of scripts from stdin (when running min with no parameters).

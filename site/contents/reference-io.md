@@ -53,9 +53,10 @@ Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class
 > Maps the named key/key combination {{sl}} to the quotation {{q}}, so that {{q}} is executed when key {{sl}} is pressed. 
 >
 > > %note%
-> > Note
+> > Notes
 > >
-> > At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
+> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
+> > * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.
 > 
 > > %sidebar%
 > > Example
