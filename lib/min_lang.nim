@@ -677,10 +677,11 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     let sym = vals[0].getString
     var s = i.scope.getSigil(sym) 
-    if not sym.match USER_SYMBOL_REGEX:
-      # Prevent accidentally unsealing system sigils
-      # Not that they can redefined, but still
-      raiseInvalid("Attempting to unseal system sigil: " & sym)
+    when not defined(mini):
+      if not sym.match USER_SYMBOL_REGEX:
+        # Prevent accidentally unsealing system sigils
+        # Not that they can redefined, but still
+        raiseInvalid("Attempting to unseal system sigil: " & sym)
     s.sealed = false
     i.scope.setSigil(sym, s, true)
   
