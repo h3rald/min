@@ -196,7 +196,10 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
 proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
   if q.kind == minQuotation:
     i.withScope(): 
-      let qqval = deepCopy(q.qVal)
+      when defined(js):
+        let qqval = q.qval
+      else:
+        let qqval = deepCopy(q.qVal)
       for v in q.qVal:
         i.push v
       q.qVal = qqval

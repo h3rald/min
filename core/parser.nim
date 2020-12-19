@@ -750,7 +750,10 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
 proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
-  stdout.write($$a)
+  when defined(js):
+    discard #TODOJS
+  else:
+    stdout.write($$a)
 
 # Predicates
 

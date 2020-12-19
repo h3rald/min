@@ -26,17 +26,22 @@ proc logPrefix(level: Level): string =
       return ("(x)")
     else:
       return ("   ")
-
-proc log*(level: Level; args: varargs[string, `$`]) =
-  var f = stdout
-  if level >= LOGLEVEL:
-    if level >= lvlWarn: 
-      f = stderr
-    let prefix = level.logPrefix()
-    f.write(prefix&" ")
-    f.write(args.join(" "))
-    f.write("\n")
-    if level in {lvlError, lvlFatal}: flushFile(f)
+when defined(js):
+  proc log*(level: Level; args: varargs[string, `$`]) =
+    #TODOJS
+    discard
+    
+else:
+  proc log*(level: Level; args: varargs[string, `$`]) =
+    var f = stdout
+    if level >= LOGLEVEL:
+      if level >= lvlWarn: 
+        f = stderr
+      let prefix = level.logPrefix()
+      f.write(prefix&" ")
+      f.write(args.join(" "))
+      f.write("\n")
+      if level in {lvlError, lvlFatal}: flushFile(f)
 
 proc fatal*(args: varargs[string, `$`]) =
     log(lvlFatal, args)
