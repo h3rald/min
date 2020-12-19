@@ -2,8 +2,10 @@ import
   critbits, 
   strutils, 
   sequtils,
-  parseopt,
   algorithm
+when not defined(js):
+  import
+    parseopt
 when defined(mini):
   import
     rdstdin,
@@ -370,20 +372,44 @@ proc lang_module*(i: In) =
         raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sig])
       i.debug "[import] $1" % [sig]
       i.scope.sigils[sig] = val
-  
-  def.symbol("eval") do (i: In):
-    let vals = i.expect("string")
-    let s = vals[0]
-    i.eval s.strVal
+ 
+  when not defined(js): #TODOJS
+    def.symbol("eval") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0]
+      i.eval s.strVal
+      
+    def.symbol("parse") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0]
+      i.push i.parse s.strVal
+      
+    def.symbol("args") do (i: In):
+      var args = newSeq[MinValue](0)
+      for kind, key, val in getopt():
+        case kind:
+          of cmdArgument:
+            args.add key.newVal
+          else:
+            discard
+      i.push args.newVal
+
+    def.symbol("opts") do (i: In):
+      var opts = newDict(i.scope) 
+      for kind, key, val in getopt():
+        case kind:
+          of cmdLongOption, cmdShortOption:
+            if val == "":
+              opts = i.dset(opts, key.newVal, true.newVal)
+            else:
+              opts = i.dset(opts, key.newVal, val.newVal)
+          else:
+            discard
+      i.push opts
     
   def.symbol("quit") do (i: In):
     i.push 0.newVal
     i.push "exit".newSym
-
-  def.symbol("parse") do (i: In):
-    let vals = i.expect("string")
-    let s = vals[0]
-    i.push i.parse s.strVal
 
   def.symbol("source") do (i: In):
     let vals = i.expect("'sym")
@@ -700,30 +726,6 @@ proc lang_module*(i: In) =
     i.push @[m].newVal
     i.push s
     i.push "define".newSym
-
-
-  def.symbol("args") do (i: In):
-    var args = newSeq[MinValue](0)
-    for kind, key, val in getopt():
-      case kind:
-        of cmdArgument:
-          args.add key.newVal
-        else:
-          discard
-    i.push args.newVal
-
-  def.symbol("opts") do (i: In):
-    var opts = newDict(i.scope) 
-    for kind, key, val in getopt():
-      case kind:
-        of cmdLongOption, cmdShortOption:
-          if val == "":
-            opts = i.dset(opts, key.newVal, true.newVal)
-          else:
-            opts = i.dset(opts, key.newVal, val.newVal)
-        else:
-          discard
-    i.push opts
 
   def.symbol("expect") do (i: In):
     var q: MinValue

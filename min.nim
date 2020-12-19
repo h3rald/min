@@ -1,9 +1,10 @@
 import 
   streams, 
-  critbits, 
   strutils, 
   sequtils
-
+when not defined(js):
+  import
+    critbits
 when defined(mini):
   import
     core/minilogger
