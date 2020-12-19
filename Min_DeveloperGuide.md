@@ -44,9 +44,9 @@
 
 {@ site/contents/about.md || 1 @}
 
-## Getting Started
+## Get Started
 
-{@ site/contents/download.md || 1 @}
+{@ site/contents/get-started.md || 1 @}
 
 ## Learning the min Language
 
