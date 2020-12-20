@@ -17,7 +17,6 @@ sigils size :total-sigils
 'str     load
 'sys     load
 'time    load
-'t    load
 'dstore  load
 'fs      load
 'crypto  load

@@ -14,10 +14,9 @@ proc dstore_module*(i: In)=
   def.symbol("dsinit") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString
-    var j = %*{"collections": {}}
-    p.writeFile(j.pretty)
+    p.writeFile("{}")
     var d = newDict(i.scope)
-    i.dset(d, "data", i.fromJson(j))
+    i.dset(d, "data", newDict(i.scope))
     i.dset(d, "path", p.newVal)
     d.objType = "datastore"
     i.push d 
@@ -38,6 +37,7 @@ proc dstore_module*(i: In)=
     let p = i.dget(ds, "path".newVal).getString
     let data = i%(i.dget(ds, "data".newVal))
     p.writeFile(data.pretty)
+    i.push ds
     
   def.symbol("dshas?") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
@@ -47,6 +47,8 @@ proc dstore_module*(i: In)=
     let collection = parts[0]
     let id = parts[1]
     let data = i.dget(ds, "data".newVal)
+    if not dhas(data, collection):
+      raiseInvalid("Collection '$#' does not exist" % collection)
     let cll = i.dget(data, collection.newVal)
     if dhas(cll, id.newVal):
       i.push true.newVal
@@ -61,6 +63,8 @@ proc dstore_module*(i: In)=
     let collection = parts[0]
     let id = parts[1]
     let data = i.dget(ds, "data".newVal)
+    if not dhas(data, collection):
+      raiseInvalid("Collection '$#' does not exist" % collection)
     let cll = i.dget(data, collection)
     i.push i.dget(cll, id.newVal)
     
@@ -70,14 +74,19 @@ proc dstore_module*(i: In)=
     let collection = vals[1]
     let ds = vals[2]
     let data = i.dget(ds, "data".newVal)
+    if not dhas(data, collection):
+      raiseInvalid("Collection '$#' does not exist" % collection.getString)
     let cll = i.dget(data, collection)
     var res = newSeq[MinValue](0)
     for e in i.values(cll).qVal:
       i.push e
-      i.dequote(filter)
-      var check = i.pop
-      if check.isBool and check.boolVal == true:
-        res.add e
+      try:
+        i.dequote(filter)
+        var check = i.pop
+        if check.isBool and check.boolVal == true:
+          res.add e
+      except:
+        discard
     i.push res.newVal
       
   def.symbol("dspost") do (i: In):
@@ -102,8 +111,12 @@ proc dstore_module*(i: In)=
     let ds = vals[2]
     let parts = s.split("/")
     let collection = parts[0]
+    if parts.len < 2:
+      raiseInvalid("collection/id not specified")
     let id = parts[1]
     var data = i.dget(ds, "data".newVal)
+    if not dhas(data, collection):
+      raiseInvalid("Collection '$#' does not exist" % collection)
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
     #i.dset(ds, "data", data)
@@ -114,9 +127,13 @@ proc dstore_module*(i: In)=
     let s = vals[0].getString
     let ds = vals[1]
     let parts = s.split("/")
+    if parts.len < 2:
+      raiseInvalid("collection/id not specified")
     let collection = parts[0]
     let id = parts[1]
     var data = i.dget(ds, "data".newVal)
+    if not dhas(data, collection):
+      raiseInvalid("Collection '$#' does not exist" % collection)
     var cll = i.dget(data, collection)
     i.ddel(cll, id) 
     i.push ds
