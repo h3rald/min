@@ -64,6 +64,19 @@ The following notation is used in the signature of all min operators:
 : A quotation (also expressed as parenthesis enclosing other values).
 {{d}}
 : A dictionary value.
+{{url}}
+: An URL dictionary:
+
+      {
+       "http" :scheme
+       "h3rald" :hostname
+       "" :port
+       "" :username
+       "" :password
+       "min" :path
+       "" :anchor
+       "" :query
+      }
 {{tinfo}}
 : A timeinfo dictionary:
 

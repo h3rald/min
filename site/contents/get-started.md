@@ -86,6 +86,9 @@ If the **d:mini** flag is specified, an even more minimal executable file will b
   * {#link-operator||str||regex#}
   * {#link-operator||str||semver?#}
   * {#link-operator||str||from-semver#}
+  * {#link-operator||str||parse-url#}
+  * {#link-operator||str||decode-url#}
+  * {#link-operator||str||encode-url#}
   * {#link-operator||sys||zip#}
   * {#link-operator||sys||unzip#}
 

@@ -10,7 +10,8 @@ import
 
 when not defined(mini):
   import 
-    ../packages/nim-sgregex/sgregex
+    ../packages/nim-sgregex/sgregex,
+    uri
 
 proc str_module*(i: In) = 
   let def = i.define()
@@ -119,6 +120,32 @@ proc str_module*(i: In) =
     i.push index.newVal
 
   when not defined(mini):
+  
+    def.symbol("encode-url") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0].strVal
+      i.push s.encodeUrl.newVal
+      
+    def.symbol("decode-url") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0].strVal
+      i.push s.decodeUrl.newVal
+      
+    def.symbol("parse-url") do (i: In):
+      let vals = i.expect("string")
+      let s = vals[0].strVal
+      let u = s.parseUri
+      var d = newDict(i.scope)
+      i.dset(d, "scheme", u.scheme.newVal)
+      i.dset(d, "username", u.username.newVal)
+      i.dset(d, "password", u.password.newVal)
+      i.dset(d, "hostname", u.hostname.newVal)
+      i.dset(d, "port", u.port.newVal)
+      i.dset(d, "path", u.path.newVal)
+      i.dset(d, "query", u.query.newVal)
+      i.dset(d, "anchor", u.anchor.newVal)
+      i.push d
+  
     def.symbol("search") do (i: In):
       let vals = i.expect("string", "string")
       let reg = vals[0]

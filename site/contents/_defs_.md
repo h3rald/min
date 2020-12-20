@@ -46,6 +46,7 @@
 {{t => [true](class:kwd)}}
 {{null => &#x2205;}}
 {{sock => [dict:socket](class:kwd)}}
+{{url => [url](class:kwd)}}
 {{req => [request](class:kwd)}}
 {{res => [response](class:kwd)}}
 {{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}

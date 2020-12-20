@@ -71,6 +71,9 @@ Returns a copy of {{sl}} converted to lowercase.#}
 {#op||ord||{{s}}||{{i}}||
 Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
 
+{#op||parse-url||{{s}}||{{url}}||
+Parses the url {{s}} into its components and stores them into {{url}}.#} 
+
 {#op||prefix||{{sl1}} {{sl2}}||{{s}}||
 Prepends {{sl2}} to {{sl1}}.#}
 
