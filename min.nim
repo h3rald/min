@@ -38,6 +38,7 @@ when not defined(mini):
     packages/nimline/nimline,
     lib/min_sys,
     lib/min_io,
+    lib/min_dstore,
     lib/min_fs
 
 when not defined(lite) and not defined(mini):
@@ -184,6 +185,7 @@ proc stdLib*(i: In) =
   when not defined(mini):
     i.sys_module
     i.fs_module
+    i.dstore_module
     i.io_module
   when not defined(lite) and not defined(mini):
     i.crypto_module

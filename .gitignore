@@ -18,3 +18,4 @@ dynlibs/
 response.json
 run
 run.nim
+dstore.json
