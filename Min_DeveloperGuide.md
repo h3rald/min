@@ -105,6 +105,10 @@
 
 {@ site/contents/reference-dict.md || 1 @}
 
+### `dstore` Module
+
+{@ site/contents/reference-dstore.md || 1 @}
+
 ### `io` Module
 
 {@ site/contents/reference-io.md || 1 @}
