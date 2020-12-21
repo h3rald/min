@@ -43,6 +43,8 @@ Currently min provides the following sigils:
 : Alias for {#link-operator||lang||define#}. 
 ^
 : Alias for {#link-operator||lang||call#}. 
+*
+: Alias for {#link-operator||lang||invoke#}. 
 @
 : Alias for {#link-operator||lang||bind#}. 
 >

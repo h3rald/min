@@ -89,13 +89,36 @@ proc lang_module*(i: In) =
       info("[load] File: ", file)
       if MINCOMPILED:
         var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
-        if MINCOMPILEDFILES.hasKey(compiledFile):
-          MINCOMPILEDFILES[compiledFile](i)
+        if COMPILEDMINFILES.hasKey(compiledFile):
+          COMPILEDMINFILES[compiledFile](i)
           return
-      file = i.pwd.joinPath(file)
-      if not file.fileExists:
+      var f = i.pwd.joinPath(file)
+      if not f.fileExists:
         raiseInvalid("File '$1' does not exist." % file)
-      i.load file
+      i.load f
+
+    def.symbol("require") do (i: In):
+      let vals = i.expect("'sym")
+      let s = vals[0]
+      var file = s.getString
+      if not file.endsWith(".min"):
+        file = file & ".min"
+      info("[require] File: ", file)
+      if MINCOMPILED:
+        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        if COMPILEDMINFILES.hasKey(compiledFile):
+          var i2 = i.copy(file)
+          COMPILEDMINFILES[compiledFile](i2)
+          var mdl = newDict(i2.scope)
+          mdl.objType = "module"
+          for key, value in i2.scope.symbols.pairs:
+            mdl.scope.symbols[key] = value
+          i.push(mdl)
+          return
+      let f = i.pwd.joinPath(file)
+      if not f.fileExists:
+        raiseInvalid("File '$1' does not exist." % file)
+      i.push i.require(f)
 
     def.symbol("read") do (i: In):
       let vals = i.expect("'sym")
@@ -406,6 +429,25 @@ proc lang_module*(i: In) =
     let sym = i.scope.getSymbol(s)
     i.apply(sym)
     i.scope = origScope
+
+  def.symbol("invoke") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0].getString
+    let parts = s.split("/")
+    if parts.len < 2:
+      raiseInvalid("Dictionary identifier not specified")
+    let mdlId = parts[0]
+    let symId = parts[1] 
+    i.apply i.scope.getSymbol(mdlId)
+    let mdl = i.pop
+    if mdl.kind != minDictionary:
+      raiseInvalid("'$#' is not a dictionary" % mdlId)
+    var sym: MinValue
+    try:
+      sym = i.dget(mdl, symId)
+    except:
+      raiseInvalid("Symbol '$#' not found in dictionary '$#'" % [symId, mdlId])
+    i.dequote sym
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
@@ -837,6 +879,9 @@ proc lang_module*(i: In) =
 
   def.sigil("^") do (i: In):
     i.push("call".newSym)
+
+  def.sigil("*") do (i: In):
+    i.push("invoke".newSym)
 
   def.sigil(">") do (i: In):
     i.push("save-symbol".newSym)

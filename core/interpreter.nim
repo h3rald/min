@@ -22,7 +22,8 @@ type
   MinRuntimeError* = ref object of CatchableError
     data*: MinValue
 
-var MINCOMPILEDFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
+var COMPILEDMINFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
+var COMPILEDASSETS* {.threadvar.}: CritBitTree[MinOperatorProc]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
@@ -115,7 +116,7 @@ proc formatTrace(sym: MinValue): string {.extern:"min_exported_symbol_$1".}=
   else:
     return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
 
-proc stackTrace(i: In) =
+proc stackTrace*(i: In) =
   var trace = i.trace
   trace.reverse()
   for sym in trace:
@@ -265,6 +266,27 @@ proc peek*(i: MinInterpreter): MinValue {.extern:"min_exported_symbol_$1".}=
   else:
     raiseEmptyStack()
 
+template handleErrors*(i: In, body: untyped) =
+  try:
+    body
+  except MinRuntimeError:
+    let msg = getCurrentExceptionMsg()
+    i.stack = i.stackcopy
+    error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    i.stackTrace()
+    i.trace = @[]
+    raise MinTrappedException(msg: msg)
+  except MinTrappedException:
+    raise
+  except:
+    let msg = getCurrentExceptionMsg()
+    i.stack = i.stackcopy
+    i.error(msg)
+    i.stackTrace()
+    i.trace = @[]
+    raise MinTrappedException(msg: msg)
+
+
 proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   var val: MinValue
   var q: MinValue
@@ -326,7 +348,7 @@ proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exp
 proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
   if not main:
-    result.add "MINCOMPILEDFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
+    result.add "COMPILEDMINFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
     result = result.concat(i.rawCompile("  "))
   else:
     result = i.rawCompile("")
@@ -369,6 +391,26 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   i.stackcopy = i2.stackcopy
   i.stack = i2.stack
   i.scope = i2.scope
+
+proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+  var fileLines = newSeq[string](0)
+  var contents = ""
+  try:
+    fileLines = s.readFile().splitLines()
+  except:
+    fatal("Cannot read from file: " & s)
+  if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
+    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
+  else:
+    contents = fileLines.join("\n")
+  var i2 = i.copy(s)
+  i2.open(newStringStream(contents), s)
+  discard i2.parser.getToken() 
+  discard i2.interpret(parseOnly)
+  result = newDict(i2.scope)
+  result.objType = "module"
+  for key, value in i2.scope.symbols.pairs:
+    result.scope.symbols[key] = value
 
 proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_symbol_$1".}=
   return i.eval(s, name, true)

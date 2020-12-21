@@ -13,7 +13,7 @@
 {{d => [dict](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
-{{s0p => [dict<sub>\*</sub>](class:kwd)}}
+{{d0p => [dict<sub>\*</sub>](class:kwd)}}
 {{flt => [float](class:kwd)}}
 {{i => [int](class:kwd)}}
 {{i1 => [int<sub>1</sub>](class:kwd)}}

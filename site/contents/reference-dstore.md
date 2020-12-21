@@ -4,7 +4,7 @@ title: "dstore Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#op||dsdelete||{{datoee}} {{sl}}||{{dstore}}||
+{#op||dsdelete||{{dstore}} {{sl}}||{{dstore}}||
 Removes an item from the datastore {{dstore}}. The item is uniquely identified by {{sl}}, which contains the collection containing the item and the item id, separated by a forward slash (/). Puts the reference to the modified datastore back on tbe stack.
 #}
 
@@ -30,6 +30,7 @@ Adds the dictionary {{d}} to the datastore {{dstore}}. {{sl}} contains the colle
 > > Example
 > >
 > > Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to "h3rald":
+> >
 > >      ds "posts" (/author "h3rald" ==) dsquery
 #}
 

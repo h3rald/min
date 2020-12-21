@@ -72,6 +72,7 @@ If the **d:mini** flag is specified, an even more minimal executable file will b
 * The {#link-module||sys#}
 * The following operators:
   * {#link-operator||lang||load#}
+  * {#link-operator||lang||require#}
   * {#link-operator||lang||read#}
   * {#link-operator||lang||to-json#}
   * {#link-operator||lang||from-json#}

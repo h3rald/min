@@ -23,3 +23,5 @@ when not defined(mini):
 
 var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false
+var BUNDLEDASSETS* {.threadvar.}: bool
+BUNDLEDASSETS = false

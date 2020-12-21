@@ -20,6 +20,8 @@ title: "lang Module"
 
 {#alias||^||call#}
 
+{#sig||*||invoke#}
+
 {#sig||@||bind#}
 
 {#alias||@||bind#}
@@ -206,6 +208,9 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 >   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
 >   * If {{any}} is a string, it is parsed as an integer value.#}
 
+{#op||invoke||{{sl}}||{{a0p}}||
+Assming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary*. #}
+
 {#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:
 > 
@@ -226,7 +231,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 Returns {{t}} if min was built in _lite_ mode. #}
 
 {#op||load||{{sl}}||{{a0p}}||
-Parses and interprets the specified {{m}} file, adding [.min](class:ext) if not specified. #}
+Parses and interprets the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified. #}
 
 {#op||load-symbol||{{sl}}||{{a0p}}||
 Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #}
@@ -311,6 +316,9 @@ Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{
 
 {#op||remove-symbol||{{sl}}||{{null}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
+
+{#op||require||{{sl}}||{{d}}||
+Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
 
 {#op||ROOT||{{null}}||{{d}}||
 Returns a module holding a reference to the [ROOT](class:kwd) scope.

@@ -48,12 +48,13 @@ proc dstore_module*(i: In)=
     let id = parts[1]
     let data = i.dget(ds, "data".newVal)
     if not dhas(data, collection):
-      raiseInvalid("Collection '$#' does not exist" % collection)
-    let cll = i.dget(data, collection.newVal)
-    if dhas(cll, id.newVal):
-      i.push true.newVal
-    else:
       i.push false.newVal
+    else:
+      let cll = i.dget(data, collection.newVal)
+      if dhas(cll, id.newVal):
+        i.push true.newVal
+      else:
+        i.push false.newVal
       
   def.symbol("dsget") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
@@ -74,10 +75,11 @@ proc dstore_module*(i: In)=
     let collection = vals[1]
     let ds = vals[2]
     let data = i.dget(ds, "data".newVal)
-    if not dhas(data, collection):
-      raiseInvalid("Collection '$#' does not exist" % collection.getString)
-    let cll = i.dget(data, collection)
     var res = newSeq[MinValue](0)
+    if not dhas(data, collection):
+      i.push res.newVal
+      return
+    let cll = i.dget(data, collection)
     for e in i.values(cll).qVal:
       i.push e
       try:

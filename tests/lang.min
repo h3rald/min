@@ -50,6 +50,9 @@
   ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
   "tests/testload.min" rm
 
+  ("2 :two 3 :three" "tests/testrequire.min" fwrite 'testrequire require :tm *tm/two *tm/three + 5 ==) assert
+  "tests/testrequire.min" rm
+
   (2 2 mymath ^myplus 4 ==) assert
   
 
