@@ -298,28 +298,12 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
-    try:
+    handleErrors(i) do:
       val = i.parser.parseMinValue(i)
       if parseOnly:
         q.qVal.add val
       else:
         i.push val
-    except MinRuntimeError:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
-    except MinTrappedException:
-      raise
-    except:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      i.error(msg)
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
   if parseOnly:
     return q
   if i.stack.len > 0:
@@ -368,9 +352,10 @@ proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, ex
   result.add "i.stdLib()"
   if ASSETPATH != "":
     for f in walkDirRec(ASSETPATH):
-      logging.notice("- Including: $#" % f)
-      let ef = f.readFile.encode
-      let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [f, ef]
+      var file = f.replace("\\", "/")
+      logging.notice("- Including: $#" % file)
+      let ef = file.readFile.encode
+      let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
       result.add asset
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
