@@ -413,6 +413,8 @@ when isMainModule:
   Arguments:
     filename  A $exe file to interpret or compile (default: STDIN).
   Options:$installOpt$uninstallOpt
+    -a, --asset-path          Specify a directory containing the asset files to include in the
+                              compiled executable (if -c is set)
     -c, --compile             Compile the specified file
     -e, --evaluate            Evaluate a $exe program inline
     -h, --help                Print this help$iOpt
@@ -451,6 +453,8 @@ when isMainModule:
             COMPILE = true
           of "module-path", "m":
             MODULEPATH = val
+          of "asset-path", "a":
+            ASSETPATH = val
           of "prelude", "p":
             customPrelude = val
           of "log", "l":

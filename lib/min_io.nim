@@ -8,6 +8,7 @@ import
   ../packages/nim-sgregex/sgregex,
   ../core/parser, 
   ../core/value, 
+  ../core/env,
   ../core/interpreter, 
   ../core/utils
 
@@ -155,8 +156,15 @@ proc io_module*(i: In) =
 
   def.symbol("fread") do (i: In):
     let vals = i.expect("string")
-    let a = vals[0]
-    i.push newVal(a.strVal.readFile)
+    let file = vals[0].strVal
+    var contents = ""
+    if MINCOMPILED:
+      var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+      if COMPILEDASSETS.hasKey(compiledFile):
+        contents = COMPILEDASSETS[compiledFile]
+    if contents == "":
+      contents = file.readFile
+    i.push newVal(contents)
   
   def.symbol("fwrite") do (i: In):
     let vals = i.expect("string", "string")

@@ -2,11 +2,13 @@ import
   os, 
   osproc, 
   strutils,
+  critbits,
   logging
 when not defined(lite):
   import sequtils
 import 
   ../core/parser, 
+  ../core/env,
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
@@ -98,13 +100,29 @@ proc sys_module*(i: In)=
   
   def.symbol("exists?") do (i: In):
     let vals = i.expect("'sym")
-    let f = vals[0]
-    i.push newVal(f.getString.fileExists or f.getString.dirExists)
+    let f = vals[0].getString
+    var found = false
+    if MINCOMPILED:
+      let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
+      
+      found = COMPILEDASSETS.hasKey(cf)
+    if found:
+      i.push true.newVal
+    else:
+      i.push newVal(f.fileExists or f.dirExists)
     
   def.symbol("file?") do (i: In):
     let vals = i.expect("'sym")
-    let f = vals[0]
-    i.push f.getString.fileExists.newVal
+    let f = vals[0].getString
+    var found = false
+    if MINCOMPILED:
+      let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
+      
+      found = COMPILEDASSETS.hasKey(cf)
+    if found:
+      i.push true.newVal
+    else:
+      i.push f.fileExists.newVal
     
   def.symbol("dir?") do (i: In):
     let vals = i.expect("'sym")
