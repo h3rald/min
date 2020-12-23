@@ -98,7 +98,7 @@ Additionally:
 * No checks will be performed when defining symbols.
 * Only the simple REPL will be available.
 * There will be no support for dynamic libraries.
-* The **-m, \-\-module-path** option has no effect.
+* The **-m, \-\-module-path** and **-a, \-\-asset-path** options have no effect.
 * No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
 
 ## Running the min Shell
@@ -168,6 +168,8 @@ For example, the following command executed in the root folder of the min projec
 > %min-terminal%
 > 
 > [$](class:prompt) min -c run.min -m:tasks
+
+Similarly, you can also bundle additional files in the executable by specifying the `-a:<path>` (or `--asset-path`) option. At runtime, the compiled min program will attempt to lookup bundled asset files before checking the filesystem.
 
 > %note%
 > Note
