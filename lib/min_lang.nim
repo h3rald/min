@@ -88,7 +88,13 @@ proc lang_module*(i: In) =
         file = file & ".min"
       info("[load] File: ", file)
       if MINCOMPILED:
-        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        var normalizedFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        var compiledFile = normalizedFile
+        var normalizedCurrFile = strutils.replace(strutils.replace(i.filename, "\\", "/"), "./", "")
+        var parts = normalizedCurrFile.split("/")
+        if parts.len > 1:
+          discard parts.pop
+          compiledFile = parts.join("/") & "/" & normalizedFile
         if COMPILEDMINFILES.hasKey(compiledFile):
           COMPILEDMINFILES[compiledFile](i)
           return
@@ -105,7 +111,14 @@ proc lang_module*(i: In) =
         file = file & ".min"
       info("[require] File: ", file)
       if MINCOMPILED:
-        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        var normalizedFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+        var compiledFile = normalizedFile
+        var normalizedCurrFile = strutils.replace(strutils.replace(i.filename, "\\", "/"), "./", "")
+        var parts = normalizedCurrFile.split("/")
+        if parts.len > 1:
+          discard parts.pop
+          compiledFile = parts.join("/") & "/" & normalizedFile
+        echo compiledFile, " - ", normalizedFile, " - ", i.filename, " - ", normalizedCurrFile
         if COMPILEDMINFILES.hasKey(compiledFile):
           var i2 = i.copy(file)
           COMPILEDMINFILES[compiledFile](i2)

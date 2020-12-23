@@ -118,10 +118,9 @@ proc dstore_module*(i: In)=
     let id = parts[1]
     var data = i.dget(ds, "data".newVal)
     if not dhas(data, collection):
-      raiseInvalid("Collection '$#' does not exist" % collection)
+      i.dset(data, collection, newDict(i.scope))
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
-    #i.dset(ds, "data", data)
     i.push ds
     
   def.symbol("dsdelete") do (i: In):
