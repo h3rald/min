@@ -5,3 +5,4 @@
 * Fixed library installation via nimble
 * Fixed error handling and stack trace for **start-server** symbol.
 * Added the possibility to bundle assets in a compiled min program by specifying tbe **-a** (or **--asset-path**) option.
+* Added **expect-empty-stack** (**=-=**) symbol.

@@ -178,6 +178,11 @@ proc lang_module*(i: In) =
 
   ### End of symbols not present in minimin
 
+  def.symbol("expect-empty-stack") do (i: In):
+    let l = i.stack.len
+    if l != 0:
+      raiseInvalid("Expected empty stack, found $# elements instead" % $l)
+
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
     quit(vals[0].intVal.int)
@@ -915,6 +920,9 @@ proc lang_module*(i: In) =
 
   def.symbol("=") do (i: In):
     i.push("quote-define".newSym)
+    
+  def.symbol("=-=") do (i: In):
+    i.push("expect-empty-stack".newSym)
 
   def.symbol(":") do (i: In):
     i.push("define".newSym)

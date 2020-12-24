@@ -38,6 +38,8 @@ title: "lang Module"
 
 {#alias||=>||apply#}
 
+{#alias||=-=||expect-empty-stack#}
+
 {#sig||#||quote-bind#}
 
 {#alias||#||quote-bind#}
@@ -139,6 +141,10 @@ Exits the program or shell with {{i}} as return code. #}
 > > the following program evaluates to `true`:
 > > 
 > > `(int string num) expect (3.4 "test" 1) ==`#}
+
+{#op||expect-empty-stack||{{null}}||{{null}}||
+Raises an error if the stack is not empty.#}
+
 
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to an integer value based on the following rules:
