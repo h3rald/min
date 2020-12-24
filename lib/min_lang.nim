@@ -454,18 +454,20 @@ proc lang_module*(i: In) =
     let parts = s.split("/")
     if parts.len < 2:
       raiseInvalid("Dictionary identifier not specified")
-    let mdlId = parts[0]
-    let symId = parts[1] 
+    var mdlId = parts[0]
     i.apply i.scope.getSymbol(mdlId)
-    let mdl = i.pop
-    if mdl.kind != minDictionary:
-      raiseInvalid("'$#' is not a dictionary" % mdlId)
-    var sym: MinValue
-    try:
-      sym = i.dget(mdl, symId)
-    except:
-      raiseInvalid("Symbol '$#' not found in dictionary '$#'" % [symId, mdlId])
-    i.dequote sym
+    for p in 0..parts.len-2:
+      let mdl = i.pop
+      if not mdl.isDictionary:
+        raiseInvalid("'$#' is not a dictionary" % mdlId)
+      let symId = parts[p+1] 
+      var sym: MinValue
+      try:
+        sym = i.dget(mdl, symId)
+      except:
+        raiseInvalid("Symbol '$#' not found in dictionary '$#'" % [symId, mdlId])
+        mdlId = symId
+      i.dequote sym
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")

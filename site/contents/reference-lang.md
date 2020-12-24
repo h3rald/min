@@ -215,7 +215,15 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 >   * If {{any}} is a string, it is parsed as an integer value.#}
 
 {#op||invoke||{{sl}}||{{a0p}}||
-Assming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary*. #}
+> Assming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `100` on the stack:
+> > 
+> >     {{100 :b} :a} :test *test/a/b
+ #}
 
 {#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:

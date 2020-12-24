@@ -229,6 +229,10 @@
     'x unseal-sigil 'x delete-sigil 
     'x defined-sigil? false ==
   ) assert
+  
+  (
+    {{100 :b} :a} :test *test/a/b 100 ==
+  ) assert
 
   report
   ; Tidy up
