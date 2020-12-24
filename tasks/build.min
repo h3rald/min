@@ -14,7 +14,12 @@
   ) when
   "nim" required
   "Building $# - $# (x64)" (o-variant target-os) =% notice
-  "nim c -d:release -d:ssl --cpu:amd64 --os:$# $#-o:$# min" (target-os d-variant o-variant) =% puts !
+  "" :musl
+  "musl-gcc" :musl-gcc
+  (musl-gcc length 0 >)
+    ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)
+  when
+  "nim c -d:release -d:ssl $# --cpu:amd64 --os:$# $#-o:$# min" (musl target-os d-variant o-variant) =% puts !
   {}
     target-os %os
     config /version %version
