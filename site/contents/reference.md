@@ -46,8 +46,10 @@ The following notation is used in the signature of all min operators:
 
 ### Types and Values
 
-{{null}}
+{{none}}
 : No value.
+{{null}}
+: null value
 {{any}}
 : A value of any type.
 {{b}}

@@ -21,6 +21,7 @@ type
     tkBraceLe,
     tkBraceRi,
     tkSymbol,
+    tkNull,
     tkTrue,
     tkFalse
   MinKind* = enum
@@ -30,6 +31,7 @@ type
     minDictionary,
     minString,
     minSymbol,
+    minNull,
     minBool
   MinEventKind* = enum     ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
@@ -70,6 +72,7 @@ type
     column*: int
     filename*: string
     case kind*: MinKind
+      of minNull: discard
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
       of minDictionary:
@@ -165,6 +168,7 @@ const
     "{",
     "}",
     "symbol",
+    "null",
     "true",
     "false"
   ]
@@ -454,6 +458,7 @@ proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1
   else:
     result = parseSymbol(my)
     case my.a 
+    of "null": result = tkNull
     of "true": result = tkTrue
     of "false": result = tkFalse
     else: 
@@ -545,6 +550,8 @@ proc eat(p: var MinParser, token: MinTokenKind) {.extern:"min_exported_symbol_$1
 
 proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
+    of minNull:
+      return "null"
     of minBool:
       return $a.boolVal
     of minSymbol:
@@ -580,6 +587,8 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
 
 proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
+    of minNull:
+      return "null"
     of minBool:
       return $a.boolVal
     of minSymbol:
@@ -615,6 +624,9 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
 
 proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_symbol_$1".}=
   case p.token
+  of tkNull:
+    result = MinValue(kind: minNull)
+    discard getToken(p)
   of tkTrue:
     result = MinValue(kind: minBool, boolVal: true)
     discard getToken(p)
@@ -679,6 +691,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     op = indent&"i.push "
   result = newSeq[string](0)
   case p.token
+  of tkNull:
+    result = @[op&"MinValue(kind: minNull)"]
   of tkTrue:
     result = @[op&"MinValue(kind: minBool, boolVal: true)"]
     discard getToken(p)
@@ -754,6 +768,9 @@ proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
 
 # Predicates
 
+proc isNull*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+  return s.kind == minNull
+
 proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
   return s.kind == minSymbol
 
@@ -809,6 +826,8 @@ proc `==`*(a: MinValue, b: MinValue): bool {.inline, extern:"min_exported_symbol
       return a.strVal == b.strVal
     elif a.kind == minBool:
       return a.boolVal == b.boolVal
+    elif a.kind == minNull:
+      return true
     elif a.kind == minQuotation:
       if a.qVal.len == b.qVal.len:
         var c = 0

@@ -7,6 +7,8 @@ title: "Learn: Data Types"
 
 The type system of min is very simple -- only the following data types are available:
 
+null
+: null value.
 boolean
 : **true** or **false**.
 integer

@@ -10,7 +10,7 @@ Sums {{n1}} and {{n2}}. #}
 {#op||-||{{n1}} {{n2}}||{{n3}}||
 Subtracts {{n2}} from {{n1}}. #}
 
-{#op||-inf||{{null}}||{{n}}||
+{#op||-inf||{{none}}||{{n}}||
 Returns negative infinity. #}
 
 {#op||\*||{{n1}} {{n2}}||{{n3}}||
@@ -25,13 +25,13 @@ Returns {{t}} if {{i}} is even, {{f}} otherwise. #}
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
 
-{#op||inf||{{null}}||{{n}}||
+{#op||inf||{{none}}||{{n}}||
 Returns infinity. #}
 
 {#op||mod||{{i1}} {{i2}}||{{i3}}||
 Returns the integer module of {{i1}} divided by {{i2}}. #}
 
-{#op||nan||{{null}}||nan||
+{#op||nan||{{none}}||nan||
 Returns **NaN** (not a number). #}
 
 {#op||odd?||{{i}}||{{b}}||
@@ -48,7 +48,7 @@ Returns the predecessor of {{i1}}.#}
 > > 
 > > You must call `randomize` to initialize the random number generator, otherwise the same sequence of numbers will be returned.#}
 
-{#op||randomize||{{null}}||{{null}||
+{#op||randomize||{{none}}||{{null}||
 Initializes the random number generator using a seed based on the current timestamp. #}
 
 {#op||succ||{{i1}}||{{i2}}||

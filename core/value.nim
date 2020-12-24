@@ -18,10 +18,15 @@ proc typeName*(v: MinValue): string {.extern:"min_exported_symbol_$1".}=
       return "string"
     of minSymbol:
       return "sym"
+    of minNull:
+      return "null"
     of minBool:
       return "bool"
 
 # Constructors
+
+proc newNull*(): MinValue {.extern:"min_exported_symbol_$1".}=
+  return MinValue(kind: minNull)
 
 proc newVal*(s: string): MinValue {.extern:"min_exported_symbol_$1".}=
   return MinValue(kind: minString, strVal: s)

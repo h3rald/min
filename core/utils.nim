@@ -128,6 +128,8 @@ when not defined(mini):
     case a.kind:
       of minBool:
         return %a.boolVal
+      of minNull:
+        return newJNull()
       of minSymbol:
         return %(";sym:$1" % [a.getstring])
       of minString:
@@ -148,7 +150,7 @@ when not defined(mini):
   proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
     case json.kind:
       of JNull:
-        result = newSeq[MinValue](0).newVal
+        result = newNull()
       of JBool: 
         result = json.getBool.newVal
       of JInt:
@@ -178,6 +180,8 @@ proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1
   case t:
     of "bool":
       return value.isBool
+    of "null":
+      return value.isNull
     of "int":
       return value.isInt
     of "num":

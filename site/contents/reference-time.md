@@ -4,10 +4,10 @@ title: "time Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#op||now||{{null}}||{{flt}}||
+{#op||now||{{none}}||{{flt}}||
 Returns the current time as Unix timestamp with microseconds. #}
 
-{#op||timestamp||{{null}}||{{i}}||
+{#op||timestamp||{{none}}||{{i}}||
 Returns the current time as Unix timestamp. #}
   
 {#op||timeinfo||{{i}}||{{tinfo}}||

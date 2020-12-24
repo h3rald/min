@@ -102,6 +102,9 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 {#op||not||{{b1}}||{{b2}}||
 Negates {{b1}}.#}
 
+{#op||null?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is {{null}}, {{f}} otherwise. #}
+
 {#op||number?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 

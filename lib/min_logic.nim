@@ -186,6 +186,12 @@ proc logic_module*(i: In)=
     else:
       i.push false.newVal
   
+  def.symbol("null?") do (i: In):
+    if i.pop.kind == minNull:
+      i.push true.newVal
+    else:
+      i.push false.newVal
+      
   def.symbol("number?") do (i: In):
     let a = i.pop
     if a.kind == minFloat or a.kind == minInt:

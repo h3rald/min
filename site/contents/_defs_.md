@@ -46,7 +46,8 @@
 {{sl2 => [&apos;sym<sub>2</sub>](class:kwd)}}
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
-{{null => &#x2205;}}
+{{null => [null](class:kwd)}}
+{{none => &#x2205;}}
 {{sock => [dict:socket](class:kwd)}}
 {{url => [url](class:kwd)}}
 {{req => [request](class:kwd)}}

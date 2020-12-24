@@ -835,7 +835,7 @@ proc lang_module*(i: In) =
     let floatcheck = v.isFloat and v.floatVal == 0
     let boolcheck = v.isBool and v.boolVal == false
     let quotcheck = v.isQuotation and v.qVal.len == 0
-    if strcheck or intcheck or floatcheck or boolcheck or quotcheck:
+    if v.isNull or strcheck or intcheck or floatcheck or boolcheck or quotcheck:
       i.push false.newVal
     else:
       i.push true.newVal
@@ -844,6 +844,8 @@ proc lang_module*(i: In) =
     let s = i.pop
     if s.isString:
       i.push s.getString.parseInt.newVal
+    elif s.isNull:
+      i.push 0.int.newVal
     elif s.isFloat:
       i.push s.floatVal.int.newVal
     elif s.isInt:
@@ -860,6 +862,8 @@ proc lang_module*(i: In) =
     let s = i.pop
     if s.isString:
       i.push s.getString.parseFloat.newVal
+    elif s.isNull:
+      i.push 0.int.newVal
     elif s.isInt:
       i.push s.intVal.float.newVal
     elif s.isFloat:
