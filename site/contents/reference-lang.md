@@ -32,7 +32,7 @@ title: "lang Module"
 
 {#alias||->||dequote#}
 
-{#alias||--||reverse-expect-dequote#}
+{#alias||\-\-||reverse-expect-dequote#}
 
 {#alias||>>||prefix-dequote#}
 
@@ -342,13 +342,13 @@ Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl
 {#op||reverse-expect-dequote||{{q1}}||{{a0p}}||
 > Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) in reverse order and if all the elements are valid restores them on the stack.
 >
-> %sidebar%
-> Example
+> > %sidebar%
+> > Example
 > 
-> The following program maps the three values on the stack to three symbols, after validating them:
-> 
->     1 3.5 true
->     (int float bool) -- :my-int :my-float :my-bool 
+> > The following program maps the three values on the stack to three symbols, after validating them:
+> >
+> >     1 3.5 true
+> >     (int float bool) -- :my-int :my-float :my-bool 
  #}
 
 
