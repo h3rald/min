@@ -339,7 +339,7 @@ Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 {#op||require||{{sl}}||{{d}}||
 Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
 
-{#op||reverse-expect-dequote||{{q1}}||{{q2}}||
+{#op||reverse-expect-dequote||{{q1}}||{{a0p}}||
 > Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) in reverse order and if all the elements are valid restores them on the stack.
 >
 > %sidebar%
