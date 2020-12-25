@@ -2,6 +2,7 @@ import
   streams, 
   strutils, 
   sequtils,
+  os,
   critbits,
   algorithm
 when defined(mini):
@@ -9,7 +10,6 @@ when defined(mini):
     minilogger
 else:
   import 
-    os,
     base64,
     logging
 import 
@@ -343,20 +343,22 @@ proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exp
 proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
   result.add "import min"
-  if files.len > 0 or ASSETPATH != "":
+  if files.len > 0 or (ASSETPATH != "" and not defined(mini)):
     result.add "import critbits"
-  if ASSETPATH != "":
-    result.add "import base64"
+  when not defined(mini):
+    if ASSETPATH != "":
+      result.add "import base64"
   result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
-  if ASSETPATH != "":
-    for f in walkDirRec(ASSETPATH):
-      var file = f.replace("\\", "/")
-      logging.notice("- Including: $#" % file)
-      let ef = file.readFile.encode
-      let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
-      result.add asset
+  when not defined(mini): 
+    if ASSETPATH != "":
+      for f in walkDirRec(ASSETPATH):
+        var file = f.replace("\\", "/")
+        logging.notice("- Including: $#" % file)
+        let ef = file.readFile.encode
+        let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
+        result.add asset
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)
