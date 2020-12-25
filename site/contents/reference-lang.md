@@ -32,6 +32,8 @@ title: "lang Module"
 
 {#alias||->||dequote#}
 
+{#alias||--||reverse-expect-dequote#}
+
 {#alias||>>||prefix-dequote#}
 
 {#alias||><||infix-dequote#}
@@ -336,6 +338,19 @@ Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
 {#op||require||{{sl}}||{{d}}||
 Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
+
+{#op||reverse-expect-dequote||{{q1}}||{{q2}}||
+> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) in reverse order and if all the elements are valid restores them on the stack.
+>
+> %sidebar%
+> Example
+> 
+> The following program maps the three values on the stack to three symbols, after validating them:
+> 
+>     1 3.5 true
+>     (int float bool) -- :my-int :my-float :my-bool 
+ #}
+
 
 {#op||ROOT||{{none}}||{{d}}||
 Returns a module holding a reference to the [ROOT](class:kwd) scope.
