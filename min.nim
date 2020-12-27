@@ -12,7 +12,6 @@ else:
     json,
     os,
     algorithm,
-    dynlib,
     logging,
     packages/niftylogger
 import 
@@ -142,28 +141,6 @@ when not defined(mini):
           return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
     return symbols
 
-  type
-    LibProc = proc(i: In) {.nimcall.}
-
-  proc dynLib*(i: In) =
-    discard MINLIBS.existsOrCreateDir
-    for library in walkFiles(MINLIBS & "/*"):
-      var modname = library.splitFile.name
-      var libfile = library.splitFile.name & library.splitFile.ext
-      if modname.len > 3 and modname[0..2] == "lib":
-        modname = modname[3..modname.len-1]
-      let dll = library.loadLib()
-      if dll != nil:
-        let modsym = dll.symAddr(modname)
-        if modsym != nil:
-          let modproc = cast[LibProc](dll.symAddr(modname))
-          i.modproc()
-          logging.info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
-        else:
-          logging.warn("[$1] Library does not contain symbol $2" % [libfile, modname])
-      else:
-        logging.warn("Unable to load dynamic library: " & libfile)
-
 
 proc stdLib*(i: In) =
   when not defined(mini):
@@ -207,8 +184,6 @@ proc stdLib*(i: In) =
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
-  when not defined(mini):
-    i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -356,8 +331,6 @@ when isMainModule:
 
   proc minSimpleRepl*(i: var MinInterpreter) =
     i.stdLib()
-    when not defined(mini):
-      i.dynLib()
     var s = newStringStream("")
     i.open(s, "<repl>")
     var line: string
@@ -377,7 +350,6 @@ when isMainModule:
 
     proc minRepl*(i: var MinInterpreter) =
       i.stdLib()
-      i.dynLib()
       var s = newStringStream("")
       i.open(s, "<repl>")
       var line: string

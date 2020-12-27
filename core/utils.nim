@@ -14,24 +14,24 @@ when not defined(mini):
 
 # Library methods
 
-proc define*(i: In): ref MinScope {.extern:"min_exported_symbol_$1".}=
+proc define*(i: In): ref MinScope =
   var scope = newScopeRef(i.scope, minNativeScope)
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.extern:"min_exported_symbol_$1".}=
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
   scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
-proc symbol*(scope: ref MinScope, sym: string, v: MinValue) {.extern:"min_exported_symbol_$1_2".}=
+proc symbol*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.symbols[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.extern:"min_exported_symbol_$1".}=
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
   scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
-proc sigil*(scope: ref MinScope, sym: string, v: MinValue) {.extern:"min_exported_symbol_$1_2".}=
+proc sigil*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_symbol_$1".}=
+proc finalize*(scope: ref MinScope, name: string = "") =
   var mdl = newDict(scope)
   mdl.scope = scope
   mdl.objType = "module"
@@ -44,26 +44,26 @@ proc finalize*(scope: ref MinScope, name: string = "") {.extern:"min_exported_sy
 
 # Dictionary Methods
 
-proc dget*(i: In, q: MinValue, s: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
     raiseInvalid("Key '$1' is set to a native value that cannot be retrieved." % [s.getString])
   result = q.dVal[s.getString].val
 
-proc dget*(i: In, q: MinValue, s: string): MinValue {.extern:"min_exported_symbol_$1_2".}=
+proc dget*(i: In, q: MinValue, s: string): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s].kind == minProcOp:
     raiseInvalid("Key $1 is set to a native value that cannot be retrieved." % [s])
   result = q.dVal[s].val
 
-proc dhas*(q: MinValue, s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc dhas*(q: MinValue, s: MinValue): bool =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   return q.dVal.contains(s.getString)
 
-proc dhas*(q: MinValue, s: string): bool {.extern:"min_exported_symbol_$1_2".}=
+proc dhas*(q: MinValue, s: string): bool =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   return q.dVal.contains(s)
@@ -94,14 +94,14 @@ proc dset*(i: In, p: var MinValue, s: string, m: MinValue): MinValue {.discardab
   p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
-proc keys*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+proc keys*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
   var r = newSeq[MinValue](0)
   for i in q.dVal.keys:
     r.add newVal(i)
   return r.newVal
 
-proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+proc values*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
   var r = newSeq[MinValue](0)
   for item in q.dVal.values:
@@ -110,7 +110,7 @@ proc values*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
     r.add item.val
   return r.newVal
   
-proc pairs*(i: In, q: MinValue): MinValue {.extern:"min_exported_symbol_$1".}=
+proc pairs*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
   var r = newSeq[MinValue](0)
   for key, value in q.dVal.pairs:
@@ -124,7 +124,7 @@ when not defined(mini):
 
   # JSON interop
 
-  proc `%`*(i: In, a: MinValue): JsonNode {.extern:"min_exported_symbol_percent_2".}=
+  proc `%`*(i: In, a: MinValue): JsonNode =
     case a.kind:
       of minBool:
         return %a.boolVal
@@ -147,7 +147,7 @@ when not defined(mini):
         for it in a.dVal.pairs: 
           result[it.key] = i%i.dget(a, it.key)
 
-  proc fromJson*(i: In, json: JsonNode): MinValue {.extern:"min_exported_symbol_$1".}= 
+  proc fromJson*(i: In, json: JsonNode): MinValue = 
     case json.kind:
       of JNull:
         result = newNull()
@@ -176,7 +176,7 @@ when not defined(mini):
 
 # Validators
 
-proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1".}=
+proc validate(value: MinValue, t: string): bool =
   case t:
     of "bool":
       return value.isBool
@@ -208,7 +208,7 @@ proc validate(value: MinValue, t: string): bool {.extern:"min_exported_symbol_$1
           return true
       return false
 
-proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.extern:"min_exported_symbol_$1".}=
+proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
@@ -236,7 +236,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] {.
       raiseInvalid(message(value.typeName))
     valid.add element
 
-proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
@@ -244,7 +244,7 @@ proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) {.extern:
     if not s.isQuotation:
       raiseInvalid("A quotation of quotations is required on the stack")
 
-proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
@@ -252,7 +252,7 @@ proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) {.extern:"mi
     if not s.isNumber:
       raiseInvalid("A quotation of numbers is required on the stack")
 
-proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
     raiseInvalid("A quotation is required on the stack")
@@ -260,18 +260,18 @@ proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) {.extern:"mi
     if not s.isSymbol:
       raiseInvalid("A quotation of symbols is required on the stack")
 
-proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqTwoNumbersOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isString and b.isString or a.isNumber and b.isNumber):
     raiseInvalid("Two numbers or two strings are required on the stack")
 
-proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqStringOrQuotation*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation and not a.isString:
     raiseInvalid("A quotation or a string is required on the stack")
 
-proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   a = i.pop
   b = i.pop
   if not (a.isQuotation and b.isQuotation or a.isString and b.isString):

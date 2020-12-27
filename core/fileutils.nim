@@ -3,7 +3,7 @@ import
 
 # Filetype and permissions
 
-proc filetype*(p: PathComponent): string {.extern:"min_exported_symbol_$1".}=
+proc filetype*(p: PathComponent): string =
   case p
   of pcFile:
     return "file"
@@ -14,7 +14,7 @@ proc filetype*(p: PathComponent): string {.extern:"min_exported_symbol_$1".}=
   of pcLinkToDir:
     return "dirlink"
 
-proc unixPermissions*(s: set[FilePermission]): int {.extern:"min_exported_symbol_$1".}=
+proc unixPermissions*(s: set[FilePermission]): int =
   result = 0
   for p in s:
     case p:
@@ -37,7 +37,7 @@ proc unixPermissions*(s: set[FilePermission]): int {.extern:"min_exported_symbol
     of fpOthersExec:
       result += 1
 
-proc toFilePermissions*(p: BiggestInt): set[FilePermission] {.extern:"min_exported_symbol_$1".}=
+proc toFilePermissions*(p: BiggestInt): set[FilePermission] =
   let user = ($p)[0].int
   let group = ($p)[1].int
   let others = ($p)[2].int

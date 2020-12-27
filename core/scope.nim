@@ -4,14 +4,14 @@ import
 import
   parser
 
-proc copy*(s: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
+proc copy*(s: ref MinScope): ref MinScope =
   var scope = newScope(s.parent)
   scope.symbols = s.symbols
   scope.sigils = s.sigils
   new(result)
   result[] = scope
   
-proc getSymbol*(scope: ref MinScope, key: string, acc=0): MinOperator {.extern:"min_exported_symbol_$1".}=
+proc getSymbol*(scope: ref MinScope, key: string, acc=0): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   else:
@@ -19,7 +19,7 @@ proc getSymbol*(scope: ref MinScope, key: string, acc=0): MinOperator {.extern:"
       raiseUndefined("Symbol '$1' not found." % key)
     return scope.parent.getSymbol(key, acc + 1)
 
-proc hasSymbol*(scope: ref MinScope, key: string): bool {.extern:"min_exported_symbol_$1".}=
+proc hasSymbol*(scope: ref MinScope, key: string): bool =
   if scope.isNil:
     return false
   elif scope.symbols.hasKey(key):
@@ -50,7 +50,7 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override =
     if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value)
 
-proc getSigil*(scope: ref MinScope, key: string): MinOperator {.extern:"min_exported_symbol_$1".}=
+proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
     return scope.sigils[key]
   elif not scope.parent.isNil:
@@ -58,7 +58,7 @@ proc getSigil*(scope: ref MinScope, key: string): MinOperator {.extern:"min_expo
   else:
     raiseUndefined("Sigil '$1' not found." % key)
 
-proc hasSigil*(scope: ref MinScope, key: string): bool {.extern:"min_exported_symbol_$1".}=
+proc hasSigil*(scope: ref MinScope, key: string): bool =
   if scope.isNil:
     return false
   elif scope.sigils.hasKey(key):
@@ -89,7 +89,7 @@ proc setSigil*(scope: ref MinScope, key: string, value: MinOperator, override = 
     if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value)
 
-proc previous*(scope: ref MinScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
+proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
     return scope 
   else:

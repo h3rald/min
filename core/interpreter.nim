@@ -30,20 +30,20 @@ var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
-proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
+proc raiseRuntime*(msg: string, data: MinValue) =
   data.objType = "error"
   raise MinRuntimeError(msg: msg, data: data)
 
-proc dump*(i: MinInterpreter): string {.extern:"min_exported_symbol_$1".}=
+proc dump*(i: MinInterpreter): string =
   var s = ""
   for item in i.stack:
     s = s & $item & " "
   return s
 
-proc debug*(i: In, value: MinValue) {.extern:"min_exported_symbol_$1".}=
+proc debug*(i: In, value: MinValue) =
   debug("(" & i.dump & $value & ")")
 
-proc debug*(i: In, value: string) {.extern:"min_exported_symbol_$1_2".}=
+proc debug*(i: In, value: string) =
   debug(value)
 
 template withScope*(i: In, res:ref MinScope, body: untyped): untyped =
@@ -71,7 +71,7 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
   finally:
     i.scope = origScope
 
-proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
+proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var path = pwd
   when not defined(mini): 
     if not pwd.isAbsolute:
@@ -93,7 +93,7 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
   )
   return i
 
-proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_exported_symbol_$1_2".}=
+proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   var path = filename
   when not defined(mini): 
     if not filename.isAbsolute:
@@ -107,13 +107,13 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_ex
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
-proc formatError(sym: MinValue, message: string): string {.extern:"min_exported_symbol_$1".}=
+proc formatError(sym: MinValue, message: string): string =
   if sym.filename == "":
     return "[$1]: $2" % [sym.symVal, message]
   else:
     return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
 
-proc formatTrace(sym: MinValue): string {.extern:"min_exported_symbol_$1".}=
+proc formatTrace(sym: MinValue): string =
   if sym.filename == "":
     return "<native> in symbol: $1" % [sym.symVal]
   else:
@@ -128,11 +128,11 @@ proc stackTrace*(i: In) =
 proc error(i: In, message: string) =
   error(i.currSym.formatError(message))
 
-proc open*(i: In, stream:Stream, filename: string) {.extern:"min_exported_symbol_$1_2".}=
+proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
 
-proc close*(i: In) {.extern:"min_exported_symbol_$1_2".}= 
+proc close*(i: In) = 
   i.parser.close();
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
@@ -197,7 +197,7 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
     else:
       i.push(op.val)
 
-proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc dequote*(i: In, q: var MinValue) =
   if q.kind == minQuotation:
     i.withScope(): 
       let qqval = deepCopy(q.qVal)
@@ -257,13 +257,13 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   else:
     i.stack.add(val)
 
-proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
+proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
     raiseEmptyStack()
 
-proc peek*(i: MinInterpreter): MinValue {.extern:"min_exported_symbol_$1".}= 
+proc peek*(i: MinInterpreter): MinValue = 
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
@@ -410,9 +410,8 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   for key, value in i2.scope.symbols.pairs:
     result.scope.symbols[key] = value
 
-proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_symbol_$1".}=
+proc parse*(i: In, s: string, name="<parse>"): MinValue =
   return i.eval(s, name, true)
 
-proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
+proc read*(i: In, s: string): MinValue =
   return i.load(s, true)
-
