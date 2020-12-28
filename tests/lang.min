@@ -246,6 +246,27 @@
     ) operator 
     2 4 pow-mul - 8 == 
   ) assert
+  
+  (
+    ( 
+      sigil nt
+      (string :s ==> bool :result)
+      (
+        ("int" s ==)
+          (true @result return)
+        when
+        ("num" s ==)
+          (true @result return)
+        when
+        ("float" s ==)
+          (true @result return)
+        when
+        "not gonna be printed if true!" puts
+        false @result
+      )
+    ) operator
+    nt"float"
+  ) assert
 
   report
   ; Tidy up
