@@ -231,7 +231,6 @@ proc lang_module*(i: In) =
             inExpects.add v
       else:
         if v[0] != ':':
-          echo v
           raiseInvalid("No mapping symbol specified in signature at position $#" % $(c+1))
         else:
           if o:
@@ -558,12 +557,14 @@ proc lang_module*(i: In) =
     let parts = s.split("/")
     if parts.len < 2:
       raiseInvalid("Dictionary identifier not specified")
-    var mdlId = parts[0]
-    i.push mdlId.newSym
     for p in 0..parts.len-2:
+      let mdlId = parts[p]
       let symId = parts[p+1] 
-      i.push symId.newVal
-      i.push "dget".newSym
+      var q = newSeq[MinValue](0)
+      q.add symId.newSym
+      i.push q.newVal
+      i.push mdlId.newSym
+      i.push "with".newSym
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
