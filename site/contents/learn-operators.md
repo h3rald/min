@@ -20,8 +20,18 @@ _Symbols_ are the most common type of operator. A min symbol is a single word th
 It is possible to define symbols using the {#link-operator||lang||define#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
      (dup *) "square" define
+     
+Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined like this:
 
-Besides symbols, you can also define sigila. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
+     (
+       symbol square
+       (num :n ==> num :result)
+       (n dup * @result)
+     ) operator
+
+In this case, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation. Sure, the original version was much more succinct, but this is definitely more readable.
+
+Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
 
      (dup *) :square
 

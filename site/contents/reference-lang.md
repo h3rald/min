@@ -281,6 +281,47 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 {#op||module||{{d}} {{sl}}||{{none}}||
 Creates a new module {{sl}} based on dictionary {{d}}. #}
 
+{#op||operator||{{q}}||{{a0p}}||
+> Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks compared to `define` and `define-sigil` and automatically mapping inputs and outputs.
+> 
+> {{q}} is a quotation containing:
+> 
+> * A symbol identifying the type of operator to define (`symbol` or `sigil`).
+> * A symbol identifying the name of the operator.
+> * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
+> * A quotation identifying the body of the operator.
+>
+> The main additional features offered by this way of defining operators are the following:
+>
+> * Both input and output values are checked against a type (like when using the `expect` operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.
+> * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.
+> * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).
+> * It is possible to use the `return` symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program defines a `pow` operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the `return` symbol:
+> >
+> >      (
+> >        symbol pow
+> >        (num :base int :exp ==> num :result)
+> >        ( 
+> >          (base 0 == exp 0 == and)
+> >            (nan @result return)
+> >          when
+> >          (base 1 == exp inf == and)
+> >            (nan @result return)
+> >          when
+> >          (base inf == exp 0 == and)
+> >            (nan @result return)
+> >          when
+> >          exp 1 - :n
+> >          base  (dup) n times (*) n times @result
+> >        )
+> >      ) ::
+ #}
+
 {#op||opts||{{none}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
