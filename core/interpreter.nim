@@ -405,13 +405,14 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
-  i2.open(newStringStream(contents), s)
-  discard i2.parser.getToken() 
-  discard i2.interpret(parseOnly)
-  result = newDict(i2.scope)
-  result.objType = "module"
-  for key, value in i2.scope.symbols.pairs:
-    result.scope.symbols[key] = value
+  i2.withScope:
+    i2.open(newStringStream(contents), s)
+    discard i2.parser.getToken() 
+    discard i2.interpret(parseOnly)
+    result = newDict(i2.scope)
+    result.objType = "module"
+    for key, value in i2.scope.symbols.pairs:
+      result.scope.symbols[key] = value
 
 proc parse*(i: In, s: string, name="<parse>"): MinValue =
   return i.eval(s, name, true)
