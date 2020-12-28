@@ -151,6 +151,25 @@
 
   ("a" :x (x number?) (x 6 <) dequote-and not) assert
   (1 :x (x number?) (dsagasdgsg) dequote-or) assert
-
+  
+  (
+    (
+      (true)
+      (2 1 >)
+      ("a" "b" ==)
+      ("never printed" puts!)
+    ) &&
+    false ==
+  ) assert
+  
+  (
+    (
+      (false)
+      (2 1 <)
+      ("a" "a" ==)
+      ("never printed" puts!)
+    ) ||
+  ) assert
+  
   report
   clear-stack
