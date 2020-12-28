@@ -233,6 +233,19 @@
   (
     {{100 :b} :a} :test *test/a/b 100 ==
   ) assert
+  
+  (
+    (
+      symbol pow-mul
+      (num :base int :exp ==> num :pr num :mr)
+      ( 
+        exp 1 - :n
+        base exp * @mr
+        base  (dup) n times (*) n times @pr
+      )
+    ) operator 
+    2 4 pow-mul - 8 == 
+  ) assert
 
   report
   ; Tidy up

@@ -20,6 +20,7 @@ import
 
 type
   MinTrappedException* = ref object of CatchableError
+  MinReturnException* = ref object of CatchableError
   MinRuntimeError* = ref object of CatchableError
     data*: MinValue
 
@@ -232,6 +233,8 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     if not i.evaluating:
       i.currSym = val
     let symbol = val.symVal
+    if symbol == "return":
+      raise MinReturnException(msg: "return symbol found")
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol) 
     else: 

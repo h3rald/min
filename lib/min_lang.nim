@@ -177,6 +177,110 @@ proc lang_module*(i: In) =
     qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
 
   ### End of symbols not present in minimin
+  
+  def.symbol("operator") do (i: In):
+    let vals = i.expect("quot");
+    let q = vals[0]
+    if q.qVal.len != 4:
+      raiseInvalid("Invalid operator definition")
+    let tv = q.qVal[0]
+    if not tv.isSymbol or (tv.symVal != "symbol" and tv.symVal != "sigil"):
+      raiseInvalid("Incorrect operator type specified (it must be 'symbol' or 'sigil', found '$#')" % tv.symVal)
+    let t = tv.symVal
+    let nv = q.qVal[1]
+    if not nv.isSymbol:
+      raiseInvalid("Operator name must be a symbol")
+    let n = nv.symVal
+    when not defined(mini):
+      if not n.match(USER_SYMBOL_REGEX):
+        raiseInvalid("Operator name must not contain ivalid characters")
+    # Validate signature
+    let sv = q.qVal[2]
+    let tps = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
+    if not sv.isQuotation:
+      raiseInvalid("Signature must be a quotation")
+    elif sv.qVal.len == 0:
+      raiseInvalid("No signature specified")
+    elif sv.qVal.len == 1 and sv.qVal[0] != "==>".newVal:
+      raiseInvalid("Invalid signature")
+    elif sv.qVal.len mod 2 == 0:
+      raiseInvalid("Invalid signature")
+    var c = 0
+    # Process signature
+    var inExpects= newSeq[string](0)
+    var inVars = newSeq[string](0)
+    var outExpects= newSeq[string](0)
+    var outVars = newSeq[string](0)
+    var o= false
+    for vv in sv.qVal:
+      if not vv.isSymbol:
+        raiseInvalid("Signature must be a quotation id symbols")
+      let v = vv.symVal
+      var check = c mod 2 == 0
+      if o:
+        check = c mod 2 != 0
+      if check:
+        if v == "==>":
+          o = true
+        elif not tps.contains(v) and not v.startsWith("dict:"):
+          raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
+        else:
+          if o:
+            outExpects.add v
+          else:
+            inExpects.add v
+      else:
+        if v[0] != ':':
+          echo v
+          raiseInvalid("No mapping symbol specified in signature at position $#" % $(c+1))
+        else:
+          if o:
+            outVars.add v[1..v.len-1]
+          else:
+            inVars.add v[1..v.len-1]
+      c.inc()
+    if not o:
+      raiseInvalid("No output specified in signature")
+    # Process body
+    var bv = q.qVal[3]
+    if not bv.isQuotation:
+      raiseInvalid("Body must be a quotation")
+    var p: MinOperatorProc = proc (i: In) =
+      var inVals = i.expect(inExpects)
+      inVals.reverse
+      let snapshot = i.stack
+      i.withScope():
+        # Inject variables for mapped inputs
+        for k in 0..inVars.len-1:
+          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: inVals[k], quotation: inVals[k].isQuotation)
+        # Inject variables for mapped outputs
+        for k in 0..outVars.len-1:
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
+        # Actually execute the body of the operator
+        try:
+          i.dequote bv
+        except MinReturnException:
+          discard
+        finally:
+          if i.stack != snapshot:
+            raiseInvalid("Operator '$#' is polluting the stack" % n)
+          # Validate output
+          for k in 0..outVars.len-1:
+            i.apply i.scope.symbols[outVars[k]]
+            let x = i.pop
+            let r = validate(x, outExpects[k])
+            if not r:
+              raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], outExpects[k], $x])
+            i.push x
+    # Define symbol/sigil
+    if t == "symbol":
+      if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false)
+    else:
+      if i.scope.sigils.hasKey(n) and i.scope.sigils[n].sealed:
+        raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
+      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true)
 
   def.symbol("expect-empty-stack") do (i: In):
     let l = i.stack.len
@@ -200,7 +304,7 @@ proc lang_module*(i: In) =
     else:
       var ed = initEditor()
       i.push ed.readLine().newVal
-   
+    
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot|dict")
     var prog = vals[0]

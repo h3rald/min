@@ -291,8 +291,6 @@ when isMainModule:
   var MODULEPATH = ""
   var libfile = ""
   var exeName = "min"
-  var installOpt = "\n    -—install:<lib>           Install dynamic library file <lib>\n" 
-  var uninstallOpt = "\n    —-uninstall:<lib>         Uninstall dynamic library file <lib>\n"
   var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt)\n"
   when defined(lite):
     exeName = "litemin"
@@ -384,7 +382,7 @@ when isMainModule:
 
   Arguments:
     filename  A $exe file to interpret or compile (default: STDIN).
-  Options:$installOpt$uninstallOpt
+  Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
     -c, --compile             Compile the specified file
@@ -400,8 +398,6 @@ when isMainModule:
     -v, —-version             Print the program version""" % [
       "exe", exeName, 
       "version", pkgVersion, 
-      "installOpt", installOpt, 
-      "uninstallOpt", uninstallOpt, 
       "iOpt", iOpt
   ]
 

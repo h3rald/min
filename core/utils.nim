@@ -176,7 +176,7 @@ when not defined(mini):
 
 # Validators
 
-proc validate(value: MinValue, t: string): bool =
+proc validate*(value: MinValue, t: string): bool =
   case t:
     of "bool":
       return value.isBool
