@@ -12,6 +12,8 @@ title: "lang Module"
 
 {#alias||:||define#}
 
+{#alias||::||operator#}
+
 {#sig||~||delete#}
 
 {#sig||+||module#}
@@ -39,6 +41,9 @@ title: "lang Module"
 {#alias||><||infix-dequote#}
 
 {#alias||=>||apply#}
+
+{#op||==>||{{none}}||{{none}}||
+Symbol used to separate input and output calues in operator signatures.#}
 
 {#alias||=-=||expect-empty-stack#}
 
@@ -351,6 +356,10 @@ Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl
 > >     (int float bool) -- :my-int :my-float :my-bool 
  #}
 
+{#op||return||{{none}}||{{none}}||
+If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. 
+
+If used outside of the body quotation of an operator definition, it raises an exception.#}
 
 {#op||ROOT||{{none}}||{{d}}||
 Returns a module holding a reference to the [ROOT](class:kwd) scope.

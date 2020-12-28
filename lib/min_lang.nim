@@ -1058,8 +1058,17 @@ proc lang_module*(i: In) =
   def.symbol("--") do (i: In):
     i.push("reverse-expect-dequote".newSym)
 
+  def.symbol("::") do (i: In):
+    i.push("operator".newSym)
+    
   def.symbol("=>") do (i: In):
     i.push("apply".newSym)
+    
+  def.symbol("==>") do (i: In):
+    discard # used within operator defs
+    
+  def.symbol("return") do (i: In):
+    discard # used within operator defs
     
   def.symbol(">>") do (i: In):
     i.push("prefix-dequote".newSym)

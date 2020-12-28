@@ -264,7 +264,7 @@
         "not gonna be printed if true!" puts
         false @result
       )
-    ) operator
+    ) ::
     nt"float"
   ) assert
 
