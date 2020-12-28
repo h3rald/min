@@ -90,6 +90,14 @@ Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
 {#op||dictionary?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
 
+{#op||expect-all||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if they all evaluate to {{t}}, {{f}} otherwise.
+ #}
+ 
+{#op||expect-any||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if any evaluates to {{t}}, {{f}} otherwise.
+ #}
+
 {#op||float?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a float, {{f}} otherwise. #}
 

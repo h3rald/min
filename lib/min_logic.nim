@@ -138,6 +138,24 @@ proc logic_module*(i: In)=
       if not resB.isBool:
         raiseInvalid("Result of second quotation is not a boolean value")
       i.push newVal(resA.boolVal and resB.boolVal)
+      
+  def.symbol("expect-all") do (i: In):
+    let vals = i.expect("quot")
+    let q = vals[0]
+    var c = 0
+    for v in q.qVal:
+      if not v.isQuotation:
+        raiseInvalid("A quotation of quotations is expected")
+      var vv = v
+      i.dequote vv
+      let r = i.pop
+      c.inc()
+      if not r.isBool:
+        raiseInvalid("Quotation #$# does not evaluate to a boolean value")
+      if not r.boolVal:
+        i.push r
+        return
+    i.push true.newVal
   
   def.symbol("or") do (i: In):
     let vals = i.expect("bool", "bool")
@@ -158,9 +176,27 @@ proc logic_module*(i: In)=
       let resA = i.pop
       if not resA.isBool:
         raiseInvalid("Result of first quotation is not a boolean value")
-      if not resB.isBool:
+      if resB.isBool:
         raiseInvalid("Result of second quotation is not a boolean value")
       i.push newVal(resA.boolVal and resB.boolVal)
+      
+  def.symbol("expect-any") do (i: In):
+    let vals = i.expect("quot")
+    let q = vals[0]
+    var c = 0
+    for v in q.qVal:
+      if not v.isQuotation:
+        raiseInvalid("A quotation of quotations is expected")
+      var vv = v
+      i.dequote vv
+      let r = i.pop
+      c.inc()
+      if not r.isBool:
+        raiseInvalid("Quotation #$# does not evaluate to a boolean value")
+      if r.boolVal:
+        i.push r
+        return
+    i.push false.newVal
 
   def.symbol("xor") do (i: In):
     let vals = i.expect("bool", "bool")
@@ -223,5 +259,11 @@ proc logic_module*(i: In)=
       i.push true.newVal
     else:
       i.push (vals[1].typename == vals[0].getString).newVal
+      
+  def.symbol("&&") do (i: In):
+    i.push("expect-all".newSym)
+    
+  def.symbol("||") do (i: In):
+    i.push("expect-any".newSym)
 
   def.finalize("logic")
