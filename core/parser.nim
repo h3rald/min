@@ -681,8 +681,8 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     p.a = ""
     discard getToken(p)
   else:
-    let err = "Undefined or invalid value: "&p.a
-    raiseUndefined(p, err)
+     let err = "Undefined or invalid value: "&p.a
+     raiseUndefined(p, err)
   result.filename = p.filename
   
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =

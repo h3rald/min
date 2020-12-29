@@ -128,7 +128,15 @@ proc lang_module*(i: In) =
             mdl.scope.symbols[key] = value
           i.push(mdl)
           return
-      let f = i.pwd.joinPath(file)
+      let fn = strutils.replace(i.filename, "./", "")
+      var dirs: seq[string] = fn.split("/")
+      discard dirs.pop
+      var pwd = dirs.join("/")
+      var f: string
+      if pwd == "":
+        f = file
+      else:
+        f = pwd&"/"&file
       if not f.fileExists:
         raiseInvalid("File '$1' does not exist." % file)
       i.push i.require(f)
@@ -196,7 +204,6 @@ proc lang_module*(i: In) =
         raiseInvalid("Operator name must not contain ivalid characters")
     # Validate signature
     let sv = q.qVal[2]
-    let tps = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
     if not sv.isQuotation:
       raiseInvalid("Signature must be a quotation")
     elif sv.qVal.len == 0:
@@ -222,7 +229,7 @@ proc lang_module*(i: In) =
       if check:
         if v == "==>":
           o = true
-        elif not tps.contains(v) and not v.startsWith("dict:"):
+        elif not validType(v):
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
           if o:
@@ -244,10 +251,10 @@ proc lang_module*(i: In) =
     var bv = q.qVal[3]
     if not bv.isQuotation:
       raiseInvalid("Body must be a quotation")
+    inExpects.reverse
+    inVars.reverse
     var p: MinOperatorProc = proc (i: In) =
       var inVals = i.expect(inExpects)
-      inVals.reverse
-      let snapshot = i.stack
       i.withScope():
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
@@ -256,21 +263,33 @@ proc lang_module*(i: In) =
         for k in 0..outVars.len-1:
           i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
         # Actually execute the body of the operator
+        var endSnapshot: seq[MinValue]
+        var snapShot: seq[MinValue]
         try:
+          snapshot = deepCopy(i.stack)
           i.dequote bv
+          endSnapshot = i.stack
+          if endSnapshot != snapshot:
+            raiseInvalid("Operator '$#' is polluting the stack" % n)
         except MinReturnException:
           discard
-        finally:
-          if i.stack != snapshot:
-            raiseInvalid("Operator '$#' is polluting the stack" % n)
-          # Validate output
-          for k in 0..outVars.len-1:
-            i.apply i.scope.symbols[outVars[k]]
-            let x = i.pop
-            let r = validate(x, outExpects[k])
-            if not r:
-              raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], outExpects[k], $x])
-            i.push x
+        # Validate output
+        for k in 0..outVars.len-1:
+          i.push outVars[k].newSym
+          let x = i.peek
+          let o = outExpects[k]
+          var r = false;
+          if o.contains("|"):
+            let types = o.split("|")
+            for ut in types:
+              if validate(x, ut):
+                r = true
+                break
+          else:
+            r = validate(x, o)
+          if not r:
+            discard i.pop
+            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], o, $x])
     # Define symbol/sigil
     if t == "symbol":
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
@@ -557,13 +576,15 @@ proc lang_module*(i: In) =
     let parts = s.split("/")
     if parts.len < 2:
       raiseInvalid("Dictionary identifier not specified")
+    i.push parts[0].newSym
     for p in 0..parts.len-2:
-      let mdlId = parts[p]
+      let vals = i.expect("dict")
+      let mdl = vals[0]
       let symId = parts[p+1] 
       var q = newSeq[MinValue](0)
       q.add symId.newSym
       i.push q.newVal
-      i.push mdlId.newSym
+      i.push mdl
       i.push "with".newSym
 
   def.symbol("set-type") do (i: In):

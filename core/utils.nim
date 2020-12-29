@@ -208,6 +208,15 @@ proc validate*(value: MinValue, t: string): bool =
           return true
       return false
 
+proc validType*(s: string): bool =
+  const ts = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
+  if ts.contains(s):
+    return true
+  for tt in s.split("|"):
+    if not ts.contains(tt) or tt.startsWith("dict:"):
+      return false
+  return true
+
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
