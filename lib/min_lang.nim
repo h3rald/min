@@ -258,7 +258,10 @@ proc lang_module*(i: In) =
       i.withScope():
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
-          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: inVals[k], quotation: inVals[k].isQuotation)
+          var iv = inVals[k]
+          if iv.isQuotation:
+            iv = @[iv].newVal
+          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv, quotation: inVals[k].isQuotation)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
           i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
@@ -581,11 +584,14 @@ proc lang_module*(i: In) =
       let vals = i.expect("dict")
       let mdl = vals[0]
       let symId = parts[p+1] 
-      var q = newSeq[MinValue](0)
-      q.add symId.newSym
-      i.push q.newVal
+      #var q = newSeq[MinValue](0)
+      #q.add symId.newSym
       i.push mdl
-      i.push "with".newSym
+      i.push symId.newVal
+      i.push "call".newSym
+      #i.push q.newVal
+      #i.push mdl
+      #i.push "with".newSym
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
