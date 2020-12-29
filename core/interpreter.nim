@@ -316,24 +316,8 @@ proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exp
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
-    try:
+    handleErrors(i) do:
       result.add i.parser.compileMinValue(i, push = true, indent)
-    except MinRuntimeError:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
-    except MinTrappedException:
-      raise
-    except:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      i.error(msg)
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
     
 proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
