@@ -229,9 +229,19 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
     i.debug(val)
-    i.trace.add val
     if not i.evaluating:
-      i.currSym = val
+      if val.line == 0 and val.column == 0 and val.filename == "":
+        # Simbol was added via min code, get data from previous min symbol
+        var nval = deepCopy(val)
+        let pval = i.trace[i.trace.len-1]
+        nval.symVal = pval.symVal & " > " & nval.symVal
+        nval.filename = pval.filename
+        nval.column = pval.column
+        nval.line = pval.line
+        i.currSym = nval
+      else:
+        i.currSym = val
+    i.trace.add val
     let symbol = val.symVal
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
@@ -389,10 +399,13 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
+  let snapshot = deepCopy(i.stack)
   i2.withScope:
     i2.open(newStringStream(contents), s)
     discard i2.parser.getToken() 
     discard i2.interpret(parseOnly)
+    if snapshot != i2.stack:
+      raiseInvalid("Code in required file '$#' is polluting the stack" % s)
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:
