@@ -230,7 +230,6 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
-      #echo val, ":", val.filename, ":", val.line, ":", val.column
       if val.line == 0 and val.column == 0 and val.filename == "":
         # Simbol was added via min code, get data from previous min symbol
         var nval = deepCopy(val)
@@ -287,7 +286,6 @@ template handleErrors*(i: In, body: untyped) =
   try:
     body
   except MinRuntimeError:
-    echo "runtime"
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
     error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
@@ -295,15 +293,11 @@ template handleErrors*(i: In, body: untyped) =
     i.trace = @[]
     raise MinTrappedException(msg: msg)
   except MinTrappedException:
-    echo "trapped"
     raise
   except:
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
-    echo "generic "
-    #echo("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
-    #i.error(msg)
-    error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    i.error(msg)
     i.stackTrace()
     i.trace = @[]
     raise MinTrappedException(msg: msg)
@@ -405,10 +399,13 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
+  let snapshot = deepCopy(i.stack)
   i2.withScope:
     i2.open(newStringStream(contents), s)
     discard i2.parser.getToken() 
     discard i2.interpret(parseOnly)
+    if snapshot != i2.stack:
+      raiseInvalid("Code in required file '$#' is polluting the stack" % s)
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:

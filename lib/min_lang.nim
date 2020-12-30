@@ -393,7 +393,7 @@ proc lang_module*(i: In) =
         if pair.len == 1 and pair[0].len == 0:
           continue
         i.dset(dict, pair[0].strip, pair[1].strip.newVal)
-        i.push(dict)
+      i.push(dict)
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
