@@ -693,6 +693,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   case p.token
   of tkNull:
     result = @[op&"MinValue(kind: minNull)"]
+    discard getToken(p)
   of tkTrue:
     result = @[op&"MinValue(kind: minBool, boolVal: true)"]
     discard getToken(p)

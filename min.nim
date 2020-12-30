@@ -472,28 +472,6 @@ when isMainModule:
       for f in walkDirRec(MODULEPATH):
         if f.endsWith(".min"):
           MINMODULES.add f
-    if INSTALL:
-      if not libfile.fileExists:
-        logging.fatal("Dynamic library file not found:" & libfile)
-        quit(4)
-      try:
-        libfile.copyFile(MINLIBS/libfile.extractFilename)
-      except:
-        logging.fatal("Unable to install library file: " & libfile)
-        quit(5)
-      logging.notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
-      quit(0)
-    elif UNINSTALL:
-      if not (MINLIBS/libfile.extractFilename).fileExists:
-        logging.fatal("Dynamic library file not found:" & libfile)
-        quit(4)
-      try:
-        removeFile(MINLIBS/libfile.extractFilename)
-      except:
-        logging.fatal("Unable to uninstall library file: " & libfile)
-        quit(6)
-      logging.notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
-      quit(0)
     elif REPL:
       minRepl()
       quit(0)

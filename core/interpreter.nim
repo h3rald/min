@@ -405,7 +405,7 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
     discard i2.parser.getToken() 
     discard i2.interpret(parseOnly)
     if snapshot != i2.stack:
-      raiseInvalid("Code in required file '$#' is polluting the stack" % s)
+      raiseInvalid("Module '$#' is polluting the stack" % s)
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:

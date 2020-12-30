@@ -19,6 +19,7 @@ else:
 import 
   ../core/env,
   ../core/meta,
+  ../core/baseutils,
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
@@ -110,35 +111,21 @@ proc lang_module*(i: In) =
       if not file.endsWith(".min"):
         file = file & ".min"
       info("[require] File: ", file)
-      if MINCOMPILED:
-        var normalizedFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
-        var compiledFile = normalizedFile
-        var normalizedCurrFile = strutils.replace(strutils.replace(i.filename, "\\", "/"), "./", "")
-        var parts = normalizedCurrFile.split("/")
-        if parts.len > 1:
-          discard parts.pop
-          compiledFile = parts.join("/") & "/" & normalizedFile
-        if COMPILEDMINFILES.hasKey(compiledFile):
-          var i2 = i.copy(file)
-          COMPILEDMINFILES[compiledFile](i2)
-          var mdl = newDict(i2.scope)
-          mdl.objType = "module"
-          for key, value in i2.scope.symbols.pairs:
-            mdl.scope.symbols[key] = value
-          i.push(mdl)
-          return
-      let fn = strutils.replace(i.filename, "./", "")
-      var dirs: seq[string] = fn.split("/")
-      discard dirs.pop
-      var pwd = dirs.join("/")
-      var f: string
-      if pwd == "":
-        f = file
-      else:
-        f = pwd&"/"&file
+      let f = simplifyPath(i.filename, file)
       if not f.fileExists:
         raiseInvalid("File '$1' does not exist." % file)
-      i.push i.require(f)
+      if MINCOMPILED:
+        if COMPILEDMINFILES.hasKey(f):
+          var i2 = i.copy(f)
+          i2.withScope():
+            COMPILEDMINFILES[f](i2)
+            var mdl = newDict(i2.scope)
+            mdl.objType = "module"
+            for key, value in i2.scope.symbols.pairs:
+              mdl.scope.symbols[key] = value
+            i.push(mdl)
+      else:
+        i.push i.require(f)
 
     def.symbol("read") do (i: In):
       let vals = i.expect("'sym")
