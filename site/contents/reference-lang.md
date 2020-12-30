@@ -409,7 +409,7 @@ Returns a module holding a reference to the [ROOT](class:kwd) scope.
 > > Tip
 > > 
 > > This symbol is very useful in conjunction with the **with** operator.
-#}
+ #}
 
 {#op||save-symbol||{{sl}}||{{none}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
@@ -577,4 +577,4 @@ Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope.
 > >       'http      import
 > >      ) ROOT with
 > >     ) unless
-#}
+ #}

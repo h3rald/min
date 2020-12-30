@@ -77,7 +77,7 @@ The following notation is used in the signature of all min operators:
        "" :port
        "" :username
        "" :password
-       "min" :path
+       "/min" :path
        "" :anchor
        "" :query
       }
