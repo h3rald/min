@@ -118,7 +118,6 @@ proc lang_module*(i: In) =
         if parts.len > 1:
           discard parts.pop
           compiledFile = parts.join("/") & "/" & normalizedFile
-        echo compiledFile, " - ", normalizedFile, " - ", i.filename, " - ", normalizedCurrFile
         if COMPILEDMINFILES.hasKey(compiledFile):
           var i2 = i.copy(file)
           COMPILEDMINFILES[compiledFile](i2)

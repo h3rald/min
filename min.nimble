@@ -8,7 +8,7 @@ author        = pkgAuthor
 description   = pkgDescription
 license       = "MIT"
 bin           = @[pkgName]
-installFiles  = @["min.yml", "min.nim", "mindyn.nim", "prelude.min"]
+installFiles  = @["min.yml", "min.nim", "prelude.min"]
 installDirs   = @["vendor", "lib", "core", "packages"]
 
 # Dependencies
