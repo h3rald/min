@@ -112,8 +112,6 @@ proc lang_module*(i: In) =
         file = file & ".min"
       info("[require] File: ", file)
       let f = simplifyPath(i.filename, file)
-      if not f.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
       if MINCOMPILED:
         if COMPILEDMINFILES.hasKey(f):
           var i2 = i.copy(f)
@@ -125,6 +123,8 @@ proc lang_module*(i: In) =
               mdl.scope.symbols[key] = value
             i.push(mdl)
       else:
+        if not f.fileExists:
+          raiseInvalid("File '$1' does not exist." % file)
         i.push i.require(f)
 
     def.symbol("read") do (i: In):
