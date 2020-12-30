@@ -208,7 +208,7 @@ proc lang_module*(i: In) =
       raiseInvalid("Signature must be a quotation")
     elif sv.qVal.len == 0:
       raiseInvalid("No signature specified")
-    elif sv.qVal.len == 1 and sv.qVal[0] != "==>".newVal:
+    elif sv.qVal.len == 1 and sv.qVal[0] != "==>".newSym:
       raiseInvalid("Invalid signature")
     elif sv.qVal.len mod 2 == 0:
       raiseInvalid("Invalid signature")
