@@ -229,9 +229,20 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
     i.debug(val)
-    i.trace.add val
     if not i.evaluating:
-      i.currSym = val
+      #echo val, ":", val.filename, ":", val.line, ":", val.column
+      if val.line == 0 and val.column == 0 and val.filename == "":
+        # Simbol was added via min code, get data from previous min symbol
+        var nval = deepCopy(val)
+        let pval = i.trace[i.trace.len-1]
+        nval.symVal = pval.symVal & " > " & nval.symVal
+        nval.filename = pval.filename
+        nval.column = pval.column
+        nval.line = pval.line
+        i.currSym = nval
+      else:
+        i.currSym = val
+    i.trace.add val
     let symbol = val.symVal
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
@@ -276,6 +287,7 @@ template handleErrors*(i: In, body: untyped) =
   try:
     body
   except MinRuntimeError:
+    echo "runtime"
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
     error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
@@ -283,11 +295,15 @@ template handleErrors*(i: In, body: untyped) =
     i.trace = @[]
     raise MinTrappedException(msg: msg)
   except MinTrappedException:
+    echo "trapped"
     raise
   except:
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
-    i.error(msg)
+    echo "generic "
+    #echo("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    #i.error(msg)
+    error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
     i.stackTrace()
     i.trace = @[]
     raise MinTrappedException(msg: msg)
