@@ -44,7 +44,7 @@ jobs:
         run: nifty install
       
       - name: Build
-        run: nimble -y build --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl
+        run: nim c -d:release -d:ssl --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux  -o:min min
       
       - name: Test
         run: ./min tests/all.min
