@@ -282,7 +282,7 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 Creates a new module {{sl}} based on dictionary {{d}}. #}
 
 {#op||operator||{{q}}||{{a0p}}||
-> Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks compared to `define` and `define-sigil` and automatically mapping inputs and outputs.
+> Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
 > 
 > {{q}} is a quotation containing:
 > 

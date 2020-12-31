@@ -21,7 +21,7 @@ It is possible to define symbols using the {#link-operator||lang||define#} symbo
 
      (dup *) "square" define
      
-Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined like this:
+Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} symbol instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined like this:
 
      (
        symbol square
