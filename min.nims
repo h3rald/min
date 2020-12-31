@@ -12,8 +12,13 @@ switch("amd64.linux.gcc.linkerexe", "x86_64-linux-musl-gcc")
 
 switch("opt", "size")
 
-when defined(ssl) and not defined(mini):
+when not defined(dev):
+  switch("define", "release")
+
+when not defined(nossl):
   switch("define", "ssl")
+
+when defined(ssl) and not defined(mini):
   switch("threads", "on")
   when defined(windows): 
     # TODO",  change once issue nim#15220 is resolved

@@ -13,13 +13,13 @@ else:
     os,
     json,
     logging,
+    ../core/baseutils,
     ../packages/niftylogger,
     ../packages/nimline/nimline,
     ../packages/nim-sgregex/sgregex
 import 
   ../core/env,
   ../core/meta,
-  ../core/baseutils,
   ../core/parser, 
   ../core/value, 
   ../core/interpreter, 
@@ -88,20 +88,12 @@ proc lang_module*(i: In) =
       if not file.endsWith(".min"):
         file = file & ".min"
       info("[load] File: ", file)
-      if MINCOMPILED:
-        var normalizedFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
-        var compiledFile = normalizedFile
-        var normalizedCurrFile = strutils.replace(strutils.replace(i.filename, "\\", "/"), "./", "")
-        var parts = normalizedCurrFile.split("/")
-        if parts.len > 1:
-          discard parts.pop
-          compiledFile = parts.join("/") & "/" & normalizedFile
-        if COMPILEDMINFILES.hasKey(compiledFile):
-          COMPILEDMINFILES[compiledFile](i)
-          return
-      var f = i.pwd.joinPath(file)
-      if not f.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
+      let f = simplifyPath(i.filename, file)
+      if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
+          COMPILEDMINFILES[f](i2)
+      else:
+        if not f.fileExists:
+         raiseInvalid("File '$1' does not exist." % file)
       i.load f
 
     def.symbol("require") do (i: In):
@@ -112,8 +104,7 @@ proc lang_module*(i: In) =
         file = file & ".min"
       info("[require] File: ", file)
       let f = simplifyPath(i.filename, file)
-      if MINCOMPILED:
-        if COMPILEDMINFILES.hasKey(f):
+      if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
           var i2 = i.copy(f)
           i2.withScope():
             COMPILEDMINFILES[f](i2)

@@ -38,7 +38,7 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
-#### -d:ssl
+#### -d:ssl (enabled by default)
 
 If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
 * perform HTTPS requests with the {#link-module||http#}.
@@ -47,7 +47,7 @@ If the **-d:ssl** flag is specified when compiling, min will be built with SSL s
 > %note%
 > Note
 > 
-> By default, this flag is enabled when compiling the executable files included with official releases.
+> By default, this flag is enabled in the [min.nims](class:file). use **-d:nossl** to disable it.
 
 #### -d:lite
 

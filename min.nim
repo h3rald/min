@@ -83,7 +83,7 @@ when not defined(mini):
     res.sort(system.cmp)
     return res
 
-  proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
+  proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
     var words = ed.lineText.split(" ")
     var word: string
     if words.len == 0:
@@ -295,8 +295,6 @@ when isMainModule:
   when defined(lite):
     exeName = "litemin"
   when defined(mini):
-    installOpt = ""
-    uninstallOpt = ""
     iOpt = ""
     exeName = "minimin"
 

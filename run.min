@@ -20,7 +20,7 @@ taskspec 0 get :task
 "default" :subtask
 (taskspec size 1 >) (taskspec 1 get @subtask) when
 
-"./tasks/$#.min" (task) =% :task-file
+"tasks/$#.min" (task) =% :task-file
 
 ; Load task module
 task-file load
