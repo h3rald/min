@@ -18,6 +18,10 @@ when not defined(dev):
 when not defined(nossl):
   switch("define", "ssl")
 
+if findExe("musl-gcc") != "":
+  switch("gcc.exe", "musl-gcc")
+  switch("gcc.linkerexe", "musl-gcc")
+
 when defined(ssl) and not defined(mini):
   switch("threads", "on")
   when defined(windows): 
