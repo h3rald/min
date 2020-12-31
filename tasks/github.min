@@ -69,6 +69,7 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
 ) :delete-assets
 
 ; Module symbols
+{}
 (
   {}
     "/releases" %endpoint

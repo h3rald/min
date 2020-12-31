@@ -89,12 +89,13 @@ proc lang_module*(i: In) =
         file = file & ".min"
       info("[load] File: ", file)
       let f = simplifyPath(i.filename, file)
+      var i2 = i.copy(f)
       if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
           COMPILEDMINFILES[f](i2)
       else:
         if not f.fileExists:
          raiseInvalid("File '$1' does not exist." % file)
-      i.load f
+      i2.load f
 
     def.symbol("require") do (i: In):
       let vals = i.expect("'sym")
