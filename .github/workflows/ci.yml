@@ -26,6 +26,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
+      - name: install musl-gcc
+        run: sudo apt-get install -y musl-tools 
+      
       - name: Update $PATH
         run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
 
