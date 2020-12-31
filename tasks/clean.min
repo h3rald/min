@@ -3,7 +3,7 @@
 {}
 (
   "Cleaning up build files" notice
-  . ls ("\.(htm|zip)$" match) filter =files
+  . ls ("(\.(htm|zip|exe)|[\/\\]min)$" match) filter =files
   files 'rm foreach
 ) %default
 +clean-tasks

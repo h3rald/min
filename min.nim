@@ -373,7 +373,7 @@ when isMainModule:
       
 
   let usage* = """  $exe v$version - a tiny concatenative programming language
-  (c) 2014-2020 Fabio Cevasco
+  (c) 2014-2021 Fabio Cevasco
   
   Usage:
     $exe [options] [filename]
