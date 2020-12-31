@@ -65,7 +65,8 @@ else:
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
-var customPrelude = ""
+var customPrelude {.threadvar.} : string
+customPrelude = ""
 
 when not defined(mini):
   if logging.getHandlers().len == 0:
