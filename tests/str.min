@@ -38,6 +38,8 @@
   ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) assert
 
   ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
+  
+  ("/api/items/test-1" "/\\/api\\/items\\/(.+)/" regex 1 get "test-1" ==) assert
 
   ("this is a test" uppercase "THIS IS A TEST" ==) assert
 
