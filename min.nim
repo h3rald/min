@@ -332,7 +332,7 @@ when isMainModule:
     i.open(s, "<repl>")
     var line: string
     while true:
-      i.push("prompt".newSym)
+      i.push("prompt".newSym(i.filename))
       let vals = i.expect("string")
       let v = vals[0] 
       let prompt = v.getString()
@@ -355,7 +355,7 @@ when isMainModule:
         EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
           return ed.getCompletions(symbols)
         # evaluate prompt
-        i.push("prompt".newSym)
+        i.push("prompt".newSym(i.filename))
         let vals = i.expect("string")
         let v = vals[0] 
         let prompt = v.getString()
