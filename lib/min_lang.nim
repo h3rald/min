@@ -156,7 +156,7 @@ proc lang_module*(i: In) =
       let origscope = i.scope 
       i.scope = scope
       i.evaluating = true
-      i.push sym.newSym
+      i.pushSym sym
       i.evaluating = false
       i.scope = origscope
     qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
@@ -255,7 +255,7 @@ proc lang_module*(i: In) =
           discard
         # Validate output
         for k in 0..outVars.len-1:
-          i.push outVars[k].newSym
+          i.pushSym outVars[k]
           let x = i.peek
           let o = outExpects[k]
           var r = false;
@@ -521,7 +521,7 @@ proc lang_module*(i: In) =
     
   def.symbol("quit") do (i: In):
     i.push 0.newVal
-    i.push "exit".newSym
+    i.pushSym "exit"
 
   def.symbol("parse") do (i: In):
     let vals = i.expect("string")
@@ -556,19 +556,14 @@ proc lang_module*(i: In) =
     let parts = s.split("/")
     if parts.len < 2:
       raiseInvalid("Dictionary identifier not specified")
-    i.push parts[0].newSym
+    i.pushSym parts[0]
     for p in 0..parts.len-2:
       let vals = i.expect("dict")
       let mdl = vals[0]
       let symId = parts[p+1] 
-      #var q = newSeq[MinValue](0)
-      #q.add symId.newSym
       i.push mdl
       i.push symId.newVal
-      i.push "call".newSym
-      #i.push q.newVal
-      #i.push mdl
-      #i.push "with".newSym
+      i.pushSym "call"
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
@@ -854,7 +849,7 @@ proc lang_module*(i: In) =
     let m = vals[1]
     i.push @[m].newVal
     i.push s
-    i.push "bind".newSym
+    i.pushSym "bind"
 
   def.symbol("quote-define") do (i: In):
     let vals = i.expect("string", "a")
@@ -862,7 +857,7 @@ proc lang_module*(i: In) =
     let m = vals[1]
     i.push @[m].newVal
     i.push s
-    i.push "define".newSym
+    i.pushSym "define"
 
 
   def.symbol("args") do (i: In):
@@ -994,72 +989,72 @@ proc lang_module*(i: In) =
   def.sigil("'") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push(@[s.strVal.newSym].newVal)
+    i.push(@[i.newSym(s.strVal)].newVal)
 
   def.sigil(":") do (i: In):
-    i.push("define".newSym)
+    i.pushSym("define")
 
   def.sigil("~") do (i: In):
-    i.push("delete".newSym)
+    i.pushSym("delete")
 
   def.sigil("@") do (i: In):
-    i.push("bind".newSym)
+    i.pushSym("bind")
 
   def.sigil("+") do (i: In):
-    i.push("module".newSym)
+    i.pushSym("module")
 
   def.sigil("^") do (i: In):
-    i.push("call".newSym)
+    i.pushSym("call")
 
   def.sigil("*") do (i: In):
-    i.push("invoke".newSym)
+    i.pushSym("invoke")
 
   def.sigil(">") do (i: In):
-    i.push("save-symbol".newSym)
+    i.pushSym("save-symbol")
 
   def.sigil("<") do (i: In):
-    i.push("load-symbol".newSym)
+    i.pushSym("load-symbol")
 
   def.sigil("#") do (i: In):
-    i.push("quote-bind".newSym)
+    i.pushSym("quote-bind")
 
   def.sigil("=") do (i: In):
-    i.push("quote-define".newSym)
+    i.pushSym("quote-define")
 
   # Shorthand symbol aliases
 
   def.symbol("#") do (i: In):
-    i.push("quote-bind".newSym)
+    i.pushSym("quote-bind")
 
   def.symbol("=") do (i: In):
-    i.push("quote-define".newSym)
+    i.pushSym("quote-define")
     
   def.symbol("=-=") do (i: In):
-    i.push("expect-empty-stack".newSym)
+    i.pushSym("expect-empty-stack")
 
   def.symbol(":") do (i: In):
-    i.push("define".newSym)
+    i.pushSym("define")
 
   def.symbol("@") do (i: In):
-    i.push("bind".newSym)
+    i.pushSym("bind")
 
   def.symbol("^") do (i: In):
-    i.push("call".newSym)
+    i.pushSym("call")
 
   def.symbol("'") do (i: In):
-    i.push("quote".newSym)
+    i.pushSym("quote")
 
   def.symbol("->") do (i: In):
-    i.push("dequote".newSym)
+    i.pushSym("dequote")
     
   def.symbol("--") do (i: In):
-    i.push("reverse-expect-dequote".newSym)
+    i.pushSym("reverse-expect-dequote")
 
   def.symbol("::") do (i: In):
-    i.push("operator".newSym)
+    i.pushSym("operator")
     
   def.symbol("=>") do (i: In):
-    i.push("apply".newSym)
+    i.pushSym("apply")
     
   def.symbol("==>") do (i: In):
     discard # used within operator defs
@@ -1068,9 +1063,9 @@ proc lang_module*(i: In) =
     discard # used within operator defs
     
   def.symbol(">>") do (i: In):
-    i.push("prefix-dequote".newSym)
+    i.pushSym("prefix-dequote")
     
   def.symbol("><") do (i: In):
-    i.push("infix-dequote".newSym)
+    i.pushSym("infix-dequote")
 
   def.finalize("ROOT")

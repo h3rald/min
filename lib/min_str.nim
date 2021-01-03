@@ -27,8 +27,8 @@ proc str_module*(i: In) =
     i.push res.newVal
 
   def.symbol("apply-interpolate") do (i: In):
-    i.push "apply".newSym
-    i.push "interpolate".newSym
+    i.pushSym "apply"
+    i.pushSym "interpolate"
 
   def.symbol("strip") do (i: In):
     let vals = i.expect("'sym")
@@ -212,7 +212,7 @@ proc str_module*(i: In) =
     i.push(newVal("$#.$#.$#" % [$major, $minor, $patch]))
 
   def.symbol("semver-inc-major") do (i: In):
-    i.push("from-semver".newSym)
+    i.pushSym("from-semver")
     var d = i.pop
     let cv = i.dget(d, "major")
     let v = cv.intVal + 1
@@ -220,26 +220,26 @@ proc str_module*(i: In) =
     i.dset(d, "minor", 0.newVal)
     i.dset(d, "patch", 0.newVal)
     i.push(d)
-    i.push("to-semver".newSym)
+    i.pushSym("to-semver")
 
   def.symbol("semver-inc-minor") do (i: In):
-    i.push("from-semver".newSym)
+    i.pushSym("from-semver")
     var d = i.pop
     let cv = i.dget(d, "minor")
     let v = cv.intVal + 1
     i.dset(d, "minor", v.newVal)
     i.dset(d, "patch", 0.newVal)
     i.push(d)
-    i.push("to-semver".newSym)
+    i.pushSym("to-semver")
 
   def.symbol("semver-inc-patch") do (i: In):
-    i.push("from-semver".newSym)
+    i.pushSym("from-semver")
     var d = i.pop
     let cv = i.dget(d, "patch")
     let v = cv.intVal + 1
     i.dset(d, "patch", v.newVal)
     i.push(d)
-    i.push("to-semver".newSym)
+    i.pushSym("to-semver")
 
   def.symbol("escape") do (i: In):
     let vals = i.expect("'sym")
@@ -261,12 +261,12 @@ proc str_module*(i: In) =
     i.push s.newVal
 
   def.symbol("=~") do (i: In):
-    i.push("regex".newSym)
+    i.pushSym("regex")
 
   def.symbol("%") do (i: In):
-    i.push("interpolate".newSym)
+    i.pushSym("interpolate")
 
   def.symbol("=%") do (i: In):
-    i.push("apply-interpolate".newSym)
+    i.pushSym("apply-interpolate")
 
   def.finalize("str")

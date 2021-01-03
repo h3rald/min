@@ -73,12 +73,12 @@ proc dict_module*(i: In)=
     i.push vals[0].objType.newVal
 
   def.sigil("?") do (i: In):
-    i.push("dhas?".newSym)
+    i.pushSym("dhas?")
 
   def.sigil("/") do (i: In):
-    i.push("dget".newSym)
+    i.pushSym("dget")
 
   def.sigil("%") do (i: In):
-    i.push("dset".newSym)
+    i.pushSym("dset")
 
   def.finalize("dict")

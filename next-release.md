@@ -1,2 +1,1 @@
-* Fixed handling if escaped / characters in regex operator
-* Fixed fatal error in REPL
+* Improved diagnostics for native symbols calling other symbols.

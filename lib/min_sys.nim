@@ -213,25 +213,25 @@ proc sys_module*(i: In)=
     i.push f.getString.parentDir.unix.newVal
 
   def.symbol("$") do (i: In):
-    i.push("get-env".newSym)
+    i.pushSym("get-env")
 
   def.symbol("!") do (i: In):
-    i.push("system".newSym)
+    i.pushSym("system")
 
   def.symbol("!!") do (i: In):
-    i.push("system!".newSym)
+    i.pushSym("system!")
 
   def.symbol("&") do (i: In):
-    i.push("run".newSym)
+    i.pushSym("run")
 
   def.sigil("$") do (i: In):
-    i.push("get-env".newSym)
+    i.pushSym("get-env")
 
   def.sigil("!") do (i: In):
-    i.push("system".newSym)
+    i.pushSym("system")
 
   def.sigil("&") do (i: In):
-    i.push("run".newSym)
+    i.pushSym("run")
 
   when not defined(lite):
     def.symbol("unzip") do (i: In):

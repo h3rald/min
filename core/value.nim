@@ -52,9 +52,6 @@ proc newDict*(parentScope: ref MinScope): MinValue =
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
 
-proc newSym*(s: string, fn: string): MinValue =
-  return MinValue(kind: minSymbol, symVal: s, filename: fn)
-
 # Get string value from string or quoted symbol
 
 proc getFloat*(v: MinValue): float =

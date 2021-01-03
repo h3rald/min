@@ -122,8 +122,8 @@ proc stack_module*(i: In)=
     i.push q
 
   def.symbol("swons") do (i: In):
-    i.push "swap".newSym
-    i.push "cons".newSym
+    i.pushSym "swap"
+    i.pushSym "cons"
   
   def.symbol("sip") do (i: In):
     let vals = i.expect("quot", "quot")

@@ -109,16 +109,19 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
 proc formatError(sym: MinValue, message: string): string =
-  if sym.filename == "":
-    return "[$1]: $2" % [sym.symVal, message]
-  else:
-    return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+  var name = sym.symVal
+  if sym.parentSym != "":
+    name = sym.parentSym
+  return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, name, message]
 
 proc formatTrace(sym: MinValue): string =
+  var name = sym.symVal
+  if sym.parentSym != "":
+    name = sym.parentSym
   if sym.filename == "":
-    return "<native> in symbol: $1" % [sym.symVal]
+    return "<native> in symbol: $1" % [name]
   else:
-    return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+    return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, name]
 
 proc stackTrace*(i: In) =
   var trace = i.trace
@@ -230,17 +233,7 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
-      if val.line == 0 and val.column == 0 and val.filename == "":
-        # Simbol was added via min code, get data from previous min symbol
-        var nval = deepCopy(val)
-        let pval = i.trace[i.trace.len-1]
-        nval.symVal = pval.symVal & " > " & nval.symVal
-        nval.filename = pval.filename
-        nval.column = pval.column
-        nval.line = pval.line
-        i.currSym = nval
-      else:
-        i.currSym = val
+      i.currSym = val
     i.trace.add val
     let symbol = val.symVal
     if symbol == "return":
@@ -416,3 +409,10 @@ proc parse*(i: In, s: string, name="<parse>"): MinValue =
 
 proc read*(i: In, s: string): MinValue =
   return i.load(s, true)
+  
+# Inherit file/line/column from current symbol
+proc pushSym*(i: In, s: string) =
+  i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, parentSym: i.currSym.symVal)
+  
+proc newSym*(i: In, s: string): MinValue =
+ return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, parentSym: i.currSym.symVal)

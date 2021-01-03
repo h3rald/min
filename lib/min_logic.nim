@@ -261,9 +261,9 @@ proc logic_module*(i: In)=
       i.push (vals[1].typename == vals[0].getString).newVal
       
   def.symbol("&&") do (i: In):
-    i.push("expect-all".newSym)
+    i.pushSym("expect-all")
     
   def.symbol("||") do (i: In):
-    i.push("expect-any".newSym)
+    i.pushSym("expect-any")
 
   def.finalize("logic")
