@@ -38,16 +38,20 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 ### Additional build options
 
-#### -d:ssl (enabled by default)
+#### -d:ssl
 
 If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
 * perform HTTPS requests with the {#link-module||http#}.
-* use the cryptographic symbols defined in the {#link-module||crypto#}.
+* use all the cryptographic symbols defined in the {#link-module||crypto#}.
 
-> %note%
-> Note
-> 
-> By default, this flag is enabled in the [min.nims](class:file). use **-d:nossl** to disable it.
+If this flag is not specified:
+* It will not be possible to perform HTTPS requests
+* Only the following symbols will be exposed by the {#link-module||crypto#}:
+  * {#link-operator||crypto||md5#} 
+  * {#link-operator||crypto||sha1#} 
+  * {#link-operator||crypto||encode#} 
+  * {#link-operator||crypto||decode#} 
+  * {#link-operator||crypto||aes#} 
 
 #### -d:lite
 

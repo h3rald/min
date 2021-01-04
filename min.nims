@@ -15,9 +15,6 @@ switch("opt", "size")
 when not defined(dev):
   switch("define", "release")
 
-when not defined(nossl):
-  switch("define", "ssl")
-
 if findExe("musl-gcc") != "":
   switch("gcc.exe", "musl-gcc")
   switch("gcc.linkerexe", "musl-gcc")

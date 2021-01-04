@@ -71,7 +71,7 @@ type
     line*: int
     column*: int
     filename*: string
-    parentSym*: string
+    outerSym*: string
     case kind*: MinKind
       of minNull: discard
       of minInt: intVal*: BiggestInt

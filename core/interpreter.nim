@@ -31,6 +31,13 @@ var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
+
+proc newSym*(i: In, s: string): MinValue =
+ return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
+
+proc copySym*(i: In, sym: MinValue): MinValue =
+  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename, line: sym.line, column: sym.column, outerSym: "")
+
 proc raiseRuntime*(msg: string, data: MinValue) =
   data.objType = "error"
   raise MinRuntimeError(msg: msg, data: data)
@@ -110,14 +117,14 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
 
 proc formatError(sym: MinValue, message: string): string =
   var name = sym.symVal
-  if sym.parentSym != "":
-    name = sym.parentSym
+  #if sym.parentSym != "":
+  #  name = sym.parentSym
   return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, name, message]
 
 proc formatTrace(sym: MinValue): string =
   var name = sym.symVal
-  if sym.parentSym != "":
-    name = sym.parentSym
+  #if sym.parentSym != "":
+  #  name = sym.parentSym
   if sym.filename == "":
     return "<native> in symbol: $1" % [name]
   else:
@@ -233,7 +240,10 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
-      i.currSym = val
+      if val.outerSym != "":
+        i.currSym = i.copySym(val)
+      else:
+        i.currSym = val
     i.trace.add val
     let symbol = val.symVal
     if symbol == "return":
@@ -409,10 +419,8 @@ proc parse*(i: In, s: string, name="<parse>"): MinValue =
 
 proc read*(i: In, s: string): MinValue =
   return i.load(s, true)
-  
+
 # Inherit file/line/column from current symbol
 proc pushSym*(i: In, s: string) =
-  i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, parentSym: i.currSym.symVal)
+  i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
   
-proc newSym*(i: In, s: string): MinValue =
- return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, parentSym: i.currSym.symVal)
