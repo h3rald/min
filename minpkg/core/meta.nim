@@ -1,7 +1,7 @@
 import 
   strutils
 
-const ymlconfig = "../min.yml".slurp
+const ymlconfig = "../../min.yml".slurp
 
 var pkgName* {.threadvar.}: string
 var pkgVersion* {.threadvar.}: string

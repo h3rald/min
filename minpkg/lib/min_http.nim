@@ -8,11 +8,11 @@ import
 
 when defined(ssl) and defined(amd64):
   when defined(windows): 
-    {.passL: "-static -Lvendor/openssl/windows -lssl -lcrypto -lws2_32".}
+    {.passL: "-static -Lminpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
   elif defined(linux):
-    {.passL: "-static -Lvendor/openssl/linux -lssl -lcrypto".}
+    {.passL: "-static -Lminpkg/vendor/openssl/linux -lssl -lcrypto".}
   elif defined(macosx):
-    {.passL: "-Bstatic -Lvendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+    {.passL: "-Bstatic -Lminpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
 var minUserAgent {.threadvar.} : string
 minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]

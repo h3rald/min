@@ -28,6 +28,7 @@ var ASSETPATH* {.threadvar.}: string
 ASSETPATH = ""
 var COMPILEDMINFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
+var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
@@ -354,7 +355,7 @@ proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, ex
   when not defined(mini): 
     if ASSETPATH != "":
       for f in walkDirRec(ASSETPATH):
-        var file = f.replace("\\", "/")
+        let file = simplifyPath(i.filename, f)
         logging.notice("- Including: $#" % file)
         let ef = file.readFile.encode
         let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
@@ -391,6 +392,8 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   i.scope = i2.scope
 
 proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+  if CACHEDMODULES.hasKey(s):
+    return CACHEDMODULES[s]
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
@@ -413,6 +416,7 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:
       result.scope.symbols[key] = value
+    CACHEDMODULES[s] = result
 
 proc parse*(i: In, s: string, name="<parse>"): MinValue =
   return i.eval(s, name, true)

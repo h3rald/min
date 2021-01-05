@@ -90,7 +90,11 @@ proc lang_module*(i: In) =
       info("[load] File: ", file)
       let f = simplifyPath(i.filename, file)
       if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
-          COMPILEDMINFILES[f](i)
+          var i2 = i.copy(f)
+          i2.withScope():
+            COMPILEDMINFILES[f](i2)
+            i = i2.copy(i.filename)
+          return
       else:
         if not f.fileExists:
          raiseInvalid("File '$1' does not exist." % file)
@@ -107,9 +111,12 @@ proc lang_module*(i: In) =
       if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
           var i2 = i.copy(f)
           i2.withScope():
-            COMPILEDMINFILES[f](i2)
-            var mdl = newDict(i2.scope)
-            mdl.objType = "module"
+            var mdl: MinValue
+            if not CACHEDMODULES.hasKey(f):
+              COMPILEDMINFILES[f](i2)
+              CACHEDMODULES[f] = newDict(i2.scope)
+              CACHEDMODULES[f].objType = "module"
+            mdl = CACHEDMODULES[f]
             for key, value in i2.scope.symbols.pairs:
               mdl.scope.symbols[key] = value
             i.push(mdl)

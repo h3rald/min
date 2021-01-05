@@ -1,51 +1,50 @@
 import 
   streams, 
-  critbits, 
   strutils, 
   sequtils
 
 when defined(mini):
   import
-    core/minilogger
+    minpkg/core/minilogger
 else:
   import 
     json,
     os,
     algorithm,
     logging,
-    packages/niftylogger
+    minpkg/packages/niftylogger
 import 
-  core/baseutils,
-  core/env,
-  core/parser, 
-  core/value, 
-  core/scope,
-  core/interpreter, 
-  core/utils
+  minpkg/core/baseutils,
+  minpkg/core/env,
+  minpkg/core/parser, 
+  minpkg/core/value, 
+  minpkg/core/scope,
+  minpkg/core/interpreter, 
+  minpkg/core/utils
 import 
-  lib/min_lang, 
-  lib/min_stack, 
-  lib/min_seq, 
-  lib/min_dict, 
-  lib/min_num,
-  lib/min_str,
-  lib/min_logic,
-  lib/min_time
+  minpkg/lib/min_lang, 
+  minpkg/lib/min_stack, 
+  minpkg/lib/min_seq, 
+  minpkg/lib/min_dict, 
+  minpkg/lib/min_num,
+  minpkg/lib/min_str,
+  minpkg/lib/min_logic,
+  minpkg/lib/min_time
 
 when not defined(mini):
   import
-    packages/nimline/nimline,
-    lib/min_sys,
-    lib/min_io,
-    lib/min_dstore,
-    lib/min_fs
+    minpkg/packages/nimline/nimline,
+    minpkg/lib/min_sys,
+    minpkg/lib/min_io,
+    minpkg/lib/min_dstore,
+    minpkg/lib/min_fs
 
 when not defined(lite) and not defined(mini):
   import 
-    lib/min_http,
-    lib/min_net,
-    lib/min_crypto,
-    lib/min_math
+    minpkg/lib/min_http,
+    minpkg/lib/min_net,
+    minpkg/lib/min_crypto,
+    minpkg/lib/min_math
 
 export 
   env,
@@ -282,7 +281,8 @@ when isMainModule:
 
   import 
     parseopt,
-    core/meta
+    critbits,
+    minpkg/core/meta
 
   var REPL = false
   var SIMPLEREPL = false

@@ -69,9 +69,21 @@
 
   ((2 4 3 6 8) 'even? all? not) assert
 
+  ((1 2 3 4) 'odd? one? not) assert
+
+  ((1 2 4) 'odd? one?) assert
+
   ((1 2 3 4) 'odd? any?) assert
 
   ((2 4 6 8) 'odd? any? not) assert
+
+  ((1 2 "test") ("test" "a" true 1) intersection (1 "test") ==) assert
+
+  ((1 2 "test") ("test" "a" true 1) union (true 1 "test" "a" 2) ==) assert
+
+  ((1 2 "test") ("test" "a" true 1) difference (2) ==) assert
+
+  ((1 2 "test") ("test" "a" true 1) symmetric-difference (true "a" 2) ==) assert
 
   report
   clear-stack

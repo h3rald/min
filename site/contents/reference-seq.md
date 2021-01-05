@@ -19,6 +19,16 @@ Returns the _n^th_ element of {{q}} (zero-based).#}
 {#op||concat||{{q1}} {{q2}}||{{q3}}||
 Concatenates {{q1}} with {{q2}}. #}
 
+{#op||difference||{{q1}} {{q2}}||{{q3}}||
+> Calculates the difference {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(2)` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) difference #}
+
 {#op||drop||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the remaining elements after the first _n_ values of the input quotation {{q1}}, or an empty quotation if {{i}} is greater than the length of {{q1}}. #}
 
@@ -75,6 +85,16 @@ Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
 {#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
 Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
 
+{#op||intersection||{{q1}} {{q2}}||{{q3}}||
+> Calculates the intersection {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(1 "test")` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) intersection #}
+
 {#op||last||{{q}}||{{any}}||
 Returns the last element of {{q}}. #}
 
@@ -102,6 +122,9 @@ Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{
 > > 
 > >     (1 2 3 4 5 6) 
 > >     (odd?) partition #}
+
+{#op||one?||{{q1}} {{q2}}||{{b}}||
+Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if only one element of {{q1}} satisfies predicate {{q2}}, {{f}} otherwise. #}
 
 {#op||prepend||{{any}} {{q}}||({{any}} {{a0p}})||
 Returns a new quotation containing the contents of {{q}} with {{any}} prepended. #}
@@ -162,6 +185,25 @@ Returns the length of {{q}}.#}
 > > 
 > >     (1 9 5 13 16 3 7) '> sort #}
 
+{#op||symmetric-difference||{{q1}} {{q2}}||{{q3}}||
+> Calculates the symmetric difference {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(true "a" 2)` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) symmetric-difference #}
+
 {#op||take||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}, or {{q1}} itself if {{i}} is greater than the length of {{q1}}. #}
 
+{#op||union||{{q1}} {{q2}}||{{q3}}||
+> Calculates the union {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(true 1 "test" "a" 2)` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) union #}

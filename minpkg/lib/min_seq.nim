@@ -1,6 +1,8 @@
 import 
   tables,
-  algorithm
+  algorithm,
+  sets,
+  sequtils
 import 
   ../core/parser, 
   ../core/value, 
@@ -10,6 +12,30 @@ import
 proc seq_module*(i: In)=
 
   let def = i.define()
+
+  def.symbol("intersection") do (i: In):
+    let vals = i.expect("quot", "quot")
+    let q1 = toHashSet(vals[0].qVal)
+    let q2 = toHashSet(vals[1].qVal)
+    i.push toSeq(items(q2.intersection(q1))).newVal 
+
+  def.symbol("union") do (i: In):
+    let vals = i.expect("quot", "quot")
+    let q1 = toHashSet(vals[0].qVal)
+    let q2 = toHashSet(vals[1].qVal)
+    i.push toSeq(items(q2.union(q1))).newVal 
+
+  def.symbol("difference") do (i: In):
+    let vals = i.expect("quot", "quot")
+    let q1 = toHashSet(vals[0].qVal)
+    let q2 = toHashSet(vals[1].qVal)
+    i.push toSeq(items(q2.difference(q1))).newVal 
+
+  def.symbol("symmetric-difference") do (i: In):
+    let vals = i.expect("quot", "quot")
+    let q1 = toHashSet(vals[0].qVal)
+    let q2 = toHashSet(vals[1].qVal)
+    i.push toSeq(items(q2.symmetricDifference(q1))).newVal 
 
   def.symbol("concat") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -176,6 +202,22 @@ proc seq_module*(i: In)=
       if check.isBool and check.boolVal == true:
         res = true.newVal
         break 
+    i.push res
+
+  def.symbol("one?") do (i: In):
+    let vals = i.expect("quot", "quot")
+    var filter = vals[0]
+    let list = vals[1]
+    var res = false.newVal
+    for e in list.qVal:
+      i.push e
+      i.dequote(filter)
+      var check = i.pop
+      if check.isBool and check.boolVal == true:
+        if res == true.newVal:
+          res = false.newVal
+          break
+        res = true.newVal
     i.push res
 
   def.symbol("all?") do (i: In):

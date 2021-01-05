@@ -5,7 +5,8 @@ proc reverse*[T](xs: openarray[T]): seq[T] =
   for i, x in xs:
     result[result.len-i-1] = x 
 
-proc simplifyPath*(filename: string, file: string): string =
+proc simplifyPath*(filename: string, f: string): string =
+  let file = strutils.replace(f, "\\", "/")
   let fn = strutils.replace(filename, "./", "")
   var dirs: seq[string] = fn.split("/")
   discard dirs.pop
@@ -14,7 +15,6 @@ proc simplifyPath*(filename: string, file: string): string =
     result = file
   else:
     result = pwd&"/"&file
-  
 
 when defined(mini):
   import

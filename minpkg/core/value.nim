@@ -1,5 +1,6 @@
 import
-  parser
+  parser,
+  hashes
 
 proc typeName*(v: MinValue): string =
   case v.kind:
@@ -51,6 +52,9 @@ proc newDict*(parentScope: ref MinScope): MinValue =
 
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
+
+proc hash*(v: MinValue): Hash =
+  return hash($v)
 
 # Get string value from string or quoted symbol
 
