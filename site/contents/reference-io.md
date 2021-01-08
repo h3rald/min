@@ -21,7 +21,7 @@ Prints all elements of {{q}} to STDOUT, in {{i}} columns.#}
 {#op||confirm||{{s}}||{{b}}||
 > Prints {{s}} (prompt) appending `" [yes/no]: "`, reads a line from STDIN and:
 > 
->  * if it matches `/^y(es)$/i`, puts {{t}} on the stack.
+>  * if it matches `/^y(es)?$/i`, puts {{t}} on the stack.
 >  * if it matches `/^no?$/i`, puts {{f}} on the stack. 
 >  * Otherwise, it prints `Invalid answer. Please enter 'yes' or 'no': ` and waits for a new answer. #}
 

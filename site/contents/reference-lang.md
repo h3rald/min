@@ -235,6 +235,9 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > >     {{100 :b} :a} :test *test/a/b
  #}
 
+{#op||line-info||{{none}}||{{d}}||
+Returns a dictionary {{d}} containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.#}
+
 {#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:
 > 

@@ -20,7 +20,7 @@ proc dstore_module*(i: In)=
     i.dset(d, "path", p.newVal)
     d.objType = "datastore"
     i.push d 
- 
+
   def.symbol("dsread") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString
@@ -38,6 +38,10 @@ proc dstore_module*(i: In)=
     let data = i%(i.dget(ds, "data".newVal))
     p.writeFile(data.pretty)
     i.push ds
+ 
+  def.symbol("dswrite!") do (i: In):
+    i.pushSym "dswrite"
+    i.pushSym "pop"
     
   def.symbol("dshas?") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
@@ -103,9 +107,8 @@ proc dstore_module*(i: In)=
       i.dset(data, collection, newDict(i.scope))
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
-    #i.dset(ds, "data", data)
     i.push ds
-    
+
   def.symbol("dsput") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
     var d = vals[0]
@@ -138,5 +141,9 @@ proc dstore_module*(i: In)=
     var cll = i.dget(data, collection)
     i.ddel(cll, id) 
     i.push ds
+    
+  def.symbol("dsdelete!") do (i: In):
+    i.pushSym "dsdelete"
+    i.pushSym "pop"
     
   def.finalize("dstore")
