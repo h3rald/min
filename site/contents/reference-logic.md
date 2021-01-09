@@ -44,49 +44,6 @@ Returns {{t}} if {{b1}} is equal to {{b2}}, {{f}} otherwise.#}
 {#op||boolean?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
 
-{#op||dequote-and||{{a1}} {{a2}}||{{b}}||
-> Short-circuited logical and. It performs the following operations:
-> 
-> 1. Pops {{a1}} and {{a2}} off the stack.
-> 2. Dequotes {{a1}}, if {{f}} is on the stack, it pushes {{f}} on the stack and stops, otherwise it carries on.
-> 3. Dequotes {{a2}}.
-> 4. If {{a2}} is {{t}}, it pushes {{t}} on the stack.
-> 
-> > %note%
-> > Note
-> > 
-> > {{a1}} (and {{a2}}, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program returns {{f}} and never executes the second quotation.
-> > 
-> >      "test" :x (x number?) (x 5 <) dequote-and
-
- #}
-
-{#op||dequote-or||{{a1}} {{a2}}||{{b}}||
-> Short-circuited logical or. It performs the following operations:
-> 
-> 1. Pops {{a1}} and {{a2}} off the stack.
-> 2. Dequotes {{a1}}, if {{t}} is on the stack, it pushes {{t}} on the stack and stops, otherwise it carries on.
-> 3. Dequotes {{a2}}.
-> 4. If {{a2}} is {{f}}, it pushes {{f}} on the stack.
-> 
-> > %note%
-> > Note
-> > 
-> > {{a1}} (and {{a2}}, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program returns {{t}} and never executes the second quotation.
-> > 
-> >      "test" :x (x string?) (x quotation?) dequote-or
- #}
-
 {#op||dictionary?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
 

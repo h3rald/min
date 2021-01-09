@@ -7,3 +7,4 @@
 * Now caching required modules so that their code is executed only once.
 * Added **line-info** symbol returning a dictionary containing the current filename, line and column numbers.
 * Added **dsdelete!**, **dspost!**, **dsput!**, **dswrite!**.
+* **REMOVED** the following symbols because redundant or pointless: **dequote-and**, **dequote-or**, **reverse-expect-dequote** (and **--**), **read**. Also, **apply** no longer works on dictionaries, only quotations.

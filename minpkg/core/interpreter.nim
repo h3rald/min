@@ -189,14 +189,6 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_sy
      v.obj = val.obj
    return v
 
-proc applyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
-   # Assuming val is a dictionary
-   var v = i.copyDict(val)
-   for item in v.dVal.pairs:
-     var value = item.val.val
-     v.scope.symbols[item.key] = MinOperator(kind: minValOp, val: i.callValue(value), sealed: false)
-   return v
-
 proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if op.kind == minProcOp:
     op.prc(i)
@@ -427,4 +419,3 @@ proc read*(i: In, s: string): MinValue =
 # Inherit file/line/column from current symbol
 proc pushSym*(i: In, s: string) =
   i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
-  

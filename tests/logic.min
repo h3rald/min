@@ -149,9 +149,6 @@
   (1 () != true) assert
   (3.3 'test == not) assert
 
-  ("a" :x (x number?) (x 6 <) dequote-and not) assert
-  (1 :x (x number?) (dsagasdgsg) dequote-or) assert
-  
   (
     (
       (true)

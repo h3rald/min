@@ -34,8 +34,6 @@ title: "lang Module"
 
 {#alias||->||dequote#}
 
-{#alias||\-\-||reverse-expect-dequote#}
-
 {#alias||>>||prefix-dequote#}
 
 {#alias||><||infix-dequote#}
@@ -56,10 +54,7 @@ Symbol used to separate input and output calues in operator signatures.#}
 {#alias||=||quote-define#}
 
 {#op||apply||{{q}}|{{d}}||({{a0p}})|{{{a0p}}}||
-> This operator can be used on a quotation or a dictionary:
-> 
-> * If a quotation {{q}} is passed, it returns a new quotation obtained by evaluating each element of {{q}} in a separate stack.
-> * If a dictionary {{d}} (with values and keys) is passed, it returns a new dictionary obtained by evaluating each value in the dict that is a symbol in a separate stack (values that aren't symbols stay as they are).#}
+Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
 {#op||args||{{none}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
@@ -152,7 +147,6 @@ Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect-empty-stack||{{none}}||{{none}}||
 Raises an error if the stack is not empty.#}
-
 
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to an integer value based on the following rules:
@@ -379,26 +373,14 @@ Quotes {{any}} and assigns the quotation to the symbol {{sl}}, creating it if no
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}
 
-{#op||read||{{sl}}||{{q}}||
-Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{q}}. #}
+{#op||raw-args||{{none}}||{{q}}||
+Returns a list of all arguments and (non-parsed) options passed to the current program.#}
 
 {#op||remove-symbol||{{sl}}||{{none}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
 {#op||require||{{sl}}||{{d}}||
 Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
-
-{#op||reverse-expect-dequote||{{q1}}||{{a0p}}||
-> Validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) in reverse order and if all the elements are valid restores them on the stack.
->
-> > %sidebar%
-> > Example
-> 
-> > The following program maps the three values on the stack to three symbols, after validating them:
-> >
-> >     1 3.5 true
-> >     (int float bool) -- :my-int :my-float :my-bool 
- #}
 
 {#op||return||{{none}}||{{none}}||
 If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. 

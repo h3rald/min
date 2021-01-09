@@ -125,17 +125,6 @@ proc lang_module*(i: In) =
           raiseInvalid("File '$1' does not exist." % file)
         i.push i.require(f)
 
-    def.symbol("read") do (i: In):
-      let vals = i.expect("'sym")
-      let s = vals[0]
-      var file = s.getString
-      if not file.endsWith(".min"):
-        file = file & ".min"
-      info("[read] File: ", file)
-      if not file.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
-      i.push i.read file
-
     def.symbol("raw-args") do (i: In):
       var args = newSeq[MinValue](0)
       for par in commandLineParams():
@@ -311,12 +300,9 @@ proc lang_module*(i: In) =
       i.push ed.readLine().newVal
     
   def.symbol("apply") do (i: In):
-    let vals = i.expect("quot|dict")
+    let vals = i.expect("quot")
     var prog = vals[0]
-    if prog.kind == minQuotation:
-      i.apply prog
-    else:
-      i.push i.applyDict(prog)
+    i.apply prog
 
   def.symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
@@ -894,12 +880,6 @@ proc lang_module*(i: In) =
     var q: MinValue
     i.reqQuotationOfSymbols q
     i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal)
-    
-  def.symbol("reverse-expect-dequote") do (i: In):
-    var q: MinValue
-    i.reqQuotationOfSymbols q
-    var req = i.expect(q.qVal.reversed.mapIt(it.getString())).newVal
-    i.dequote(req)
   
   def.symbol("infix-dequote") do (i: In):
     let vals = i.expect("quot")
@@ -1061,9 +1041,6 @@ proc lang_module*(i: In) =
   def.symbol("->") do (i: In):
     i.pushSym("dequote")
     
-  def.symbol("--") do (i: In):
-    i.pushSym("reverse-expect-dequote")
-
   def.symbol("::") do (i: In):
     i.pushSym("operator")
     

@@ -203,10 +203,6 @@
 
   (3.4 "test" 1 (int string num) expect (3.4 "test" 1) ==) assert
 
-  ("2 2 +" "testread.min" fwrite "testread.min" read (2 2 +) ==) assert
-
-  "testread.min" rm
-
   ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) assert
 
   (lite? false ==) assert

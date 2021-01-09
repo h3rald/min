@@ -121,23 +121,6 @@ proc logic_module*(i: In)=
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal and b.boolVal)
-  
-  def.symbol("dequote-and") do (i: In):
-    let vals = i.expect("a", "a")
-    var a = vals[0]
-    var b = vals[1]
-    i.dequote(b)
-    let resB = i.pop
-    if (resB.isBool and resB.boolVal == false):
-      i.push(false.newVal)
-    else:
-      i.dequote(a)
-      let resA = i.pop
-      if not resA.isBool:
-        raiseInvalid("Result of first quotation is not a boolean value")
-      if not resB.isBool:
-        raiseInvalid("Result of second quotation is not a boolean value")
-      i.push newVal(resA.boolVal and resB.boolVal)
       
   def.symbol("expect-all") do (i: In):
     let vals = i.expect("quot")
@@ -162,23 +145,6 @@ proc logic_module*(i: In)=
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal or b.boolVal)
-  
-  def.symbol("dequote-or") do (i: In):
-    let vals = i.expect("a", "a")
-    var a = vals[0]
-    var b = vals[1]
-    i.dequote(b)
-    let resB = i.pop
-    if (resB.isBool and resB.boolVal == true):
-      i.push(true.newVal)
-    else:
-      i.dequote(a)
-      let resA = i.pop
-      if not resA.isBool:
-        raiseInvalid("Result of first quotation is not a boolean value")
-      if resB.isBool:
-        raiseInvalid("Result of second quotation is not a boolean value")
-      i.push newVal(resA.boolVal and resB.boolVal)
       
   def.symbol("expect-any") do (i: In):
     let vals = i.expect("quot")
