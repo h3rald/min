@@ -44,7 +44,7 @@ Returns a quotation {{q2}} containing the remaining elements after the first _n_
 > >     (dup 20 < swap even? and) filter #}
 
 {#op||find||{{q1}} {{q2}}||{{i}}||
-> Returns the index of the first element within {{q1}} that satisfies predicate {{q2}}.
+> Returns the index of the first element within {{q1}} that satisfies predicate {{q2}}, or -1 if no element satisfies it.
 > 
 > > %sidebar%
 > > Example
@@ -118,7 +118,7 @@ Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{
 > > %sidebar%
 > > Example
 > > 
-> > The following program leaves `(1 2 3) (2 4 6)` on the stack:
+> > The following program leaves `(1 3 5) (2 4 6)` on the stack:
 > > 
 > >     (1 2 3 4 5 6) 
 > >     (odd?) partition #}

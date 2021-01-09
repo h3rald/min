@@ -427,7 +427,7 @@ Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 > > 
 > > The following program leaves `{(2) :two ;module}` on the stack:
 > > 
-> >     {} :myscope (2 :due scope @myscope) ->
+> >     {} :myscope (2 :two scope @myscope) ->
  #}
 
 {#op||saved-symbols||{{none}}||({{s0p}})||
@@ -474,13 +474,12 @@ Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 > > 
 > > The following program:
 > > 
-> >     (
-> >       (("a" 1) ("b" 2) ("c" 3)) (
+> >     {1 :a 2 :b 3 :c} (
 > >       (dup /a  succ succ %a)
 > >       (dup /b  succ %b)
 > >     ) tap
 > > 
-> > Returns `(("a" 3) ("b" 3) ("c" 3))`.#}
+> > Returns `{3 :a 3 :b 3 :c}`.#}
 
 {#op||tap!||{{any}} {{q}}||{{any}}||
 > Performs the following operations:
