@@ -6,3 +6,4 @@
 * Refacored code to satisfy nimble package structure.
 * Now caching required modules so that their code is executed only once.
 * Added **line-info** symbol returning a dictionary containing the current filename, line and column numbers.
+* Added **dsdelete!**, **dspost!**, **dsput!**, **dswrite!**.

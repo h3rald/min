@@ -108,6 +108,10 @@ proc dstore_module*(i: In)=
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
     i.push ds
+    
+  def.symbol("dspost!") do (i: In):
+    i.pushSym "dspost"
+    i.pushSym "pop"
 
   def.symbol("dsput") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
@@ -125,6 +129,10 @@ proc dstore_module*(i: In)=
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
     i.push ds
+    
+  def.symbol("dsput!") do (i: In):
+    i.pushSym "dsput"
+    i.pushSym "pop"
     
   def.symbol("dsdelete") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
