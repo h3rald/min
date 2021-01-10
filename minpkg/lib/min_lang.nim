@@ -771,15 +771,12 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot", "quot")
     var d = vals[0]
     var b = vals[1]
-    for e in b.qVal:
-      i.push e
     i.dequote(b)
     var check = i.pop
-    while check.isBool and check.boolVal == true:
+    while check.boolVal == true:
       i.dequote(d)
       i.dequote(b)
       check = i.pop
-    discard i.pop
 
   # Other
   

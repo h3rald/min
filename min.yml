@@ -2,4 +2,4 @@ author: Fabio Cevasco
 description: A tiny concatenative programming language and shell.
 id: 35924740
 name: min
-version: 0.28.0
+version: 0.28.1
