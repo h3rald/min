@@ -23,6 +23,14 @@ proc math_module*(i: In)=
   def.symbol("trunc") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.trunc.newVal
+    
+  def.symbol("abs") do (i: In):
+    let vals = i.expect("num")
+    let n = vals[0]
+    if n.kind == minFloat:
+      i.push n.floatVal.abs.newVal
+    else:
+      i.push n.intVal.abs.newVal
  
   def.symbol("round") do (i: In):
     let vals = i.expect("int", "num")

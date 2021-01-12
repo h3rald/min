@@ -4,6 +4,9 @@ title: "math Module"
 -----
 {@ _defs_.md || 0 @}
 
+{#op||abs||{{n1}}||{{n2}}||
+Calculates tbe absolute value of {{n1}}. #}
+
 {#op||acos||{{n1}}||{{n2}}||
 Calculates the arc cosine of {{n1}} (in radians). #}
 

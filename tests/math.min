@@ -28,6 +28,8 @@
   (pi ceil 4 ==) assert
 
   (pi trunc 3 ==) assert
+  
+  (-2.87 abs 2.87 ==) assert
 
   report
   clear-stack
