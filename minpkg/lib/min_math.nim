@@ -14,11 +14,11 @@ proc math_module*(i: In)=
 
   def.symbol("floor") do (i: In):
     let vals = i.expect("num")
-    i.push vals[0].getFloat.floor.newVal
+    i.push BiggestInt(vals[0].getFloat.floor).newVal
  
   def.symbol("ceil") do (i: In):
     let vals = i.expect("num")
-    i.push vals[0].getFloat.ceil.newVal
+    i.push BiggestInt(vals[0].getFloat.ceil).newVal
  
   def.symbol("trunc") do (i: In):
     let vals = i.expect("num")
