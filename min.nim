@@ -278,7 +278,8 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   minStream(newStringStream(contents), fn, op, main)
 
 when isMainModule:
-
+  when not defined(mini):
+    import terminal
   import 
     parseopt,
     critbits,
@@ -286,13 +287,10 @@ when isMainModule:
 
   var REPL = false
   var SIMPLEREPL = false
-  var INSTALL = false
-  var UNINSTALL = false
   var COMPILE = false
   var MODULEPATH = ""
-  var libfile = ""
   var exeName = "min"
-  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt)\n"
+  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt, default if no file specidied)\n"
   when defined(lite):
     exeName = "litemin"
   when defined(mini):
@@ -350,6 +348,7 @@ when isMainModule:
       var s = newStringStream("")
       i.open(s, "<repl>")
       var line: string
+      echo "$# shell v$#" % [exeName, pkgVersion]
       while true:
         let symbols = toSeq(i.scope.symbols.keys)
         EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
@@ -380,7 +379,7 @@ when isMainModule:
     $exe [options] [filename]
 
   Arguments:
-    filename  A $exe file to interpret or compile (default: STDIN).
+    filename  A $exe file to interpret or compile 
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
@@ -450,14 +449,6 @@ when isMainModule:
           of "interactive-simple", "j":
             if file == "":
               SIMPLEREPL = true
-          of "install":
-            if file == "" and not defined(mini):
-              INSTALL = true
-              libfile = val
-          of "uninstall":
-            if file == "" and not defined(mini):
-              UNINSTALL = true
-              libfile = val
           else:
             discard
       else:
@@ -482,4 +473,11 @@ when isMainModule:
     minSimpleRepl()
     quit(0)
   else:
-    minStream newFileStream(stdin), "stdin", op
+    when defined(mini):
+      minStream newFileStream(stdin), "stdin", op
+    else:
+      if isatty(stdin):
+        minRepl()
+        quit(0)
+      else:
+        minStream newFileStream(stdin), "stdin", op

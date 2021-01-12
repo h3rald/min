@@ -106,9 +106,10 @@ Additionally:
 
 ## Running the min Shell
 
-To start min shell, run [min -i](class:cmd). You will be presented with a prompt displaying the path to the current directory:
+To start the min shell, run [min](class:cmd) with no arguments. You will be presented with a prompt displaying the path to the current directory:
 
 > %min-terminal%
+> min shell v$versio
 > [[/Users/h3rald/test]$](class:prompt)
 
 You can type min code and press [ENTER](class:kbd) to evaluate it immediately:
