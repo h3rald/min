@@ -18,6 +18,9 @@ Retrieves item {{d}} from datastore {{dstore}}. {{d}} is retrieved by specifying
 {#op||dsinit||{{sl}}||{{dstore}}||
 Initializes a bew datastore by creating the {{sl}} JSON file. Puts the datastore instance on the stack. #}
 
+{#op||dsinit!||{{sl}} {{d}}||{{none}}||
+Same as `dsinit`, but doesn't leave anything on the stack. #}
+
 {#op||dspost||{{dstore}} {{sl}} {{d}}||{{dstore}}||
 Adds the dictionary {{d}} to the datastore {{dstore}} inside collection {{sl}}, generating and adding a unique **id** field to {{d}}. If the collection {{sl}} does not exist it is created. Puts the reference to the modified datastore back on tbe stack.
  #}

@@ -21,6 +21,10 @@ proc dstore_module*(i: In)=
     d.objType = "datastore"
     i.push d 
 
+  def.symbol("dsinit!") do (i: In):
+    i.pushSym "dsinit"
+    i.pushSym "pop"
+
   def.symbol("dsread") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString

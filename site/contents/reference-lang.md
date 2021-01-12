@@ -427,6 +427,12 @@ Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 {#op||seal-sigil||{{sl}}||{{none}}||
 Seals the user-defined sigil {{sl}}, so that it cannot be re-defined. #}
 
+{#op||sealed?||{{sl}}||{{b}}||
+Returns {{t}} if the symbol {{sl}} is sealed, {{f}} otherwise.#}
+
+{#op||sealed-sigil?||{{sl}}||{{b}}||
+Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
+
 {#op||set-type||{{d}} {{sl}}||{{d}}||
 Sets the type for dictionary {{d}} to {{sl}}.#}
 
