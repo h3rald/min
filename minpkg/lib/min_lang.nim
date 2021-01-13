@@ -202,7 +202,7 @@ proc lang_module*(i: In) =
       if check:
         if v == "==>":
           o = true
-        elif not validType(v):
+        elif not i.validType(v):
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
           if o:
@@ -258,11 +258,11 @@ proc lang_module*(i: In) =
           if o.contains("|"):
             let types = o.split("|")
             for ut in types:
-              if validate(x, ut):
+              if i.validate(x, ut):
                 r = true
                 break
           else:
-            r = validate(x, o)
+            r = i.validate(x, o)
           if not r:
             discard i.pop
             raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], o, $x])
@@ -493,6 +493,16 @@ proc lang_module*(i: In) =
   def.symbol("type") do (i: In):
     let vals = i.expect("a")
     i.push vals[0].typeName.newVal
+
+  def.symbol("typeclass") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let name = vals[0].getString
+    let symbol = "type:$#" % name
+    let code = vals[1]
+    info "[typeclass] $1 = $2" % [symbol, $code]
+    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed typeclass '$1'" % [name])
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: code, sealed: false, quotation: true)
 
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")

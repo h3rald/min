@@ -212,6 +212,12 @@ proc logic_module*(i: In)=
       i.push true.newVal
     else:
       i.push false.newVal
+
+  def.symbol("stringlike?") do (i: In):
+    if i.pop.isStringLike:
+      i.push true.newVal
+    else:
+      i.push false.newVal
   
   def.symbol("dictionary?") do (i: In):
     if i.pop.isDictionary:

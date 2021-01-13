@@ -176,7 +176,7 @@ when not defined(mini):
 
 # Validators
 
-proc validate*(value: MinValue, t: string): bool =
+proc validate*(i: In, value: MinValue, t: string): bool =
   case t:
     of "bool":
       return value.isBool
@@ -201,16 +201,31 @@ proc validate*(value: MinValue, t: string): bool =
     of "a":
       return true
     else:
-      var split = t.split(":")
-      # Typed dictionaries 
-      if split[0] == "dict":
-        if value.isTypedDictionary(split[1]):
-          return true
-      return false
+      if t.contains(":"):
+        var split = t.split(":")
+        # Typed dictionaries 
+        if split[0] == "dict":
+          if value.isTypedDictionary(split[1]):
+            return true
+        return false
+      elif i.scope.hasSymbol("type:$#" % t):
+        # Custom type class
+        var i2 = i.copy(i.filename)
+        i2.withScope():
+          i2.push value
+          i2.pushSym("type:$#" % t)
+          let res = i2.pop
+          if not res.isBool:
+            raiseInvalid("Type class '$#' does not evaluate to a boolean value ($# was returned instead)" % [t, $res])
+          return res.boolVal
+      else:
+        raiseInvalid("Unknown type class '$#'" % t)
 
-proc validType*(s: string): bool =
+proc validType*(i: In, s: string): bool =
   const ts = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
   if ts.contains(s):
+    return true
+  if i.scope.hasSymbol("type:$#" % s):
     return true
   for tt in s.split("|"):
     if not ts.contains(tt) or tt.startsWith("dict:"):
@@ -236,12 +251,12 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
     if split.len > 1:
       var res = false
       for t in split:
-        if validate(value, t):
+        if i.validate(value, t):
           res = true
           break
       if not res:
         raiseInvalid(message(value.typeName))
-    elif not validate(value, element):
+    elif not i.validate(value, element):
       raiseInvalid(message(value.typeName))
     valid.add element
 

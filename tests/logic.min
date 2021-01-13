@@ -132,6 +132,10 @@
   (false quotation? false ==) assert
   (("a" 2 c) quotation?) assert
 
+  ("a" stringlike?) assert
+  (1 stringlike? false ==) assert
+  ('test stringlike?) assert
+
   ({} 'module type? false ==) assert
   ((1 2 3) 'module type? false ==) assert
   (4 'module type? false ==) assert

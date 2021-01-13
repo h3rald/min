@@ -264,6 +264,22 @@
     nt"float"
   ) assert
 
+  (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+  ("type:natural" defined?) assert
+  (
+    symbol natural-sum
+    (natural :n natural :m ==> natural :result)
+    (n m + @result)
+  ) ::
+  null :err
+  (
+    (3 -3 natural-sum)
+    (@err)
+  ) try
+  pop ;Remove 3 that was left on the stack.
+  (err format-error "expected: natural natural natural-sum" match) assert
+  (2 3 natural-sum 5 ==) assert
+
   report
   ; Tidy up
   clear-stack
