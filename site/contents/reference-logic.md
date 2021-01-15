@@ -76,6 +76,12 @@ Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 {#op||quotation?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
 
+{#op||string?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
+
+{#op||stringlike?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
+
 {#op||type?||{{any}} {{sl}}||{{b}}||
 Returns {{t}} if the data type of {{any}} is the specified type {{sl}}, {{f}} otherwise. #}
 

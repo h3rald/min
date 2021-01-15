@@ -499,6 +499,7 @@ Converts {{any}} into a JSON string.#}
 
 {#op||to-yaml||{{any}}||{{s}}||
 > Converts {{any}} into a YAML string.
+>
 > > %note%
 > > Note
 > > 
@@ -523,6 +524,24 @@ Converts {{any}} into a JSON string.#}
 > >         (format-error puts)
 > >         (0)
 > >       ) try #}
+
+{#op||typeclass||{{q}} {{sl}}||{{none}}||
+> Defines a new type class {{sl}} set to quotation {{q}}, which can be used in operator signatures.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > Consider the following type class which defines a natural number: 
+> >
+> >      (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+> > 
+> > It can now be used in operator signatures, like this:
+> > 
+> >      (
+> >        symbol natural-sum
+> >        (natural :n natural :m ==> natural :result)
+> >        (n m + @result)
+> >      ) :: #}
 
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
