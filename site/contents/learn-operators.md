@@ -21,7 +21,7 @@ It is possible to define symbols using the {#link-operator||lang||define#} symbo
 
      (dup *) "square" define
      
-Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} symbol instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined like this:
+Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} symbol instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined with the {#link-operator||lang||operator#} operator like this:
 
      (
        symbol square
@@ -91,5 +91,58 @@ Consider the following example:
      'from-json 'j define-sigil
      
 This will define a `j` sigil that will parse any string as JSON and convert it to its corresponding min representation.
+
+Sigils can also (and should!) be defined with the {#link-operator||lang||operator#} operator to add additional checks. The sigil definition above could be rewritten like this, for example:
+
+     (
+       sigil j
+       (str :json ==> a :result)
+       (json from-json @result)
+     ) operator
+
+## Operator signatures
+
+When defining symbols and sigils witb the {#link-operator||lang||operator#} operator, you must specify a *signature* that will be used to validate and captuee input and output values:
+
+     (
+       symbol square
+       (num :n ==> num :result)
+       (n dup * @result)
+     ) operator
+
+In this case for example tbe `square` symbol expects a number on the stack, which will be captured to tbe symbol `n` and it will place a number on the stack which needs to be bound in the operator body to the symbol `result`.
+
+In a signature, a type expression must precede the capturing symbol. Such type expression can be:
+
+* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||chapter#} section for more information): `a`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
+* A typed dictionary like `dict:module` or `dict:datastore`.
+* A type class (see below).
+* a union of types/typed dictionaries/type classes, like `str|int`.
+
+> %note%
+> Note
+> 
+> If the operator you are defining doesn't require any input value or doesn't leave ang output value on the srack, simply don't put anything before or after the `==>` separator, respectively. For example, the signature of the {#link-operator||lang||puts!#} operator could be written like `(a ==>)`.
+
+### Type classes
+
+Besides standard base types, you can define your own *type classes* to express custom constraints/validations for operator input and output values.
+
+Consider the following type class definition validating a quotation containing strings:
+
+     ((string?) all?) 'strquot typeclass
+
+The {#link-operator||lang||typeclass#} operator defines a symbol prefixed with `type:` (`type:strquot` in this case) corresponding to a type class that can be used in operator signatures in place of a type, like this:
+
+     (
+       symbol join-strings
+       (strquot :q ==> string :result)
+       ( 
+          q "" (suffix) reduce @result
+       )
+     )
+
+This operator will raise an error if anything other than a quotation of strings is found on the stack.
+
 
 {#link-learn||quotations||Quotations#}
