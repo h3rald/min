@@ -225,10 +225,10 @@ proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[stri
   if generics.hasKey(t):
     let ts = generics[t].split("|")
     for tp in ts:
-      if i.validate(value, tp, generics):
+      if i.basicValidate(value, tp):
         generics[t] = tp # lock type for future uses within same signature
         return true
-      return false
+    return false
   return i.basicValidate(value, t)
     
 proc validate*(i: In, value: MinValue, t: string): bool =
@@ -246,18 +246,25 @@ proc validType*(i: In, s: string): bool =
   return true
 
 proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
-  let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
-  let message = proc(invalid: string): string =
-    result = "Symbol: $1 - Incorrect values found on the stack:\n" % sym
+  let message = proc(invalid: string, elements: varargs[string], generics: CritBitTree[string]): string =
+    var pelements = newSeq[string](0)
+    for e in elements.reverse:
+      if generics.hasKey(e):
+        pelements.add(generics[e])
+      else:
+        pelements.add e
+    let stack = pelements.reverse.join(" ")
+    result = "Incorrect values found on the stack:\n"
     result &= "- expected: " & stack & " $1\n" % sym
     var other = ""
     if valid.len > 0:
       other = valid.reverse.join(" ") & " "
     result &= "- got:      " & invalid & " " & other & sym
-  for element in elements:
+  for el in elements:
+    var element = el
     let value = i.pop
     result.add value
     var split = element.split("|")
@@ -268,10 +275,13 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
           res = true
           break
       if not res:
-        raiseInvalid(message(value.typeName))
+        raiseInvalid(message(value.typeName, elements, generics))
     elif not i.validate(value, element, generics):
-      raiseInvalid(message(value.typeName))
-    valid.add element
+      raiseInvalid(message(value.typeName, elements, generics))
+    if generics.hasKey(el):
+      valid.add(generics[el])
+    else:
+      valid.add element
     
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   let stack = elements.reverse.join(" ")
@@ -279,7 +289,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
   let message = proc(invalid: string): string =
-    result = "Symbol: $1 - Incorrect values found on the stack:\n" % sym
+    result = "Incorrect values found on the stack:\n"
     result &= "- expected: " & stack & " $1\n" % sym
     var other = ""
     if valid.len > 0:

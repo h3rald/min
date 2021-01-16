@@ -192,6 +192,7 @@ proc lang_module*(i: In) =
     var outExpects= newSeq[string](0)
     var outVars = newSeq[string](0)
     var generics: CritBitTree[string]
+    var origGenerics: CritBitTree[string]
     var o= false
     for vv in sv.qVal:
       if not vv.isSymbol and not vv.isQuotation:
@@ -234,6 +235,7 @@ proc lang_module*(i: In) =
       c.inc()
     if not o:
       raiseInvalid("No output specified in signature")
+    origGenerics = deepCopy(generics)
     # Process body
     var bv = q.qVal[3]
     if not bv.isQuotation:
@@ -241,7 +243,12 @@ proc lang_module*(i: In) =
     inExpects.reverse
     inVars.reverse
     var p: MinOperatorProc = proc (i: In) =
-      var inVals = i.expect(inExpects, generics)
+      var inVals: seq[MinValue]
+      try: 
+        inVals = i.expect(inExpects, generics)
+      except:
+        generics = origGenerics
+        raise
       i.withScope():
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
@@ -282,7 +289,9 @@ proc lang_module*(i: In) =
             var tp = t
             if generics.hasKey(o):
               tp = generics[o]
-            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
+              generics = origGenerics
+            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x]) 
+      generics = origGenerics
     # Define symbol/sigil
     if t == "symbol":
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
