@@ -191,18 +191,32 @@ proc lang_module*(i: In) =
     var inVars = newSeq[string](0)
     var outExpects= newSeq[string](0)
     var outVars = newSeq[string](0)
+    var generics: CritBitTree[string]
     var o= false
     for vv in sv.qVal:
-      if not vv.isSymbol:
-        raiseInvalid("Signature must be a quotation id symbols")
-      let v = vv.symVal
+      if not vv.isSymbol and not vv.isQuotation:
+        raiseInvalid("Signature must be a quotation of symbols/quotations")
+      var v: string
       var check = c mod 2 == 0
       if o:
         check = c mod 2 != 0
+      if vv.isQuotation:
+        if vv.qVal.len != 2 or not vv.qVal[0].isSymbol or not vv.qVal[1].isSymbol:
+          raiseInvalid("Generic quotation must contain exactly two symbols")
+        let t = vv.qVal[0].getString
+        let g = vv.qVal[1].getString
+        if not i.validType(t):
+          raiseInvalid("Invalid type '$#' in generic in signature at position $#" % [$t, $(c+1)])
+        if g[0] != ':':
+          raiseInvalid("No mapping symbol specified in generic in signature at position $#" % $(c+1))
+        v = g[1..g.len-1]
+        generics[v] = t
+      else:
+        v = vv.symVal
       if check:
         if v == "==>":
           o = true
-        elif not i.validType(v):
+        elif not i.validType(v) and not generics.hasKey(v):
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
           if o:
@@ -227,7 +241,7 @@ proc lang_module*(i: In) =
     inExpects.reverse
     inVars.reverse
     var p: MinOperatorProc = proc (i: In) =
-      var inVals = i.expect(inExpects)
+      var inVals = i.expect(inExpects, generics)
       i.withScope():
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
@@ -258,14 +272,17 @@ proc lang_module*(i: In) =
           if o.contains("|"):
             let types = o.split("|")
             for ut in types:
-              if i.validate(x, ut):
+              if i.validate(x, ut, generics):
                 r = true
                 break
           else:
-            r = i.validate(x, o)
+            r = i.validate(x, o, generics)
           if not r:
             discard i.pop
-            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], o, $x])
+            var tp = t
+            if generics.hasKey(o):
+              tp = generics[o]
+            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
     # Define symbol/sigil
     if t == "symbol":
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:

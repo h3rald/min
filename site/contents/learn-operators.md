@@ -114,7 +114,7 @@ In this case for example tbe `square` symbol expects a number on the stack, whic
 
 In a signature, a type expression must precede the capturing symbol. Such type expression can be:
 
-* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||chapter#} section for more information): `a`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
+* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||chapter#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
 * A typed dictionary like `dict:module` or `dict:datastore`.
 * A type class (see below).
 * a union of types/typed dictionaries/type classes, like `str|int`.

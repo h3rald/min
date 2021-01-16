@@ -176,7 +176,7 @@ when not defined(mini):
 
 # Validators
 
-proc validate*(i: In, value: MinValue, t: string): bool =
+proc basicValidate*(i: In, value: MinValue, t: string): bool =
   case t:
     of "bool":
       return value.isBool
@@ -219,8 +219,21 @@ proc validate*(i: In, value: MinValue, t: string): bool =
             raiseInvalid("Type class '$#' does not evaluate to a boolean value ($# was returned instead)" % [t, $res])
           return res.boolVal
       else:
-        raiseInvalid("Unknown type class '$#'" % t)
+        raiseInvalid("Unknown type '$#'" % t)
 
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool =
+  if generics.hasKey(t):
+    let ts = generics[t].split("|")
+    for tp in ts:
+      if i.validate(value, tp, generics):
+        generics[t] = tp # lock type for future uses within same signature
+        return true
+      return false
+  return i.basicValidate(value, t)
+    
+proc validate*(i: In, value: MinValue, t: string): bool =
+  return i.basicValidate(value, t)
+  
 proc validType*(i: In, s: string): bool =
   const ts = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
   if ts.contains(s):
@@ -232,6 +245,34 @@ proc validType*(i: In, s: string): bool =
       return false
   return true
 
+proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
+  let stack = elements.reverse.join(" ")
+  let sym = i.currSym.getString
+  var valid = newSeq[string](0)
+  result = newSeq[MinValue](0)
+  let message = proc(invalid: string): string =
+    result = "Symbol: $1 - Incorrect values found on the stack:\n" % sym
+    result &= "- expected: " & stack & " $1\n" % sym
+    var other = ""
+    if valid.len > 0:
+      other = valid.reverse.join(" ") & " "
+    result &= "- got:      " & invalid & " " & other & sym
+  for element in elements:
+    let value = i.pop
+    result.add value
+    var split = element.split("|")
+    if split.len > 1:
+      var res = false
+      for t in split:
+        if i.validate(value, t, generics):
+          res = true
+          break
+      if not res:
+        raiseInvalid(message(value.typeName))
+    elif not i.validate(value, element, generics):
+      raiseInvalid(message(value.typeName))
+    valid.add element
+    
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString

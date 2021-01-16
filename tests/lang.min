@@ -279,6 +279,24 @@
   pop ;Remove 3 that was left on the stack.
   (err format-error "expected: natural natural natural-sum" match) assert
   (2 3 natural-sum 5 ==) assert
+  
+  (
+    symbol add
+    ((string|num|quot :t) :a t :b ==> t :result)
+    (
+     (a type "string" ==)
+       (a b suffix @result return)
+     when
+     (a type "num" ==)
+       (a b + @result return)
+     when
+     (a type "quot" ==)
+       (a b concat #result return)
+     when
+    )
+  ) ::
+  ("a" "b" add "ab" ==) assert
+  ((1 2 3) (4 5) add (1 2 3 4 5) ==) assert
 
   report
   ; Tidy up
