@@ -114,7 +114,7 @@ In this case for example tbe `square` symbol expects a number on the stack, whic
 
 In a signature, a type expression must precede the capturing symbol. Such type expression can be:
 
-* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||chapter#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
+* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||reference||reference#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
 * A typed dictionary like `dict:module` or `dict:datastore`.
 * A type class (see below).
 * a union of types/typed dictionaries/type classes, like `str|int`.
@@ -153,7 +153,7 @@ This operator will raise an error if anything other than a quotation of strings 
 
 {{m}} supports generics in operator signatures. in other words, you can define a custom type alias on-the-fly directly in an operator signature, like this:
 
-````
+```
 (
   symbol add
   ((string|num|quot :t) :a t :b ==> t :result)
@@ -179,7 +179,7 @@ Note that the value of `t` is evaluated to the type of the first value that is p
      
      "hello, " "world" ;outputs "hello, world"
 
-while tbe fullowing will raise an error, because the value of `t` from `num` to `quot` within tbe same operator use:
+while tbe fullowing will raise an error, because the value of `t` from `num` to `quot` within the same operator use:
 
      12 "test" add ;raises an error
      
