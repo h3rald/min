@@ -5,3 +5,5 @@
 * Now executing min shell if no file is specified (unless input is piped in), without the need of specifying **-i**.
 * Implemented the possibility to define type classes using the **typeclass** symbol.
 * Added **stringlike?** symbol.
+* Implemented support for generics in operator signatures
+* Now listing what items are polluting the stack.

@@ -32,6 +32,11 @@ var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
+proc diff*(a, b: seq[MinValue]): seq[MinValue] =
+  result = newSeq[MinValue](0)
+  for it in b:
+    if not a.contains it:
+      result.add it
 
 proc newSym*(i: In, s: string): MinValue =
  return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
@@ -402,8 +407,9 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
     i2.open(newStringStream(contents), s)
     discard i2.parser.getToken() 
     discard i2.interpret(parseOnly)
-    if snapshot != i2.stack:
-      raiseInvalid("Module '$#' is polluting the stack" % s)
+    let d = snapshot.diff(i2.stack)
+    if d.len > 0:
+      raiseInvalid("Module '$#' is polluting the stack -- $#" % [s, $d.newVal])
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:

@@ -41,7 +41,7 @@ proc finalize*(scope: ref MinScope, name: string = "") =
     i.evaluating = false
   if name != "":
     scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
-
+    
 # Dictionary Methods
 
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue =

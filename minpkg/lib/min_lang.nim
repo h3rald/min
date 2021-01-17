@@ -266,8 +266,9 @@ proc lang_module*(i: In) =
           snapshot = deepCopy(i.stack)
           i.dequote bv
           endSnapshot = i.stack
-          if endSnapshot != snapshot:
-            raiseInvalid("Operator '$#' is polluting the stack" % n)
+          let d= snapshot.diff(endSnapshot)
+          if d.len > 0 :
+            raiseInvalid("Operator '$#' is polluting the stack -- $#" % [n, $d.newVal])
         except MinReturnException:
           discard
         # Validate output
