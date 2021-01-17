@@ -144,5 +144,49 @@ The {#link-operator||lang||typeclass#} operator defines a symbol prefixed with `
 
 This operator will raise an error if anything other than a quotation of strings is found on the stack.
 
+> %tip%
+> Tip
+> 
+> `type:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
+
+### Generics
+
+{{m}} supports generics in operator signatures. in other words, you can define a custom type alias on-the-fly directly in an operator signature, like this:
+
+````
+(
+  symbol add
+  ((string|num|quot :t) :a t :b ==> t :result)
+  (
+   (a type "string" ==)
+     (a b suffix @result return)
+   when
+   (a type "num" ==)
+     (a b + @result return)
+   when
+   (a type "quot" ==)
+     (a b concat #result return)
+   when
+  )
+) ::
+```
+
+In this case, `t` is set to the type union `stribg|num|quot`, and the `add` method above can be use too sum two numbers or join two strings or quotations.
+
+Note that the value of `t` is evaluated to the type of the first value that is processed. In other words, the following programs will work as expected:
+
+     3 5 add ;outputs 8
+     
+     "hello, " "world" ;outputs "hello, world"
+
+while tbe fullowing will raise an error, because the value of `t` from `num` to `quot` within tbe same operator use:
+
+     12 "test" add ;raises an error
+     
+> %sidebar%
+> Generics vs type unions
+>
+> Generics allow to specify a type as a type union, but the type will remain the same one throughout the same operator call. 
+> By contrast, using the same type union several times within the same signature allows different types to be used in the same call, and that is probably something you dont want!
 
 {#link-learn||quotations||Quotations#}
