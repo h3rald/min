@@ -241,7 +241,7 @@ proc validType*(i: In, s: string): bool =
   if i.scope.hasSymbol("type:$#" % s):
     return true
   for tt in s.split("|"):
-    if not ts.contains(tt) or tt.startsWith("dict:"):
+    if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("type:$#" % tt):
       return false
   return true
 
