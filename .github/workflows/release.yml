@@ -75,3 +75,43 @@ jobs:
         with:
           name: min-${{runner.os}}.tar.gz
           path: min-${{runner.os}}.tar.gz
+          
+  upload:
+    name: "Upload"
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    needs: [package]
+    steps:
+      - name: "Cancel similar actions in progress"
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./assets
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: ./assets
