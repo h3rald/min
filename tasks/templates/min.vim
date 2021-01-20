@@ -20,6 +20,7 @@ syntax match            minBinding            ;@;
 
 syntax keyword          minCommentTodo        TODO FIXME XXX TBD contained
 syntax match            minComment            /;.*$$/ contains=minCommentTodo
+syntax region           minComment            start=;#|; end=;|#; contains=minCommentTodo
 
 syntax match            minNumber             ;[-+]\=\d\+\(\.\d*\)\=;
 syntax keyword          minBoolean            true false

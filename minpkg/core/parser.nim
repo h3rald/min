@@ -5,6 +5,7 @@ import
   sequtils,
   streams, 
   critbits,
+  json,
   baseutils
 
 import unicode except strip
@@ -61,6 +62,8 @@ type
     stateExpectValue
   MinParser* = object of BaseLexer
     a*: string
+    doc*: bool
+    currSym*: MinValue
     token*: MinTokenKind
     state*: seq[MinParserState]
     kind*: MinEventKind
@@ -72,6 +75,7 @@ type
     column*: int
     filename*: string
     outerSym*: string
+    docComment*: string
     case kind*: MinKind
       of minNull: discard
       of minInt: intVal*: BiggestInt
@@ -99,6 +103,7 @@ type
     minValOp
   MinOperator* = object
     sealed*: bool
+    doc*: JsonNode
     case kind*: MinOperatorKind
     of minProcOp:
       prc*: MinOperatorProc
@@ -346,6 +351,15 @@ proc parseSymbol(my: var MinParser): MinTokenKind =
           inc(pos)
   my.bufpos = pos
 
+proc addDoc(my: var MinParser, docComment: string, reset = true) =
+  if my.doc and not my.currSym.isNil and my.currSym.kind == minSymbol:
+    if reset:
+      my.doc = false
+    if my.currSym.docComment.len == 0 or my.currSym.docComment.len > 0 and my.currSym.docComment[my.currSym.docComment.len-1] == '\n':
+      my.currSym.docComment &= docComment.strip(true, false)
+    else:
+      my.currSym.docComment &= docComment
+
 proc skip(my: var MinParser) = 
   var pos = my.bufpos
   var buf = my.buf
@@ -353,6 +367,8 @@ proc skip(my: var MinParser) =
     case buf[pos]
     of ';':
       # skip line comment:
+      if  buf[pos+1] == ';':
+        my.doc = true 
       inc(pos, 2)
       while true:
         case buf[pos] 
@@ -361,33 +377,22 @@ proc skip(my: var MinParser) =
         of '\c': 
           pos = lexbase.handleCR(my, pos)
           buf = my.buf
+          my.addDoc "\n"
           break
         of '\L': 
           pos = lexbase.handleLF(my, pos)
           buf = my.buf
+          my.addDoc "\n"
           break
         else:
+          my.addDoc $my.buf[pos], false
           inc(pos)
-    of '/': 
-      if buf[pos+1] == '/': 
-        # skip line comment:
-        inc(pos, 2)
-        while true:
-          case buf[pos] 
-          of '\0': 
-            break
-          of '\c': 
-            pos = lexbase.handleCR(my, pos)
-            buf = my.buf
-            break
-          of '\L': 
-            pos = lexbase.handleLF(my, pos)
-            buf = my.buf
-            break
-          else:
-            inc(pos)
-      elif buf[pos+1] == '*':
+    of '#': 
+      if buf[pos+1] == '|':
         # skip long comment:
+        if buf[pos+2] == '|':
+          inc(pos)
+          my.doc = true
         inc(pos, 2)
         while true:
           case buf[pos] 
@@ -396,16 +401,22 @@ proc skip(my: var MinParser) =
             break
           of '\c': 
             pos = lexbase.handleCR(my, pos)
+            my.addDoc "\n", false
             buf = my.buf
           of '\L': 
             pos = lexbase.handleLF(my, pos)
+            my.addDoc "\n", false
             buf = my.buf
-          of '*':
+          of '|':
             inc(pos)
-            if buf[pos] == '/': 
+            if buf[pos] == '|':
+              inc(pos)
+            if buf[pos] == '#': 
               inc(pos)
               break
+            my.addDoc $buf[pos], false
           else:
+            my.addDoc $my.buf[pos], false
             inc(pos)
       else: 
         break
@@ -680,6 +691,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
     p.a = ""
+    p.currSym = result
     discard getToken(p)
   else:
      let err = "Undefined or invalid value: "&p.a

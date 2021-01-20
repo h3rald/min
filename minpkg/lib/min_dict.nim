@@ -72,9 +72,6 @@ proc dict_module*(i: In)=
     let vals = i.expect("dict")
     i.push vals[0].objType.newVal
 
-  def.sigil("?") do (i: In):
-    i.pushSym("dhas?")
-
   def.sigil("/") do (i: In):
     i.pushSym("dget")
 

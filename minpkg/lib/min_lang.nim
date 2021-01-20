@@ -191,9 +191,10 @@ proc lang_module*(i: In) =
     var inVars = newSeq[string](0)
     var outExpects= newSeq[string](0)
     var outVars = newSeq[string](0)
+    var docSig = newSeq[string](0)
     var generics: CritBitTree[string]
     var origGenerics: CritBitTree[string]
-    var o= false
+    var o = false
     for vv in sv.qVal:
       if not vv.isSymbol and not vv.isQuotation:
         raiseInvalid("Signature must be a quotation of symbols/quotations")
@@ -217,9 +218,11 @@ proc lang_module*(i: In) =
       if check:
         if v == "==>":
           o = true
+          docSig.add "==>"
         elif not i.validType(v) and not generics.hasKey(v):
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
+          docSig.add $vv
           if o:
             outExpects.add v
           else:
@@ -294,14 +297,19 @@ proc lang_module*(i: In) =
             raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x]) 
       generics = origGenerics
     # Define symbol/sigil
+    var doc = newJObject()
+    doc["operator"] = %n
+    doc["kind"] = %t
+    doc["signature"] = %docSig.join(" ")
+    doc["description"] = %i.currSym.docComment.strip 
     if t == "symbol":
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
-      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false)
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)
     else:
       if i.scope.sigils.hasKey(n) and i.scope.sigils[n].sealed:
         raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
-      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true)
+      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true, doc: doc)
 
   def.symbol("expect-empty-stack") do (i: In):
     let l = i.stack.len
@@ -530,6 +538,62 @@ proc lang_module*(i: In) =
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed typeclass '$1'" % [name])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: code, sealed: false, quotation: true)
+
+  def.symbol("symbol-help") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0].getString
+    if i.scope.hasSymbol(s):
+      let sym = i.scope.getSymbol(s)
+      if not sym.doc.isNil and sym.doc.kind == JObject:
+        var doc = i.fromJson(sym.doc)
+        doc.objType = "help"
+        i.push doc
+        return
+    i.push nil.newVal
+
+  def.symbol("sigil-help") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0].getString
+    if i.scope.hasSigil(s):
+      let sym = i.scope.getSigil(s)
+      if not sym.doc.isNil and sym.doc.kind == JObject:
+        i.push i.fromJson(sym.doc)
+        return
+    i.push nil.newVal
+
+  def.symbol("help") do (i: In):
+    if i.stack.len == 0 or not i.stack[i.stack.len-1].isStringLike:
+      warn "Specify a quoted symbol or string to show its help documentation, e.g. 'puts help"
+      return
+    let s = i.pop.getString
+    var found = false
+    var foundDoc = false
+    let displayDoc = proc (j: JsonNode) =
+      echo "=== $# [$#]" % [j["operator"].getStr, j["kind"].getStr]
+      echo j["signature"].getStr
+      if j.hasKey("description"):
+        let desc = j["description"].getStr
+        if desc.len != 0:
+          let lines = desc.split("\n")
+          echo ""
+          for l in lines:
+            echo "  " & l
+    if i.scope.hasSymbol(s):
+      found = true
+      let sym = i.scope.getSymbol(s)
+      if not sym.doc.isNil and sym.doc.kind == JObject:
+        foundDoc = true
+        displayDoc(sym.doc)
+    if i.scope.hasSigil(s):
+      found = true
+      let sym = i.scope.getSigil(s)
+      if not sym.doc.isNil and sym.doc.kind == JObject:
+        foundDoc = true
+        displayDoc(sym.doc)
+    if not found:
+      warn "Undefined symbol or sigil: $#" % s
+    elif not foundDoc:
+      warn "No documentation found for symbol or sigil: $#" % s
 
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
@@ -1033,6 +1097,9 @@ proc lang_module*(i: In) =
   def.sigil("~") do (i: In):
     i.pushSym("delete")
 
+  def.sigil("?") do (i: In):
+    i.pushSym("help")
+
   def.sigil("@") do (i: In):
     i.pushSym("bind")
 
@@ -1070,6 +1137,9 @@ proc lang_module*(i: In) =
 
   def.symbol(":") do (i: In):
     i.pushSym("define")
+  
+  def.symbol("?") do (i: In):
+    i.pushSym("help")
 
   def.symbol("@") do (i: In):
     i.pushSym("bind")

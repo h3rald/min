@@ -42,7 +42,7 @@ proc newSym*(i: In, s: string): MinValue =
  return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
 
 proc copySym*(i: In, sym: MinValue): MinValue =
-  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename, line: sym.line, column: sym.column, outerSym: "")
+  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename, line: sym.line, column: sym.column, outerSym: "", docComment: sym.docComment)
 
 proc raiseRuntime*(msg: string, data: MinValue) =
   data.objType = "error"
@@ -424,4 +424,11 @@ proc read*(i: In, s: string): MinValue =
 
 # Inherit file/line/column from current symbol
 proc pushSym*(i: In, s: string) =
-  i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
+  i.push MinValue(
+    kind: minSymbol, 
+    symVal: s, 
+    filename: i.currSym.filename, 
+    line: i.currSym.line, 
+    column: i.currSym.column, 
+    outerSym: i.currSym.symVal, 
+    docComment: i.currSym.docComment)
