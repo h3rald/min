@@ -12,6 +12,8 @@ title: "lang Module"
 
 {#alias||:||define#}
 
+{#alias||::||operator#}
+
 {#sig||~||delete#}
 
 {#sig||+||module#}
@@ -19,6 +21,8 @@ title: "lang Module"
 {#sig||^||call#}
 
 {#alias||^||call#}
+
+{#sig||*||invoke#}
 
 {#sig||@||bind#}
 
@@ -36,6 +40,11 @@ title: "lang Module"
 
 {#alias||=>||apply#}
 
+{#op||==>||{{none}}||{{none}}||
+Symbol used to separate input and output calues in operator signatures.#}
+
+{#alias||=-=||expect-empty-stack#}
+
 {#sig||#||quote-bind#}
 
 {#alias||#||quote-bind#}
@@ -45,21 +54,19 @@ title: "lang Module"
 {#alias||=||quote-define#}
 
 {#op||apply||{{q}}|{{d}}||({{a0p}})|{{{a0p}}}||
-> This operator can be used on a quotation or a dictionary:
-> 
-> * If a quotation {{q}} is passed, it returns a new quotation obtained by evaluating each element of {{q}} in a separate stack.
-> * If a dictionary {{d}} (with values and keys) is passed, it returns a new dictionary obtained by evaluating each value in the dict that is a symbol in a separate stack (values that aren't symbols stay as they are).#}
+Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
-{#op||args||{{null}}||{{q}}||
+{#op||args||{{none}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
 
-{#op||bind||{{any}} {{sl}}||{{null}}||
+{#op||bind||{{any}} {{sl}}||{{none}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 
 {#op||bool||{{any}}||{{b}}||
 > Converts {{any}} to a boolean value based on the following rules:
 > 
 >  * If {{any}} is a boolean value, no conversion is performed.
+>  * If {{any}} is {{null}}, it is converted to {{f}}.
 >  * If {{any}} is a numeric value, zero is converted to {{f}}, otherwise it is converted to {{t}}.
 >  * If {{any}} is a quotation or a dictionary, the empty quotation or dictionary is converted to {{f}}, otherwise it is converted to {{t}}.
 >  * If {{any}} is a string, the empty string, and `"false"` are converted to {{f}}, otherwise it is converted to {{t}}.#}
@@ -86,13 +93,13 @@ Calls operator {{sl}} defined in dictionary {{d}}. #}
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
-{#op||compiled?||{{null}}||{{b}}||
+{#op||compiled?||{{none}}||{{b}}||
 Returns {{t}} if the current program has been compiled.#}
 
-{#op||define||{{any}} {{sl}}||{{null}}||
+{#op||define||{{any}} {{sl}}||{{none}}||
 Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
-{#op||define-sigil||{{any}} {{sl}}||{{null}}||
+{#op||define-sigil||{{any}} {{sl}}||{{none}}||
 Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
 {#op||defined?||{{sl}}||{{b}}||
@@ -101,10 +108,10 @@ Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 {#op||defined-sigil?||{{sl}}||{{b}}||
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
-{#op||delete||{{sl}}||{{null}}||
+{#op||delete||{{sl}}||{{none}}||
 Deletes the specified symbol {{sl}}.#}
 
-{#op||delete-sigil||{{sl}}||{{null}}||
+{#op||delete-sigil||{{sl}}||{{none}}||
 Deletes the specified user-defined sigil {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
@@ -115,7 +122,7 @@ Deletes the specified user-defined sigil {{sl}}.#}
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
 
-{#op||exit||{{i}}||{{null}}||
+{#op||exit||{{i}}||{{none}}||
 Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect||{{q1}}||{{q2}}||
@@ -138,12 +145,16 @@ Exits the program or shell with {{i}} as return code. #}
 > > 
 > > `(int string num) expect (3.4 "test" 1) ==`#}
 
+{#op||expect-empty-stack||{{none}}||{{none}}||
+Raises an error if the stack is not empty.#}
+
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to an integer value based on the following rules:
 > 
 >   * If {{any}} is {{t}}, it is converted to `1.0`.
 >   * If {{any}} is {{f}}, it is converted to `0.0`.
->   * If {{any}} is a integer, it is converted to float value.
+>   * If {{any}} is {{null}}, it is converted to `0.0`
+>.  * If {{any}} is a integer, it is converted to float value.
 >   * If {{any}} is a float, no conversion is performed.
 >   * If {{any}} is a string, it is parsed as a float value.#}
 
@@ -171,13 +182,13 @@ Converts a JSON string into {{m}} data.#}
 > > 
 > > At present, only YAML objects containing string values are supported.#}
 
-{#op||gets||{{null}}||{{s}}||
+{#op||gets||{{none}}||{{s}}||
 Reads a line from STDIN and places it on top of the stack as a string.#}
 
 {#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
 If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
 
-{#op||import||{{sl}}||{{null}}||
+{#op||import||{{sl}}||{{none}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
 
 {#op||infix-dequote||{{q}}||{{any}}||
@@ -202,9 +213,24 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > 
 >   * If {{any}} is {{t}}, it is converted to `1`.
 >   * If {{any}} is {{f}}, it is converted to `0`.
+>   * If {{any}} is {{null}}, it is converted to `0`.
 >   * If {{any}} is an integer, no conversion is performed.
 >   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
 >   * If {{any}} is a string, it is parsed as an integer value.#}
+
+{#op||invoke||{{sl}}||{{a0p}}||
+> Assming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `100` on the stack:
+> > 
+> >     {{100 :b} :a} :test *test/a/b
+ #}
+
+{#op||line-info||{{none}}||{{d}}||
+Returns a dictionary {{d}} containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.#}
 
 {#op||linrec||{{q1}} {{q2}} {{q3}} {{q4}}||{{a0p}}||
 > Implements linear recursions as follows:
@@ -222,16 +248,16 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > >    5 (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
-{#op||lite?||{{null}}||{{b}}||
+{#op||lite?||{{none}}||{{b}}||
 Returns {{t}} if min was built in _lite_ mode. #}
 
 {#op||load||{{sl}}||{{a0p}}||
-Parses and interprets the specified {{m}} file, adding [.min](class:ext) if not specified. #}
+Parses and interprets the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified. #}
 
 {#op||load-symbol||{{sl}}||{{a0p}}||
 Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||loglevel||{{sl}}||{{null}}||
+{#op||loglevel||{{sl}}||{{none}}||
 > Sets the current logging level to {{sl}}. {{sl}} must be one of the following strings or quoted symbols:
 > 
 >   * debug
@@ -246,13 +272,54 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > 
 > > The default logging level is _notice_.#}
 
-{#op||loglevel?||{{null}}||{{s}}||
+{#op||loglevel?||{{none}}||{{s}}||
 Returns the current log level (debug, info, notive, warn, error or fatal). #}
 
-{#op||module||{{d}} {{sl}}||{{null}}||
+{#op||module||{{d}} {{sl}}||{{none}}||
 Creates a new module {{sl}} based on dictionary {{d}}. #}
 
-{#op||opts||{{null}}||{{d}}||
+{#op||operator||{{q}}||{{a0p}}||
+> Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
+> 
+> {{q}} is a quotation containing:
+> 
+> * A symbol identifying the type of operator to define (`symbol` or `sigil`).
+> * A symbol identifying the name of the operator.
+> * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
+> * A quotation identifying the body of the operator.
+>
+> The main additional features offered by this way of defining operators are the following:
+>
+> * Both input and output values are checked against a type (like when using the `expect` operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.
+> * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.
+> * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).
+> * It is possible to use the `return` symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program defines a `pow` operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the `return` symbol:
+> >
+> >      (
+> >        symbol pow
+> >        (num :base int :exp ==> num :result)
+> >        ( 
+> >          (base 0 == exp 0 == and)
+> >            (nan @result return)
+> >          when
+> >          (base 1 == exp inf == and)
+> >            (nan @result return)
+> >          when
+> >          (base inf == exp 0 == and)
+> >            (nan @result return)
+> >          when
+> >          exp 1 - :n
+> >          base  (dup) n times (*) n times @result
+> >        )
+> >      ) ::
+ #}
+
+{#op||opts||{{none}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
 {#op||parse||{{s}}||{{q}}||
@@ -269,14 +336,14 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > >     (* 8 4) prefix-dequote
  #}
 
-{#op||prompt||{{null}}||{{s}}||
+{#op||prompt||{{none}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
 >     ("[$1]$$ " (.) => %)
 > 
 > Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.#}
 
-{#op||publish||{{sl}} {{d}}||{{null}}||
+{#op||publish||{{sl}} {{d}}||{{none}}||
 > Publishes symbol {{sl}} to the scope of {{d}}.
 > 
 > > %sidebar%
@@ -288,43 +355,51 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
 
-{#op||puts!||{{any}}||{{null}}||
+{#op||puts!||{{any}}||{{none}}||
 Prints {{any}} and a new line to STDOUT, removing {{any}} from the stack.#}
 
-{#op||quit||{{null}}||{{null}}||
+{#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
 
-{#op||quote-bind||{{any}} {{sl}}||{{null}}||
+{#op||quote-bind||{{any}} {{sl}}||{{none}}||
 Quotes {{any}} and binds the quotation to the existing symbol {{sl}}. #}
 
-{#op||quote-define||{{any}} {{sl}}||{{null}}||
+{#op||quote-define||{{any}} {{sl}}||{{none}}||
 Quotes {{any}} and assigns the quotation to the symbol {{sl}}, creating it if not already defined. #}
 
-{#op||raise||{{e}}||{{null}}||
+{#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}
 
-{#op||read||{{sl}}||{{q}}||
-Reads and parses the specified {{m}} file {{sl}} and returns a quoted program {{q}}. #}
+{#op||raw-args||{{none}}||{{q}}||
+Returns a list of all arguments and (non-parsed) options passed to the current program.#}
 
-{#op||remove-symbol||{{sl}}||{{null}}||
+{#op||remove-symbol||{{sl}}||{{none}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
-{#op||ROOT||{{null}}||{{d}}||
+{#op||require||{{sl}}||{{d}}||
+Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
+
+{#op||return||{{none}}||{{none}}||
+If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. 
+
+If used outside of the body quotation of an operator definition, it raises an exception.#}
+
+{#op||ROOT||{{none}}||{{d}}||
 Returns a module holding a reference to the [ROOT](class:kwd) scope.
 
 > > %tip%
 > > Tip
 > > 
 > > This symbol is very useful in conjunction with the **with** operator.
-#}
+ #}
 
-{#op||save-symbol||{{sl}}||{{null}}||
+{#op||save-symbol||{{sl}}||{{none}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
-{#op||scope||{{null}}||{{d}}||
+{#op||scope||{{none}}||{{d}}||
 > Returns a dictionary {{d}} holding a reference to the current scope.
 >  
 > This can be useful to save a reference to a given execution scope to access later on.
@@ -334,10 +409,10 @@ Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 > > 
 > > The following program leaves `{(2) :two ;module}` on the stack:
 > > 
-> >     {} :myscope (2 :due scope @myscope) ->
+> >     {} :myscope (2 :two scope @myscope) ->
  #}
 
-{#op||saved-symbols||{{null}}||({{s0p}})||
+{#op||saved-symbols||{{none}}||({{s0p}})||
 Returns a quotation containing all symbols saved in the [.min\_symbols](class:file) file. #}
 
 {#op||scope-sigils||{{d}}||({{s0p}})||
@@ -346,16 +421,22 @@ Returns a list of all sigils defined in dictionary {{d}}.#}
 {#op||scope-symbols||{{d}}||({{s0p}})||
 Returns a list of all symbols defined in dictionary {{d}}.#}
 
-{#op||seal||{{sl}}||{{null}}||
+{#op||seal||{{sl}}||{{none}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 
-{#op||seal-sigil||{{sl}}||{{null}}||
+{#op||seal-sigil||{{sl}}||{{none}}||
 Seals the user-defined sigil {{sl}}, so that it cannot be re-defined. #}
+
+{#op||sealed?||{{sl}}||{{b}}||
+Returns {{t}} if the symbol {{sl}} is sealed, {{f}} otherwise.#}
+
+{#op||sealed-sigil?||{{sl}}||{{b}}||
+Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
 
 {#op||set-type||{{d}} {{sl}}||{{d}}||
 Sets the type for dictionary {{d}} to {{sl}}.#}
 
-{#op||sigils||{{null}}||({{s0p}})||
+{#op||sigils||{{none}}||({{s0p}})||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
 
 {#op||source||{{sl}}||{{q}}||
@@ -364,7 +445,7 @@ Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quo
 {#op||string||{{any}}||{{s}}||
 Converts {{any}} to its string representation.#}
 
-{#op||symbols||{{null}}||({{s0p}})||
+{#op||symbols||{{none}}||({{s0p}})||
 Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 
 {#op||tap||{{any}} {{q}}||{{any}}||
@@ -381,13 +462,12 @@ Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
 > > 
 > > The following program:
 > > 
-> >     (
-> >       (("a" 1) ("b" 2) ("c" 3)) (
+> >     {1 :a 2 :b 3 :c} (
 > >       (dup /a  succ succ %a)
 > >       (dup /b  succ %b)
 > >     ) tap
 > > 
-> > Returns `(("a" 3) ("b" 3) ("c" 3))`.#}
+> > Returns `{3 :a 3 :b 3 :c}`.#}
 
 {#op||tap!||{{any}} {{q}}||{{any}}||
 > Performs the following operations:
@@ -419,6 +499,7 @@ Converts {{any}} into a JSON string.#}
 
 {#op||to-yaml||{{any}}||{{s}}||
 > Converts {{any}} into a YAML string.
+>
 > > %note%
 > > Note
 > > 
@@ -444,16 +525,34 @@ Converts {{any}} into a JSON string.#}
 > >         (0)
 > >       ) try #}
 
+{#op||typeclass||{{q}} {{sl}}||{{none}}||
+> Defines a new type class {{sl}} set to quotation {{q}}, which can be used in operator signatures.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > Consider the following type class which defines a natural number: 
+> >
+> >      (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+> > 
+> > It can now be used in operator signatures, like this:
+> > 
+> >      (
+> >        symbol natural-sum
+> >        (natural :n natural :m ==> natural :result)
+> >        (n m + @result)
+> >      ) :: #}
+
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
-{#op||unseal||{{sl}}||{{null}}||
+{#op||unseal||{{sl}}||{{none}}||
 Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
 
-{#op||unseal-sigil||{{sl}}||{{null}}||
+{#op||unseal-sigil||{{sl}}||{{none}}||
 Unseals sigil {{sl}}, so that it can be re-defined (system sigils cannot be unsealed). #}
 
-{#op||version||{{null}}||{{s}}||
+{#op||version||{{none}}||{{s}}||
 Returns the current min version number. #}
 
 {#op||when||{{q1}} {{q2}}||{{a0p}}||
@@ -487,4 +586,4 @@ Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope.
 > >       'http      import
 > >      ) ROOT with
 > >     ) unless
-#}
+ #}

@@ -7,7 +7,7 @@ title: "net Module"
 {#op||accept||{{sock1}} {{sock2}}||{{sock1}}||
 Makes {{sock2}} (server) accept a connection from {{sock1}} (client). Returns the client socket {{sock1}} from which it will be possible to receive data from. #}
 
-{#op||close||{{sock}}||{{null}}||
+{#op||close||{{sock}}||{{none}}||
 Closes a previously-opened socket. #}
 
 {#op||connect||{{sock}} {{s}} {{i}}||{{sock}}||
@@ -85,7 +85,7 @@ Waits to receive {{i}} characters from {{sock}} and returns the resulting data {
 > >     ) while
  #}
 
-{#op||send||{{sock}} {{s}}||{{null}}||
+{#op||send||{{sock}} {{s}}||{{none}}||
 Sends {{s}} to the connected socket {{sock}}. #}
 
 {#op||socket||{{d}}||{{sock}}||
@@ -116,4 +116,3 @@ Sends {{s}} to the connected socket {{sock}}. #}
 >   * **raw**: Raw IP Packets protocol {{no-win}}.
 >   * **icmp**: Internet Control Message Protocol {{no-win}}.
  #}
-

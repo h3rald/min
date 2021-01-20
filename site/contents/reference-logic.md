@@ -44,51 +44,16 @@ Returns {{t}} if {{b1}} is equal to {{b2}}, {{f}} otherwise.#}
 {#op||boolean?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
 
-{#op||dequote-and||{{a1}} {{a2}}||{{b}}||
-> Short-circuited logical and. It performs the following operations:
-> 
-> 1. Pops {{a1}} and {{a2}} off the stack.
-> 2. Dequotes {{a1}}, if {{f}} is on the stack, it pushes {{f}} on the stack and stops, otherwise it carries on.
-> 3. Dequotes {{a2}}.
-> 4. If {{a2}} is {{t}}, it pushes {{t}} on the stack.
-> 
-> > %note%
-> > Note
-> > 
-> > {{a1}} (and {{a2}}, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program returns {{f}} and never executes the second quotation.
-> > 
-> >      "test" :x (x number?) (x 5 <) dequote-and
-
- #}
-
-{#op||dequote-or||{{a1}} {{a2}}||{{b}}||
-> Short-circuited logical or. It performs the following operations:
-> 
-> 1. Pops {{a1}} and {{a2}} off the stack.
-> 2. Dequotes {{a1}}, if {{t}} is on the stack, it pushes {{t}} on the stack and stops, otherwise it carries on.
-> 3. Dequotes {{a2}}.
-> 4. If {{a2}} is {{f}}, it pushes {{f}} on the stack.
-> 
-> > %note%
-> > Note
-> > 
-> > {{a1}} (and {{a2}}, if dequoted) must evaluate to a boolean value, otherwise an exception is raised.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program returns {{t}} and never executes the second quotation.
-> > 
-> >      "test" :x (x string?) (x quotation?) dequote-or
- #}
-
 {#op||dictionary?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
+
+{#op||expect-all||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if they all evaluate to {{t}}, {{f}} otherwise.
+ #}
+ 
+{#op||expect-any||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if any evaluates to {{t}}, {{f}} otherwise.
+ #}
 
 {#op||float?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a float, {{f}} otherwise. #}
@@ -102,11 +67,20 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 {#op||not||{{b1}}||{{b2}}||
 Negates {{b1}}.#}
 
+{#op||null?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is {{null}}, {{f}} otherwise. #}
+
 {#op||number?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 
 {#op||quotation?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
+
+{#op||string?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
+
+{#op||stringlike?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
 
 {#op||type?||{{any}} {{sl}}||{{b}}||
 Returns {{t}} if the data type of {{any}} is the specified type {{sl}}, {{f}} otherwise. #}

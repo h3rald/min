@@ -4,6 +4,9 @@ title: "math Module"
 -----
 {@ _defs_.md || 0 @}
 
+{#op||abs||{{n1}}||{{n2}}||
+Calculates tbe absolute value of {{n1}}. #}
+
 {#op||acos||{{n1}}||{{n2}}||
 Calculates the arc cosine of {{n1}} (in radians). #}
 
@@ -25,7 +28,7 @@ Calculates the hyperbolic cosine of {{n1}} (in radians). #}
 {#op||d2r||{{n1}}||{{n2}}||
 Converts {{n1}} from degrees to radians. #}
 
-{#op||e||{{null}}||{{n}}||
+{#op||e||{{none}}||{{n}}||
 Returns the value of the _e_ constant (Euler's number). #}
 
 {#op||floor||{{n}}||{{i}}||
@@ -40,7 +43,7 @@ Calculates the common logarithm of {{n1}}. #}
 {#op||log2||{{n1}}||{{n2}}||
 Calculates the binary logarithm of {{n1}}. #}
 
-{#op||pi||{{null}}||{{n}}||
+{#op||pi||{{none}}||{{n}}||
 Returns the value of the &pi; constant. #}
 
 {#op||pow||{{n1}} {{n2}}||{{n3}}||
@@ -67,9 +70,8 @@ Calculates the tangent of {{n1}} (in radians). #}
 {#op||tanh||{{n1}}||{{n2}}||
 Calculates the hyperbolic tangent of {{n1}} (in radians). #}
 
-{#op||tau||{{null}}||{{n}}||
+{#op||tau||{{none}}||{{n}}||
 Returns the value of the &tau; constant (2&pi;). #}
 
 {#op||trunc||{{n1}}||{{n2}}||
 Truncates {{n}} to the decimal point. #}
-

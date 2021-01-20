@@ -14,6 +14,8 @@ min includes a small but powerful standard library organized into the following 
 : Defines operators for quotations, like map, filter, reduce, etc.
 {#link-module||dict#}
 : Defines operators for dictionaries, like dget, ddup, dset, etc.
+{#link-module||dstore#}
+: Provides support for simple, persistent, in-memory JSON stores.
 {#link-module||io#}
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
@@ -29,7 +31,7 @@ min includes a small but powerful standard library organized into the following 
 {#link-module||time#}
 : Provides a few basic operators to manage dates, times, and timestamps.
 {#link-module||crypto#}
-: Provides operators to compute hashes (MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
+: Provides operators to compute hashes (MD4, MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
 {#link-module||math#}
 : Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
 {#link-module||net#}
@@ -44,8 +46,10 @@ The following notation is used in the signature of all min operators:
 
 ### Types and Values
 
-{{null}}
+{{none}}
 : No value.
+{{null}}
+: null value
 {{any}}
 : A value of any type.
 {{b}}
@@ -64,6 +68,19 @@ The following notation is used in the signature of all min operators:
 : A quotation (also expressed as parenthesis enclosing other values).
 {{d}}
 : A dictionary value.
+{{url}}
+: An URL dictionary:
+
+      {
+       "http" :scheme
+       "h3rald" :hostname
+       "" :port
+       "" :username
+       "" :password
+       "/min" :path
+       "" :anchor
+       "" :query
+      }
 {{tinfo}}
 : A timeinfo dictionary:
 
@@ -100,6 +117,14 @@ The following notation is used in the signature of all min operators:
        "stream" :type
        "tcp" :protocol
        ;socket
+      }
+{{dstore}}
+: A datastore dictionary that must be created through the {#link-operator||dstore||dsinit#} or {#link-operator||dstore||dsread#} operator:
+
+      {
+       {} :data
+       "path/to/file.json" :path
+       ;datastore
       }
 {{req}}
 : A request dictionary, representing an HTTP request to be performed through the operators exposed by the {#link-module||http#}:

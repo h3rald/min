@@ -7,46 +7,46 @@ when not defined(js):
     critbits
 when defined(mini):
   import
-    core/minilogger
+    minpkg/core/minilogger
 else:
   import 
     json,
     os,
     algorithm,
-    dynlib,
     logging,
-    packages/niftylogger
+    minpkg/packages/niftylogger
 import 
-  core/baseutils,
-  core/env,
-  core/parser, 
-  core/value, 
-  core/scope,
-  core/interpreter, 
-  core/utils
+  minpkg/core/baseutils,
+  minpkg/core/env,
+  minpkg/core/parser, 
+  minpkg/core/value, 
+  minpkg/core/scope,
+  minpkg/core/interpreter, 
+  minpkg/core/utils
 import 
-  lib/min_lang, 
-  lib/min_stack, 
-  lib/min_seq, 
-  lib/min_dict, 
-  lib/min_num,
-  lib/min_str,
-  lib/min_logic,
-  lib/min_time
+  minpkg/lib/min_lang, 
+  minpkg/lib/min_stack, 
+  minpkg/lib/min_seq, 
+  minpkg/lib/min_dict, 
+  minpkg/lib/min_num,
+  minpkg/lib/min_str,
+  minpkg/lib/min_logic,
+  minpkg/lib/min_time
 
 when not defined(mini):
   import
-    packages/nimline/nimline,
-    lib/min_sys,
-    lib/min_io,
-    lib/min_fs
+    minpkg/packages/nimline/nimline,
+    minpkg/lib/min_sys,
+    minpkg/lib/min_io,
+    minpkg/lib/min_dstore,
+    minpkg/lib/min_fs
 
 when not defined(lite) and not defined(mini):
   import 
-    lib/min_http,
-    lib/min_net,
-    lib/min_crypto,
-    lib/min_math
+    minpkg/lib/min_http,
+    minpkg/lib/min_net,
+    minpkg/lib/min_crypto,
+    minpkg/lib/min_math
 
 export 
   env,
@@ -66,7 +66,8 @@ else:
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
-var customPrelude = ""
+var customPrelude {.threadvar.} : string
+customPrelude = ""
 
 when not defined(mini):
   if logging.getHandlers().len == 0:
@@ -84,7 +85,7 @@ when not defined(mini):
     res.sort(system.cmp)
     return res
 
-  proc getCompletions(ed: LineEditor, symbols: seq[string]): seq[string] =
+  proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
     var words = ed.lineText.split(" ")
     var word: string
     if words.len == 0:
@@ -142,28 +143,6 @@ when not defined(mini):
           return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
     return symbols
 
-  type
-    LibProc = proc(i: In) {.nimcall.}
-
-  proc dynLib*(i: In) =
-    discard MINLIBS.existsOrCreateDir
-    for library in walkFiles(MINLIBS & "/*"):
-      var modname = library.splitFile.name
-      var libfile = library.splitFile.name & library.splitFile.ext
-      if modname.len > 3 and modname[0..2] == "lib":
-        modname = modname[3..modname.len-1]
-      let dll = library.loadLib()
-      if dll != nil:
-        let modsym = dll.symAddr(modname)
-        if modsym != nil:
-          let modproc = cast[LibProc](dll.symAddr(modname))
-          i.modproc()
-          logging.info("[$1] Dynamic module loaded successfully: $2" % [libfile, modname])
-        else:
-          logging.warn("[$1] Library does not contain symbol $2" % [libfile, modname])
-      else:
-        logging.warn("Unable to load dynamic library: " & libfile)
-
 
 proc stdLib*(i: In) =
   when not defined(mini):
@@ -185,6 +164,7 @@ proc stdLib*(i: In) =
   when not defined(mini):
     i.sys_module
     i.fs_module
+    i.dstore_module
     i.io_module
   when not defined(lite) and not defined(mini):
     i.crypto_module
@@ -206,8 +186,6 @@ proc stdLib*(i: In) =
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
-  when not defined(mini):
-    i.dynLib()
   i.open(s, i.filename)
   discard i.parser.getToken() 
   try:
@@ -302,27 +280,22 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   minStream(newStringStream(contents), fn, op, main)
 
 when isMainModule:
-
+  when not defined(mini):
+    import terminal
   import 
     parseopt,
-    core/meta
+    critbits,
+    minpkg/core/meta
 
   var REPL = false
   var SIMPLEREPL = false
-  var INSTALL = false
-  var UNINSTALL = false
   var COMPILE = false
   var MODULEPATH = ""
-  var libfile = ""
   var exeName = "min"
-  var installOpt = "\n    -—install:<lib>           Install dynamic library file <lib>\n" 
-  var uninstallOpt = "\n    —-uninstall:<lib>         Uninstall dynamic library file <lib>\n"
-  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt)\n"
+  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt, default if no file specidied)\n"
   when defined(lite):
     exeName = "litemin"
   when defined(mini):
-    installOpt = ""
-    uninstallOpt = ""
     iOpt = ""
     exeName = "minimin"
 
@@ -355,13 +328,11 @@ when isMainModule:
 
   proc minSimpleRepl*(i: var MinInterpreter) =
     i.stdLib()
-    when not defined(mini):
-      i.dynLib()
     var s = newStringStream("")
     i.open(s, "<repl>")
     var line: string
     while true:
-      i.push("prompt".newSym)
+      i.push(i.newSym("prompt"))
       let vals = i.expect("string")
       let v = vals[0] 
       let prompt = v.getString()
@@ -376,16 +347,16 @@ when isMainModule:
 
     proc minRepl*(i: var MinInterpreter) =
       i.stdLib()
-      i.dynLib()
       var s = newStringStream("")
       i.open(s, "<repl>")
       var line: string
+      echo "$# shell v$#" % [exeName, pkgVersion]
       while true:
         let symbols = toSeq(i.scope.symbols.keys)
         EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
           return ed.getCompletions(symbols)
         # evaluate prompt
-        i.push("prompt".newSym)
+        i.push(i.newSym("prompt"))
         let vals = i.expect("string")
         let v = vals[0] 
         let prompt = v.getString()
@@ -404,14 +375,16 @@ when isMainModule:
       
 
   let usage* = """  $exe v$version - a tiny concatenative programming language
-  (c) 2014-2020 Fabio Cevasco
+  (c) 2014-2021 Fabio Cevasco
   
   Usage:
     $exe [options] [filename]
 
   Arguments:
-    filename  A $exe file to interpret or compile (default: STDIN).
-  Options:$installOpt$uninstallOpt
+    filename  A $exe file to interpret or compile 
+  Options:
+    -a, --asset-path          Specify a directory containing the asset files to include in the
+                              compiled executable (if -c is set)
     -c, --compile             Compile the specified file
     -e, --evaluate            Evaluate a $exe program inline
     -h, --help                Print this help$iOpt
@@ -425,8 +398,6 @@ when isMainModule:
     -v, —-version             Print the program version""" % [
       "exe", exeName, 
       "version", pkgVersion, 
-      "installOpt", installOpt, 
-      "uninstallOpt", uninstallOpt, 
       "iOpt", iOpt
   ]
 
@@ -450,6 +421,8 @@ when isMainModule:
             COMPILE = true
           of "module-path", "m":
             MODULEPATH = val
+          of "asset-path", "a":
+            ASSETPATH = val
           of "prelude", "p":
             customPrelude = val
           of "log", "l":
@@ -478,14 +451,6 @@ when isMainModule:
           of "interactive-simple", "j":
             if file == "":
               SIMPLEREPL = true
-          of "install":
-            if file == "" and not defined(mini):
-              INSTALL = true
-              libfile = val
-          of "uninstall":
-            if file == "" and not defined(mini):
-              UNINSTALL = true
-              libfile = val
           else:
             discard
       else:
@@ -499,28 +464,6 @@ when isMainModule:
       for f in walkDirRec(MODULEPATH):
         if f.endsWith(".min"):
           MINMODULES.add f
-    if INSTALL:
-      if not libfile.fileExists:
-        logging.fatal("Dynamic library file not found:" & libfile)
-        quit(4)
-      try:
-        libfile.copyFile(MINLIBS/libfile.extractFilename)
-      except:
-        logging.fatal("Unable to install library file: " & libfile)
-        quit(5)
-      logging.notice("Dynamic linbrary installed successfully: " & libfile.extractFilename)
-      quit(0)
-    elif UNINSTALL:
-      if not (MINLIBS/libfile.extractFilename).fileExists:
-        logging.fatal("Dynamic library file not found:" & libfile)
-        quit(4)
-      try:
-        removeFile(MINLIBS/libfile.extractFilename)
-      except:
-        logging.fatal("Unable to uninstall library file: " & libfile)
-        quit(6)
-      logging.notice("Dynamic linbrary uninstalled successfully: " & libfile.extractFilename)
-      quit(0)
     elif REPL:
       minRepl()
       quit(0)
@@ -532,4 +475,11 @@ when isMainModule:
     minSimpleRepl()
     quit(0)
   else:
-    minStream newFileStream(stdin), "stdin", op
+    when defined(mini):
+      minStream newFileStream(stdin), "stdin", op
+    else:
+      if isatty(stdin):
+        minRepl()
+        quit(0)
+      else:
+        minStream newFileStream(stdin), "stdin", op

@@ -9,9 +9,11 @@
 {{4 => [<sub>4</sub>](class:kwd)}}
 {{e => [dict:error](class:kwd)}}
 {{tinfo => [dict:timeinfo](class:kwd)}}
+{{dstore => [dict:datastore](class:kwd)}}
 {{d => [dict](class:kwd)}}
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
+{{d0p => [dict<sub>\*</sub>](class:kwd)}}
 {{flt => [float](class:kwd)}}
 {{i => [int](class:kwd)}}
 {{i1 => [int<sub>1</sub>](class:kwd)}}
@@ -44,8 +46,10 @@
 {{sl2 => [&apos;sym<sub>2</sub>](class:kwd)}}
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
-{{null => &#x2205;}}
+{{null => [null](class:kwd)}}
+{{none => &#x2205;}}
 {{sock => [dict:socket](class:kwd)}}
+{{url => [url](class:kwd)}}
 {{req => [request](class:kwd)}}
 {{res => [response](class:kwd)}}
 {{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}

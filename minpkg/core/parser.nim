@@ -21,6 +21,7 @@ type
     tkBraceLe,
     tkBraceRi,
     tkSymbol,
+    tkNull,
     tkTrue,
     tkFalse
   MinKind* = enum
@@ -30,6 +31,7 @@ type
     minDictionary,
     minString,
     minSymbol,
+    minNull,
     minBool
   MinEventKind* = enum     ## enumeration of all events that may occur when parsing
     eMinError,             ## an error ocurred during parsing
@@ -69,7 +71,9 @@ type
     line*: int
     column*: int
     filename*: string
+    outerSym*: string
     case kind*: MinKind
+      of minNull: discard
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
       of minDictionary:
@@ -123,16 +127,16 @@ var CVARCOUNT = 0
 
 # Helpers
 
-proc raiseInvalid*(msg: string) {.extern:"min_exported_symbol_$1".}=
+proc raiseInvalid*(msg: string) =
   raise MinInvalidError(msg: msg)
 
-proc raiseUndefined*(msg: string) {.extern:"min_exported_symbol_$1".}=
+proc raiseUndefined*(msg: string) =
   raise MinUndefinedError(msg: msg)
 
-proc raiseOutOfBounds*(msg: string) {.extern:"min_exported_symbol_$1".}=
+proc raiseOutOfBounds*(msg: string) =
   raise MinOutOfBoundsError(msg: msg)
 
-proc raiseEmptyStack*() {.extern:"min_exported_symbol_$1".}=
+proc raiseEmptyStack*() =
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
 proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.inline, extern:"min_exported_symbol_$1".}=
@@ -165,18 +169,19 @@ const
     "{",
     "}",
     "symbol",
+    "null",
     "true",
     "false"
   ]
 
-proc newScope*(parent: ref MinScope, kind = minLangScope): MinScope {.extern:"min_exported_symbol_$1".}=
+proc newScope*(parent: ref MinScope, kind = minLangScope): MinScope =
   result = MinScope(parent: parent, kind: kind)
 
-proc newScopeRef*(parent: ref MinScope, kind = minLangScope): ref MinScope {.extern:"min_exported_symbol_$1".}=
+proc newScopeRef*(parent: ref MinScope, kind = minLangScope): ref MinScope =
   new(result)
   result[] = newScope(parent, kind)
 
-proc open*(my: var MinParser, input: Stream, filename: string) {.extern:"min_exported_symbol_$1".}=
+proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
   my.filename = filename
   my.state = @[stateStart]
@@ -206,16 +211,16 @@ proc getLine*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}=
 proc getFilename*(my: MinParser): string {.inline, extern:"min_exported_symbol_$1".}= 
   result = my.filename
   
-proc errorMsg*(my: MinParser, msg: string): string {.extern:"min_exported_symbol_$1".}= 
+proc errorMsg*(my: MinParser, msg: string): string = 
   assert(my.kind == eMinError)
   result = "$1 [l:$2, c:$3] ERROR - $4" % [
     my.filename, $getLine(my), $getColumn(my), msg]
 
-proc errorMsg*(my: MinParser): string {.extern:"min_exported_symbol_$1_2".}= 
+proc errorMsg*(my: MinParser): string = 
   assert(my.kind == eMinError)
   result = errorMsg(my, errorMessages[my.err])
   
-proc errorMsgExpected*(my: MinParser, e: string): string {.extern:"min_exported_symbol_$1".}= 
+proc errorMsgExpected*(my: MinParser, e: string): string = 
   result = errorMsg(my, e & " expected")
 
 proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1".}=
@@ -416,7 +421,7 @@ proc skip(my: var MinParser) =
       break
   my.bufpos = pos
 
-proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1".}=
+proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
   skip(my) 
   case my.buf[my.bufpos]
@@ -454,6 +459,7 @@ proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1
   else:
     result = parseSymbol(my)
     case my.a 
+    of "null": result = tkNull
     of "true": result = tkTrue
     of "false": result = tkFalse
     else: 
@@ -461,7 +467,7 @@ proc getToken*(my: var MinParser): MinTokenKind {.extern:"min_exported_symbol_$1
   my.token = result
 
 
-proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}= 
+proc next*(my: var MinParser) = 
   var tk = getToken(my)
   var i = my.state.len-1
   case my.state[i]
@@ -539,12 +545,14 @@ proc next*(my: var MinParser) {.extern:"min_exported_symbol_$1".}=
       my.kind = eMinError
       my.err = errExprExpected
 
-proc eat(p: var MinParser, token: MinTokenKind) {.extern:"min_exported_symbol_$1".}= 
+proc eat(p: var MinParser, token: MinTokenKind) = 
   if p.token == token: discard getToken(p)
   else: raiseParsing(p, tokToStr[token])
 
 proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
+    of minNull:
+      return "null"
     of minBool:
       return $a.boolVal
     of minSymbol:
@@ -580,6 +588,8 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
 
 proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
+    of minNull:
+      return "null"
     of minBool:
       return $a.boolVal
     of minSymbol:
@@ -613,8 +623,11 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
       d = d.strip & "}"
       return d
 
-proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_symbol_$1".}=
+proc parseMinValue*(p: var MinParser, i: In): MinValue =
   case p.token
+  of tkNull:
+    result = MinValue(kind: minNull)
+    discard getToken(p)
   of tkTrue:
     result = MinValue(kind: minBool, boolVal: true)
     discard getToken(p)
@@ -669,16 +682,19 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue {.extern:"min_exported_sy
     p.a = ""
     discard getToken(p)
   else:
-    let err = "Undefined or invalid value: "&p.a
-    raiseUndefined(p, err)
+     let err = "Undefined or invalid value: "&p.a
+     raiseUndefined(p, err)
   result.filename = p.filename
   
-proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] {.extern:"min_exported_symbol_$1".}=
+proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =
   var op = indent
   if push:
     op = indent&"i.push "
   result = newSeq[string](0)
   case p.token
+  of tkNull:
+    result = @[op&"MinValue(kind: minNull)"]
+    discard getToken(p)
   of tkTrue:
     result = @[op&"MinValue(kind: minBool, boolVal: true)"]
     discard getToken(p)
@@ -749,7 +765,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
-proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
+proc print*(a: MinValue) =
   when defined(js):
     discard #TODOJS
   else:
@@ -757,39 +773,42 @@ proc print*(a: MinValue) {.extern:"min_exported_symbol_$1".}=
 
 # Predicates
 
-proc isSymbol*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isNull*(s: MinValue): bool =
+  return s.kind == minNull
+
+proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
 
-proc isQuotation*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
+proc isQuotation*(s: MinValue): bool = 
   return s.kind == minQuotation
 
-proc isString*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}= 
+proc isString*(s: MinValue): bool = 
   return s.kind == minString
 
-proc isFloat*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isFloat*(s: MinValue): bool =
   return s.kind == minFloat
 
-proc isInt*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isInt*(s: MinValue): bool =
   return s.kind == minInt
 
-proc isNumber*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isNumber*(s: MinValue): bool =
   return s.kind == minInt or s.kind == minFloat
 
 proc isBool*(s: MinValue): bool =
   return s.kind == minBool
 
-proc isStringLike*(s: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isStringLike*(s: MinValue): bool =
   return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
 
-proc isDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isDictionary*(q: MinValue): bool =
   return q.kind == minDictionary
 
-proc isTypedDictionary*(q: MinValue): bool {.extern:"min_exported_symbol_$1".}=
+proc isTypedDictionary*(q: MinValue): bool =
   if q.isDictionary:
     return q.objType != ""
   return false
 
-proc isTypedDictionary*(q: MinValue, t: string): bool {.extern:"min_exported_symbol_$1_2".}=
+proc isTypedDictionary*(q: MinValue, t: string): bool =
   if q.isTypedDictionary:
     return q.objType == t
   return false
@@ -812,6 +831,8 @@ proc `==`*(a: MinValue, b: MinValue): bool {.inline, extern:"min_exported_symbol
       return a.strVal == b.strVal
     elif a.kind == minBool:
       return a.boolVal == b.boolVal
+    elif a.kind == minNull:
+      return true
     elif a.kind == minQuotation:
       if a.qVal.len == b.qVal.len:
         var c = 0

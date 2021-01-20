@@ -8,11 +8,11 @@ import
 
 when defined(ssl) and defined(amd64):
   when defined(windows): 
-    {.passL: "-static -Lvendor/openssl/windows -lssl -lcrypto -lws2_32".}
+    {.passL: "-static -Lminpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
   elif defined(linux):
-    {.passL: "-static -Lvendor/openssl/linux -lssl -lcrypto".}
+    {.passL: "-static -Lminpkg/vendor/openssl/linux -lssl -lcrypto".}
   elif defined(macosx):
-    {.passL: "-Bstatic -Lvendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+    {.passL: "-Bstatic -Lminpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
 var minUserAgent {.threadvar.} : string
 minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]
@@ -93,7 +93,7 @@ proc http_module*(i: In)=
       raiseInvalid("Port is not an integer.")
     var server = newAsyncHttpServer()
     var i {.threadvar.}: MinInterpreter
-    i = ii
+    i = ii.copy(ii.filename)
     proc handler(req: Request) {.async, gcsafe.} =
       var qreq = newDict(i.scope)
       qreq = i.dset(qreq, "url", newVal($req.url))
@@ -102,8 +102,9 @@ proc http_module*(i: In)=
       qreq = i.dset(qreq, "hostname", newVal($req.hostname))
       qreq = i.dset(qreq, "version", newVal("$1.$2" % [$req.protocol.major, $req.protocol.minor]))
       qreq = i.dset(qreq, "body", newVal($req.body))
-      i.push qreq
-      i.dequote qhandler
+      i.handleErrors do:
+        i.push qreq
+        i.dequote qhandler
       let qres = i.pop
       var body = "".newVal
       var rawHeaders = newDict(i.scope)

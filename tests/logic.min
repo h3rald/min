@@ -132,6 +132,10 @@
   (false quotation? false ==) assert
   (("a" 2 c) quotation?) assert
 
+  ("a" stringlike?) assert
+  (1 stringlike? false ==) assert
+  ('test stringlike?) assert
+
   ({} 'module type? false ==) assert
   ((1 2 3) 'module type? false ==) assert
   (4 'module type? false ==) assert
@@ -149,8 +153,24 @@
   (1 () != true) assert
   (3.3 'test == not) assert
 
-  ("a" :x (x number?) (x 6 <) dequote-and not) assert
-  (1 :x (x number?) (dsagasdgsg) dequote-or) assert
-
+  (
+    (
+      (true)
+      (2 1 >)
+      ("a" "b" ==)
+      ("never printed" puts!)
+    ) &&
+    false ==
+  ) assert
+  
+  (
+    (
+      (false)
+      (2 1 <)
+      ("a" "a" ==)
+      ("never printed" puts!)
+    ) ||
+  ) assert
+  
   report
   clear-stack

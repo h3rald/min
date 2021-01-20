@@ -15,6 +15,7 @@ else:
     os,
     json,
     logging,
+    ../core/baseutils,
     ../packages/niftylogger,
     ../packages/nimline/nimline,
     ../packages/nim-sgregex/sgregex
@@ -89,26 +90,42 @@ proc lang_module*(i: In) =
       if not file.endsWith(".min"):
         file = file & ".min"
       info("[load] File: ", file)
-      if MINCOMPILED:
-        var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
-        if MINCOMPILEDFILES.hasKey(compiledFile):
-          MINCOMPILEDFILES[compiledFile](i)
+      let f = simplifyPath(i.filename, file)
+      if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
+          var i2 = i.copy(f)
+          i2.withScope():
+            COMPILEDMINFILES[f](i2)
+            i = i2.copy(i.filename)
           return
-      file = i.pwd.joinPath(file)
-      if not file.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
-      i.load file
+      else:
+        if not f.fileExists:
+         raiseInvalid("File '$1' does not exist." % file)
+      i.load f
 
-    def.symbol("read") do (i: In):
+    def.symbol("require") do (i: In):
       let vals = i.expect("'sym")
       let s = vals[0]
       var file = s.getString
       if not file.endsWith(".min"):
         file = file & ".min"
-      info("[read] File: ", file)
-      if not file.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
-      i.push i.read file
+      info("[require] File: ", file)
+      let f = simplifyPath(i.filename, file)
+      if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
+          var i2 = i.copy(f)
+          i2.withScope():
+            var mdl: MinValue
+            if not CACHEDMODULES.hasKey(f):
+              COMPILEDMINFILES[f](i2)
+              CACHEDMODULES[f] = newDict(i2.scope)
+              CACHEDMODULES[f].objType = "module"
+            mdl = CACHEDMODULES[f]
+            for key, value in i2.scope.symbols.pairs:
+              mdl.scope.symbols[key] = value
+            i.push(mdl)
+      else:
+        if not f.fileExists:
+          raiseInvalid("File '$1' does not exist." % file)
+        i.push i.require(f)
 
     def.symbol("raw-args") do (i: In):
       var args = newSeq[MinValue](0)
@@ -137,12 +154,161 @@ proc lang_module*(i: In) =
       let origscope = i.scope 
       i.scope = scope
       i.evaluating = true
-      i.push sym.newSym
+      i.pushSym sym
       i.evaluating = false
       i.scope = origscope
     qscope.scope.symbols[sym] = MinOperator(kind: minProcOp, prc: op)
 
   ### End of symbols not present in minimin
+  
+  def.symbol("operator") do (i: In):
+    let vals = i.expect("quot");
+    let q = vals[0]
+    if q.qVal.len != 4:
+      raiseInvalid("Invalid operator definition")
+    let tv = q.qVal[0]
+    if not tv.isSymbol or (tv.symVal != "symbol" and tv.symVal != "sigil"):
+      raiseInvalid("Incorrect operator type specified (it must be 'symbol' or 'sigil', found '$#')" % tv.symVal)
+    let t = tv.symVal
+    let nv = q.qVal[1]
+    if not nv.isSymbol:
+      raiseInvalid("Operator name must be a symbol")
+    let n = nv.symVal
+    when not defined(mini):
+      if not n.match(USER_SYMBOL_REGEX):
+        raiseInvalid("Operator name must not contain ivalid characters")
+    # Validate signature
+    let sv = q.qVal[2]
+    if not sv.isQuotation:
+      raiseInvalid("Signature must be a quotation")
+    elif sv.qVal.len == 0:
+      raiseInvalid("No signature specified")
+    elif sv.qVal.len == 1 and sv.qVal[0] != "==>".newSym:
+      raiseInvalid("Invalid signature")
+    elif sv.qVal.len mod 2 == 0:
+      raiseInvalid("Invalid signature")
+    var c = 0
+    # Process signature
+    var inExpects= newSeq[string](0)
+    var inVars = newSeq[string](0)
+    var outExpects= newSeq[string](0)
+    var outVars = newSeq[string](0)
+    var generics: CritBitTree[string]
+    var origGenerics: CritBitTree[string]
+    var o= false
+    for vv in sv.qVal:
+      if not vv.isSymbol and not vv.isQuotation:
+        raiseInvalid("Signature must be a quotation of symbols/quotations")
+      var v: string
+      var check = c mod 2 == 0
+      if o:
+        check = c mod 2 != 0
+      if vv.isQuotation:
+        if vv.qVal.len != 2 or not vv.qVal[0].isSymbol or not vv.qVal[1].isSymbol:
+          raiseInvalid("Generic quotation must contain exactly two symbols")
+        let t = vv.qVal[0].getString
+        let g = vv.qVal[1].getString
+        if not i.validType(t):
+          raiseInvalid("Invalid type '$#' in generic in signature at position $#" % [$t, $(c+1)])
+        if g[0] != ':':
+          raiseInvalid("No mapping symbol specified in generic in signature at position $#" % $(c+1))
+        v = g[1..g.len-1]
+        generics[v] = t
+      else:
+        v = vv.symVal
+      if check:
+        if v == "==>":
+          o = true
+        elif not i.validType(v) and not generics.hasKey(v):
+          raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
+        else:
+          if o:
+            outExpects.add v
+          else:
+            inExpects.add v
+      else:
+        if v[0] != ':':
+          raiseInvalid("No mapping symbol specified in signature at position $#" % $(c+1))
+        else:
+          if o:
+            outVars.add v[1..v.len-1]
+          else:
+            inVars.add v[1..v.len-1]
+      c.inc()
+    if not o:
+      raiseInvalid("No output specified in signature")
+    origGenerics = deepCopy(generics)
+    # Process body
+    var bv = q.qVal[3]
+    if not bv.isQuotation:
+      raiseInvalid("Body must be a quotation")
+    inExpects.reverse
+    inVars.reverse
+    var p: MinOperatorProc = proc (i: In) =
+      var inVals: seq[MinValue]
+      try: 
+        inVals = i.expect(inExpects, generics)
+      except:
+        generics = origGenerics
+        raise
+      i.withScope():
+        # Inject variables for mapped inputs
+        for k in 0..inVars.len-1:
+          var iv = inVals[k]
+          if iv.isQuotation:
+            iv = @[iv].newVal
+          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv, quotation: inVals[k].isQuotation)
+        # Inject variables for mapped outputs
+        for k in 0..outVars.len-1:
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
+        # Actually execute the body of the operator
+        var endSnapshot: seq[MinValue]
+        var snapShot: seq[MinValue]
+        try:
+          snapshot = deepCopy(i.stack)
+          i.dequote bv
+          endSnapshot = i.stack
+          let d= snapshot.diff(endSnapshot)
+          if d.len > 0 :
+            raiseInvalid("Operator '$#' is polluting the stack -- $#" % [n, $d.newVal])
+        except MinReturnException:
+          discard
+        # Validate output
+        for k in 0..outVars.len-1:
+          i.pushSym outVars[k]
+          let x = i.peek
+          let o = outExpects[k]
+          var r = false;
+          if o.contains("|"):
+            let types = o.split("|")
+            for ut in types:
+              if i.validate(x, ut, generics):
+                r = true
+                break
+          else:
+            r = i.validate(x, o, generics)
+          if not r:
+            discard i.pop
+            var tp = t
+            if generics.hasKey(o):
+              tp = generics[o]
+              generics = origGenerics
+            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x]) 
+      generics = origGenerics
+    # Define symbol/sigil
+    if t == "symbol":
+      if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false)
+    else:
+      if i.scope.sigils.hasKey(n) and i.scope.sigils[n].sealed:
+        raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
+      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true)
+
+  def.symbol("expect-empty-stack") do (i: In):
+    let l = i.stack.len
+    if l != 0:
+      raiseInvalid("Expected empty stack, found $# elements instead" % $l)
 
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
@@ -161,14 +327,11 @@ proc lang_module*(i: In) =
     else:
       var ed = initEditor()
       i.push ed.readLine().newVal
-   
+    
   def.symbol("apply") do (i: In):
-    let vals = i.expect("quot|dict")
+    let vals = i.expect("quot")
     var prog = vals[0]
-    if prog.kind == minQuotation:
-      i.apply prog
-    else:
-      i.push i.applyDict(prog)
+    i.apply prog
 
   def.symbol("symbols") do (i: In):
     var q = newSeq[MinValue](0)
@@ -186,6 +349,14 @@ proc lang_module*(i: In) =
   def.symbol("defined-sigil?") do (i: In):
     let vals = i.expect("'sym")
     i.push(i.scope.hasSigil(vals[0].getString).newVal)
+  
+  def.symbol("sealed?") do (i: In):
+    let vals = i.expect("'sym")
+    i.push i.scope.getSymbol(vals[0].getString).sealed.newVal
+  
+  def.symbol("sealed-sigil?") do (i: In):
+    let vals = i.expect("'sym")
+    i.push i.scope.getSigil(vals[0].getString).sealed.newVal
   
   def.symbol("sigils") do (i: In):
     var q = newSeq[MinValue](0)
@@ -229,7 +400,7 @@ proc lang_module*(i: In) =
         if pair.len == 1 and pair[0].len == 0:
           continue
         i.dset(dict, pair[0].strip, pair[1].strip.newVal)
-        i.push(dict)
+      i.push(dict)
     except:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
@@ -352,6 +523,16 @@ proc lang_module*(i: In) =
     let vals = i.expect("a")
     i.push vals[0].typeName.newVal
 
+  def.symbol("typeclass") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let name = vals[0].getString
+    let symbol = "type:$#" % name
+    let code = vals[1]
+    info "[typeclass] $1 = $2" % [symbol, $code]
+    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed typeclass '$1'" % [name])
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: code, sealed: false, quotation: true)
+
   def.symbol("import") do (i: In):
     var vals = i.expect("'sym")
     let rawName = vals[0]
@@ -409,7 +590,7 @@ proc lang_module*(i: In) =
     
   def.symbol("quit") do (i: In):
     i.push 0.newVal
-    i.push "exit".newSym
+    i.pushSym "exit"
 
   def.symbol("source") do (i: In):
     let vals = i.expect("'sym")
@@ -432,6 +613,21 @@ proc lang_module*(i: In) =
     let sym = i.scope.getSymbol(s)
     i.apply(sym)
     i.scope = origScope
+
+  def.symbol("invoke") do (i: In):
+    let vals = i.expect("'sym")
+    let s = vals[0].getString
+    let parts = s.split("/")
+    if parts.len < 2:
+      raiseInvalid("Dictionary identifier not specified")
+    i.pushSym parts[0]
+    for p in 0..parts.len-2:
+      let vals = i.expect("dict")
+      let mdl = vals[0]
+      let symId = parts[p+1] 
+      i.push mdl
+      i.push symId.newVal
+      i.pushSym "call"
 
   def.symbol("set-type") do (i: In):
     let vals = i.expect("'sym", "dict")
@@ -646,15 +842,12 @@ proc lang_module*(i: In) =
     let vals = i.expect("quot", "quot")
     var d = vals[0]
     var b = vals[1]
-    for e in b.qVal:
-      i.push e
     i.dequote(b)
     var check = i.pop
-    while check.isBool and check.boolVal == true:
+    while check.boolVal == true:
       i.dequote(d)
       i.dequote(b)
       check = i.pop
-    discard i.pop
 
   # Other
   
@@ -717,7 +910,7 @@ proc lang_module*(i: In) =
     let m = vals[1]
     i.push @[m].newVal
     i.push s
-    i.push "bind".newSym
+    i.pushSym "bind"
 
   def.symbol("quote-define") do (i: In):
     let vals = i.expect("string", "a")
@@ -725,7 +918,7 @@ proc lang_module*(i: In) =
     let m = vals[1]
     i.push @[m].newVal
     i.push s
-    i.push "define".newSym
+    i.pushSym "define"
 
   def.symbol("expect") do (i: In):
     var q: MinValue
@@ -762,6 +955,13 @@ proc lang_module*(i: In) =
   def.symbol("compiled?") do (i: In):
     i.push MINCOMPILED.newVal
 
+  def.symbol("line-info") do (i: In):
+    var d = newDict(i.scope)
+    i.dset(d, "filename", i.currSym.filename.newVal)
+    i.dset(d, "line", i.currSym.line.newVal)
+    i.dset(d, "column", i.currSym.column.newVal)
+    i.push d
+
   # Converters
 
   def.symbol("string") do (i: In):
@@ -775,7 +975,7 @@ proc lang_module*(i: In) =
     let floatcheck = v.isFloat and v.floatVal == 0
     let boolcheck = v.isBool and v.boolVal == false
     let quotcheck = v.isQuotation and v.qVal.len == 0
-    if strcheck or intcheck or floatcheck or boolcheck or quotcheck:
+    if v.isNull or strcheck or intcheck or floatcheck or boolcheck or quotcheck:
       i.push false.newVal
     else:
       i.push true.newVal
@@ -784,6 +984,8 @@ proc lang_module*(i: In) =
     let s = i.pop
     if s.isString:
       i.push s.getString.parseInt.newVal
+    elif s.isNull:
+      i.push 0.int.newVal
     elif s.isFloat:
       i.push s.floatVal.int.newVal
     elif s.isInt:
@@ -800,6 +1002,8 @@ proc lang_module*(i: In) =
     let s = i.pop
     if s.isString:
       i.push s.getString.parseFloat.newVal
+    elif s.isNull:
+      i.push 0.int.newVal
     elif s.isInt:
       i.push s.intVal.float.newVal
     elif s.isFloat:
@@ -823,65 +1027,80 @@ proc lang_module*(i: In) =
   def.sigil("'") do (i: In):
     let vals = i.expect("string")
     let s = vals[0]
-    i.push(@[s.strVal.newSym].newVal)
+    i.push(@[i.newSym(s.strVal)].newVal)
 
   def.sigil(":") do (i: In):
-    i.push("define".newSym)
+    i.pushSym("define")
 
   def.sigil("~") do (i: In):
-    i.push("delete".newSym)
+    i.pushSym("delete")
 
   def.sigil("@") do (i: In):
-    i.push("bind".newSym)
+    i.pushSym("bind")
 
   def.sigil("+") do (i: In):
-    i.push("module".newSym)
+    i.pushSym("module")
 
   def.sigil("^") do (i: In):
-    i.push("call".newSym)
+    i.pushSym("call")
+
+  def.sigil("*") do (i: In):
+    i.pushSym("invoke")
 
   def.sigil(">") do (i: In):
-    i.push("save-symbol".newSym)
+    i.pushSym("save-symbol")
 
   def.sigil("<") do (i: In):
-    i.push("load-symbol".newSym)
+    i.pushSym("load-symbol")
 
   def.sigil("#") do (i: In):
-    i.push("quote-bind".newSym)
+    i.pushSym("quote-bind")
 
   def.sigil("=") do (i: In):
-    i.push("quote-define".newSym)
+    i.pushSym("quote-define")
 
   # Shorthand symbol aliases
 
   def.symbol("#") do (i: In):
-    i.push("quote-bind".newSym)
+    i.pushSym("quote-bind")
 
   def.symbol("=") do (i: In):
-    i.push("quote-define".newSym)
+    i.pushSym("quote-define")
+    
+  def.symbol("=-=") do (i: In):
+    i.pushSym("expect-empty-stack")
 
   def.symbol(":") do (i: In):
-    i.push("define".newSym)
+    i.pushSym("define")
 
   def.symbol("@") do (i: In):
-    i.push("bind".newSym)
+    i.pushSym("bind")
 
   def.symbol("^") do (i: In):
-    i.push("call".newSym)
+    i.pushSym("call")
 
   def.symbol("'") do (i: In):
-    i.push("quote".newSym)
+    i.pushSym("quote")
 
   def.symbol("->") do (i: In):
-    i.push("dequote".newSym)
-
+    i.pushSym("dequote")
+    
+  def.symbol("::") do (i: In):
+    i.pushSym("operator")
+    
   def.symbol("=>") do (i: In):
-    i.push("apply".newSym)
+    i.pushSym("apply")
+    
+  def.symbol("==>") do (i: In):
+    discard # used within operator defs
+    
+  def.symbol("return") do (i: In):
+    discard # used within operator defs
     
   def.symbol(">>") do (i: In):
-    i.push("prefix-dequote".newSym)
+    i.pushSym("prefix-dequote")
     
   def.symbol("><") do (i: In):
-    i.push("infix-dequote".newSym)
+    i.pushSym("infix-dequote")
 
   def.finalize("ROOT")

@@ -12,7 +12,8 @@ title: "Welcome to the min programming language"
     <a class="pure-button pure-button-primary" href="/get-started/"><i class="ti-download"></i> download min v{{$version}}</a><br />
     <small>
       <a href="https://github.com/h3rald/min">Repository</a> | 
-      <a href="https://github.com/h3rald/min/issues">Issue Tracking</a> |
+      <a href="https://github.com/h3rald/min/issues">Issues</a> | 
+      <a href="https://github.com/h3rald/min/discussions">Discussions</a> |
       <a href="https://h3rald.com/min/Min_DeveloperGuide.htm">Guide</a>
     </small>
   </section>

@@ -2,6 +2,7 @@ import
   streams, 
   strutils, 
   sequtils,
+  os,
   critbits,
   algorithm
 when defined(mini):
@@ -9,7 +10,7 @@ when defined(mini):
     minilogger
 else:
   import 
-    os,
+    base64,
     logging
 import 
   baseutils,
@@ -19,27 +20,44 @@ import
 
 type
   MinTrappedException* = ref object of CatchableError
+  MinReturnException* = ref object of CatchableError
   MinRuntimeError* = ref object of CatchableError
     data*: MinValue
 
-var MINCOMPILEDFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
+var ASSETPATH* {.threadvar.}: string
+ASSETPATH = ""
+var COMPILEDMINFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
+var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
+var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
 
-proc raiseRuntime*(msg: string, data: MinValue) {.extern:"min_exported_symbol_$1".}=
+proc diff*(a, b: seq[MinValue]): seq[MinValue] =
+  result = newSeq[MinValue](0)
+  for it in b:
+    if not a.contains it:
+      result.add it
+
+proc newSym*(i: In, s: string): MinValue =
+ return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
+
+proc copySym*(i: In, sym: MinValue): MinValue =
+  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename, line: sym.line, column: sym.column, outerSym: "")
+
+proc raiseRuntime*(msg: string, data: MinValue) =
   data.objType = "error"
   raise MinRuntimeError(msg: msg, data: data)
 
-proc dump*(i: MinInterpreter): string {.extern:"min_exported_symbol_$1".}=
+proc dump*(i: MinInterpreter): string =
   var s = ""
   for item in i.stack:
     s = s & $item & " "
   return s
 
-proc debug*(i: In, value: MinValue) {.extern:"min_exported_symbol_$1".}=
+proc debug*(i: In, value: MinValue) =
   debug("(" & i.dump & $value & ")")
 
-proc debug*(i: In, value: string) {.extern:"min_exported_symbol_$1_2".}=
+proc debug*(i: In, value: string) =
   debug(value)
 
 template withScope*(i: In, res:ref MinScope, body: untyped): untyped =
@@ -67,7 +85,7 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
   finally:
     i.scope = origScope
 
-proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"min_exported_symbol_$1".}=
+proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var path = pwd
   when not defined(mini): 
     if not pwd.isAbsolute:
@@ -89,7 +107,7 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter {.extern:"
   )
   return i
 
-proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_exported_symbol_$1_2".}=
+proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   var path = filename
   when not defined(mini): 
     if not filename.isAbsolute:
@@ -103,19 +121,22 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter {.extern:"min_ex
   result.scope = i.scope
   result.currSym = MinValue(column: 1, line: 1, kind: minSymbol, symVal: "")
 
-proc formatError(sym: MinValue, message: string): string {.extern:"min_exported_symbol_$1".}=
-  if sym.filename == "":
-    return "[$1]: $2" % [sym.symVal, message]
-  else:
-    return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, sym.symVal, message]
+proc formatError(sym: MinValue, message: string): string =
+  var name = sym.symVal
+  #if sym.parentSym != "":
+  #  name = sym.parentSym
+  return "$1($2,$3) [$4]: $5" % [sym.filename, $sym.line, $sym.column, name, message]
 
-proc formatTrace(sym: MinValue): string {.extern:"min_exported_symbol_$1".}=
+proc formatTrace(sym: MinValue): string =
+  var name = sym.symVal
+  #if sym.parentSym != "":
+  #  name = sym.parentSym
   if sym.filename == "":
-    return "<native> in symbol: $1" % [sym.symVal]
+    return "<native> in symbol: $1" % [name]
   else:
-    return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, sym.symVal]
+    return "$1($2,$3) in symbol: $4" % [sym.filename, $sym.line, $sym.column, name]
 
-proc stackTrace(i: In) =
+proc stackTrace*(i: In) =
   var trace = i.trace
   trace.reverse()
   for sym in trace:
@@ -124,11 +145,11 @@ proc stackTrace(i: In) =
 proc error(i: In, message: string) =
   error(i.currSym.formatError(message))
 
-proc open*(i: In, stream:Stream, filename: string) {.extern:"min_exported_symbol_$1_2".}=
+proc open*(i: In, stream:Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
 
-proc close*(i: In) {.extern:"min_exported_symbol_$1_2".}= 
+proc close*(i: In) = 
   i.parser.close();
 
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
@@ -173,14 +194,6 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_sy
      v.obj = val.obj
    return v
 
-proc applyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
-   # Assuming val is a dictionary
-   var v = i.copyDict(val)
-   for item in v.dVal.pairs:
-     var value = item.val.val
-     v.scope.symbols[item.key] = MinOperator(kind: minValOp, val: i.callValue(value), sealed: false)
-   return v
-
 proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
   if op.kind == minProcOp:
     op.prc(i)
@@ -193,7 +206,7 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
     else:
       i.push(op.val)
 
-proc dequote*(i: In, q: var MinValue) {.extern:"min_exported_symbol_$1".}=
+proc dequote*(i: In, q: var MinValue) =
   if q.kind == minQuotation:
     i.withScope(): 
       when defined(js):
@@ -227,10 +240,15 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
     i.debug(val)
-    i.trace.add val
     if not i.evaluating:
-      i.currSym = val
+      if val.outerSym != "":
+        i.currSym = i.copySym(val)
+      else:
+        i.currSym = val
+    i.trace.add val
     let symbol = val.symVal
+    if symbol == "return":
+      raise MinReturnException(msg: "return symbol found")
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol) 
     else: 
@@ -256,17 +274,38 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
   else:
     i.stack.add(val)
 
-proc pop*(i: In): MinValue {.extern:"min_exported_symbol_$1".}=
+proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
     raiseEmptyStack()
 
-proc peek*(i: MinInterpreter): MinValue {.extern:"min_exported_symbol_$1".}= 
+proc peek*(i: MinInterpreter): MinValue = 
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
     raiseEmptyStack()
+
+template handleErrors*(i: In, body: untyped) =
+  try:
+    body
+  except MinRuntimeError:
+    let msg = getCurrentExceptionMsg()
+    i.stack = i.stackcopy
+    error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    i.stackTrace()
+    i.trace = @[]
+    raise MinTrappedException(msg: msg)
+  except MinTrappedException:
+    raise
+  except:
+    let msg = getCurrentExceptionMsg()
+    i.stack = i.stackcopy
+    i.error(msg)
+    i.stackTrace()
+    i.trace = @[]
+    raise MinTrappedException(msg: msg)
+
 
 proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
   var val: MinValue
@@ -276,28 +315,12 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
-    try:
+    handleErrors(i) do:
       val = i.parser.parseMinValue(i)
       if parseOnly:
         q.qVal.add val
       else:
         i.push val
-    except MinRuntimeError:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
-    except MinTrappedException:
-      raise
-    except:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      i.error(msg)
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
   if parseOnly:
     return q
   if i.stack.len > 0:
@@ -307,29 +330,13 @@ proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exp
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
-    try:
+    handleErrors(i) do:
       result.add i.parser.compileMinValue(i, push = true, indent)
-    except MinRuntimeError:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
-    except MinTrappedException:
-      raise
-    except:
-      let msg = getCurrentExceptionMsg()
-      i.stack = i.stackcopy
-      i.error(msg)
-      i.stackTrace
-      i.trace = @[]
-      raise MinTrappedException(msg: msg)
     
 proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
   if not main:
-    result.add "MINCOMPILEDFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
+    result.add "COMPILEDMINFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
     result = result.concat(i.rawCompile("  "))
   else:
     result = i.rawCompile("")
@@ -337,11 +344,22 @@ proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exp
 proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
   result = newSeq[string](0)
   result.add "import min"
-  if files.len > 0:
+  if files.len > 0 or (ASSETPATH != "" and not defined(mini)):
     result.add "import critbits"
+  when not defined(mini):
+    if ASSETPATH != "":
+      result.add "import base64"
   result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
+  when not defined(mini): 
+    if ASSETPATH != "":
+      for f in walkDirRec(ASSETPATH):
+        let file = simplifyPath(i.filename, f)
+        logging.notice("- Including: $#" % file)
+        let ef = file.readFile.encode
+        let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
+        result.add asset
 
 proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
   var i2 = i.copy(name)
@@ -373,9 +391,40 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"m
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc parse*(i: In, s: string, name="<parse>"): MinValue {.extern:"min_exported_symbol_$1".}=
+proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+  if CACHEDMODULES.hasKey(s):
+    return CACHEDMODULES[s]
+  var fileLines = newSeq[string](0)
+  var contents = ""
+  try:
+    fileLines = s.readFile().splitLines()
+  except:
+    fatal("Cannot read from file: " & s)
+  if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
+    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
+  else:
+    contents = fileLines.join("\n")
+  var i2 = i.copy(s)
+  let snapshot = deepCopy(i.stack)
+  i2.withScope:
+    i2.open(newStringStream(contents), s)
+    discard i2.parser.getToken() 
+    discard i2.interpret(parseOnly)
+    let d = snapshot.diff(i2.stack)
+    if d.len > 0:
+      raiseInvalid("Module '$#' is polluting the stack -- $#" % [s, $d.newVal])
+    result = newDict(i2.scope)
+    result.objType = "module"
+    for key, value in i2.scope.symbols.pairs:
+      result.scope.symbols[key] = value
+    CACHEDMODULES[s] = result
+
+proc parse*(i: In, s: string, name="<parse>"): MinValue =
   return i.eval(s, name, true)
 
-proc read*(i: In, s: string): MinValue {.extern:"min_exported_symbol_$1".}=
+proc read*(i: In, s: string): MinValue =
   return i.load(s, true)
 
+# Inherit file/line/column from current symbol
+proc pushSym*(i: In, s: string) =
+  i.push MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)

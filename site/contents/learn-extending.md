@@ -6,11 +6,11 @@ title: "Learn: Extending min"
 
 min provides a fairly complete standard library with many useful modules. However, you may feel the need to extend min in order to perform more specialized tasks.
 
-In such situations, you basically have three options:
+In such situations, you basically have the following options:
 
-* Implement new min modules in min
-* Embed min in your [Nim](https://nim-lang.org) program
-* Implemet min modules as dynamic libraries in Nim
+* Implementing new min modules using min itself
+* Specifying your custom prelude program
+* Embedding min in your [Nim](https://nim-lang.org) program
 
 ## Implementing new min modules using min itself
 
@@ -122,75 +122,4 @@ proc interpret(hs: HastySite, file: string) =
 > Tip
 > 
 > For more information on how to create new modules with Nim, have a look in the [lib folder](https://github.com/h3rald/min/tree/master/lib) of the min repository, which contains all the min modules included in the standard library.
-
-
-## Implementing min modules as dynamic libraries
-
-> %warning%
-> Warning
-> 
-> This technique is currently highly experimental, it has not been tested extensively and it may not even work properly.
-
-If you just want to add a new module to min providing functinalities that cannot be built natively with min operators, you can also implement a min module in Nim and compile it to a dynamic library which can be linked dynamically when min is started.
-
-In order to do this, you don't even need to download the whole min source code, you just need to download the [mindyn.nim](https://github.com/h3rald/min/blob/master/mindyn.nim) file and import it in your Nim program. 
-
-The following code shows how to create a simple min module called *dyntest* containing only a single operator *dynplus*, which essentially returns the sum of two numbers:
-
-```
-import mindyn
-
-proc dyntest*(i: In) {.dynlib, exportc.} =
-
-  let def = i.define()
-
-  def.symbol("dynplus") do (i: In):
-    let vals = i.expect("num", "num")
-    let a = vals[0]
-    let b = vals[1]
-    if a.isInt:
-      if b.isInt:
-        i.push newVal(a.intVal + b.intVal)
-      else:
-        i.push newVal(a.intVal.float + b.floatVal)
-    else:
-      if b.isFloat:
-        i.push newVal(a.floatVal + b.floatVal)
-      else:
-        i.push newVal(a.floatVal + b.intVal.float)
-
-  def.finalize("dyntest")
-```
-
-Note that the `mindym.nim` file contains the signatures of all the `proc`s that are commonly used to define min modules, but not their implementation. Such `proc`s will become available at run time when the dynamic library is linked to the min executable.
-
-You can compile the following library by running the following command:
-
-> %min-terminal%
-> [$](class:prompt) nim c \-\-app:lib -d:release \
-> \-\-noMain dyntest.nim
-
-If you are using [clang](https://clang.llvm.org/) to compile Nim code, you may need to run the following command instead:
-
-> %min-terminal%
-> [$](class:prompt) nim c \-\-app:lib -d:release \-\-noMain \
-> -l:&#34;-undefined dynamic\_lookup&#34; dyntest.nim
-
-Now you should have a `libdyntest.so|dyn|dll` file. To make min load it and link it automatically when it starts, just run:
-
-> %min-terminal%
-> [$](class:prompt) min \-\-install:libdyntest.dyn
-
-This command will copy the library file to `$HOME/.minlibs/` (`%HOMEPATH%\.minlibs\` on Windows). min looks for dynamic libraries in this folder when it starts.
-
-> %note%
-> Notes
-> 
-> * The dynamic library file must have the same name as the module it defines (*dyntest* in this case).
-> * At startup, min links all your installed dynamic libraries but does not import the modules automatically.
-
-If you wish to uninstall the library, run the following command instead:
-
-> %min-terminal%
-> [$](class:prompt) min \-\-uninstall:libdyntest.dyn
 

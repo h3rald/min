@@ -38,6 +38,8 @@
   ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) assert
 
   ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
+  
+  ("/api/items/test-1" "/\\/api\\/items\\/(.+)/" regex 1 get "test-1" ==) assert
 
   ("this is a test" uppercase "THIS IS A TEST" ==) assert
 
@@ -72,6 +74,12 @@
   ("fix" "pre" prefix "prefix" ==) assert
   
   ("suf" "fix" suffix "suffix" ==) assert
+  
+  ("http://test.com?€%,,!{}" encode-url "http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" ==) assert
+  
+  ("http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" decode-url "http://test.com?€%,,!{}" ==) assert
+  
+  ("http://h3rald.com/a/b/c?test=1#123" parse-url {"123" :anchor "h3rald.com" :hostname "" :password "/a/b/c" :path "" :port "test=1" :query "http" :scheme "" :username} ==) assert
   
   report
   clear-stack

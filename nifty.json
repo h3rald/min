@@ -1,5 +1,5 @@
 {
-  "storage": "packages",
+  "storage": "minpkg/packages",
   "commands": {
     "install": {
       "git+src": {

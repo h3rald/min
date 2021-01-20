@@ -4,7 +4,7 @@ title: "http Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#op||download||{{s1}} {{s2}}||{{null}}||
+{#op||download||{{s1}} {{s2}}||{{none}}||
 Downloads the contents of URL {{s1}} to the local file {{s2}}. #}
 
 {#op||get-content||{{s1}}||{{s2}}||
@@ -24,7 +24,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >     request
  #}
 
-{#op||start-server||{{d}}||{{null}}||
+{#op||start-server||{{d}}||{{none}}||
 > Starts an HTTP server based on the configuration provided in {{d}}.
 > 
 > {{d}} is a dictionary containing the following keys:
@@ -80,5 +80,5 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >     start-server
  #}
 
-{#op||stop-server||{{null}}||{{null}}||
+{#op||stop-server||{{none}}||{{none}}||
 Stops the currently-running HTTP server. This operator should be used within an HTTP server handler quotation.#}

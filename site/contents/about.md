@@ -19,9 +19,9 @@ Because creating a programming language is something that every programmer needs
 
 I always wanted to build a minimalist language, but that could also be used for real work and provided a standard library for common tasks and functionalities like regular expression support, cryptography, execution of external programs, shell-like operators, and keywords to work with files, and more.
 
-Also, I wanted it to be fully self-contained, cross-platform, and tiny. About 1MB (depending on the platform) is not really tiny, but I feel it's a good compromise compared to the alternatives out there, considering that you only need _one file_ to run any min program.
+Additionally, I wanted it to be fully self-contained, cross-platform, and tiny. About 1MB (or more, depending on the platform and whether SSL support is enabled or not) is not really tiny, but I feel it's a good compromise compared to the alternatives out there, considering that you only need _one file_ to run any min program.
 
-I am currently building a static site generator called [HastySite](https://github.com/h3rald/hastysite), which also powers <https://min-lang.org>. HastySite internally uses min as the language to write the [rules](https://github.com/h3rald/min/blob/master/site/rules.min) to process the source files of the site, and also all its [scripts](https://github.com/h3rald/min/tree/master/site/scripts).
+ I also created a static site generator called [HastySite](https://github.com/h3rald/hastysite), which also powers <https://min-lang.org>. HastySite internally uses min as the language to write the [rules](https://github.com/h3rald/min/blob/master/site/rules.min) to process the source files of the site, and also all its [scripts](https://github.com/h3rald/min/tree/master/site/scripts).
 
 Finally, I think more and more people should get to know concatenative programming languages, because [concatenative programming matters](http://evincarofautumn.blogspot.it/2012/02/why-concatenative-programming-matters.html).
 
@@ -33,7 +33,7 @@ min's parser started off as a fork of Nim's JSON parser -- adapted to process a 
 
 ## Who?
 
-min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [Peter Munch-Ellingsen](https://peterme.net).
+min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [Peter Munch-Ellingsen](https://peterme.net) and [baykus871](https://github.com/baykus871).
 
 Special thanks to [mwgkgk](https://github.com/mwgkgk) for contributing to the design of native dictionaries.
 

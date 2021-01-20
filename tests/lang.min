@@ -50,6 +50,9 @@
   ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) assert
   "tests/testload.min" rm
 
+  ("2 :two 3 :three" "tests/testrequire.min" fwrite 'testrequire require :tm *tm/two *tm/three + 5 ==) assert
+  "tests/testrequire.min" rm
+
   (2 2 mymath ^myplus 4 ==) assert
   
 
@@ -200,10 +203,6 @@
 
   (3.4 "test" 1 (int string num) expect (3.4 "test" 1) ==) assert
 
-  ("2 2 +" "testread.min" fwrite "testread.min" read (2 2 +) ==) assert
-
-  "testread.min" rm
-
   ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) assert
 
   (lite? false ==) assert
@@ -226,6 +225,78 @@
     'x unseal-sigil 'x delete-sigil 
     'x defined-sigil? false ==
   ) assert
+  
+  (
+    {{100 :b} :a} :test *test/a/b 100 ==
+  ) assert
+  
+  (
+    (
+      symbol pow-mul
+      (num :base int :exp ==> num :pr num :mr)
+      ( 
+        exp 1 - :n
+        base exp * @mr
+        base  (dup) n times (*) n times @pr
+      )
+    ) operator 
+    2 4 pow-mul - 8 == 
+  ) assert
+  
+  (
+    ( 
+      sigil nt
+      (string :s ==> bool :result)
+      (
+        ("int" s ==)
+          (true @result return)
+        when
+        ("num" s ==)
+          (true @result return)
+        when
+        ("float" s ==)
+          (true @result return)
+        when
+        "not gonna be printed if true!" puts
+        false @result
+      )
+    ) ::
+    nt"float"
+  ) assert
+
+  (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+  ("type:natural" defined?) assert
+  (
+    symbol natural-sum
+    (natural :n natural :m ==> natural :result)
+    (n m + @result)
+  ) ::
+  null :err
+  (
+    (3 -3 natural-sum)
+    (@err)
+  ) try
+  pop ;Remove 3 that was left on the stack.
+  (err format-error "expected: natural natural natural-sum" match) assert
+  (2 3 natural-sum 5 ==) assert
+  
+  (
+    symbol add
+    ((string|num|quot :t) :a t :b ==> t :result)
+    (
+     (a type "string" ==)
+       (a b suffix @result return)
+     when
+     (a type "num" ==)
+       (a b + @result return)
+     when
+     (a type "quot" ==)
+       (a b concat #result return)
+     when
+    )
+  ) ::
+  ("a" "b" add "ab" ==) assert
+  ((1 2 3) (4 5) add (1 2 3 4 5) ==) assert
 
   report
   ; Tidy up

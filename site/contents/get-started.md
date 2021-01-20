@@ -42,12 +42,16 @@ If that's the case, simply run **nimble install min**. This will actually instal
 
 If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
 * perform HTTPS requests with the {#link-module||http#}.
-* use the cryptographic symbols defined in the {#link-module||crypto#}.
+* use all the cryptographic symbols defined in the {#link-module||crypto#}.
 
-> %note%
-> Note
-> 
-> By default, this flag is enabled when compiling the executable files included with official releases.
+If this flag is not specified:
+* It will not be possible to perform HTTPS requests
+* Only the following symbols will be exposed by the {#link-module||crypto#}:
+  * {#link-operator||crypto||md5#} 
+  * {#link-operator||crypto||sha1#} 
+  * {#link-operator||crypto||encode#} 
+  * {#link-operator||crypto||decode#} 
+  * {#link-operator||crypto||aes#} 
 
 #### -d:lite
 
@@ -72,7 +76,7 @@ If the **d:mini** flag is specified, an even more minimal executable file will b
 * The {#link-module||sys#}
 * The following operators:
   * {#link-operator||lang||load#}
-  * {#link-operator||lang||read#}
+  * {#link-operator||lang||require#}
   * {#link-operator||lang||to-json#}
   * {#link-operator||lang||from-json#}
   * {#link-operator||lang||raw-args#}
@@ -86,6 +90,9 @@ If the **d:mini** flag is specified, an even more minimal executable file will b
   * {#link-operator||str||regex#}
   * {#link-operator||str||semver?#}
   * {#link-operator||str||from-semver#}
+  * {#link-operator||str||parse-url#}
+  * {#link-operator||str||decode-url#}
+  * {#link-operator||str||encode-url#}
   * {#link-operator||sys||zip#}
   * {#link-operator||sys||unzip#}
 
@@ -94,14 +101,15 @@ Additionally:
 * No checks will be performed when defining symbols.
 * Only the simple REPL will be available.
 * There will be no support for dynamic libraries.
-* The **-m, \-\-module-path** option has no effect.
+* The **-m, \-\-module-path** and **-a, \-\-asset-path** options have no effect.
 * No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
 
 ## Running the min Shell
 
-To start min shell, run [min -i](class:cmd). You will be presented with a prompt displaying the path to the current directory:
+To start the min shell, run [min](class:cmd) with no arguments. You will be presented with a prompt displaying the path to the current directory:
 
 > %min-terminal%
+> min shell v$versio
 > [[/Users/h3rald/test]$](class:prompt)
 
 You can type min code and press [ENTER](class:kbd) to evaluate it immediately:
@@ -157,13 +165,15 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 > 
 > [$](class:prompt) min -c myfile.min -n:-d:release
 
-Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} symbol is used to load an external [.min](class:ext) file, it will attempt to load from the pre-loaded files first before searching the filesystem.
+Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} or a {#link-operator||lang||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
 
-For example, the following command executed in the root folder of the min project will compile [run.min](class:file) along with all [.min](class:ext) files included in the [task](class:dir) and its subfolders:
+For example, the following command executed in the root folder of the min project will compile [run.min](class:file) along with all [.min](class:ext) files included in the [tasks](class:dir)  folder and its subfolders:
 
 > %min-terminal%
 > 
 > [$](class:prompt) min -c run.min -m:tasks
+
+Similarly, you can also bundle additional files in the executable by specifying the `-a:<path>` (or `--asset-path`) option. At runtime, the compiled min program will attempt to lookup bundled asset files before checking the filesystem.
 
 > %note%
 > Note
@@ -175,3 +185,4 @@ For example, the following command executed in the root folder of the min projec
 * If you are using [Visual Studio Code](https://code.visualstudio.com/), you can install the official [min extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) which provides syntax highlighting support, code folding, and auto-indentation.
 * If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
 * If you are using [Sublime Text 3](https://www.sublimetext.com/3), Rafael Carrasco created a min syntax definition file that is available [here](https://github.com/rscarrasco/min-sublime-syntax).
+* If you are hsing [Notepad++](https://notepad-plus-plus.org), a [Notepad++ language file](https://github.com/h3rald/min/blob/master/minNotepad++.xml) contributed by baykus871 is available in tbe repo.

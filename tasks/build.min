@@ -6,6 +6,11 @@
 (
   :target-os
   :variant
+  :stage
+  "-d:release" :d-stage
+  (stage "dev" ==)
+    ("-d:dev" @d-stage)
+  when
   " " :d-variant
   "min" :o-variant
   (variant length 0 >) (
@@ -14,12 +19,19 @@
   ) when
   "nim" required
   "Building $# - $# (x64)" (o-variant target-os) =% notice
-  "nim c -d:release -d:ssl --cpu:amd64 --os:$# $#-o:$# min" (target-os d-variant o-variant) =% puts !
+  "" :musl
+  "musl-gcc" which :musl-gcc
+  (musl-gcc length 0 >)
+    ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)
+  when
+  "nim c $# -d:ssl $# --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts !
   {}
     target-os %os
     config /version %version
     o-variant %exe
-  pack
+  (stage "dev" !=)
+    (pack)
+  when
 ) :cz
 (
   :vdata 
@@ -35,6 +47,7 @@
   "hastyscribe" required
   "Building - guide" notice
   "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
+  !"cp Min_DeveloperGuide.htm site/output/guide.dev.html"
 ) :build-guide
 (
   "hastysite" required 
@@ -54,40 +67,43 @@
 ; Module symbols
 {}
 (
-  "lite" os cz
+  "" "lite" os cz
 ) %lite
 (
-  "mini" os cz
+  "" "mini" os cz
 ) %mini
 (
-  "" os cz
+  "dev" "" os cz
+) %dev
+(
+  "" "" os cz
 ) %default
 (
-  "" "linux" cz
+  "" "" "linux" cz
 ) %linux
 (
-  "lite" "linux" cz
+  "" "lite" "linux" cz
 ) %linux-lite
 (
-  "mini" "linux" cz
+  "" "mini" "linux" cz
 ) %linux-mini
 (
-  "" "macosx" cz
+  "" "" "macosx" cz
 ) %macosx
 (
-  "lite" "macosx" cz
+  "" "lite" "macosx" cz
 ) %macosx-lite
 (
-  "mini" "macosx" cz
+  "" "mini" "macosx" cz
 ) %macosx-mini
 (
-  "" "windows" cz
+  "" "" "windows" cz
 ) %windows
 (
-  "lite" "windows" cz
+  "" "lite" "windows" cz
 ) %windows-lite
 (
-  "mini" "windows" cz
+  "" "mini" "windows" cz
 ) %windows-mini
 'build-guide %guide
 'build-site %site

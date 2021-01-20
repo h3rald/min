@@ -5,8 +5,10 @@ title: "Learn: Data Types"
 {@ _defs_.md || 0 @}
 
 
-The type system of min is very simple -- only the following data types are available:
+The following data types are availanle in {{m}}:
 
+null
+: null value.
 boolean
 : **true** or **false**.
 integer
@@ -31,9 +33,26 @@ dictionary
   >         2017 :"first release year"
   >     }
 
-The {#link-module||logic#} provides predicate operators to check if an element belongs to a particular data type or pseudo-type (`boolean?`, `number?`, `integer?`, `float?`, `string?`, `quotation?`, `dictionary?`).
+Additionally, dictionaries can also be typed to denote complex objects like sockets, errors, etc. For example, the following dictionary defines an error:
 
-Additionally, the {#link-module||lang#} provides operators to convert values from a data type to another (e.g. {#link-operator||lang||int#}, {#link-operator||lang||string#}, and so on).
+      {
+       "MyError" :error
+       "An error occurred" :message
+       "symbol1" :symbol
+       "dir1/file1.min" :filename
+       3 :line
+       13 :column
+       ;error
+      }
+
+> %tip%
+> Tip
+> 
+> The {#link-operator||dict||dtype#} operator can be used to set the type of a dictionary.
+
+The {#link-module||logic#} provides predicate operators to check if an element belongs to a particular data type or pseudo-type (`boolean?`, `number?`, `integer?`, `float?`, ...).
+
+Additionally, the {#link-module||lang#} provides operators to convert values from a data type to another (e.g. {#link-operator||lang||integer#}, {#link-operator||lang||string#}, and so on).
 
 > %note%
 > Note

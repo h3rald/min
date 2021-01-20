@@ -1,0 +1,37 @@
+'test load
+'test import
+
+"dstore" describe
+
+  ("dstore.json" dsinit type "dict:datastore" ==) assert
+  
+  (
+    "dstore.json" dsread :ds
+    ds "tests"
+    {}
+      1 %test1
+      2 %test2
+    dspost dswrite
+    "tests" (pop true) dsquery size 1 ==
+  ) assert
+  
+  (
+    "dstore.json" dsread :ds
+    ds "tests/aaa"
+    {}
+      1 %test1
+      3 %test3
+    dsput dswrite
+    "tests" (/test1 1 ==) dsquery size 2 ==
+  ) assert
+  
+  (
+    "dstore.json" dsread :ds
+    ds "tests/aaa" dsdelete
+    "tests" (/id "aaa" ==) dsquery size 0 ==
+  ) assert
+  
+  "dstore.json" rm
+
+  report
+  clear-stack

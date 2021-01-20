@@ -11,6 +11,7 @@
     'io     import
     'fs     import
     'sys    import
+    'dstore import
   ) ROOT with
 ) unless
 (lite? mini? or) (

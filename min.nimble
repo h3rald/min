@@ -1,5 +1,5 @@
 import 
-  core/meta
+  minpkg/core/meta
 
 # Package
 
@@ -8,7 +8,8 @@ author        = pkgAuthor
 description   = pkgDescription
 license       = "MIT"
 bin           = @[pkgName]
-installFiles  = @["core/meta.nim"]
+installFiles  = @["min.yml", "min.nim", "prelude.min"]
+installDirs   = @["minpkg"]
 
 # Dependencies
 

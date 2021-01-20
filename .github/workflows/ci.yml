@@ -16,7 +16,7 @@ jobs:
   # This workflow contains a single job called "ci"
   ci:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       CHOOSENIM_CHOOSE_VERSION: stable
       CHOOSENIM_NO_ANALYTICS: 1
@@ -25,6 +25,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: install musl-gcc
+        run: sudo apt-get install -y musl-tools 
       
       - name: Update $PATH
         run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
@@ -41,7 +44,7 @@ jobs:
         run: nifty install
       
       - name: Build
-        run: nimble -y build
+        run: nim c -d:release -d:ssl --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux  -o:min min
       
       - name: Test
         run: ./min tests/all.min
