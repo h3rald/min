@@ -22,6 +22,10 @@ title: "lang Module"
 
 {#alias||^||call#}
 
+{#sig||?||help#}
+
+{#alias||?||help#}
+
 {#sig||*||invoke#}
 
 {#sig||@||bind#}
@@ -184,6 +188,9 @@ Converts a JSON string into {{m}} data.#}
 
 {#op||gets||{{none}}||{{s}}||
 Reads a line from STDIN and places it on top of the stack as a string.#}
+
+{#op||help||{{sl}}||{{none}}||
+Prints the help text for {{sl}}, if available. #}
 
 {#op||if||{{q1}} {{q2}} {{q3}}||{{a0p}}||
 If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#}
@@ -436,6 +443,9 @@ Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
 {#op||set-type||{{d}} {{sl}}||{{d}}||
 Sets the type for dictionary {{d}} to {{sl}}.#}
 
+{#op||sigil-help||{{sl}}||{{help}}|{{null}}||
+Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
+
 {#op||sigils||{{none}}||({{s0p}})||
 Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
 
@@ -447,6 +457,9 @@ Converts {{any}} to its string representation.#}
 
 {#op||symbols||{{none}}||({{s0p}})||
 Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
+
+{#op||symbol-help||{{sl}}||{{help}}|{{null}}||
+Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherwise. #}
 
 {#op||tap||{{any}} {{q}}||{{any}}||
 > Performs the following operations:

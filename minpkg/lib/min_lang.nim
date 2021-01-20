@@ -187,11 +187,11 @@ proc lang_module*(i: In) =
       raiseInvalid("Invalid signature")
     var c = 0
     # Process signature
+    let docSig = $sv
     var inExpects= newSeq[string](0)
     var inVars = newSeq[string](0)
     var outExpects= newSeq[string](0)
     var outVars = newSeq[string](0)
-    var docSig = newSeq[string](0)
     var generics: CritBitTree[string]
     var origGenerics: CritBitTree[string]
     var o = false
@@ -218,11 +218,9 @@ proc lang_module*(i: In) =
       if check:
         if v == "==>":
           o = true
-          docSig.add "==>"
         elif not i.validType(v) and not generics.hasKey(v):
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
-          docSig.add $vv
           if o:
             outExpects.add v
           else:
@@ -298,9 +296,9 @@ proc lang_module*(i: In) =
       generics = origGenerics
     # Define symbol/sigil
     var doc = newJObject()
-    doc["operator"] = %n
+    doc["name"] = %n
     doc["kind"] = %t
-    doc["signature"] = %docSig.join(" ")
+    doc["signature"] = %docSig
     doc["description"] = %i.currSym.docComment.strip 
     if t == "symbol":
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
@@ -569,7 +567,7 @@ proc lang_module*(i: In) =
     var found = false
     var foundDoc = false
     let displayDoc = proc (j: JsonNode) =
-      echo "=== $# [$#]" % [j["operator"].getStr, j["kind"].getStr]
+      echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
       echo j["signature"].getStr
       if j.hasKey("description"):
         let desc = j["description"].getStr
