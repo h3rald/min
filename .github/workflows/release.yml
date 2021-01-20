@@ -65,4 +65,13 @@ jobs:
         run: nim c -d:release -d:ssl -o:min min
         if: matrix.os == 'macos-latest'
       
-      
+      - name: Create artifact
+        run: |
+          install -m 0755 ./min .
+          tar czf min-${{runner.os}}.tar.gz min README.md LICENSE
+
+      - name: Upload Artifact
+        uses: 'actions/upload-artifact@v1'
+        with:
+          name: min-${{runner.os}}.tar.gz
+          path: min-${{runner.os}}.tar.gz
