@@ -237,7 +237,11 @@ proc lang_module*(i: In) =
       c.inc()
     if not o:
       raiseInvalid("No output specified in signature")
-    origGenerics = deepCopy(generics)
+    when defined(js):
+      # TODOJS wrong
+      origGenerics = generics
+    else:
+      origGenerics = deepCopy(generics)
     # Process body
     var bv = q.qVal[3]
     if not bv.isQuotation:
@@ -265,7 +269,11 @@ proc lang_module*(i: In) =
         var endSnapshot: seq[MinValue]
         var snapShot: seq[MinValue]
         try:
-          snapshot = deepCopy(i.stack)
+          when defined(js):
+            # TODOJS wrong
+            snapshot = i.stack
+          else:
+            snapshot = deepCopy(i.stack)
           i.dequote bv
           endSnapshot = i.stack
           let d= snapshot.diff(endSnapshot)

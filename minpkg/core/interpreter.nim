@@ -212,7 +212,11 @@ proc dequote*(i: In, q: var MinValue) =
       when defined(js):
         let qqval = q.qval
       else:
-        let qqval = deepCopy(q.qVal)
+        when defined(js):
+          # TODOJS - wrong
+          let qqval = q.qVal
+        else:
+          let qqval = deepCopy(q.qVal)
       for v in q.qVal:
         i.push v
       q.qVal = qqval
@@ -405,7 +409,11 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
-  let snapshot = deepCopy(i.stack)
+  when defined(js):
+    # TODOJS wrong
+    let snapshot = i.stack
+  else:
+    let snapshot = deepCopy(i.stack)
   i2.withScope:
     i2.open(newStringStream(contents), s)
     discard i2.parser.getToken() 
