@@ -1,29 +1,27 @@
 #!/usr/bin/env min
 
-"build" load
-"github" load
-"ssh" load
+"build" require :build
+"github" require :github
 
-; Module symbols
-{}
-( 
-  build-tasks ^guide
-  build-tasks ^site
-  build-tasks ^vim
-  build-tasks ^windows
-  build-tasks ^windows-lite
-  build-tasks ^windows-mini
-  build-tasks ^linux
-  build-tasks ^linux-lite
-  build-tasks ^linux-mini
-  build-tasks ^macosx
-  build-tasks ^macosx-lite
-  build-tasks ^macosx-mini
-  github-tasks ^update
-  github-tasks ^upload
-) %default
+#| Tasks |#
 (
-  ssh-tasks ^build
-  ssh-tasks ^h3rald
-) %sites
-+release-tasks
+  symbol default
+  (==>)
+  ( 
+    *build/guide
+    *build/site
+    *build/vim
+    *build/windows
+    *build/windows-lite
+    *build/windows-mini
+    *build/linux
+    *build/linux-lite
+    *build/linux-mini
+    *build/macosx
+    *build/macosx-lite
+    *build/macosx-mini
+    *github/update
+    *github/upload
+  )
+) ::
+;; Builds min executables and updates the current draft Github release.
