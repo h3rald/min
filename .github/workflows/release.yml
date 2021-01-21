@@ -1,0 +1,141 @@
+name: Release
+
+# Controls when the action will run. 
+on:
+  # Run only when a new tag is pushed
+  push:
+    tags:
+      - 'test-**'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  # First, build and package our different assets
+  package:
+    name: "Package"
+
+    # Set up a matrix of different configurations:
+    # for now Linux and MacOS (Windows can obviously be added as well)
+    # Here, we could also add flags - under a different matrix key - 
+    # for different builds: e.g. lite vs non-lite
+      
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+
+    env:
+      CHOOSENIM_CHOOSE_VERSION: stable
+      CHOOSENIM_NO_ANALYTICS: 1
+
+    steps:
+      # Cancel other actions of the same type that might be already running
+    
+      - name: "Cancel similar actions in progress"
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      # Checks out the repository
+      - uses: actions/checkout@v2
+      
+      # Install libraries
+      - name: install musl-gcc
+        run: sudo apt-get install -y musl-tools 
+        if: matrix.os == 'ubuntu-latest'
+      
+      # Set path
+      - name: Update $PATH
+        run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
+
+      # Install the compiler
+      - name: Install Nim
+        run: |
+          curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+          sh init.sh -y
+
+      # Install dependencies
+      - name: Install nifty
+        run: nimble install -y nifty
+        
+      - name: Install deps
+        run: nifty install
+      
+      # Build for linux
+      - name: Build (Linux)
+        run: nim c -d:release -d:ssl --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux  -o:min min
+        if: matrix.os == 'ubuntu-latest'
+
+      # Build for MacOS
+      - name: Build (MacOS)
+        run: nim c -d:release -d:ssl -o:min min
+        if: matrix.os == 'macos-latest'
+      
+      # Package the resulting binary (along with the license and readme file)
+      - name: Create artifact
+        run: |
+          install -m 0755 ./min .
+          tar czf min-${{runner.os}}.tar.gz min README.md LICENSE
+
+      # And upload it, so that we can reuse all of them later as release assets
+      - name: Upload Artifact
+        uses: 'actions/upload-artifact@v1'
+        with:
+          name: min-${{runner.os}}.tar.gz
+          path: min-${{runner.os}}.tar.gz
+          
+  # Then, let's prepare our new release and upload the assets above
+  upload:
+    name: "Upload"
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    
+    # This should run after all matrix job (for linux, mac, etc) above have finished
+    needs: [package]
+    
+    steps:
+      - name: "Cancel similar actions in progress"
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      # Download all of the previously created assets 
+      # and put them in an ./assets folder
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./assets
+      
+      # That's just for debugging to make sure everything is in place
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      # Create a new release
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      # Post all of the above assets (under ./assets) 
+      # as part of the newly created release
+      - name: Upload Release Assets
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create-release.outputs.id }}
+          assets_path: ./assets
+
+      # Celebrate! :)
