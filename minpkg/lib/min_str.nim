@@ -165,6 +165,22 @@ proc str_module*(i: In) =
       else:
         i.push false.newVal
 
+    def.symbol("replace-apply") do (i: In):
+      let vals = i.expect("quot", "string", "string")
+      let q = vals[0]
+      let reg = vals[1]
+      let s_find = vals[2]
+      var i2 = i.copy(i.filename)
+      let repFn = proc(a: seq[string]): string =
+        var ss = newSeq[MinValue](0)
+        for s in a:
+          ss.add s.newVal
+        i2.push ss.newVal
+        i2.push q
+        i2.pushSym "dequote"
+        return i2.pop.getString
+      i.push sgregex.replacefn(s_find.strVal, reg.strVal, "", repFn).newVal
+
     def.symbol("replace") do (i: In):
       let vals = i.expect("string", "string", "string")
       let s_replace = vals[0]
