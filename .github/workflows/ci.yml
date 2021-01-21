@@ -5,8 +5,10 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
+    tags-ignore: [ '**' ]
   pull_request:
     branches: [ master ]
+    tags-ignore: [ '**' ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
