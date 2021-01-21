@@ -28,11 +28,25 @@ proc binary_module*(i: In)=
     
     i.push newVal(a.intVal or b.intVal)
 
-    def.symbol("bitxor") do (i: In):
-      let vals = i.expect("int","int")
-      let b = vals[0]
-      let a = vals[1]
-      
-      i.push newVal(a.intVal xor b.intVal)
+  def.symbol("bitxor") do (i: In):
+    let vals = i.expect("int","int")
+    let b = vals[0]
+    let a = vals[1]
+    
+    i.push newVal(a.intVal xor b.intVal)
+
+  def.symbol("shl") do (i: In):
+    let vals = i.expect("int","int")
+    let b = vals[0]
+    let a = vals[1]
+    
+    i.push newVal(a.intVal shl b.intVal)
+
+  def.symbol("shr") do (i: In):
+    let vals = i.expect("int","int")
+    let b = vals[0]
+    let a = vals[1]
+    
+    i.push newVal(a.intVal shr b.intVal)
 
   def.finalize("binary")
