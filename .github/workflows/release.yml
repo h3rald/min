@@ -4,7 +4,7 @@ name: Release
 on:
   # Run only when a new tag is pushed
   push:
-    tags:
+    branches:
       - 'test-**'
 
   # Allows you to run this workflow manually from the Actions tab
