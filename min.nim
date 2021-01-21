@@ -166,7 +166,7 @@ proc stdLib*(i: In) =
     i.dstore_module
     i.io_module
   when not defined(lite) and not defined(mini):
-    i.min_binary
+    i.binary_module
     i.crypto_module
     i.net_module
     i.math_module
