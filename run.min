@@ -22,8 +22,12 @@ taskspec 0 get :task
 
 "tasks/$#.min" (task) =% :task-file
 
+task-file require :tasklist
+
+"tasklist/$#" (subtask) =% invoke
+
 ; Load task module
-task-file load
+;task-file load
 
 ; Execute task
-"$#-tasks" (task) =% eval subtask ^
+;"$#-tasks" (task) =% eval subtask ^

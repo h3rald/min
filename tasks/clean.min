@@ -1,9 +1,15 @@
 #!/usr/bin/env min
 
-{}
+#| Tasks |#
+
 (
-  "Cleaning up build files" notice
-  . ls ("(\.(htm|zip|exe)|[\/\\]min)$" match) filter =files
-  files 'rm foreach
-) %default
-+clean-tasks
+  symbol default
+  (==>)
+  (
+    "Cleaning up build files" notice!
+    . ls ("(\.(htm|zip|exe)|[\/\\]min)$" match) filter =files
+    files 'rm foreach
+    "Done." notice!
+  )  
+) ::
+;; Deletes min build files

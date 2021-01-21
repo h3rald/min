@@ -1,7 +1,6 @@
 #!/usr/bin/env min
 
-"_helpers" load
-'helpers import
+"_helpers" require :helpers 'helpers import
 
 config /version :min-version
 "Min_DeveloperGuide.htm" :guide-file
@@ -10,23 +9,31 @@ config /version :min-version
 "version:\\s+\\d+\\.\\d+\\.\\d+" :min-v-reg
 "version: $#" (min-version) =% :min-v-rep
 
-; Module symbols
-{}
 (
-  "Updating min Developer Guide and project on H3RALD.com..." notice
-  guide-file h3rald-guide cp
-  h3rald-min-md fread "s/$#/$#/m" (min-v-reg min-v-rep) =% regex 0 get :updated-contents
-  updated-contents h3rald-min-md fwrite
-  "Done." notice
-) %update
+  symbol update
+  (==>)
+  (
+    "Updating min Developer Guide and project on H3RALD.com..." notice!
+    guide-file h3rald-guide cp
+    h3rald-min-md fread "s/$#/$#/m" (min-v-reg min-v-rep) =% regex 0 get :updated-contents
+    updated-contents h3rald-min-md fwrite
+    "Done." notice!
+  ) 
+) ::
+;; Updates the min Developer Guide and project page on H3RALD.com
+
 (
-  "git" required
-  "hastysite" required
-  "Pulling content and rebuilding H3RALD.com web site..." notice
-  ; Assuming min and h3rald are siblings
-  .. cd "h3rald" cd
-  "git pull" !
-  "hastysite build" !
-  .. cd "min" cd
-) %build
-+h3rald-tasks
+  symbol build
+  (==>)
+  (
+    "git" required
+    "hastysite" required
+    "Pulling content and rebuilding H3RALD.com web site..." notice!
+    ; Assuming min and h3rald are siblings
+    .. cd "h3rald" cd
+    "git pull" !
+    "hastysite build" !
+    .. cd "min" cd
+  )
+) ::
+;; Builds H3RALD.com web site

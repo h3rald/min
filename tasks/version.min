@@ -5,44 +5,76 @@
 
 yaml-cfg fread from-yaml :config
 config /version :old-version
-(
-  :new-version
-  config new-version %version @config
-  config to-yaml yaml-cfg fwrite
-) :update-yaml-config
-(
-  :new-version
-  json-site-cfg fread from-json :site-config
-  site-config new-version %version @site-config
-  site-config to-json json-site-cfg fwrite
-) :update-site-config
 
-; Module tasks
-{}
 (
-  "" :new-version
-  false :valid-semver
-  (valid-semver not)
+  symbol update-yaml-config
+  ('sym :new-version ==>)
   (
-    "New version" ask @new-version
-    new-version semver? @valid-semver
-  ) while
-  new-version update-yaml-config
-  new-version update-site-config
-) %set
+    config new-version %version @config
+    config to-yaml yaml-cfg fwrite
+  )  
+) ::
+;; Sets the version in the min.yml file to new-version.
+
 (
-  old-version semver-inc-major :new-version
-  new-version update-yaml-config
-  new-version update-site-config
-) %major
+  symbol update-site-config
+  ('sym :new-version ==>)
+  (
+    json-site-cfg fread from-json :site-config
+    site-config new-version %version @site-config
+    site-config to-json json-site-cfg fwrite
+  )
+) ::
+;; Updates the version of the web site to new-version.
+
+#| Tasks |#
+
 (
-  old-version semver-inc-minor :new-version
-  new-version update-yaml-config
-  new-version update-site-config
-) %minor
+  symbol set
+  (==>)
+  (
+    "" :new-version
+    false :valid-semver
+    (valid-semver not)
+    (
+      "New version" ask @new-version
+      new-version semver? @valid-semver
+    ) while
+    new-version update-yaml-config
+    new-version update-site-config
+  )
+) ::
+;; Asks and sets the new min version where appropriate.
+
 (
-  old-version semver-inc-patch :new-version
-  new-version update-yaml-config
-  new-version update-site-config
-) %patch
-+version-tasks
+  symbol major
+  (==>)
+  (
+    old-version semver-inc-major :new-version
+    new-version update-yaml-config
+    new-version update-site-config
+  )
+) ::
+;; Increments the min major version.
+
+(
+  symbol minor
+  (==>)
+  (
+    old-version semver-inc-minor :new-version
+    new-version update-yaml-config
+    new-version update-site-config
+  )
+) ::
+;; Increments the min minor version.
+
+(
+  symbol patch
+  (==>)
+  (
+    old-version semver-inc-patch :new-version
+    new-version update-yaml-config
+    new-version update-site-config
+  )
+) ::
+;; Increments the min patch version.
