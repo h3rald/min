@@ -10,5 +10,5 @@
 
 ---
 
-For more info, go to <https://min-lang.org>.
+► For more info, go to <https://min-lang.org>.
 
