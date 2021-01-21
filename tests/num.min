@@ -32,6 +32,8 @@
 
   ((1 2 3 4 5) sum 15 ==) assert
 
+  ((1 2 3 4 5) product 120 ==) assert
+
   (0 :c
     (c 10 <) (c succ @c) while
     c 10 ==) assert
