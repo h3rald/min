@@ -41,6 +41,7 @@ when not defined(mini):
 
 when not defined(lite) and not defined(mini):
   import 
+    minpkg/lib/min_binary,
     minpkg/lib/min_http,
     minpkg/lib/min_net,
     minpkg/lib/min_crypto,
@@ -165,6 +166,7 @@ proc stdLib*(i: In) =
     i.dstore_module
     i.io_module
   when not defined(lite) and not defined(mini):
+    i.min_binary
     i.crypto_module
     i.net_module
     i.math_module
