@@ -135,4 +135,20 @@ proc num_module*(i: In)=
     else:
       i.push c.newVal
 
+  def.symbol("product") do (i: In):
+    var s: MinValue
+    i.reqQuotationOfNumbers s
+    var c = 1.float
+    var isInt = true
+    for n in s.qVal:
+      if n.isFloat:
+        isInt = false
+        c = c * n.floatVal
+      else:
+        c = c * n.intVal.float
+    if isInt:
+      i.push c.int.newVal
+    else:
+      i.push c.newVal
+
   def.finalize("num")
