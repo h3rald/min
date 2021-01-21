@@ -4,3 +4,5 @@
 * Added **help** (and also **?** alias and **?** sigil), **symbol-help**, **sigil-help**
 * Added **replace-apply**.
 * Refactored tasks as required modules.
+* Added **binary** module (thanks @drkameleon!).
+* Added Dockerfile (thanks @drkameleon!).

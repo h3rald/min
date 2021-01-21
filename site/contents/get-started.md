@@ -17,7 +17,7 @@ You can download one of the following pre-built min binaries:
 
 {{guide-download}}
 
-## Building from Source
+## Building from source
 
 Alternatively, you can build min from source in one of the following ways:
 
@@ -103,6 +103,20 @@ Additionally:
 * There will be no support for dynamic libraries.
 * The **-m, \-\-module-path** and **-a, \-\-asset-path** options have no effect.
 * No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
+
+## Building a Docker image
+
+[Yanis Zafirópulos](https://github.com/drkameleon) contributed a Dockerfile that you can use to create your own Docker image for min based on Alpine Linux.
+
+To build the image locally, execute the following command from the repository root directory:
+
+> %terminal%
+> docker build \-t mindocker .
+
+To run it, execute:
+
+> %terminal%
+> docker run \-it mindocker
 
 ## Running the min Shell
 
