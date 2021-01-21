@@ -16,6 +16,7 @@
 ) unless
 (lite? mini? or) (
   (
+    'binary import
     'crypto import
     'math   import
     'net    import
