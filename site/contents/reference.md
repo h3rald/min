@@ -68,6 +68,16 @@ The following notation is used in the signature of all min operators:
 : A quotation (also expressed as parenthesis enclosing other values).
 {{d}}
 : A dictionary value.
+{{help}}
+: A help dictionary:
+
+      {
+       "puts" :name
+       "symbol" :kind
+       "a ==>" :signature
+       "Prints a and a new line to STDOUT." :description
+       ;help
+      }
 {{url}}
 : An URL dictionary:
 

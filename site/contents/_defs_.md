@@ -48,6 +48,7 @@
 {{t => [true](class:kwd)}}
 {{null => [null](class:kwd)}}
 {{none => &#x2205;}}
+{{help => [dict:help](class:kwd)}}
 {{sock => [dict:socket](class:kwd)}}
 {{url => [url](class:kwd)}}
 {{req => [request](class:kwd)}}

@@ -6,8 +6,6 @@ title: "dict Module"
 
 {#sig||/||dget#}
 
-{#sig||?||dhas?#}
-
 {#sig||%||dset#}
 
 {#op||ddup||{{d1}}||{{d2}}||

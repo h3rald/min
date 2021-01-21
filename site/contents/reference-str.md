@@ -98,6 +98,30 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > `"This is a simple test. Is it really a simple test?"`#}
 
+{#op||replace-apply||{{s1}} {{s2}} {{q}}||{{s3}}||
+> Returns a copy of {{s1}} containing all occurrences of {{s2}} replaced by applying {{q}} to each quotation correponding to each match.
+> > %tip%
+> > Tip
+> > 
+> > {{s2}} can be a {{sgregex}}-compatible regular expression.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following:
+> > 
+> > `":1::2::3::4:" ":(\d):" (=m m 1 get :d "-$#-" (d) =%) replace-apply`
+> > 
+> > produces:
+> > 
+> > `"-1--2--3--4-"`
+> > 
+> > Note that for each match the following quotations (each containing tbe full matcb and the captured matches) are produced as input for the replace quotation:
+> >      ("-1-" "1")
+> >      ("-2-" "2")
+> >      ("-3-" "3")
+> >      ("-4-" "4") #}
+
 {#op||regex||{{s1}} {{s2}}||{{q}}||
 > Performs a search and/or a search-and-replace operation using pattern {{s2}}.
 > 
