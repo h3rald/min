@@ -56,3 +56,12 @@ Returns the successor of {{i1}}.#}
 
 {#op||sum||{{q}}||{{i}}||
 Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
+
+{#op||product||{{q}}||{{i}}||
+Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
+
+{#op||avg||{{q}}||{{n}}||
+Returns the average of the items of {{q}}. #}
+
+{#op||med||{{q}}||{{n}}||
+Returns the median of the items of {{q}}. #}
