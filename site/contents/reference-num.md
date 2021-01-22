@@ -65,3 +65,6 @@ Returns the average of the items of {{q}}. #}
 
 {#op||med||{{q}}||{{n}}||
 Returns the median of the items of {{q}}. #}
+
+{#op||range||{{q}}||{{q}}||
+Takes a quotation of integers in the form of {{start}}, {{end}} (,{{step}}), generates the sequence and returns the resulting quotation of integers. #}
