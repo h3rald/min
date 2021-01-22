@@ -35,7 +35,7 @@ Returns the full path to the parent directory. #}
 > > `/tmp/test.txt 755 chmod`#}
 
 {#op||cd||{{sl}}||{{none}}||
-Change the current directory to {{{sl}}. #}
+Change the current directory to {{sl}}. #}
 
 {#op||cp||{{sl1}} {{sl2}}||{{none}}||
 Copies the file or directory {{sl1}} to {{sl2}}. #}

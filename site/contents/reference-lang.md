@@ -57,7 +57,7 @@ Symbol used to separate input and output calues in operator signatures.#}
 
 {#alias||=||quote-define#}
 
-{#op||apply||{{q}}|{{d}}||({{a0p}})|{{{a0p}}}||
+{#op||apply||{{q}}|{{d}}||({{a0p}})|{{a0p}}}||
 Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
 {#op||args||{{none}}||{{q}}||

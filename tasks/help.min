@@ -1,8 +1,8 @@
 "help/snippets.json" fread from-json :snippets
 "site/contents" ls ("reference-" match) filter =src-files
-"/\\{\\#op\\|\\|([^|]+)\\|\\|([^|]+)\|\|([^|]+)\|\|([^#])+\\#\\}/g" :op-regex
-"\\{\\{([^}]+)\\}\\}" :snippet-regex
-"^>( >)*" :block-regex
+"\{\#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+\#\}" :op-regex
+"\{\\{([^}]+)\}\}" :snippet-regex
+">( >)*" :block-regex
 "%([^%]+)%" :title-regex
 
 (
@@ -11,7 +11,7 @@
     (
         s 
             block-regex (pop "") replace-apply
-            title-regex (1 get titleize) replace-apply
+            title-regex (pop "") replace-apply
         @result
     )
 ) ::
@@ -57,9 +57,9 @@
     (==>)
     (
         src-files (
-            fread op-regex search-all puts (
-                puts process-op :op
-                op puts!
+            fread op-regex search-all (
+                process-op :op
+                op
             ) foreach
         ) foreach
     )
