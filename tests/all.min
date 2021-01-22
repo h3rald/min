@@ -19,6 +19,7 @@ sigils size :total-sigils
 'time    load
 'dstore  load
 'fs      load
+'binary  load
 'crypto  load
 'math    load
 'http    load
