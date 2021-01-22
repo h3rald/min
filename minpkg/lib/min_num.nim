@@ -163,5 +163,24 @@ proc num_module*(i: In)=
     
     c = c / len(s.qVal).float
     i.push c.newVal
+ 
+  def.symbol("med") do (i: In):
+    var s: MinValue
+    i.reqQuotationOfNumbers s
+    let first = s.qVal[(s.qVal.len-1) div 2]
+    let second = s.qVal[((s.qVal.len-1) div 2)+1]
+    if s.qVal.len mod 2 == 1:
+      i.push first
+    else:
+      if first.isFloat:
+        if second.isFloat:
+          i.push ((first.floatVal+second.floatVal)/2).newVal
+        else:
+          i.push ((first.floatVal+second.intVal.float)/2).newVal
+      else:
+        if second.isFloat:
+          i.push ((first.intVal.float+second.floatVal)/2).newVal
+        else:
+          i.push ((first.intVal+second.intVal).float/2).newVal
 
   def.finalize("num")
