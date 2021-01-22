@@ -151,4 +151,17 @@ proc num_module*(i: In)=
     else:
       i.push c.newVal
 
+  def.symbol("avg") do (i: In):
+    var s: MinValue
+    i.reqQuotationOfNumbers s
+    var c = 0.float
+    for n in s.qVal:
+      if n.isFloat:
+        c = + n.floatVal
+      else:
+        c = c + n.intVal.float
+    
+    c = c / len(s.qVal).float
+    i.push c.newVal
+
   def.finalize("num")
