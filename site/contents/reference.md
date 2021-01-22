@@ -30,8 +30,6 @@ min includes a small but powerful standard library organized into the following 
 : Provides operators to perform simple mathematical operations on integer and floating point numbers.
 {#link-module||time#}
 : Provides a few basic operators to manage dates, times, and timestamps.
-{#link-module||binary#}
-: Provides main bitwise operators (and, not, or, etc)
 {#link-module||crypto#}
 : Provides operators to compute hashes (MD4, MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
 {#link-module||math#}

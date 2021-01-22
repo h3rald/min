@@ -4,5 +4,6 @@
 * Added **help** (and also **?** alias and **?** sigil), **symbol-help**, **sigil-help**
 * Added **replace-apply**.
 * Refactored tasks as required modules.
-* Added **binary** module (thanks @drkameleon!).
+* Added binary operators to num module (thanks @drkameleon!).
+* Added **product**, **med**, **avg** and **range** operators to num module (thanks @drkameleon!).
 * Added Dockerfile (thanks @drkameleon!).
