@@ -62,3 +62,6 @@ Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
 
 {#op||avg||{{q}}||{{n}}||
 Returns the average of the items of {{q}}. #}
+
+{#op||med||{{q}}||{{n}}||
+Returns the median of the items of {{q}}. #}
