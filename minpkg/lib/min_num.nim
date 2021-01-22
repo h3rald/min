@@ -181,5 +181,27 @@ proc num_module*(i: In)=
           i.push ((first.intVal.float+second.floatVal)/2).newVal
         else:
           i.push ((first.intVal+second.intVal).float/2).newVal
+    
+  def.symbol("range") do (i: In):
+    var s: MinValue
+    i.reqQuotationOfNumbers s
+    var a = s.qVal[0]
+    var b = s.qVal[1]
+    var step = 1.newVal
+    var res = newSeq[MinValue](0)
+    if len(s.qVal)==3:
+      a = s.qVal[0]
+      b = s.qVal[1]
+      step = s.qVal[2]
+    var j = a
+    if a.intVal < b.intVal:
+      while j.intVal <= b.intVal:
+        res.add j
+        j = (j.intVal + step.intVal).newVal
+    else:
+      while j.intVal >= b.intVal:
+        res.add j
+        j = (j.intVal - step.intVal).newVal
+    i.push res.newVal
 
   def.finalize("num")
