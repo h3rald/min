@@ -160,7 +160,6 @@ proc num_module*(i: In)=
         c = + n.floatVal
       else:
         c = c + n.intVal.float
-    
     c = c / len(s.qVal).float
     i.push c.newVal
  
