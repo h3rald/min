@@ -59,3 +59,6 @@ Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
 
 {#op||product||{{q}}||{{i}}||
 Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
+
+{#op||avg||{{q}}||{{n}}||
+Returns the average of the items of {{q}}. #}
