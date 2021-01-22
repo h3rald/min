@@ -1,0 +1,67 @@
+"help/snippets.json" fread from-json :snippets
+"site/contents" ls ("reference-" match) filter =src-files
+"/\\{\\#op\\|\\|([^|]+)\\|\\|([^|]+)\|\|([^|]+)\|\|([^#])+\\#\\}/g" :op-regex
+"\\{\\{([^}]+)\\}\\}" :snippet-regex
+"^>( >)*" :block-regex
+"%([^%]+)%" :title-regex
+
+(
+    symbol process-block-markup
+    (string :s ==> string :result)
+    (
+        s 
+            block-regex (pop "") replace-apply
+            title-regex (1 get titleize) replace-apply
+        @result
+    )
+) ::
+;; Simplify block-level markup
+
+(
+    symbol process-snippets
+    (string :s ==> string :result)
+    (
+        s snippet-regex (
+            1 get :id
+            snippets id dget
+        ) replace-apply @result
+    )
+) ::
+;; Resolves documentation snippets.
+
+(
+    symbol process
+    (string :s ==> string :result)
+    (
+        s process-snippets process-block-markup strip @result
+    )
+) ::
+;; Processes documentation snippets and markup.
+
+(
+    symbol process-op
+    (quot :matches ==> dict :data)
+    (
+        {}
+            matches 1 get process %name
+            matches 2 get process %input
+            matches 3 get process %output
+            matches 4 get process %description
+        @data
+    )   
+) ::
+;; Processes operator reference documentation.
+
+(
+    symbol default
+    (==>)
+    (
+        src-files (
+            fread op-regex search-all puts (
+                puts process-op :op
+                op puts!
+            ) foreach
+        ) foreach
+    )
+) ::
+;; Builds the reference help JSON sources.

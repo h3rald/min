@@ -150,7 +150,7 @@ proc str_module*(i: In) =
       let vals = i.expect("string", "string")
       let reg = vals[0]
       let str = vals[1]
-      var matches = str.strVal.search(reg.strVal)
+      var matches = str.strVal.search(reg.strVal, "m")
       var res = newSeq[MinValue](matches.len)
       for i in 0..matches.len-1:
         res[i] = matches[i].newVal
@@ -164,6 +164,19 @@ proc str_module*(i: In) =
         i.push true.newVal
       else:
         i.push false.newVal
+
+    def.symbol("search-all") do (i: In):
+      let vals = i.expect("string", "string")
+      var res = newSeq[MinValue](0)
+      let reg = vals[0].strVal
+      let str = vals[1].strVal
+      let rawMatches = str.searchAll(reg, "m")
+      for m in rawMatches:
+        var matches = newSeq[MinValue](0)
+        for capture in m:
+          matches.add capture.newVal
+        res.add matches.newVal
+      i.push res.newVal
 
     def.symbol("replace-apply") do (i: In):
       let vals = i.expect("quot", "string", "string")
