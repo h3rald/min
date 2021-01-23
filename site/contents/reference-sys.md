@@ -8,11 +8,11 @@ title: "sys Module"
 
 {#alias||$||get-env#}
 
-{#sig||\!||system#}
+{#sig||&excl;||system#}
 
-{#alias||\!||system#}
+{#alias||&excl;||system#}
 
-{#alias||\!\!||system!#}
+{#alias||&excl;&excl;||system!#}
 
 {#sig||&||run#}
 

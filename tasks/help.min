@@ -1,12 +1,28 @@
 "tasks/data/doc-snippets.json" fread from-json :snippets
 "site/contents" ls ("reference-" match) filter =src-files
 "\{\#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+\#\}" :op-regex
+"\{\#sig\|\|([^|]+)\|\|([^#]+)\#\}" :sig-regex
+"\{\#alias\|\|([^|]+)\|\|([^#]+)\#\}" :alias-regex
 "\{\\{([^}]+)\}\}" :snippet-regex
 ">( >)*" :block-regex
 "%([^%]+)%" :title-regex
 "\{@[^@]+@\}" :incl-regex
 "`([^`]+)`" :code-regex
 
+(
+  symbol fix-name
+  (string :s ==> string :result)
+  (
+    s
+      "&excl;" (pop "!") replace-apply
+      "&gt;" (pop ">") replace-apply
+      "&lt;" (pop "<") replace-apply
+      "&apos;" (pop "'") replace-apply
+      "&ast;" (pop "*") replace-apply
+    @result
+  )
+) ::
+;; Fixes names with special characters
 (
     symbol process-block-markup
     (string :s ==> string :result)
@@ -47,34 +63,81 @@
     (quot :matches ==> dict :data)
     (
         {}
-            matches 1 get process %name
-            matches 2 get process %input
-            matches 3 get process %output
+            matches 1 get process fix-name %name
+            matches 2 get process :input
+            matches 3 get process :output
+            "$# ==> $#" (input output) =% %signature
             matches 4 get process %description
+            "symbol" %kind
         @data
     )   
 ) ::
 ;; Processes operator reference documentation.
 
 (
+    symbol process-alias
+    (quot :matches ==> dict :data)
+    (
+        {}
+            matches 1 get process fix-name %name
+            matches 2 get :ref
+            "See $#" (ref) =% %description
+            "symbol" %kind
+        @data
+    )   
+) ::
+;; Processes alias reference documentation.
+
+(
+    symbol process-sig
+    (quot :matches ==> dict :data)
+    (
+        {}
+            matches 1 get process fix-name %name
+            matches 2 get :ref
+            "See $#" (ref) =% %description
+            "sigil" %kind
+        @data
+    )   
+) ::
+;; Processes sigil reference documentation.
+
+(
     symbol default
     (==>)
     ( 
         {} :ref-dict
+        {} :op-dict
+        {} :sig-dict
         src-files (
             :file 
             file "reference-([a-z]+)\.md" search 1 get :mod-id
-            "Generating: $#" (mod-id) =% notice!
-            {} :mod-dict
-            file fread op-regex search-all (
+            "Processing: $#" (mod-id) =% notice!
+            file fread :contents
+            contents op-regex search-all (
                 process-op :op
                 op /name :op-name
-                mod-dict 
+                op-dict 
                   op op-name dset
-                @mod-dict
+                @op-dict
+            ) foreach
+            contents alias-regex search-all (
+                process-alias :alias
+                alias /name :alias-name
+                op-dict 
+                  alias alias-name dset
+                @op-dict
+            ) foreach
+            contents sig-regex search-all (
+                process-alias :sig
+                sig /name :sig-name
+                sig-dict 
+                  sig sig-name dset
+                @sig-dict
             ) foreach
             ref-dict
-              mod-dict mod-id dset
+              op-dict   %operators
+              sig-dict  %sigils
             @ref-dict
         ) foreach
         "Writing help.json" notice!

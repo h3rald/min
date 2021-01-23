@@ -31,6 +31,9 @@ proc lang_module*(i: In) =
 
   when not defined(mini):
   
+    const HELPFILE = "../../help.json".slurp
+    let HELP = HELPFILE.parseJson
+  
     def.symbol("from-json") do (i: In):
       let vals = i.expect("string")
       let s = vals[0]
@@ -547,6 +550,11 @@ proc lang_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
+      elif not defined(mini) and HELP["operators"].hasKey(s):
+        var doc = i.fromJson(HELP["operators"][s])
+        doc.objType = "help"
+        i.push doc
+        return
     i.push nil.newVal
 
   def.symbol("sigil-help") do (i: In):
@@ -555,7 +563,14 @@ proc lang_module*(i: In) =
     if i.scope.hasSigil(s):
       let sym = i.scope.getSigil(s)
       if not sym.doc.isNil and sym.doc.kind == JObject:
-        i.push i.fromJson(sym.doc)
+        var doc = i.fromJson(sym.doc)
+        doc.objType = "help"
+        i.push doc
+        return
+      elif not defined(mini) and HELP["operators"].hasKey(s):
+        var doc =i.fromJson(HELP["operators"][s])
+        doc.objType = "help"
+        i.push doc
         return
     i.push nil.newVal
 
@@ -568,7 +583,8 @@ proc lang_module*(i: In) =
     var foundDoc = false
     let displayDoc = proc (j: JsonNode) =
       echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
-      echo j["signature"].getStr
+      if j.hasKey("signature"):
+        echo j["signature"].getStr
       if j.hasKey("description"):
         let desc = j["description"].getStr
         if desc.len != 0:
@@ -582,12 +598,18 @@ proc lang_module*(i: In) =
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
+      elif not defined(mini) and HELP["operators"].hasKey(s):
+        foundDoc = true
+        displayDoc HELP["operators"][s]
     if i.scope.hasSigil(s):
       found = true
       let sym = i.scope.getSigil(s)
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
+      elif not defined(mini) and HELP["sigils"].hasKey(s):
+        foundDoc = true
+        displayDoc HELP["sigils"][s]
     if not found:
       warn "Undefined symbol or sigil: $#" % s
     elif not foundDoc:

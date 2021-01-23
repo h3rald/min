@@ -7,3 +7,4 @@
 * Added binary operators to num module (thanks @drkameleon!).
 * Added **product**, **med**, **avg** and **range** operators to num module (thanks @drkameleon!).
 * Added Dockerfile (thanks @drkameleon!).
+* Implemented integrated help system for all native symbols.

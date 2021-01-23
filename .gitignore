@@ -16,7 +16,6 @@ site/temp/
 dynlibs/
 .env.yml
 response.json
-run
-run.nim
-dstore.json
+mintool
+mintool.nim
 test.min

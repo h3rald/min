@@ -1,0 +1,1 @@
+min -c -m:tasks -a:tasks/data -n:'-d:release' mintool

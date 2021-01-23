@@ -13,7 +13,7 @@ Subtracts {{n2}} from {{n1}}. #}
 {#op||-inf||{{none}}||{{n}}||
 Returns negative infinity. #}
 
-{#op||\*||{{n1}} {{n2}}||{{n3}}||
+{#op||&ast;||{{n1}} {{n2}}||{{n3}}||
 Multiplies {{n1}} by {{n2}}. #}
 
 {#op||/||{{n1}} {{n2}}||{{n3}}||

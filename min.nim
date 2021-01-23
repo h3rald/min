@@ -60,7 +60,6 @@ when defined(mini):
 else:
   export niftylogger
 
-
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
@@ -94,6 +93,8 @@ when not defined(mini):
       return symbols.mapIt("'" & $it)
     if word.startsWith("~"):
       return symbols.mapIt("~" & $it)
+    if word.startsWith("?"):
+      return symbols.mapIt("?" & $it)
     if word.startsWith("@"):
       return symbols.mapIt("@" & $it)
     if word.startsWith("#"):

@@ -26,25 +26,25 @@ title: "lang Module"
 
 {#alias||?||help#}
 
-{#sig||*||invoke#}
+{#sig||&ast;||invoke#}
 
 {#sig||@||bind#}
 
 {#alias||@||bind#}
 
-{#sig||>||save-symbol#}
+{#sig||&gt;||save-symbol#}
 
-{#sig||<||load-symbol#}
+{#sig||&lt;||load-symbol#}
 
 {#alias||->||dequote#}
 
-{#alias||>>||prefix-dequote#}
+{#alias||&gt;&gt;||prefix-dequote#}
 
-{#alias||><||infix-dequote#}
+{#alias||&gt;&lt;||infix-dequote#}
 
-{#alias||=>||apply#}
+{#alias||=&gt;||apply#}
 
-{#op||==>||{{none}}||{{none}}||
+{#op||==&gt;||{{none}}||{{none}}||
 Symbol used to separate input and output calues in operator signatures.#}
 
 {#alias||=-=||expect-empty-stack#}
