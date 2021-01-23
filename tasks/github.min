@@ -36,16 +36,16 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
   (
     data /endpoint :endpoint
     "api" :subdomain
-    (data ?subdomain) (data /subdomain @subdomain) when
+    (data 'subdomain dhas?) (data /subdomain @subdomain) when
     "https://$#.github.com/repos/h3rald/min$#" (subdomain endpoint) =% :url
     {}
       url %url
       data /method %method
-      (data ?headers) 
+      (data 'headers dhas?) 
         (data /headers %headers) 
         (headers %headers) 
       if
-      (data ?body) (data /body %body) when
+      (data 'body dhas?) (data /body %body) when
     request :response
     response /status :status
     response /body :body
