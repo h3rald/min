@@ -163,7 +163,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > produces: `("This is a bad idea")`#}
 
 {#op||search||{{s1}} {{s2}}||{{q}}||
-> Returns a quotation containing the first occurrence of {{s2}} within {{s2}}. Note that:
+> Returns a quotation containing the first occurrence of {{s2}} within {{s1}}. Note that:
 > 
 >   * The first element of {{q}} is the matching substring.
 >   * Other elements (if any) contain captured substrings.
@@ -181,6 +181,9 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > `"192.168.1.1, 127.0.0.1" "[0-9]+\.[0-9]+\.([0-9]+)\.([0-9]+)" search`
 > > 
 > > produces: `("192.168.1.1", "1", "1")`#}
+
+{#op||search||{{s1}} {{s2}}||{{q}}||
+Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of {{s2}} within {{s1}}. #}
 
 {#op||semver-inc-major||{{s1}}||{{s2}}||
 Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}

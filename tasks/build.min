@@ -79,7 +79,7 @@
   (==>)
   (
     config /version :min-version
-    "tasks/templates/min.vim" fread :template
+    "tasks/data/min.vim" fread :template
     timestamp "dd MMM YYYY" tformat :date
     min-symbols " " join :symbols
     "min.vim" :out-file

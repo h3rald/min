@@ -98,7 +98,7 @@ Sends {{s}} to the connected socket {{sock}}. #}
 >   
 >   *  **ipv4** (default): Internet Protocol version 4.
 >   *  **ipv6**: Internet Protocol version 6.
->   *  **unix**: local Unix file {{no-win -> (not supported on Windows systems)}}.
+>   *  **unix**: local Unix file {{no-win}}.
 > type
 > : The socket type. It can be set to one of the following values:
 >  

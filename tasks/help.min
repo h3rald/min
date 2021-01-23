@@ -1,9 +1,11 @@
-"help/snippets.json" fread from-json :snippets
+"tasks/data/doc-snippets.json" fread from-json :snippets
 "site/contents" ls ("reference-" match) filter =src-files
 "\{\#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+\#\}" :op-regex
 "\{\\{([^}]+)\}\}" :snippet-regex
 ">( >)*" :block-regex
 "%([^%]+)%" :title-regex
+"\{@[^@]+@\}" :incl-regex
+"`([^`]+)`" :code-regex
 
 (
     symbol process-block-markup
@@ -12,6 +14,8 @@
         s 
             block-regex (pop "") replace-apply
             title-regex (pop "") replace-apply
+            incl-regex (pop "") replace-apply
+            code-regex (1 get) replace-apply
         @result
     )
 ) ::
@@ -55,13 +59,26 @@
 (
     symbol default
     (==>)
-    (
+    ( 
+        {} :ref-dict
         src-files (
-            fread op-regex search-all (
+            :file 
+            file "reference-([a-z]+)\.md" search 1 get :mod-id
+            "Generating: $#" (mod-id) =% notice!
+            {} :mod-dict
+            file fread op-regex search-all (
                 process-op :op
-                op
+                op /name :op-name
+                mod-dict 
+                  op op-name dset
+                @mod-dict
             ) foreach
+            ref-dict
+              mod-dict mod-id dset
+            @ref-dict
         ) foreach
+        "Writing help.json" notice!
+        ref-dict to-json "help.json" fwrite
     )
 ) ::
 ;; Builds the reference help JSON sources.

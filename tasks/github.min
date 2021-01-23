@@ -3,7 +3,7 @@
 "_helpers" require :helpers 'helpers import
 
 "next-release.md" fread escape :release-body
-"tasks/templates/draft-release.json" fread :draft-release-template 
+"tasks/data/draft-release.json" fread :draft-release-template 
 
 config /version :min-version
 env /github-token :token

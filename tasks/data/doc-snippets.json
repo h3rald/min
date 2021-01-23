@@ -57,5 +57,6 @@
     "sock1": "dict:socket1",
     "sock2": "dict:socket2",
     "m": "min",
+    "no-win": "(not supported on Windows systems)",
     "sgregex": "sgregex"
   }
