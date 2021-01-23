@@ -32,7 +32,7 @@ Now, while the {#link-operator||lang||define#} symbol can be fine to define (the
 
 In this case, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation. Sure, the original version was much more succinct, but this is definitely more readable.
 
-Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#| ... |#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
 Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
 
@@ -73,7 +73,7 @@ Currently min provides the following sigils:
 %
 : Alias for {#link-operator||dict||dset#}. 
 ?
-: Alias for {#link-operator||dict||dhas?#}.
+: Alias for {#link-operator||lang||help#}.
 !
 : Alias for {#link-operator||sys||system#}.
 &
@@ -103,7 +103,7 @@ Sigils can also (and should!) be defined with the {#link-operator||lang||operato
        (json from-json @result)
      ) operator
 
-Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#| ... |#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
 ## Operator signatures
 
