@@ -31,8 +31,8 @@ config /version :min-version
     "Pulling content and rebuilding H3RALD.com web site..." notice!
     ; Assuming min and h3rald are siblings
     .. cd "h3rald" cd
-    "git pull" !
-    "hastysite build" !
+    "git pull" !!
+    "hastysite build" !!
     .. cd "min" cd
   )
 ) ::
