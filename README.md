@@ -1,5 +1,5 @@
 
-<p align="center"><img align="center" width="350" src="logo_darker.svg"/></p>
+<p align="center"><img align="center" width="350" src="logo.svg"/></p>
 <p align="center">
   <b>A tiny concatenative<br>programming language and shell</b>
   <br><br>
