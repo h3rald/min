@@ -1,1 +1,1 @@
-min -c -m:tasks -a:tasks/data -n:'-d:release' mintool
+min -c -m:tasks -a:tasks/data -n:'-d:release -d:ssl --opt:size' mintool

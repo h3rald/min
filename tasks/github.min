@@ -32,7 +32,7 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
 
 (
   symbol gh-req
-  (dict :data ==> dict :result)
+  (dict :data ==> dict|quot :result)
   (
     data /endpoint :endpoint
     "api" :subdomain
@@ -50,27 +50,31 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
     response /status :status
     response /body :body
     response handle-errors 
-    (body length 0 >) (body from-json) ({}) if @result
+    (body length 0 >) (body from-json) ({}) if
+    (quotation?)
+      (#result)
+      (@result)
+    if
   )
 ) ::
 ;; Execute a request using the Github API.
 
 (
   symbol get-assets
-  (dict :data ==> dict :result)
+  (dict :data ==> quot :result)
   (
     data /id :id
     {}
       "/releases/$#/assets" (id) =% %endpoint
       "GET" %method
-    gh-req @result
+    gh-req #result
   )
 ) ::
 ;; Retrieve the assets from an existing Github release.
 
 (
   symbol delete-assets
-  (==>)
+  (dict :config ==>)
   (
     config get-assets =assets
     config /id :id

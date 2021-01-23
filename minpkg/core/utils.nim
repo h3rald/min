@@ -5,13 +5,10 @@ import
   baseutils,
   parser, 
   value,
+  json,
   scope,
   interpreter
   
-when not defined(mini):
-  import
-    json
-
 # Library methods
 
 proc define*(i: In): ref MinScope =
@@ -120,59 +117,57 @@ proc pairs*(i: In, q: MinValue): MinValue =
     r.add value.val
   return r.newVal
 
-when not defined(mini):
-
   # JSON interop
 
-  proc `%`*(i: In, a: MinValue): JsonNode =
-    case a.kind:
-      of minBool:
-        return %a.boolVal
-      of minNull:
-        return newJNull()
-      of minSymbol:
-        return %(";sym:$1" % [a.getstring])
-      of minString:
-        return %a.strVal
-      of minInt:
-        return %a.intVal
-      of minFloat:
-        return %a.floatVal
-      of minQuotation:
-        result = newJArray()
-        for it in a.qVal:
-          result.add(i%it)
-      of minDictionary:
-        result = newJObject()
-        for it in a.dVal.pairs: 
-          result[it.key] = i%i.dget(a, it.key)
+proc `%`*(i: In, a: MinValue): JsonNode =
+  case a.kind:
+    of minBool:
+      return %a.boolVal
+    of minNull:
+      return newJNull()
+    of minSymbol:
+      return %(";sym:$1" % [a.getstring])
+    of minString:
+      return %a.strVal
+    of minInt:
+      return %a.intVal
+    of minFloat:
+      return %a.floatVal
+    of minQuotation:
+      result = newJArray()
+      for it in a.qVal:
+        result.add(i%it)
+    of minDictionary:
+      result = newJObject()
+      for it in a.dVal.pairs: 
+        result[it.key] = i%i.dget(a, it.key)
 
-  proc fromJson*(i: In, json: JsonNode): MinValue = 
-    case json.kind:
-      of JNull:
-        result = newNull()
-      of JBool: 
-        result = json.getBool.newVal
-      of JInt:
-        result = json.getBiggestInt.newVal
-      of JFloat:
-        result = json.getFloat.newVal
-      of JString:
-        let s = json.getStr
-        if s.startsWith(";sym:"):
-          result = s.replace(";sym:", "").newSym
-        else:
-          result = json.getStr.newVal
-      of JObject:
-        var res = newDict(i.scope)
-        for key, value in json.pairs:
-          discard i.dset(res, key, i.fromJson(value))
-        return res
-      of JArray:
-        var res = newSeq[MinValue](0)
-        for value in json.items:
-          res.add i.fromJson(value)
-        return res.newVal
+proc fromJson*(i: In, json: JsonNode): MinValue = 
+  case json.kind:
+    of JNull:
+      result = newNull()
+    of JBool: 
+      result = json.getBool.newVal
+    of JInt:
+      result = json.getBiggestInt.newVal
+    of JFloat:
+      result = json.getFloat.newVal
+    of JString:
+      let s = json.getStr
+      if s.startsWith(";sym:"):
+        result = s.replace(";sym:", "").newSym
+      else:
+        result = json.getStr.newVal
+    of JObject:
+      var res = newDict(i.scope)
+      for key, value in json.pairs:
+        discard i.dset(res, key, i.fromJson(value))
+      return res
+    of JArray:
+      var res = newSeq[MinValue](0)
+      for value in json.items:
+        res.add i.fromJson(value)
+      return res.newVal
 
 # Validators
 

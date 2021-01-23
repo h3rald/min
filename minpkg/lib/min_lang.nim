@@ -2,6 +2,7 @@ import
   critbits, 
   strutils, 
   sequtils,
+  json,
   parseopt,
   algorithm
 when defined(mini):
@@ -11,7 +12,6 @@ when defined(mini):
 else:
   import 
     os,
-    json,
     logging,
     ../core/baseutils,
     ../packages/niftylogger,
@@ -28,11 +28,11 @@ import
 
 proc lang_module*(i: In) =
   let def = i.scope
+  
+  const HELPFILE = "../../help.json".slurp
+  let HELP = HELPFILE.parseJson
 
   when not defined(mini):
-  
-    const HELPFILE = "../../help.json".slurp
-    let HELP = HELPFILE.parseJson
   
     def.symbol("from-json") do (i: In):
       let vals = i.expect("string")
@@ -550,7 +550,7 @@ proc lang_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
-      elif not defined(mini) and HELP["operators"].hasKey(s):
+      elif HELP["operators"].hasKey(s):
         var doc = i.fromJson(HELP["operators"][s])
         doc.objType = "help"
         i.push doc
@@ -567,7 +567,7 @@ proc lang_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
-      elif not defined(mini) and HELP["operators"].hasKey(s):
+      elif HELP["operators"].hasKey(s):
         var doc =i.fromJson(HELP["operators"][s])
         doc.objType = "help"
         i.push doc
@@ -598,7 +598,7 @@ proc lang_module*(i: In) =
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
-      elif not defined(mini) and HELP["operators"].hasKey(s):
+      elif HELP["operators"].hasKey(s):
         foundDoc = true
         displayDoc HELP["operators"][s]
     if i.scope.hasSigil(s):
@@ -607,7 +607,7 @@ proc lang_module*(i: In) =
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
-      elif not defined(mini) and HELP["sigils"].hasKey(s):
+      elif HELP["sigils"].hasKey(s):
         foundDoc = true
         displayDoc HELP["sigils"][s]
     if not found:

@@ -55,7 +55,7 @@
   (
     "hastysite" required 
     "Building - site" notice!
-    !!"cd site && hastysite build && cd .."
+    "cd site && hastysite build && cd .." !!
   )
 ) ::
 ;; Builds the min site.
@@ -139,7 +139,7 @@
 (
   symbol linux-mini
   (==>)
-  ("" "" "linux-mini" cz)
+  ("" "mini" "linux" cz)
 ) ::
 ;; Builds minimin for Linux.
 (
@@ -157,7 +157,7 @@
 (
   symbol macosx-mini
   (==>)
-  ("" "" "macosx-mini" cz)
+  ("" "mini" "macosx" cz)
 ) ::
 ;; Builds minimin for macOS.
 (
@@ -175,6 +175,6 @@
 (
   symbol windows-mini
   (==>)
-  ("" "" "windows-mini" cz)
+  ("" "mini" "windows" cz)
 ) ::
 ;; Builds minimin for Windows.
