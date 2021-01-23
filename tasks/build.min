@@ -43,8 +43,8 @@
   (
     "hastyscribe" required
     "Building - guide" notice!
-    "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !
-    !"cp Min_DeveloperGuide.htm site/output/guide.dev.html"
+    "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% !!
+    "cp Min_DeveloperGuide.htm site/output/guide.dev.html" !!
   )
 ) ::
 ;; Builds the developer guide.
@@ -55,7 +55,7 @@
   (
     "hastysite" required 
     "Building - site" notice!
-    !"cd site && hastysite build && cd .."
+    !!"cd site && hastysite build && cd .."
   )
 ) ::
 ;; Builds the min site.
