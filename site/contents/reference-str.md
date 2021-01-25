@@ -182,7 +182,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > produces: `("192.168.1.1", "1", "1")`#}
 
-{#op||search||{{s1}} {{s2}}||{{q}}||
+{#op||search-all||{{s1}} {{s2}}||{{q}}||
 Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of {{s2}} within {{s1}}. #}
 
 {#op||semver-inc-major||{{s1}}||{{s2}}||
