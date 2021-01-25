@@ -325,9 +325,6 @@ proc lang_module*(i: In) =
     let a = i.peek
     echo $$a
   
-  def.symbol("puts!") do (i: In):
-    echo $$i.pop
-
   def.symbol("gets") do (i: In) {.gcsafe.}:
     when defined(mini):
       i.push readLineFromStdin("").newVal 
@@ -794,16 +791,6 @@ proc lang_module*(i: In) =
       a = i.pop
     i.push(a)
 
-  def.symbol("tap!") do (i: In):
-    let vals = i.expect("quot", "a")
-    let programs = vals[0]
-    var a = vals[1]
-    for program in programs.qVal:
-      var p = program
-      i.push(a)
-      i.dequote(p)
-      a = i.pop
-  
   # Conditionals
 
   def.symbol("if") do (i: In):

@@ -362,9 +362,6 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
 
-{#op||puts!||{{any}}||{{none}}||
-Prints {{any}} and a new line to STDOUT, removing {{any}} from the stack.#}
-
 {#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}
 
@@ -481,28 +478,6 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 > >     ) tap
 > > 
 > > Returns `{3 :a 3 :b 3 :c}`.#}
-
-{#op||tap!||{{any}} {{q}}||{{any}}||
-> Performs the following operations:
-> 
-> 1. Removes {{any}} from the stack.
-> 2. For each quotation defined in {{q}} (which is a quotation of quotations each requiring one argument and returning one argument):
->    1. Pushes {{any}} back to the stack.
->    2. Dequotes the quotation and saves the result as {{any}}.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program:
-> > 
-> >     "" :s1
-> >     "test" (
-> >       (' "1" swap append "" join)
-> >       (' "2" swap append "" join)
-> >       (' "3" swap append "" join @s1 s1)
-> >     ) tap!
-> > 
-> > Sets `s1` to `"test123"`. #}
 
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}

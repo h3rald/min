@@ -105,6 +105,13 @@ Sigils can also (and should!) be defined with the {#link-operator||lang||operato
 
 Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
+## Auto-popping
+
+Typically, but not always, operators push one or more value to the stack. While this is typically the desired behavior, in some cases you may want to keep the stack clear so in these cases you can append a `!` character to any symbol to cause the symbol {#link-operator||lang||pop#} to be pushed on the stack immediately afterwards.
+
+     "test" puts  ;Prints "test" and pushes "test" on the stack.
+     "test" puts! ;Prints "test" without pushing anything on the stack.
+
 ## Operator signatures
 
 When defining symbols and sigils witb the {#link-operator||lang||operator#} operator, you must specify a *signature* that will be used to validate and captuee input and output values:

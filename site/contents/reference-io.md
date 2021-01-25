@@ -28,14 +28,8 @@ Prints all elements of {{q}} to STDOUT, in {{i}} columns.#}
 {#op||debug||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [debug](class:kwd) or lower.#}
 
-{#op||debug!||{{any}}||{{none}}||
-Prints {{any}} (removing it from the stack) and a new line to STDOUT, if logging level is set to [debug](class:kwd) or lower.#}
-
 {#op||error||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [error](class:kwd) or lower.#}
-
-{#op||error!||{{any}}||{{none}}||
-Prints {{any}} (removing it from the stack) and a new line to STDERR, if logging level is set to [error](class:kwd) or lower.#}
 
 {#op||fappend||{{s1}} {{s2}}||{{none}}||
 Appends {{s1}} to the end of file {{s2}}. #} 
@@ -54,9 +48,6 @@ Reads single character from STDIN without waiting for ENTER key and places its A
 
 {#op||info||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.#}
-
-{#op||info!||{{any}}||{{none}}||
-Prints {{any}} (removing it from the stack) and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.#}
 
 {#op||mapkey||{{q}} {{sl}}||{{none}}||
 > Maps the named key/key combination {{sl}} to the quotation {{q}}, so that {{q}} is executed when key {{sl}} is pressed. 
@@ -82,17 +73,11 @@ Prints a new line to STDOUT.#}
 {#op||notice||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [notice](class:kwd) (default) or lower.#}
 
-{#op||notice!||{{any}}||{{none}}||
-Prints {{any}} (removing it from the stack) and a new line to STDOUT, if logging level is set to [notice](class:kwd) (default) or lower.#}
-
 {#op||password||{{none}}||{{s}}||
 Reads a line from STDIN displaying \* for each typed character, and places it on top of the stack as a string.#}
 
 {#op||print||{{any}}||{{any}}||
 Prints {{any}} to STDOUT.#}
-
-{#op||print!||{{any}}||{{none}}||
-Prints {{any}} to STDOUT and removes {{any}} from the stack.#}
 
 {#op||putchr||{{s}}||{{any}}||
 Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
@@ -112,6 +97,3 @@ Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the 
 
 {#op||warning||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.#}
-
-{#op||warning!||{{any}}||{{none}}||
-Prints {{any}} (removing it from the stack) and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.#}

@@ -1,16 +1,18 @@
 :root {
-  --primary-foreground:#89968B;
+  --primary-foreground:#d1e5d4;
   --primary-background:#262625;
   --secondary-background: #474745;
-  --primary-accent:#4BAA76;
+  --primary-accent:#57c589;
   --secondary-accent:#2B4737;
   --secondary-foreground:#D4CC90;
+  --normal-text-weight: 300;
+  --bold-text-weight: 400;
 }
 
 body {
   background-color: var(--primary-background);
   color: var(--primary-foreground);
-  font-weight: 300;
+  font-weight: var(--normal-text-weight);
 	font-feature-settings: "kern";
 	font-kerning: normal;
   font-variant-ligatures: common-ligatures;
@@ -113,7 +115,11 @@ article, section {
 }
 
 b, strong, dt {
-  font-weight: 400;
+  font-weight: var(--bold-text-weight);
+}
+
+dt {
+  margin-top: 1em;
 }
 
 code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal {
@@ -121,11 +127,11 @@ code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal {
 }
 
 .kwd, .kwd, .cmd, .file, .dir, .ext, kbd, .kbd {
-  font-weight: bold;  
+  font-weight: var(--bold-text-weight);  
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
+  font-weight: var(--normal-text-weight);
   color: var(--secondary-foreground);
 }
 
@@ -166,21 +172,21 @@ dl {
 .note p:first-child:before {
   font-family: "themify";
   font-style: normal;
-  font-weight: normal;
+  font-weight: var(--normal-text-weight);
   font-size: 100%;
   content: "\e717" " ";
 }
 .tip p:first-child:before {
   font-family: "themify";
   font-style: normal;
-  font-weight: normal;
+  font-weight: var(--normal-text-weight);
   font-size: 100%;
   content: "\e64d" " ";
 }
 .warning p:first-child:before {
   font-family: "themify";
   font-style: normal;
-  font-weight: normal;
+  font-weight: var(--normal-text-weight);
   font-size: 100%;
   content: "\e6c5" " ";
 }
@@ -206,12 +212,12 @@ dl {
 .note p:first-child,
 .tip p:first-child,
 .warning p:first-child {
-  font-weight: bold;
+  font-weight: var(--bold-text-weight);
 }
 .sidebar p:first-child:before {
   font-family: "themify";
   font-style: normal;
-  font-weight: normal;
+  font-weight: var(--normal-text-weight);
   font-size: 100%;
   content: "\e717" " ";
 }
@@ -248,7 +254,7 @@ dl {
   box-shadow: none;
   font-size: 90%;
   font-variant: small-caps;
-  font-weight: bold;
+  font-weight: var(--bold-text-weight);
   content: "sigil";
 }
 

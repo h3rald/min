@@ -234,6 +234,17 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
     raise
   i.push i2.stack.newVal
 
+# Inherit file/line/column from current symbol
+proc pushSym*(i: In, s: string) =
+  i.push MinValue(
+    kind: minSymbol, 
+    symVal: s, 
+    filename: i.currSym.filename, 
+    line: i.currSym.line, 
+    column: i.currSym.column, 
+    outerSym: i.currSym.symVal, 
+    docComment: i.currSym.docComment)
+
 proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
   if val.kind == minSymbol:
     i.debug(val)
@@ -249,20 +260,27 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol) 
     else: 
-      var qIndex = symbol.find('"')
-      if qIndex > 0:
-        let sigil = symbol[0..qIndex-1]
-        if not i.scope.hasSigil(sigil):
-          raiseUndefined("Undefined sigil '$1'"%sigil)
-        i.stack.add(MinValue(kind: minString, strVal: symbol[qIndex+1..symbol.len-2]))
-        i.apply(i.scope.getSigil(sigil))
+      # Check if symbol ends with ! (auto-popping)
+      if symbol.len > 1 and symbol[symbol.len-1] == '!':
+        let apSymbol = symbol[0..symbol.len-1]
+        if i.scope.hasSymbol(apSymbol):
+          i.apply i.scope.getSymbol(apSymbol)
+          i.pushSym "pop" 
       else:
-        let sigil = "" & symbol[0]
-        if symbol.len > 1 and i.scope.hasSigil(sigil):
-          i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+        var qIndex = symbol.find('"')
+        if qIndex > 0:
+          let sigil = symbol[0..qIndex-1]
+          if not i.scope.hasSigil(sigil):
+            raiseUndefined("Undefined sigil '$1'"%sigil)
+          i.stack.add(MinValue(kind: minString, strVal: symbol[qIndex+1..symbol.len-2]))
           i.apply(i.scope.getSigil(sigil))
         else:
-          raiseUndefined("Undefined symbol '$1'" % [val.symVal])
+          let sigil = "" & symbol[0]
+          if symbol.len > 1 and i.scope.hasSigil(sigil):
+            i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+            i.apply(i.scope.getSigil(sigil))
+          else:
+            raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
   elif val.kind == minDictionary and val.objType != "module":
     # Dictionary must be copied every time they are interpreted, otherwise when they are used in cycles they reference each other.
@@ -421,14 +439,3 @@ proc parse*(i: In, s: string, name="<parse>"): MinValue =
 
 proc read*(i: In, s: string): MinValue =
   return i.load(s, true)
-
-# Inherit file/line/column from current symbol
-proc pushSym*(i: In, s: string) =
-  i.push MinValue(
-    kind: minSymbol, 
-    symVal: s, 
-    filename: i.currSym.filename, 
-    line: i.currSym.line, 
-    column: i.currSym.column, 
-    outerSym: i.currSym.symVal, 
-    docComment: i.currSym.docComment)

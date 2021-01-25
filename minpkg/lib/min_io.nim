@@ -72,31 +72,6 @@ proc io_module*(i: In) =
     fatal $$a
     quit(100)
     
-  def.symbol("notice!") do (i: In):
-    let a = i.pop
-    notice $$a
-
-  def.symbol("info!") do (i: In):
-    let a = i.pop
-    info $$a
-
-  def.symbol("error!") do (i: In):
-    let a = i.pop
-    error $$a
-
-  def.symbol("warn!") do (i: In):
-    let a = i.pop
-    warn $$a
-
-  def.symbol("debug!") do (i: In):
-    let a = i.pop
-    debug $$a
-
-  def.symbol("fatal!") do (i: In):
-    let a = i.pop
-    fatal $$a
-    quit(100)
-
   def.symbol("column-print") do (i: In):
     let vals = i.expect("int", "quot")
     let n = vals[0]
@@ -176,9 +151,6 @@ proc io_module*(i: In) =
     let a = i.peek
     a.print
   
-  def.symbol("print!") do (i: In):
-    i.pop.print
-
   def.symbol("fread") do (i: In):
     let vals = i.expect("string")
     let file = vals[0].strVal

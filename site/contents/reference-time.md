@@ -19,7 +19,6 @@ Converts the timeinfo dictionary {{tinfo}} to the corresponding Unix timestamp. 
 {#op||datetime||{{i}}||{{s}}||
 Returns an ISO 8601 string representing the combined date and time in UTC of timestamp {{i}}. #}
 
-
 {#op||tformat||{{i}} {{s}}||{{s}}||
 > Formats timestamp {{i}} using string {{s}}.
 > 

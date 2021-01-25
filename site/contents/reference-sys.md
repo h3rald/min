@@ -106,9 +106,6 @@ Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}
 {#op||system||{{sl}}||{{i}}||
 Executes the external command {{sl}} in the current directory and pushes its return code on the stack. #}
 
-{#op||system!||{{sl}}||{{none}}||
-Executes the external command {{sl}} in the current directory without pushing its return code on the stack. #}
-
 {#op||unzip||{{sl1}} {{sl2}}||{{none}}||
 Decompresses zip file {{sl1}} to directory {{sl2}} (created if not present).#}
 
