@@ -7,7 +7,7 @@ proc typeName*(v: MinValue): string =
     of minInt:
       return "int"
     of minFloat:
-      return "float"
+      return "flt"
     of minDictionary: 
       if v.isTypedDictionary:
         return "dict:" & v.objType
@@ -16,7 +16,7 @@ proc typeName*(v: MinValue): string =
     of minQuotation:
       return "quot"
     of minString:
-      return "string"
+      return "str"
     of minSymbol:
       return "sym"
     of minNull:

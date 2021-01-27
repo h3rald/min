@@ -17,7 +17,7 @@ proc str_module*(i: In) =
   let def = i.define()
 
   def.symbol("interpolate") do (i: In):
-    let vals = i.expect("quot", "string")
+    let vals = i.expect("quot", "str")
     var q = vals[0]
     let s = vals[1]
     var strings = newSeq[string](0)
@@ -101,19 +101,19 @@ proc str_module*(i: In) =
     i.push s.getString.split(" ").mapIt(it.capitalizeAscii).join(" ").newVal
 
   def.symbol("repeat") do (i: In):
-    let vals = i.expect("int", "string")
+    let vals = i.expect("int", "str")
     let n = vals[0]
     let s = vals[1]
     i.push s.getString.repeat(n.intVal).newVal
 
   def.symbol("indent") do (i: In):
-    let vals = i.expect("int", "string")
+    let vals = i.expect("int", "str")
     let n = vals[0]
     let s = vals[1]
     i.push s.getString.indent(n.intVal).newVal
 
   def.symbol("indexof") do (i: In):
-    let vals = i.expect("string", "string")
+    let vals = i.expect("str", "str")
     let reg = vals[0]
     let str = vals[1]
     let index = str.strVal.find(reg.strVal)
@@ -122,17 +122,17 @@ proc str_module*(i: In) =
   when not defined(mini):
   
     def.symbol("encode-url") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let s = vals[0].strVal
       i.push s.encodeUrl.newVal
       
     def.symbol("decode-url") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let s = vals[0].strVal
       i.push s.decodeUrl.newVal
       
     def.symbol("parse-url") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let s = vals[0].strVal
       let u = s.parseUri
       var d = newDict(i.scope)
@@ -147,7 +147,7 @@ proc str_module*(i: In) =
       i.push d
   
     def.symbol("search") do (i: In):
-      let vals = i.expect("string", "string")
+      let vals = i.expect("str", "str")
       let reg = vals[0]
       let str = vals[1]
       var matches = str.strVal.search(reg.strVal, "m")
@@ -157,7 +157,7 @@ proc str_module*(i: In) =
       i.push res.newVal
 
     def.symbol("match") do (i: In):
-      let vals = i.expect("string", "string")
+      let vals = i.expect("str", "str")
       let reg = vals[0]
       let str = vals[1]
       if str.strVal.match(reg.strVal):
@@ -166,7 +166,7 @@ proc str_module*(i: In) =
         i.push false.newVal
 
     def.symbol("search-all") do (i: In):
-      let vals = i.expect("string", "string")
+      let vals = i.expect("str", "str")
       var res = newSeq[MinValue](0)
       let reg = vals[0].strVal
       let str = vals[1].strVal
@@ -179,7 +179,7 @@ proc str_module*(i: In) =
       i.push res.newVal
 
     def.symbol("replace-apply") do (i: In):
-      let vals = i.expect("quot", "string", "string")
+      let vals = i.expect("quot", "str", "str")
       let q = vals[0]
       let reg = vals[1]
       let s_find = vals[2]
@@ -195,14 +195,14 @@ proc str_module*(i: In) =
       i.push sgregex.replacefn(s_find.strVal, reg.strVal, "", repFn).newVal
 
     def.symbol("replace") do (i: In):
-      let vals = i.expect("string", "string", "string")
+      let vals = i.expect("str", "str", "str")
       let s_replace = vals[0]
       let reg = vals[1]
       let s_find = vals[2]
       i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
 
     def.symbol("regex") do (i: In):
-      let vals = i.expect("string", "string")
+      let vals = i.expect("str", "str")
       let reg = vals[0]
       let str = vals[1]
       let results = str.strVal =~ reg.strVal
@@ -212,12 +212,12 @@ proc str_module*(i: In) =
       i.push res.newVal
 
     def.symbol("semver?") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let v = vals[0].strVal
       i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
       
     def.symbol("from-semver") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let v = vals[0].strVal
       let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
       if parts[0].len == 0:

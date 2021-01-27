@@ -93,7 +93,7 @@ proc net_module*(i: In)=
     i.push client
 
   def.symbol("connect") do (i: In):
-    let vals = i.expect("int", "string", "dict:socket")
+    let vals = i.expect("int", "str", "dict:socket")
     let port = vals[0]
     let address = vals[1]
     var skt = vals[2]
@@ -106,7 +106,7 @@ proc net_module*(i: In)=
     i.push skt
 
   def.symbol("send") do (i: In):
-    let vals = i.expect("string", "dict:socket")
+    let vals = i.expect("str", "dict:socket")
     let msg = vals[0]
     let skt = vals[1]
     skt.toSocket.send msg.getString

@@ -23,4 +23,4 @@
   ) ROOT with
 ) unless
 ; Unseal prompt symbol
-'prompt    unseal
+'prompt    unseal-symbol

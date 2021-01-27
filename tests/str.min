@@ -1,85 +1,85 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"str" describe
+"str" *test/describe
   
-  ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) assert
+  ("$1 - $2 - $3" (1 true "test") interpolate "1 - true - test" ==) *test/assert
 
-  ("$1 + $2 = $3" (2 2 (2 2 +)) apply interpolate "2 + 2 = 4" ==) assert
+  ("$1 + $2 = $3" (2 2 (2 2 +)) apply interpolate "2 + 2 = 4" ==) *test/assert
 
-  (" test   " strip "test" ==) assert
+  (" test   " strip "test" ==) *test/assert
 
-  ("test" length 4 ==) assert
+  ("test" length 4 ==) *test/assert
 
-  ("a,b,c" "," split ("a" "b" "c") ==) assert
+  ("a,b,c" "," split ("a" "b" "c") ==) *test/assert
 
-  ("abc" "" split ("a" "b" "c") ==) assert
+  ("abc" "" split ("a" "b" "c") ==) *test/assert
 
-  ("This is a test" 5 2 substr "is" ==) assert
+  ("This is a test" 5 2 substr "is" ==) *test/assert
 
-  ("this" 2 3 substr "is" ==) assert
+  ("this" 2 3 substr "is" ==) *test/assert
 
-  ("This is a test" "is" indexof 2 ==) assert
+  ("This is a test" "is" indexof 2 ==) *test/assert
 
-  ("test #1" "[0-9]" search ("1") ==) assert 
+  ("test #1" "[0-9]" search ("1") ==) *test/assert 
 
-  ("a" ord 97 ==) assert
+  ("a" ord 97 ==) *test/assert
 
-  (97 chr "a" ==) assert
+  (97 chr "a" ==) *test/assert
 
-  ("This is test #1" "test #([0-9])" search ("test #1" "1") ==) assert 
+  ("This is test #1" "test #([0-9])" search ("test #1" "1") ==) *test/assert 
 
-  ("This is a random string" "random" match true ==) assert
+  ("This is a random string" "random" match true ==) *test/assert
 
-  ("something is not something else" "some" "any" replace "anything is not anything else" ==) assert
+  ("something is not something else" "some" "any" replace "anything is not anything else" ==) *test/assert
 
-  ("MiN is a concatenative programming language" "/^min/i" =~ ("MiN") ==) assert
+  ("MiN is a concatenative programming language" "/^min/i" =~ ("MiN") ==) *test/assert
 
-  ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) assert
+  ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) *test/assert
 
-  ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) assert
+  ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) *test/assert
   
-  ("/api/items/test-1" "/\\/api\\/items\\/(.+)/" regex 1 get "test-1" ==) assert
+  ("/api/items/test-1" "/\\/api\\/items\\/(.+)/" regex 1 get "test-1" ==) *test/assert
 
-  ("this is a test" uppercase "THIS IS A TEST" ==) assert
+  ("this is a test" uppercase "THIS IS A TEST" ==) *test/assert
 
-  ("THIS IS A TEST" lowercase "this is a test" ==) assert
+  ("THIS IS A TEST" lowercase "this is a test" ==) *test/assert
 
-  ("test" capitalize "Test" ==) assert
+  ("test" capitalize "Test" ==) *test/assert
 
-  ("this is a test" titleize "This Is A Test" ==) assert
+  ("this is a test" titleize "This Is A Test" ==) *test/assert
 
-  ("+" 3 repeat "+++" ==) assert
+  ("+" 3 repeat "+++" ==) *test/assert
 
-  ("test" 4 indent "    test" ==) assert
+  ("test" 4 indent "    test" ==) *test/assert
 
-  ((1 3 "test") ", " join "1, 3, test" ==) assert
+  ((1 3 "test") ", " join "1, 3, test" ==) *test/assert
 
-  ("PWD: $pwd" ("pwd" .) =% ("PWD: " .) => "" join ==) assert 
+  ("PWD: $pwd" ("pwd" .) =% ("PWD: " .) => "" join ==) *test/assert 
 
-  ("1.2.3" from-semver {1 :major 2 :minor 3 :patch} ==) assert
+  ("1.2.3" from-semver {1 :major 2 :minor 3 :patch} ==) *test/assert
 
-  ({2 :major 25 :minor 300 :patch} to-semver "2.25.300" ==) assert
+  ({2 :major 25 :minor 300 :patch} to-semver "2.25.300" ==) *test/assert
 
-  ("2.3.6" semver-inc-major "3.0.0" ==) assert
+  ("2.3.6" semver-inc-major "3.0.0" ==) *test/assert
   
-  ("2.3.6" semver-inc-minor "2.4.0" ==) assert
+  ("2.3.6" semver-inc-minor "2.4.0" ==) *test/assert
 
-  ("2.3.6" semver-inc-patch "2.3.7" ==) assert
+  ("2.3.6" semver-inc-patch "2.3.7" ==) *test/assert
   
-  ("4.6.5" semver? true ==) assert
+  ("4.6.5" semver? true ==) *test/assert
   
-  ("4.6.5.3" semver? false ==) assert
+  ("4.6.5.3" semver? false ==) *test/assert
   
-  ("fix" "pre" prefix "prefix" ==) assert
+  ("fix" "pre" prefix "prefix" ==) *test/assert
   
-  ("suf" "fix" suffix "suffix" ==) assert
+  ("suf" "fix" suffix "suffix" ==) *test/assert
   
-  ("http://test.com?€%,,!{}" encode-url "http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" ==) assert
+  ("http://test.com?€%,,!{}" encode-url "http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" ==) *test/assert
   
-  ("http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" decode-url "http://test.com?€%,,!{}" ==) assert
+  ("http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" decode-url "http://test.com?€%,,!{}" ==) *test/assert
   
-  ("http://h3rald.com/a/b/c?test=1#123" parse-url {"123" :anchor "h3rald.com" :hostname "" :password "/a/b/c" :path "" :port "test=1" :query "http" :scheme "" :username} ==) assert
+  ("http://h3rald.com/a/b/c?test=1#123" parse-url {"123" :anchor "h3rald.com" :hostname "" :password "/a/b/c" :path "" :port "test=1" :query "http" :scheme "" :username} ==) *test/assert
   
-  report
+  *test/report
   clear-stack

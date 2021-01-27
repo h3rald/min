@@ -1,9 +1,9 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"dstore" describe
+"dstore" *test/describe
 
-  ("dstore.json" dsinit type "dict:datastore" ==) assert
+  ("dstore.json" dsinit type "dict:datastore" ==) *test/assert
   
   (
     "dstore.json" dsread :ds
@@ -13,7 +13,7 @@
       2 %test2
     dspost dswrite
     "tests" (pop true) dsquery size 1 ==
-  ) assert
+  ) *test/assert
   
   (
     "dstore.json" dsread :ds
@@ -23,15 +23,15 @@
       3 %test3
     dsput dswrite
     "tests" (/test1 1 ==) dsquery size 2 ==
-  ) assert
+  ) *test/assert
   
   (
     "dstore.json" dsread :ds
     ds "tests/aaa" dsdelete
     "tests" (/id "aaa" ==) dsquery size 0 ==
-  ) assert
+  ) *test/assert
   
   "dstore.json" rm
 
-  report
+  *test/report
   clear-stack

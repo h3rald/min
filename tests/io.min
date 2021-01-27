@@ -1,14 +1,14 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"io" describe
+"io" *test/describe
 
   ("TEST" "test.txt" fwrite
-   "test.txt" fread "TEST" ==) assert
+   "test.txt" fread "TEST" ==) *test/assert
 
   (" - TEST" "test.txt" fappend
-   "test.txt" fread "TEST - TEST" ==) assert
+   "test.txt" fread "TEST - TEST" ==) *test/assert
 
   "test.txt" rm
-  report
+  *test/report
   clear-stack

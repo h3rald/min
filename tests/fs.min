@@ -1,20 +1,20 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"fs" describe
+"fs" *test/describe
 
   "TEST" "test.txt" fwrite
   
-  ("test.txt" fsize 4 ==) assert
+  ("test.txt" fsize 4 ==) *test/assert
 
-  ("test.txt" fperms 644 >=) assert
+  ("test.txt" fperms 644 >=) *test/assert
 
-  ("test.txt" ftype "file" ==) assert
+  ("test.txt" ftype "file" ==) *test/assert
 
-  ("test.txt" hidden? false ==) assert
+  ("test.txt" hidden? false ==) *test/assert
 
-  ("test.txt" fstats 'type dget "file" ==) assert
+  ("test.txt" fstats 'type dget "file" ==) *test/assert
   
-  report
+  *test/report
   clear-stack
   "test.txt" rm

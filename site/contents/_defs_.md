@@ -14,7 +14,7 @@
 {{d1 => [dict<sub>1</sub>](class:kwd)}}
 {{d2 => [dict<sub>2</sub>](class:kwd)}}
 {{d0p => [dict<sub>\*</sub>](class:kwd)}}
-{{flt => [float](class:kwd)}}
+{{flt => [flt](class:kwd)}}
 {{i => [int](class:kwd)}}
 {{i1 => [int<sub>1</sub>](class:kwd)}}
 {{i2 => [int<sub>2</sub>](class:kwd)}}
@@ -28,12 +28,12 @@
 {{a2 => [a<sub>2</sub>](class:kwd)}}
 {{a3 => [a<sub>3</sub>](class:kwd)}}
 {{a0p => [a<sub>\*</sub>](class:kwd)}}
-{{s0p => [string<sub>\*</sub>](class:kwd)}}
-{{s => [string](class:kwd)}}
-{{s1 => [string<sub>1</sub>](class:kwd)}}
-{{s2 => [string<sub>2</sub>](class:kwd)}}
-{{s3 => [string<sub>3</sub>](class:kwd)}}
-{{s4 => [string<sub>4</sub>](class:kwd)}}
+{{s0p => [str<sub>\*</sub>](class:kwd)}}
+{{s => [str](class:kwd)}}
+{{s1 => [str<sub>1</sub>](class:kwd)}}
+{{s2 => [str<sub>2</sub>](class:kwd)}}
+{{s3 => [str<sub>3</sub>](class:kwd)}}
+{{s4 => [str<sub>4</sub>](class:kwd)}}
 {{b => [bool](class:kwd)}}
 {{b1 => [bool<sub>1</sub>](class:kwd)}}
 {{b2 => [bool<sub>2</sub>](class:kwd)}}

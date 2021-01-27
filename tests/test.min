@@ -1,64 +1,61 @@
 ;; test module
-{
- 'OK :ok
+"." :ok
 
- ("  " print!) :padding
+("  " print!) :padding
 
- ;; describe
+;; *test/describe
+(
+  :name
+  "Testing: [" print! name print! "]" puts! 
+  padding
+  () 
+) :describe
+
+;; *test/assert
+(
+ ' :check      ; save the check quotation to validate
+ ' :results    ; save the result symbol to update
  (
-   :name
-   "Testing: [" print! name print! "]" puts! 
-   padding
-   () 
- ) :describe
-
- ;; assert
+   (
+     (check -> true ==)
+     (format-error puts! false)
+   ) try
+   
+ )
+ ( 
+   ok results append quote @results 
+   "." print!
+ )
  (
-  ' :check      ; save the check quotation to validate
-  ' :results    ; save the result symbol to update
-  (
-    (
-      (check -> true ==)
-      (format-error puts! false)
-    ) try
-    
-  )
-  ( 
-    ok results append quote @results 
-    "." print!
-  )
-  (
-    check results append quote @results 
-    "x" print!
-  )
-  if
-  results
- ) :assert
+   check results append quote @results 
+   "x" print!
+ )
+ if
+ results
+) :assert
 
- ;; report
+;; *test/report
+(
+ newline
+ ' :results ; save the results collected so far
+ 0 :total
+ 0 :failed
+ results (
+   total succ @total
+   (ok !=) (failed succ @failed) () if
+ ) map
+ "$# tests executed - $# failed." (total failed) =% puts!
  (
-  newline
-  ' :results ; save the results collected so far
-  0 :total
-  0 :failed
-  results (
-    total succ @total
-    (ok !=) (failed succ @failed) () if
-  ) map
-  padding total print! " tests executed - " print! failed print! " failed." puts!
-  (
-    =result
-    result
-    (ok !=)
-    (
-      ('failures defined?) (failures succ @failures) () if
-      padding "FAILED: " print! result puts!
-    )
-    ()
-    if
-  )
-  map
-  pop ;Remove results accomulator from get-stack
- ) :report
-
-} +test
+   =result
+   result
+   (ok !=)
+   (
+     ('failures defined-symbol?) (failures succ @failures) () if
+     padding "FAILED: " print! result puts!
+   )
+   ()
+   if
+ )
+ map
+ pop ;Remove results accomulator from get-stack
+) :report

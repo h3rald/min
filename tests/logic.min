@@ -1,157 +1,157 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"logic" describe
+"logic" *test/describe
 
-  (2 3 <) assert
-  (3 2 < false ==) assert
-  (3 3 < false ==) assert
-  (2.99 3 <) assert
-  (2 1.99 < false ==) assert
-  (1.99 1.991 <) assert
-  (1.99 1.990 < false ==) assert
-  ("test1" "test2" <) assert
-  ("test3" "test2" < false ==) assert
-  ("test2" "test2" < false ==) assert
+  (2 3 <) *test/assert
+  (3 2 < false ==) *test/assert
+  (3 3 < false ==) *test/assert
+  (2.99 3 <) *test/assert
+  (2 1.99 < false ==) *test/assert
+  (1.99 1.991 <) *test/assert
+  (1.99 1.990 < false ==) *test/assert
+  ("test1" "test2" <) *test/assert
+  ("test3" "test2" < false ==) *test/assert
+  ("test2" "test2" < false ==) *test/assert
 
-  (2 3 <=) assert
-  (3 2 <= false ==) assert
-  (3 3 <=) assert
-  (2.99 3 <=) assert
-  (2 1.99 <= false ==) assert
-  (1.99 1.991 <=) assert
-  (1.99 1.990 <=) assert
-  ("test1" "test2" <=) assert
-  ("test3" "test2" <= false ==) assert
-  ("test2" "test2" <=) assert
+  (2 3 <=) *test/assert
+  (3 2 <= false ==) *test/assert
+  (3 3 <=) *test/assert
+  (2.99 3 <=) *test/assert
+  (2 1.99 <= false ==) *test/assert
+  (1.99 1.991 <=) *test/assert
+  (1.99 1.990 <=) *test/assert
+  ("test1" "test2" <=) *test/assert
+  ("test3" "test2" <= false ==) *test/assert
+  ("test2" "test2" <=) *test/assert
 
 
-  (2 3 > false ==) assert
-  (3 2 >) assert
-  (3 3 > false ==) assert
-  (2.99 3 > false ==) assert
-  (2 1.99 >) assert
-  (1.99 1.991 > false ==) assert
-  (1.99 1.990 > false ==) assert
-  ("test1" "test2" > false ==) assert
-  ("test3" "test2" >) assert
-  ("test2" "test2" > false ==) assert
+  (2 3 > false ==) *test/assert
+  (3 2 >) *test/assert
+  (3 3 > false ==) *test/assert
+  (2.99 3 > false ==) *test/assert
+  (2 1.99 >) *test/assert
+  (1.99 1.991 > false ==) *test/assert
+  (1.99 1.990 > false ==) *test/assert
+  ("test1" "test2" > false ==) *test/assert
+  ("test3" "test2" >) *test/assert
+  ("test2" "test2" > false ==) *test/assert
 
-  (2 3 >= false ==) assert
-  (3 2 >=) assert
-  (3 3 >=) assert
-  (2.99 3 >= false ==) assert
-  (2 1.99 >=) assert
-  (1.99 1.991 >= false ==) assert
-  (1.99 1.990 >=) assert
-  ("test1" "test2" >= false ==) assert
-  ("test3" "test2" >=) assert
-  ("test2" "test2" >=) assert
+  (2 3 >= false ==) *test/assert
+  (3 2 >=) *test/assert
+  (3 3 >=) *test/assert
+  (2.99 3 >= false ==) *test/assert
+  (2 1.99 >=) *test/assert
+  (1.99 1.991 >= false ==) *test/assert
+  (1.99 1.990 >=) *test/assert
+  ("test1" "test2" >= false ==) *test/assert
+  ("test3" "test2" >=) *test/assert
+  ("test2" "test2" >=) *test/assert
 
-  (true true ==) assert
-  (false true == false ==) assert
-  (true false == false ==) assert
-  (false false ==) assert
-  (1 1 ==) assert
-  ("aaa" "aaa" ==) assert
-  (1.0 1 ==) assert
-  ((1 2 3.0) (1.0 2 3) ==) assert
-  (("a" "b") ("a" "b") ==) assert
-  (("a" "b" 3) ("a" "b" 4) == false ==) assert
-  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) ==) assert
+  (true true ==) *test/assert
+  (false true == false ==) *test/assert
+  (true false == false ==) *test/assert
+  (false false ==) *test/assert
+  (1 1 ==) *test/assert
+  ("aaa" "aaa" ==) *test/assert
+  (1.0 1 ==) *test/assert
+  ((1 2 3.0) (1.0 2 3) ==) *test/assert
+  (("a" "b") ("a" "b") ==) *test/assert
+  (("a" "b" 3) ("a" "b" 4) == false ==) *test/assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) ==) *test/assert
 
-  (true true != false ==) assert
-  (false true !=) assert
-  (true false !=) assert
-  (false false != false ==) assert
-  (1 1 != false ==) assert
-  ("aaa" "aaa" != false ==) assert
-  ;(1.0 1 != false ==) assert
-  ;((1 2 3.0) (1.0 2.0 3) != false ==) assert
-  ;(("a" "b") ("a" "b") != false ==) assert
-  (("a" "b" 3) ("a" "b" 4) !=) assert
-  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) assert
+  (true true != false ==) *test/assert
+  (false true !=) *test/assert
+  (true false !=) *test/assert
+  (false false != false ==) *test/assert
+  (1 1 != false ==) *test/assert
+  ("aaa" "aaa" != false ==) *test/assert
+  ;(1.0 1 != false ==) *test/assert
+  ;((1 2 3.0) (1.0 2.0 3) != false ==) *test/assert
+  ;(("a" "b") ("a" "b") != false ==) *test/assert
+  (("a" "b" 3) ("a" "b" 4) !=) *test/assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) *test/assert
 
-  (false not) assert
-  (true not false ==) assert
+  (false not) *test/assert
+  (true not false ==) *test/assert
 
-  (true true and) assert
-  (true false and false ==) assert
-  (false true and false ==) assert
-  (false false and false ==) assert
+  (true true and) *test/assert
+  (true false and false ==) *test/assert
+  (false true and false ==) *test/assert
+  (false false and false ==) *test/assert
 
-  (true true or) assert
-  (true false or) assert
-  (false true or) assert
-  (false false or false ==) assert
+  (true true or) *test/assert
+  (true false or) *test/assert
+  (false true or) *test/assert
+  (false false or false ==) *test/assert
 
-  (true true xor false ==) assert
-  (true false xor) assert
-  (false true xor) assert
-  (false false xor false ==) assert
+  (true true xor false ==) *test/assert
+  (true false xor) *test/assert
+  (false true xor) *test/assert
+  (false false xor false ==) *test/assert
 
-  ("a" string?) assert
-  (1 string? false ==) assert
-  (1.0 string? false ==) assert
-  (true string? false ==) assert
-  (false string? false ==) assert
-  (("a" 2 c) string? false ==) assert
+  ("a" string?) *test/assert
+  (1 string? false ==) *test/assert
+  (1.0 string? false ==) *test/assert
+  (true string? false ==) *test/assert
+  (false string? false ==) *test/assert
+  (("a" 2 c) string? false ==) *test/assert
 
-  ("a" integer? false ==) assert
-  (1 integer?) assert
-  (1.0 integer? false ==) assert
-  (true integer? false ==) assert
-  (false integer? false ==) assert
-  (("a" 2 c) integer? false ==) assert
+  ("a" integer? false ==) *test/assert
+  (1 integer?) *test/assert
+  (1.0 integer? false ==) *test/assert
+  (true integer? false ==) *test/assert
+  (false integer? false ==) *test/assert
+  (("a" 2 c) integer? false ==) *test/assert
 
-  ("a" float? false ==) assert
-  (1 float? false ==) assert
-  (1.0 float?) assert
-  (true float? false ==) assert
-  (false float? false ==) assert
-  (("a" 2 c) float? false ==) assert
+  ("a" float? false ==) *test/assert
+  (1 float? false ==) *test/assert
+  (1.0 float?) *test/assert
+  (true float? false ==) *test/assert
+  (false float? false ==) *test/assert
+  (("a" 2 c) float? false ==) *test/assert
 
-  ("a" boolean? false ==) assert
-  (1 boolean? false ==) assert
-  (1.0 boolean? false ==) assert
-  (true boolean?) assert
-  (false boolean?) assert
-  (("a" 2 c) boolean? false ==) assert
+  ("a" boolean? false ==) *test/assert
+  (1 boolean? false ==) *test/assert
+  (1.0 boolean? false ==) *test/assert
+  (true boolean?) *test/assert
+  (false boolean?) *test/assert
+  (("a" 2 c) boolean? false ==) *test/assert
 
-  ("a" number? false ==) assert
-  (1 number?) assert
-  (1.0 number?) assert
-  (true number? false ==) assert
-  (false number? false ==) assert
-  (("a" 2 c) number? false ==) assert
+  ("a" number? false ==) *test/assert
+  (1 number?) *test/assert
+  (1.0 number?) *test/assert
+  (true number? false ==) *test/assert
+  (false number? false ==) *test/assert
+  (("a" 2 c) number? false ==) *test/assert
 
-  ("a" quotation? false ==) assert
-  (1 quotation? false ==) assert
-  (1.0 quotation? false ==) assert
-  (true quotation? false ==) assert
-  (false quotation? false ==) assert
-  (("a" 2 c) quotation?) assert
+  ("a" quotation? false ==) *test/assert
+  (1 quotation? false ==) *test/assert
+  (1.0 quotation? false ==) *test/assert
+  (true quotation? false ==) *test/assert
+  (false quotation? false ==) *test/assert
+  (("a" 2 c) quotation?) *test/assert
 
-  ("a" stringlike?) assert
-  (1 stringlike? false ==) assert
-  ('test stringlike?) assert
+  ("a" stringlike?) *test/assert
+  (1 stringlike? false ==) *test/assert
+  ('test stringlike?) *test/assert
 
-  ({} 'module type? false ==) assert
-  ((1 2 3) 'module type? false ==) assert
-  (4 'module type? false ==) assert
-  (logic 'module type?) assert
-  (1 "int" type?) assert
-  ("test" "string" type?) assert
-  (ROOT "module" type?) assert
+  ({} 'module type? false ==) *test/assert
+  ((1 2 3) 'module type? false ==) *test/assert
+  (4 'module type? false ==) *test/assert
+  (logic 'module type?) *test/assert
+  (1 "int" type?) *test/assert
+  ("test" "str" type?) *test/assert
+  (ROOT "module" type?) *test/assert
 
-  (7 0 / inf ==) assert
-  (-7 0 / -inf ==) assert
-  (0 0 / nan ==) assert
-  (10 3 / 3.33333 ==) assert
+  (7 0 / inf ==) *test/assert
+  (-7 0 / -inf ==) *test/assert
+  (0 0 / nan ==) *test/assert
+  (10 3 / 3.33333 ==) *test/assert
 
-  (3 "a" == not) assert
-  (1 () != true) assert
-  (3.3 'test == not) assert
+  (3 "a" == not) *test/assert
+  (1 () != true) *test/assert
+  (3.3 'test == not) *test/assert
 
   (
     (
@@ -161,7 +161,7 @@
       ("never printed" puts!)
     ) &&
     false ==
-  ) assert
+  ) *test/assert
   
   (
     (
@@ -170,7 +170,7 @@
       ("a" "a" ==)
       ("never printed" puts!)
     ) ||
-  ) assert
+  ) *test/assert
   
-  report
+  *test/report
   clear-stack

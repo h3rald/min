@@ -1,7 +1,7 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"net" describe
+"net" *test/describe
 
   {} socket :srv1
   {} socket :srv2
@@ -25,15 +25,14 @@
     (response line) => "\n" join puts @response 
   ) while
 
-  (response "200 OK" match) assert
+  (response "200 OK" match) *test/assert
 
-  (srv1 srv2 ==) assert
-  (cli1 cli2 !=) assert
+  (srv1 srv2 ==) *test/assert
+  (cli1 cli2 !=) *test/assert
 
-  report
+  *test/report
   clear-stack
   srv1 close
   srv2 close
   cli1 close
   cli2 close
-

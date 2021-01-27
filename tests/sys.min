@@ -1,74 +1,74 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"sys" describe
+"sys" *test/describe
 
-  ("dir1" mkdir "dir1" dir?) assert
+  ("dir1" mkdir "dir1" dir?) *test/assert
 
-  ("dir1" "dir2" mv "dir2" dir?) assert
+  ("dir1" "dir2" mv "dir2" dir?) *test/assert
 
-  ("dir1" dir? false ==) assert
+  ("dir1" dir? false ==) *test/assert
 
-  ("dir2" "dir1" cp "dir1" dir?) assert
+  ("dir2" "dir1" cp "dir1" dir?) *test/assert
 
-  ("..." "dir1/test.txt" fwrite "dir1/test.txt" file?) assert
+  ("..." "dir1/test.txt" fwrite "dir1/test.txt" file?) *test/assert
 
-  ("dir1/test.txt" "dir2" mv "dir2/test.txt" file?)  assert
+  ("dir1/test.txt" "dir2" mv "dir2/test.txt" file?)  *test/assert
 
-  ("dir1/test.txt" file? false ==) assert
+  ("dir1/test.txt" file? false ==) *test/assert
 
-  ("dir2/test.txt" "dir1" cp "dir1/test.txt" file?)  assert
+  ("dir2/test.txt" "dir1" cp "dir1/test.txt" file?)  *test/assert
 
-  ('dir1 ls 'filename map ("test.txt") ==) assert
+  ('dir1 ls 'filename map ("test.txt") ==) *test/assert
 
-  ('dir2 ls 'dirname map ("dir2") ==) assert
+  ('dir2 ls 'dirname map ("dir2") ==) *test/assert
 
-  ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) assert  
+  ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) *test/assert  
 
-  ("systest" mkdir . ls (. "systest") => "/" join in?) assert
+  ("systest" mkdir . ls (. "systest") => "/" join in?) *test/assert
 
-  ("systest" cd . "systest" match) assert
+  ("systest" cd . "systest" match) *test/assert
   .. cd
 
-  ("./min -v" & 'output dget "\." match) assert
+  ("./min -v" & 'output dget "\." match) *test/assert
 
-  ("PATH" env?) assert
+  ("PATH" env?) *test/assert
 
-  ($PATH length 0 >) assert
+  ($PATH length 0 >) *test/assert
 
-  ("TEST" "AAA" put-env $AAA "TEST" ==) assert
+  ("TEST" "AAA" put-env $AAA "TEST" ==) *test/assert
 
-  (os length 0 >) assert
+  (os length 0 >) *test/assert
 
-  (cpu length 0 >) assert
+  (cpu length 0 >) *test/assert
 
-  ("TEST" "test.txt" fwrite "test.txt" file?) assert
+  ("TEST" "test.txt" fwrite "test.txt" file?) *test/assert
 
-  ("systest" exists?) assert
+  ("systest" exists?) *test/assert
 
-  ("systest" dir?) assert
+  ("systest" dir?) *test/assert
 
-  ("test.txt" "test2.txt" cp "test2.txt" file?) assert
+  ("test.txt" "test2.txt" cp "test2.txt" file?) *test/assert
 
-  ("test.txt" "test1.txt" mv "test1.txt" file?) assert
+  ("test.txt" "test1.txt" mv "test1.txt" file?) *test/assert
 
-  ("test2.txt" rm "test1.txt" rm . ls (. "test1.txt") => "/" join in? :t1 . ls "test2" in? t1 and false ==) assert
+  ("test2.txt" rm "test1.txt" rm . ls (. "test1.txt") => "/" join in? :t1 . ls "test2" in? t1 and false ==) *test/assert
 
   ("systest" cd 
    "TEST" "test.txt" fwrite
    "TEST1" "test1.txt" fwrite
    "TEST2" "test2.txt" fwrite
    "TEST3" "test3.txt" fwrite
-   . ls "test.zip" zip . ls (. "test.zip") => "/" join in?) assert
+   . ls "test.zip" zip . ls (. "test.zip") => "/" join in?) *test/assert
 
-   ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) assert
+   ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) *test/assert
 
   .. cd
 
-  ("systest" rmdir . ls (. "systest") => "/" join in? false ==) assert
+  ("systest" rmdir . ls (. "systest") => "/" join in? false ==) *test/assert
 
   
 
-  report
+  *test/report
   clear-stack
   "systest" rmdir

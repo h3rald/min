@@ -35,7 +35,7 @@ proc lang_module*(i: In) =
   when not defined(mini):
   
     def.symbol("from-json") do (i: In):
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let s = vals[0]
       i.push i.fromJson(s.getString.parseJson)
       
@@ -346,7 +346,7 @@ proc lang_module*(i: In) =
       scope = scope.parent
     i.push q.newVal
 
-  def.symbol("defined?") do (i: In):
+  def.symbol("defined-symbol?") do (i: In):
     let vals = i.expect("'sym")
     i.push(i.scope.hasSymbol(vals[0].getString).newVal)
 
@@ -354,7 +354,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     i.push(i.scope.hasSigil(vals[0].getString).newVal)
   
-  def.symbol("sealed?") do (i: In):
+  def.symbol("sealed-symbol?") do (i: In):
     let vals = i.expect("'sym")
     i.push i.scope.getSymbol(vals[0].getString).sealed.newVal
   
@@ -394,7 +394,7 @@ proc lang_module*(i: In) =
     i.push defined(mini).newVal
 
   def.symbol("from-yaml") do (i: In):
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     try:
       var dict = newDict(i.scope)
@@ -460,24 +460,6 @@ proc lang_module*(i: In) =
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
     
-  def.symbol("define-sigil") do (i: In):
-    let vals = i.expect("'sym", "a")
-    let sym = vals[0]
-    var q1 = vals[1] # existing (auto-quoted)
-    var sigil: string
-    var isQuot = true
-    if not q1.isQuotation:
-      q1 = @[q1].newVal
-      isQuot = false
-    sigil = sym.getString
-    when not defined(mini):
-      if not sigil.match USER_SYMBOL_REGEX:
-        raiseInvalid("Sigil identifier '$1' contains invalid characters." % sigil)
-    info "[sigil] $1 = $2" % [sigil, $q1]
-    if i.scope.sigils.hasKey(sigil) and i.scope.sigils[sigil].sealed:
-      raiseUndefined("Attempting to redefine sealed sigil '$1'" % [sigil])
-    i.scope.sigils[sigil] = MinOperator(kind: minValOp, val: q1, sealed: true, quotation: isQuot)
-
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
@@ -493,7 +475,7 @@ proc lang_module*(i: In) =
     if not res:
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
-  def.symbol("delete") do (i: In):
+  def.symbol("delete-symbol") do (i: In):
     let vals = i.expect("'sym")
     let sym = vals[0]
     let res = i.scope.delSymbol(sym.getString) 
@@ -506,15 +488,6 @@ proc lang_module*(i: In) =
     let res = i.scope.delSigil(sym.getString) 
     if not res:
       raiseUndefined("Attempting to delete undefined sigil: " & sym.getString)
-
-  def.symbol("module") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let name = vals[0]
-    var code = vals[1]
-    code.objType = "module"
-    code.filename = i.filename
-    info("[module] $1 ($2 symbols)" % [name.getString, $code.scope.symbols.len])
-    i.scope.symbols[name.getString] = MinOperator(kind: minValOp, val: code)
 
   def.symbol("scope") do (i: In):
     var dict = newDict(i.scope.parent)
@@ -634,7 +607,7 @@ proc lang_module*(i: In) =
       i.scope.sigils[sig] = val
   
   def.symbol("eval") do (i: In):
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     i.eval s.strVal
     
@@ -643,7 +616,7 @@ proc lang_module*(i: In) =
     i.pushSym "exit"
 
   def.symbol("parse") do (i: In):
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     i.push i.parse s.strVal
 
@@ -657,17 +630,17 @@ proc lang_module*(i: In) =
     else:
       raiseInvalid("No source available for native symbol '$1'." % str)
 
-  def.symbol("call") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let symbol = vals[0]
-    let q = vals[1]
-    let s = symbol.getString
-    let origScope = i.scope
-    i.scope = q.scope
-    i.scope.parent = origScope
-    let sym = i.scope.getSymbol(s)
-    i.apply(sym)
-    i.scope = origScope
+ # def.symbol("call") do (i: In):
+ #   let vals = i.expect("'sym", "dict")
+ #   let symbol = vals[0]
+ #   let q = vals[1]
+ #   let s = symbol.getString
+ #   let origScope = i.scope
+ #   i.scope = q.scope
+ #   i.scope.parent = origScope
+ #   let sym = i.scope.getSymbol(s)
+ #   i.apply(sym)
+ #   i.scope = origScope
 
   def.symbol("invoke") do (i: In):
     let vals = i.expect("'sym")
@@ -680,16 +653,12 @@ proc lang_module*(i: In) =
       let vals = i.expect("dict")
       let mdl = vals[0]
       let symId = parts[p+1] 
-      i.push mdl
-      i.push symId.newVal
-      i.pushSym "call"
-
-  def.symbol("set-type") do (i: In):
-    let vals = i.expect("'sym", "dict")
-    let symbol = vals[0]
-    var d = vals[1]
-    d.objType = symbol.getString
-    i.push d
+      let origScope = i.scope
+      i.scope = mdl.scope
+      i.scope.parent = origScope
+      let sym = i.scope.getSymbol(symId)
+      i.apply(sym)
+      i.scope = origScope
 
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
@@ -916,7 +885,7 @@ proc lang_module*(i: In) =
   def.symbol("version") do (i: In):
     i.push pkgVersion.newVal
 
-  def.symbol("seal") do (i: In):
+  def.symbol("seal-symbol") do (i: In):
     let vals = i.expect("'sym")
     let sym = vals[0].getString
     var s = i.scope.getSymbol(sym) 
@@ -930,7 +899,7 @@ proc lang_module*(i: In) =
     s.sealed = true
     i.scope.setSigil(sym, s)
 
-  def.symbol("unseal") do (i: In):
+  def.symbol("unseal-symbol") do (i: In):
     let vals = i.expect("'sym")
     let sym = vals[0].getString
     var s = i.scope.getSymbol(sym) 
@@ -950,7 +919,7 @@ proc lang_module*(i: In) =
     i.scope.setSigil(sym, s, true)
   
   def.symbol("quote-bind") do (i: In):
-    let vals = i.expect("string", "a")
+    let vals = i.expect("str", "a")
     let s = vals[0]
     let m = vals[1]
     i.push @[m].newVal
@@ -958,7 +927,7 @@ proc lang_module*(i: In) =
     i.pushSym "bind"
 
   def.symbol("quote-define") do (i: In):
-    let vals = i.expect("string", "a")
+    let vals = i.expect("str", "a")
     let s = vals[0]
     let m = vals[1]
     i.push @[m].newVal
@@ -1037,7 +1006,7 @@ proc lang_module*(i: In) =
     let s = i.pop
     i.push(($$s).newVal)
 
-  def.symbol("bool") do (i: In):
+  def.symbol("boolean") do (i: In):
     let v = i.pop
     let strcheck = (v.isString and (v.getString == "false" or v.getString == ""))
     let intcheck = v.isInt and v.intVal == 0
@@ -1049,7 +1018,7 @@ proc lang_module*(i: In) =
     else:
       i.push true.newVal
 
-  def.symbol("int") do (i: In):
+  def.symbol("integer") do (i: In):
     let s = i.pop
     if s.isString:
       i.push s.getString.parseInt.newVal
@@ -1094,27 +1063,18 @@ proc lang_module*(i: In) =
   # Sigils
 
   def.sigil("'") do (i: In):
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     i.push(@[i.newSym(s.strVal)].newVal)
 
   def.sigil(":") do (i: In):
     i.pushSym("define")
 
-  def.sigil("~") do (i: In):
-    i.pushSym("delete")
-
   def.sigil("?") do (i: In):
     i.pushSym("help")
 
   def.sigil("@") do (i: In):
     i.pushSym("bind")
-
-  def.sigil("+") do (i: In):
-    i.pushSym("module")
-
-  def.sigil("^") do (i: In):
-    i.pushSym("call")
 
   def.sigil("*") do (i: In):
     i.pushSym("invoke")
@@ -1150,9 +1110,6 @@ proc lang_module*(i: In) =
 
   def.symbol("@") do (i: In):
     i.pushSym("bind")
-
-  def.symbol("^") do (i: In):
-    i.pushSym("call")
 
   def.symbol("'") do (i: In):
     i.pushSym("quote")

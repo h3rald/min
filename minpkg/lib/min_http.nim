@@ -63,13 +63,13 @@ proc http_module*(i: In)=
     i.push res
   
   def.symbol("get-content") do (i: In):
-    let vals = i.expect "string"
+    let vals = i.expect "str"
     let url = vals[0]
     let cli = newCli()
     i.push cli.getContent(url.getString).newVal
 
   def.symbol("download") do (i: In):
-    let vals = i.expect("string", "string")
+    let vals = i.expect("str", "str")
     let file = vals[0]
     let url = vals[1]
     let cli = newCli()

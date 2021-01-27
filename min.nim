@@ -181,7 +181,10 @@ proc stdLib*(i: In) =
       else:
         logging.warn("Unable to process custom prelude code in $1" % customPrelude)
   when not defined(mini):
-    i.eval MINRC.readFile()
+    try:
+      i.eval MINRC.readFile()
+    except:
+      error "An error occurred evaluating the .minrc file."
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
@@ -332,7 +335,7 @@ when isMainModule:
     var line: string
     while true:
       i.push(i.newSym("prompt"))
-      let vals = i.expect("string")
+      let vals = i.expect("str")
       let v = vals[0] 
       let prompt = v.getString()
       stdout.write(prompt)
@@ -356,7 +359,7 @@ when isMainModule:
           return ed.getCompletions(symbols)
         # evaluate prompt
         i.push(i.newSym("prompt"))
-        let vals = i.expect("string")
+        let vals = i.expect("str")
         let v = vals[0] 
         let prompt = v.getString()
         line = EDITOR.readLine(prompt)

@@ -88,7 +88,7 @@ proc io_module*(i: In) =
     i.push getchr().newVal
 
   def.symbol("putchr") do (i: In):
-    let ch = i.expect("string")
+    let ch = i.expect("str")
     if ch[0].getString.len != 1:
       raiseInvalid("Symbol putch requires a string containing a single character.")
     putchr(ch[0].getString[0].cint)
@@ -99,13 +99,13 @@ proc io_module*(i: In) =
 
   def.symbol("ask") do (i: In) {.gcsafe.}:
     var ed = initEditor()
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
   def.symbol("confirm") do (i: In) {.gcsafe.}:
     var ed = initEditor()
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let s = vals[0]
     proc confirm(): bool =
       let answer = ed.readLine(s.getString & " [yes/no]: ")
@@ -152,7 +152,7 @@ proc io_module*(i: In) =
     a.print
   
   def.symbol("fread") do (i: In):
-    let vals = i.expect("string")
+    let vals = i.expect("str")
     let file = vals[0].strVal
     var contents = ""
     if MINCOMPILED:
@@ -164,13 +164,13 @@ proc io_module*(i: In) =
     i.push newVal(contents)
   
   def.symbol("fwrite") do (i: In):
-    let vals = i.expect("string", "string")
+    let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]
     a.strVal.writeFile(b.strVal)
   
   def.symbol("fappend") do (i: In):
-    let vals = i.expect("string", "string")
+    let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]
     var f:File

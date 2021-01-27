@@ -64,7 +64,7 @@ By default, when min is started it loads the following *prelude.min* program:
   ) ROOT with
 ) unless
 ; Unseal prompt symbol
-'prompt    unseal
+'prompt    unseal-symbol
 ```
 
 Essentially, this causes min to import *all* the modules (except for some if the **lite** flag was defined at compilation time) and unseals the {#link-operator||lang||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:

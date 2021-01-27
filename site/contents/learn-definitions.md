@@ -94,7 +94,6 @@ To avoid this behavior -- i.e. whenever you want to define a list of items rathe
 
 Finally, symbols can be sealed to prevent accidental updates or deletions. By default, all symbols defined in the core min modules are sealed, so the following code if run in min shell will result in an error:
 
-
      5 :quote
 
 ...because the symbol quote is already defined in the root scope. However, note that the following code will _not_ return an error:
@@ -108,7 +107,7 @@ If you want, you can {#link-operator||lang||seal#} your own symbols so that they
 > %note%
 > Note
 > 
-> The {#link-operator||lang||unseal#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
+> The {#link-operator||lang||unseal-symbol#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
 
 
 {#link-learn||scopes||Scopes#}

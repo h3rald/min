@@ -17,11 +17,7 @@ _Symbols_ are the most common type of operator. A min symbol is a single word th
 * Start with a letter or an underscore (\_).
 * Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * . _ -`
 
-It is possible to define symbols using the {#link-operator||lang||define#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
-
-     (dup *) "square" define
-     
-Now, while the {#link-operator||lang||define#} symbol can be fine to define (the equivalent of) variables and simple operators, it is typically better to use the {#link-operator||lang||operator#} symbol instead, as it provides better readability, additional checks and automatic input/output capturing. The previous `square` symbol could also be defined with the {#link-operator||lang||operator#} operator like this:
+It is possible to define operator symbols using the {#link-operator||lang||operator#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
      (
        symbol square
@@ -30,32 +26,27 @@ Now, while the {#link-operator||lang||define#} symbol can be fine to define (the
      ) operator
      ;; Calculates the square of n.
 
-In this case, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation. Sure, the original version was much more succinct, but this is definitely more readable.
+ The {#link-operator||lang||operator#} symbol provides way to:
+ * Specify the name of the symbol operator (**square** in this case)
+ * Specify a signature to identify the type of the input and output values (in this case, the operator takes a numeric input value and produces a numeric output value). Also, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation.
+ * Specify a quotation containing the code that the operator will execute.
 
-Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, symbol operator definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
-Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. For example, the previous definition could be rewritten as follows using sigils:
+Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. 
 
-     (dup *) :square
+A sigil can be prepended to a double-quoted string or a single word (with no spaces) which will be treated as a string instead of using the corresponding symbol. 
 
-A sigil like `:` can be prepended to a double-quoted string or a single word (with no spaces) which will be treated as a string instead of using the corresponding symbol. 
-
-For example, the following executes the command `ls -al` and pushes the command return code on the atack:
+For example, the following executes the command `ls -al` and pushes the command return code on the stack:
 
      !"ls -al"`
 
 Currently min provides the following sigils:
 
-+
-: Alias for {#link-operator||lang||module#}.
-~
-: Alias for {#link-operator||lang||delete#}.
 '
 : Alias for {#link-operator||lang||quote#}.
 \:
 : Alias for {#link-operator||lang||define#}. 
-^
-: Alias for {#link-operator||lang||call#}. 
 *
 : Alias for {#link-operator||lang||invoke#}. 
 @
@@ -83,27 +74,29 @@ $
 
 Besides system sigils, you can also create your own sigils. Unlike system sigils however, user defined sigils:
 
-* have the same character restricrions as symbols
+* have the same character restrictions as symbols
 * can only be prepended to double-quoted strings
 * can be unsealed, deleted, redefined, and sealed.
 
 Sigils can be a very powerful construct and a way to reduce boulerplate code: you can define a sigil to use as you would use any symbol which requires a single string or quoted symbol on the stack.
 
-Consider the following example:
-
-     'from-json 'j define-sigil
-     
-This will define a `j` sigil that will parse any string as JSON and convert it to its corresponding min representation.
-
-Sigils can also (and should!) be defined with the {#link-operator||lang||operator#} operator to add additional checks. The sigil definition above could be rewritten like this, for example:
+Like symbols, sigils can be defined with the {#link-operator||lang||operator#} operator, like this:
 
      (
        sigil j
-       (str :json ==> a :result)
+       (string :json ==> a :result)
        (json from-json @result)
      ) operator
 
-Also, symbols defined with the {#link-operator||lang||operator#} symbol can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+This definition will add a `j` sigil that will process the follwing string as JSON code, so for example:
+
+     j"{\"test\": true}"
+
+...will push the following dictionary on the stack:
+
+    {true :test}
+
+Also, sigil definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
 ## Auto-popping
 
@@ -126,7 +119,7 @@ In this case for example tbe `square` symbol expects a number on the stack, whic
 
 In a signature, a type expression must precede the capturing symbol. Such type expression can be:
 
-* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||reference||reference#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `float`, `'sym`, `quot`, or `dict`.
+* One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||reference||reference#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `flt`, `'sym`, `quot`, or `dict`.
 * A typed dictionary like `dict:module` or `dict:datastore`.
 * A type class (see below).
 * a union of types/typed dictionaries/type classes, like `str|int`.
@@ -170,7 +163,7 @@ This operator will raise an error if anything other than a quotation of strings 
   symbol add
   ((string|num|quot :t) :a t :b ==> t :result)
   (
-   (a type "string" ==)
+   (a type "str" ==)
      (a b suffix @result return)
    when
    (a type "num" ==)

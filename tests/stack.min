@@ -1,37 +1,37 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"stack" describe
+"stack" *test/describe
 
-  (1 2 3 4 get-stack (1 2 3 4) ==) assert
+  (1 2 3 4 get-stack (1 2 3 4) ==) *test/assert
 
-  ((1 2 3) set-stack get-stack (1 2 3) ==) assert
+  ((1 2 3) set-stack get-stack (1 2 3) ==) *test/assert
 
-  (1 id 1 ==) assert
+  (1 id 1 ==) *test/assert
 
-  (2 pop get-stack () ==) assert
+  (2 pop get-stack () ==) *test/assert
 
-  (1 dup get-stack (1 1) ==) assert
+  (1 dup get-stack (1 1) ==) *test/assert
 
-  (3 2 (1 +) dip + 6 ==) assert
+  (3 2 (1 +) dip + 6 ==) *test/assert
 
-  (1 2 nip get-stack (2) ==) assert
+  (1 2 nip get-stack (2) ==) *test/assert
 
-  (1 2 4 '+ dip get-stack (3 4) ==) assert
+  (1 2 4 '+ dip get-stack (3 4) ==) *test/assert
 
-  (1 2 4 '+ keep get-stack (1 6 4) ==) assert
+  (1 2 4 '+ keep get-stack (1 6 4) ==) *test/assert
 
-  ((1) (2 swap append) sip concat (1 2 1) ==) assert
+  ((1) (2 swap append) sip concat (1 2 1) ==) *test/assert
 
-  (1 (2 3) cons (1 2 3) ==) assert
+  (1 (2 3) cons (1 2 3) ==) *test/assert
 
-  (1 2 over get-stack (1 2 1) ==) assert
+  (1 2 over get-stack (1 2 1) ==) *test/assert
 
-  (1 2 3 pick get-stack (1 2 3 1) ==) assert
+  (1 2 3 pick get-stack (1 2 3 1) ==) *test/assert
 
-  ((1 2 3) ('sum 'size) => cleave / 2 ==) assert
+  ((1 2 3) ('sum 'size) => cleave / 2 ==) *test/assert
 
-  ((1 2) (3 4) ((0 get) (1 get)) spread get-stack (1 4) ==) assert
+  ((1 2) (3 4) ((0 get) (1 get)) spread get-stack (1 4) ==) *test/assert
 
-  report
+  *test/report
   clear-stack

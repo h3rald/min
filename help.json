@@ -69,13 +69,13 @@
       "description": "Returns the full path to the current directory.",
       "kind": "symbol",
       "name": ".",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "..": {
       "description": "Returns the full path to the parent directory.",
       "kind": "symbol",
       "name": "..",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "/": {
       "description": "Divides num1 by num2.",
@@ -94,13 +94,13 @@
       "name": "::"
     },
     "<": {
-      "description": "Returns true if a1 is smaller than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is smaller than a2, false  otherwise. \r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
       "name": "<",
       "signature": "a1 a2 ==> bool"
     },
     "<=": {
-      "description": "Returns true if a1 is smaller than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is smaller than or equal to a2, false  otherwise.\r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
       "name": "<=",
       "signature": "a1 a2 ==> bool"
@@ -143,7 +143,7 @@
       "name": "=~"
     },
     ">": {
-      "description": "Returns true if a1 is greater than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is greater than a2, false  otherwise. \r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
       "name": ">",
       "signature": "a1 a2 ==> bool"
@@ -154,7 +154,7 @@
       "name": "><"
     },
     ">=": {
-      "description": "Returns true if a1 is greater than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is greater than or equal to a2, false  otherwise.\r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
       "name": ">=",
       "signature": "a1 a2 ==> bool"
@@ -175,15 +175,10 @@
       "name": "@"
     },
     "ROOT": {
-      "description": "Returns a module holding a reference to the [ROOT](class:kwd) scope.\n\n \n Tip\n \n This symbol is very useful in conjunction with the **with** operator.",
+      "description": "Returns a module holding a reference to the [ROOT](class:kwd) scope.\r\n\r\n \r\n Tip\r\n \r\n This symbol is very useful in conjunction with the **with** operator.",
       "kind": "symbol",
       "name": "ROOT",
       "signature": " ==> dict"
-    },
-    "^": {
-      "description": "See call",
-      "kind": "symbol",
-      "name": "^"
     },
     "abs": {
       "description": "Calculates tbe absolute value of num1.",
@@ -207,7 +202,7 @@
       "description": "Encrypts or decrypts 'sym1 using the Advanced Encryption Standard (AES) in CTR mode, using 'sym2 as password.",
       "kind": "symbol",
       "name": "aes",
-      "signature": "'sym1 'sym2 ==> string"
+      "signature": "'sym1 'sym2 ==> str"
     },
     "all?": {
       "description": "Applies predicate quot2 to each element of quot1 and returns true if all elements of quot1 satisfy predicate quot2, false  otherwise.",
@@ -243,7 +238,7 @@
       "description": "The same as pushing apply and then interpolate on the stack.",
       "kind": "symbol",
       "name": "apply-interpolate",
-      "signature": "string quot ==> string"
+      "signature": "str quot ==> str"
     },
     "args": {
       "description": "Returns a list of all arguments passed to the current program.",
@@ -258,10 +253,10 @@
       "signature": "num1 ==> num2"
     },
     "ask": {
-      "description": "Prints string1 (prompt), reads a line from STDIN and places it on top of the stack as a string.",
+      "description": "Prints str1 (prompt), reads a line from STDIN and places it on top of the stack as a string.",
       "kind": "symbol",
       "name": "ask",
-      "signature": "string1 ==> string2"
+      "signature": "str1 ==> str2"
     },
     "atan": {
       "description": "Calculates the arc tangent of num1 (in radians).",
@@ -273,7 +268,7 @@
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was last accessed.",
       "kind": "symbol",
       "name": "atime",
-      "signature": "'sym ==> float"
+      "signature": "'sym ==> flt"
     },
     "avg": {
       "description": "Returns the average of the items of quot.",
@@ -312,7 +307,7 @@
       "signature": "int1 int2 ==> int3"
     },
     "bool": {
-      "description": "Converts a to a boolean value based on the following rules:\n \n  * If a is a boolean value, no conversion is performed.\n  * If a is null, it is converted to false .\n  * If a is a numeric value, zero is converted to false , otherwise it is converted to true.\n  * If a is a quotation or a dictionary, the empty quotation or dictionary is converted to false , otherwise it is converted to true.\n  * If a is a string, the empty string, and \"false\" are converted to false , otherwise it is converted to true.",
+      "description": "Converts a to a boolean value based on the following rules:\r\n \r\n  * If a is a boolean value, no conversion is performed.\r\n  * If a is null, it is converted to false .\r\n  * If a is a numeric value, zero is converted to false , otherwise it is converted to true.\r\n  * If a is a quotation or a dictionary, the empty quotation or dictionary is converted to false , otherwise it is converted to true.\r\n  * If a is a string, the empty string, and \"false\" are converted to false , otherwise it is converted to true.",
       "kind": "symbol",
       "name": "bool",
       "signature": "a ==> bool"
@@ -323,20 +318,14 @@
       "name": "boolean?",
       "signature": "a ==> bool"
     },
-    "call": {
-      "description": "Calls operator 'sym defined in dictionary dict.",
-      "kind": "symbol",
-      "name": "call",
-      "signature": "dict 'sym ==> a*"
-    },
     "capitalize": {
       "description": "Returns a copy of 'sym with the first character capitalized.",
       "kind": "symbol",
       "name": "capitalize",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "case": {
-      "description": "This operator takes a quotation containing _n_ different conditional branches. \n \n Each branch must be a quotation containing two quotations, and it is processed as follows:\n \n   * if quot1 evaluates to true, then the quot2 is executed.\n   * if quot1 evaluates to false , then the following branch is processed (if any).\n \n \n Example\n \n The following program prints \"Smaller than 3\":\n \n     2 (\n        (( 3) (\"Greater than 3\" put!))\n        ((< 3) (\"Smaller than 3\" put!))\n        ((true) (\"Exactly 3\" put!))\n     ) case",
+      "description": "This operator takes a quotation containing _n_ different conditional branches. \r\n \r\n Each branch must be a quotation containing two quotations, and it is processed as follows:\r\n \r\n   * if quot1 evaluates to true, then the quot2 is executed.\r\n   * if quot1 evaluates to false , then the following branch is processed (if any).\r\n \r\n \r\n Example\r\n \r\n The following program prints \"Smaller than 3\":\r\n \r\n     2 (\r\n        (( 3) (\"Greater than 3\" put!))\r\n        ((< 3) (\"Smaller than 3\" put!))\r\n        ((true) (\"Exactly 3\" put!))\r\n     ) case",
       "kind": "symbol",
       "name": "case",
       "signature": "((quot1 quot2)*) ==> a*"
@@ -354,22 +343,22 @@
       "signature": "num ==> int"
     },
     "chmod": {
-      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n /tmp/test.txt 755 chmod",
+      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\r\n \r\n \r\n Example\r\n \r\n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\r\n \r\n /tmp/test.txt 755 chmod",
       "kind": "symbol",
       "name": "chmod",
       "signature": "'sym int ==> "
     },
     "choose": {
-      "description": "Prints string2, then prints all string1 included in the quotation prepended with a number, and waits from valid input from the user.\n \n If the user enters a number that matches one of the choices, then the corresponding quotation quot1 is executed, otherwise the choice menu is displayed again until a valid choice is made.",
+      "description": "Prints str2, then prints all str1 included in the quotation prepended with a number, and waits from valid input from the user.\r\n \r\n If the user enters a number that matches one of the choices, then the corresponding quotation quot1 is executed, otherwise the choice menu is displayed again until a valid choice is made.",
       "kind": "symbol",
       "name": "choose",
-      "signature": "((string1 quot1)+) string2 ==> a*"
+      "signature": "((str1 quot1)+) str2 ==> a*"
     },
     "chr": {
-      "description": "Returns the single character string obtained by interpreting int as an ASCII code.",
+      "description": "Returns the single character str obtained by interpreting int as an ASCII code.",
       "kind": "symbol",
       "name": "chr",
-      "signature": "int ==> string"
+      "signature": "int ==> str"
     },
     "clear": {
       "description": "Clears the screen.",
@@ -384,7 +373,7 @@
       "signature": "a ==> "
     },
     "cleave": {
-      "description": "Applies each quotation contained in the first element to the second element a1.\n \n Example\n \n The following program leaves 2 on the stack:\n \n (1 2 3) ((sum) (size)) cleave /",
+      "description": "Applies each quotation contained in the first element to the second element a1.\r\n \r\n Example\r\n \r\n The following program leaves 2 on the stack:\r\n \r\n (1 2 3) ((sum) (size)) cleave /",
       "kind": "symbol",
       "name": "cleave",
       "signature": "a1 (quot*) ==> a*"
@@ -414,16 +403,16 @@
       "signature": "quot1 quot2 ==> quot3"
     },
     "confirm": {
-      "description": "Prints string (prompt) appending \" [yes/no]: \", reads a line from STDIN and:\n \n  * if it matches /^y(es)?$/i, puts true on the stack.\n  * if it matches /^no?$/i, puts false  on the stack. \n  * Otherwise, it prints Invalid answer. Please enter 'yes' or 'no':  and waits for a new answer.",
+      "description": "Prints str (prompt) appending \" [yes/no]: \", reads a line from STDIN and:\r\n \r\n  * if it matches /^y(es)?$/i, puts true on the stack.\r\n  * if it matches /^no?$/i, puts false  on the stack. \r\n  * Otherwise, it prints Invalid answer. Please enter 'yes' or 'no':  and waits for a new answer.",
       "kind": "symbol",
       "name": "confirm",
-      "signature": "string ==> bool"
+      "signature": "str ==> bool"
     },
     "connect": {
-      "description": "Connects socket dict:socket to address string and port int.\n \n \n Example\n \n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\n \n     {} socket \"localhost\" 7777 connect =cli\n     \n     args 1 get :msg\n     \n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  send\n     \n     \"Done.\" puts!\n     \n     cli close",
+      "description": "Connects socket dict:socket to address str and port int.\r\n \r\n \r\n Example\r\n \r\n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\r\n \r\n     {} socket \"localhost\" 7777 connect =cli\r\n     \r\n     args 1 get :msg\r\n     \r\n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  send\r\n     \r\n     \"Done.\" puts!\r\n     \r\n     cli close",
       "kind": "symbol",
       "name": "connect",
-      "signature": "dict:socket string int ==> dict:socket"
+      "signature": "dict:socket str int ==> dict:socket"
     },
     "cons": {
       "description": "Prepends a1 to the quotation on top of the stack.",
@@ -453,13 +442,13 @@
       "description": "Returns the host CPU. It can be one of the following strings i386, alpha, powerpc, powerpc64, powerpc64el, sparc, amd64, mips, mipsel, arm, arm64.",
       "kind": "symbol",
       "name": "cpu",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "ctime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was created.",
       "kind": "symbol",
       "name": "ctime",
-      "signature": "'sym ==> float"
+      "signature": "'sym ==> flt"
     },
     "d2r": {
       "description": "Converts num1 from degrees to radians.",
@@ -471,7 +460,7 @@
       "description": "Returns an ISO 8601 string representing the combined date and time in UTC of timestamp int.",
       "kind": "symbol",
       "name": "datetime",
-      "signature": "int ==> string"
+      "signature": "int ==> str"
     },
     "ddel": {
       "description": "Removes 'sym from dict1 and returns dict1.",
@@ -495,7 +484,7 @@
       "description": "Decodes the Base64-encoded string 'sym.",
       "kind": "symbol",
       "name": "decode",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "define": {
       "description": "Defines a new symbol 'sym, containing the specified value (auto-quoted if not already a quotation).",
@@ -515,17 +504,11 @@
       "name": "defined-sigil?",
       "signature": "'sym ==> bool"
     },
-    "defined?": {
+    "defined-symbol?": {
       "description": "Returns true if the symbol 'sym is defined, false  otherwise.",
       "kind": "symbol",
-      "name": "defined?",
+      "name": "defined-symbol?",
       "signature": "'sym ==> bool"
-    },
-    "delete": {
-      "description": "Deletes the specified symbol 'sym.",
-      "kind": "symbol",
-      "name": "delete",
-      "signature": "'sym ==> "
     },
     "delete-sigil": {
       "description": "Deletes the specified user-defined sigil 'sym.",
@@ -534,7 +517,7 @@
       "signature": "'sym ==> "
     },
     "dequote": {
-      "description": "Pushes the contents of quotation quot on the stack.\n\n Each element is pushed on the stack one by one. If any error occurs, quot is restored on the stack.",
+      "description": "Pushes the contents of quotation quot on the stack.\r\n\r\n Each element is pushed on the stack one by one. If any error occurs, quot is restored on the stack.",
       "kind": "symbol",
       "name": "dequote",
       "signature": "quot ==> a*"
@@ -546,7 +529,7 @@
       "signature": "dict 'sym ==> a"
     },
     "dhas?": {
-      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\n \n \n Example\n  \n The following program returns true:\n \n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
+      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\r\n \r\n \r\n Example\r\n  \r\n The following program returns true:\r\n \r\n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
       "kind": "symbol",
       "name": "dhas?",
       "signature": "dict 'sym ==> bool"
@@ -558,7 +541,7 @@
       "signature": "a ==> bool"
     },
     "difference": {
-      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
+      "description": "Calculates the difference quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
       "kind": "symbol",
       "name": "difference",
       "signature": "quot1 quot2 ==> quot3"
@@ -579,7 +562,7 @@
       "description": "Returns the path of the directory containing path 'sym.",
       "kind": "symbol",
       "name": "dirname",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "div": {
       "description": "Divides int1 by int2 (integer division).",
@@ -591,13 +574,13 @@
       "description": "Returns a quotation containing all the keys of dictionary dict.",
       "kind": "symbol",
       "name": "dkeys",
-      "signature": "dict ==> (string*)"
+      "signature": "dict ==> (str*)"
     },
     "download": {
-      "description": "Downloads the contents of URL string1 to the local file string2.",
+      "description": "Downloads the contents of URL str1 to the local file str2.",
       "kind": "symbol",
       "name": "download",
-      "signature": "string1 string2 ==> "
+      "signature": "str1 str2 ==> "
     },
     "dpairs": {
       "description": "Returns a quotation containing all the keys (odd items) and values (even items) of dictiionary dict.",
@@ -606,7 +589,7 @@
       "signature": "dict ==> (a*)"
     },
     "dpick": {
-      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\n \n \n Example\n  \n The following program returns {4 :a 7 :d}:\n \n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dpick",
+      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\r\n \r\n \r\n Example\r\n  \r\n The following program returns {4 :a 7 :d}:\r\n \r\n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dpick",
       "kind": "symbol",
       "name": "dpick",
       "signature": "dict1 quot ==> dict2"
@@ -654,7 +637,7 @@
       "signature": "dict:datastore 'sym dict ==> dict:datastore"
     },
     "dsquery": {
-      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" (/author \"h3rald\" ==) dsquery",
+      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\r\n\r\n \r\n Example\r\n\r\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\r\n\r\n      ds \"posts\" (/author \"h3rald\" ==) dsquery",
       "kind": "symbol",
       "name": "dsquery",
       "signature": "dict:datastore 'sym quot ==> (dict*)"
@@ -675,7 +658,7 @@
       "description": "Returns a string set to the type of dict (empty if the dictionary has no type).",
       "kind": "symbol",
       "name": "dtype",
-      "signature": "dict ==> string"
+      "signature": "dict ==> str"
     },
     "dup": {
       "description": "Duplicates the first element on the stack.",
@@ -699,7 +682,7 @@
       "description": "Base64-encodes 'sym.",
       "kind": "symbol",
       "name": "encode",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "env?": {
       "description": "Returns true if environment variable 'sym exists, false  otherwise.",
@@ -717,13 +700,13 @@
       "description": "Returns a copy of 'sym with quotes and backslashes escaped with a backslash.",
       "kind": "symbol",
       "name": "escape",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "eval": {
-      "description": "Parses and interprets string.",
+      "description": "Parses and interprets str.",
       "kind": "symbol",
       "name": "eval",
-      "signature": "string ==> a*"
+      "signature": "str ==> a*"
     },
     "even?": {
       "description": "Returns true if int is even, false  otherwise.",
@@ -744,7 +727,7 @@
       "signature": "int ==> "
     },
     "expect": {
-      "description": "Validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating the type names with a pipe: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
+      "description": "Validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). \r\n\r\n \r\n Tips\r\n \r\n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\r\n * You can specify two or more matching types by separating the type names with a pipe: string|quot\r\n\r\n \r\n Example\r\n \r\n Assuming that the following elements are on the stack (from top to bottom): \r\n \r\n 1 \"test\" 3.4\r\n \r\n the following program evaluates to true:\r\n \r\n (int string num) expect (3.4 \"test\" 1) ==",
       "kind": "symbol",
       "name": "expect",
       "signature": "quot1 ==> quot2"
@@ -768,10 +751,10 @@
       "signature": " ==> "
     },
     "fappend": {
-      "description": "Appends string1 to the end of file string2.",
+      "description": "Appends str1 to the end of file str2.",
       "kind": "symbol",
       "name": "fappend",
-      "signature": "string1 string2 ==> "
+      "signature": "str1 str2 ==> "
     },
     "fatal": {
       "description": "Prints a and a new line to STDERR, and exists the program with error code 100.",
@@ -789,16 +772,16 @@
       "description": "Returns the file name of path 'sym.",
       "kind": "symbol",
       "name": "filename",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "filter": {
-      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (dup 20 < swap even? and) filter",
+      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (2 6 8 12) on the stack:\r\n \r\n     (1 37 34 2 6 8 12 21) \r\n     (dup 20 < swap even? and) filter",
       "kind": "symbol",
       "name": "filter",
       "signature": "quot1 quot2 ==> quot3"
     },
     "find": {
-      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) find",
+      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 3 on the stack:\r\n \r\n     (1 2 4 8 16) \r\n     (5 ) find",
       "kind": "symbol",
       "name": "find",
       "signature": "quot1 quot2 ==> int"
@@ -810,16 +793,16 @@
       "signature": "quot ==> a"
     },
     "flatten": {
-      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     flatten",
+      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\r\n \r\n     (1 (2 3 4) 5 (6 7) 8) \r\n     flatten",
       "kind": "symbol",
       "name": "flatten",
       "signature": "quot1 ==> quot2"
     },
     "float": {
-      "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.0.\n   * If a is false , it is converted to 0.0.\n   * If a is null, it is converted to 0.0\n.  * If a is a integer, it is converted to float value.\n   * If a is a float, no conversion is performed.\n   * If a is a string, it is parsed as a float value.",
+      "description": "Converts a to an integer value based on the following rules:\r\n \r\n   * If a is true, it is converted to 1.0.\r\n   * If a is false , it is converted to 0.0.\r\n   * If a is null, it is converted to 0.0\r\n.  * If a is a integer, it is converted to float value.\r\n   * If a is a float, no conversion is performed.\r\n   * If a is a string, it is parsed as a float value.",
       "kind": "symbol",
       "name": "float",
-      "signature": "a ==> float"
+      "signature": "a ==> flt"
     },
     "float?": {
       "description": "Returns true if a is a float, false  otherwise.",
@@ -840,10 +823,10 @@
       "signature": "quot1 quot2 ==> a*"
     },
     "format-error": {
-      "description": "Formats the error dict:error as a string. \n \n Example\n \n The following: \n \n {\"MyError\" :error \"This is a test error\" :message} 'error set-type format-error\n \n produces: \"This is a test error\"",
+      "description": "Formats the error dict:error as a string. \r\n \r\n Example\r\n \r\n The following code: \r\n \r\n      (\r\n        (\r\n           {\"MyError\" :error \"This is a test error\" :message} raise\r\n        ) \r\n        (format-error)\r\n      ) try\r\n \r\n produces: \"This is a test error\"",
       "kind": "symbol",
       "name": "format-error",
-      "signature": "dict:error ==> string"
+      "signature": "dict:error ==> str"
     },
     "fperms": {
       "description": "Returns the Unix permissions (expressed as a three-digit number) of file/directory 'sym.",
@@ -852,28 +835,28 @@
       "signature": "'sym ==> int"
     },
     "fread": {
-      "description": "Reads the file string and puts its contents on the top of the stack as a string.",
+      "description": "Reads the file str and puts its contents on the top of the stack as a string.",
       "kind": "symbol",
       "name": "fread",
-      "signature": "string ==> string"
+      "signature": "str ==> str"
     },
     "from-json": {
       "description": "Converts a JSON string into min data.",
       "kind": "symbol",
       "name": "from-json",
-      "signature": "string ==> a"
+      "signature": "str ==> a"
     },
     "from-semver": {
-      "description": "Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) string, \nit pushes a dictionary dict on the stack containing a **major**, **minor**, and **patch** key/value pairs.",
+      "description": "Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str, \r\nit pushes a dictionary dict on the stack containing a **major**, **minor**, and **patch** key/value pairs.",
       "kind": "symbol",
       "name": "from-semver",
-      "signature": "string ==> dict"
+      "signature": "str ==> dict"
     },
     "from-yaml": {
-      "description": "Converts a YAML string into min data.\n \n Note\n \n At present, only YAML objects containing string values are supported.",
+      "description": "Converts a YAML string into min data.\r\n \r\n Note\r\n \r\n At present, only YAML objects containing string values are supported.",
       "kind": "symbol",
       "name": "from-yaml",
-      "signature": "string ==> a"
+      "signature": "str ==> a"
     },
     "fsize": {
       "description": "Returns the size in bytes of file/directory 'sym.",
@@ -882,7 +865,7 @@
       "signature": "'sym ==> int"
     },
     "fstats": {
-      "description": "Returns a dictionary dict containing information on file/directory 'sym.\n \n Example\n \n Assuming that min is a file, the following:\n \n \"min\" fstats\n \n produces:\n \n      {\n        \"min\" :name\n        16777220 :device\n        50112479 :file\n        \"file\" :type\n        617068 :size\n        755 :permissions\n        1 :nlinks\n        1496583112.0 :ctime\n        1496584370.0 :atime\n        1496583112.0 :mtime\n      }",
+      "description": "Returns a dictionary dict containing information on file/directory 'sym.\r\n \r\n Example\r\n \r\n Assuming that min is a file, the following:\r\n \r\n \"min\" fstats\r\n \r\n produces:\r\n \r\n      {\r\n        \"min\" :name\r\n        16777220 :device\r\n        50112479 :file\r\n        \"file\" :type\r\n        617068 :size\r\n        755 :permissions\r\n        1 :nlinks\r\n        1496583112.0 :ctime\r\n        1496584370.0 :atime\r\n        1496583112.0 :mtime\r\n      }",
       "kind": "symbol",
       "name": "fstats",
       "signature": "'sym ==> dict"
@@ -891,13 +874,13 @@
       "description": "Returns the type of file/directory 'sym (\"file\" or \"dir\").",
       "kind": "symbol",
       "name": "ftype",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "fwrite": {
-      "description": "Writes string1 to the file string2, erasing all its contents first.",
+      "description": "Writes str1 to the file str2, erasing all its contents first.",
       "kind": "symbol",
       "name": "fwrite",
-      "signature": "string1 string2 ==> "
+      "signature": "str1 str2 ==> "
     },
     "get": {
       "description": "Returns the _n^th_ element of quot (zero-based).",
@@ -906,16 +889,16 @@
       "signature": "quot int ==> a"
     },
     "get-content": {
-      "description": "Retrieves the contents of URL string1 as string2.",
+      "description": "Retrieves the contents of URL str1 as str2.",
       "kind": "symbol",
       "name": "get-content",
-      "signature": "string1 ==> string2"
+      "signature": "str1 ==> str2"
     },
     "get-env": {
       "description": "Returns environment variable 'sym.",
       "kind": "symbol",
       "name": "get-env",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "get-stack": {
       "description": "Puts a quotation containing the contents of the stack on the stack.",
@@ -933,7 +916,7 @@
       "description": "Reads a line from STDIN and places it on top of the stack as a string.",
       "kind": "symbol",
       "name": "gets",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "hardlink": {
       "description": "Creates hardlink 'sym2 for file or directory 'sym1.",
@@ -942,7 +925,7 @@
       "signature": "'sym1 'sym2 ==> "
     },
     "harvest": {
-      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     harvest",
+      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 2 3) on the stack:\r\n \r\n     (1 () () () 2 () 3) \r\n     harvest",
       "kind": "symbol",
       "name": "harvest",
       "signature": "quot1 ==> quot2"
@@ -984,16 +967,16 @@
       "signature": "quot a ==> bool"
     },
     "indent": {
-      "description": "Returns string containing 'sym indented with int spaces.",
+      "description": "Returns str containing 'sym indented with int spaces.",
       "kind": "symbol",
       "name": "indent",
-      "signature": "'sym int ==> string"
+      "signature": "'sym int ==> str"
     },
     "indexof": {
-      "description": "If string2 is contained in string1, returns the index of the first match or -1 if no match is found.",
+      "description": "If str2 is contained in str1, returns the index of the first match or -1 if no match is found.",
       "kind": "symbol",
       "name": "indexof",
-      "signature": "string1 string2 ==> int"
+      "signature": "str1 str2 ==> int"
     },
     "inf": {
       "description": "Returns infinity.",
@@ -1002,7 +985,7 @@
       "signature": " ==> num"
     },
     "infix-dequote": {
-      "description": "Dequotes quot using infix notation. \n \n Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.\n \n \n Example\n \n The following program leaves 17 on the stack:\n\n      (2 + (3 * 5)) infix-dequote\n\n while this program leaves 25 on the stack:\n \n      (2 + 3 * 5) infix-dequote",
+      "description": "Dequotes quot using infix notation. \r\n \r\n Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 17 on the stack:\r\n\r\n      (2 + (3 * 5)) infix-dequote\r\n\r\n while this program leaves 25 on the stack:\r\n \r\n      (2 + 3 * 5) infix-dequote",
       "kind": "symbol",
       "name": "infix-dequote",
       "signature": "quot ==> a"
@@ -1020,7 +1003,7 @@
       "signature": "quot1 a int ==> quot2"
     },
     "int": {
-      "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.\n   * If a is false , it is converted to 0.\n   * If a is null, it is converted to 0.\n   * If a is an integer, no conversion is performed.\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\n   * If a is a string, it is parsed as an integer value.",
+      "description": "Converts a to an integer value based on the following rules:\r\n \r\n   * If a is true, it is converted to 1.\r\n   * If a is false , it is converted to 0.\r\n   * If a is null, it is converted to 0.\r\n   * If a is an integer, no conversion is performed.\r\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\r\n   * If a is a string, it is parsed as an integer value.",
       "kind": "symbol",
       "name": "int",
       "signature": "a ==> int"
@@ -1032,25 +1015,25 @@
       "signature": "a ==> bool"
     },
     "intersection": {
-      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
+      "description": "Calculates the intersection quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (1 \"test\") on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
       "kind": "symbol",
       "name": "intersection",
       "signature": "quot1 quot2 ==> quot3"
     },
     "invoke": {
-      "description": "Assming that 'sym is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. \n \n \n Example\n \n The following program leaves 100 on the stack:\n \n     {{100 :b} :a} :test *test/a/b",
+      "description": "Assming that 'sym is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. \r\n \r\n \r\n Example\r\n \r\n The following program leaves 100 on the stack:\r\n \r\n     {{100 :b} :a} :test *test/a/b",
       "kind": "symbol",
       "name": "invoke",
       "signature": "'sym ==> a*"
     },
     "join": {
-      "description": "Joins the elements of quot using separator 'sym, producing string.",
+      "description": "Joins the elements of quot using separator 'sym, producing str.",
       "kind": "symbol",
       "name": "join",
-      "signature": "quot 'sym ==> string"
+      "signature": "quot 'sym ==> str"
     },
     "keep": {
-      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ keep",
+      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\r\n \r\n Example\r\n \r\n The following program leaves 5 3 on the stack:\r\n \r\n 2 3 '+ keep",
       "kind": "symbol",
       "name": "keep",
       "signature": "a1 quot ==> a* a1"
@@ -1074,7 +1057,7 @@
       "signature": " ==> dict"
     },
     "linrec": {
-      "description": "Implements linear recursions as follows:\n \n   1. Evaluates quot1.\n     * If quot1 evaluates to true, then it evaluates quot2.\n     * Otherwises it executes quot3 and recurses using the same four quotations.\n   2. Finally, it executes quot4.\n \n \n Example\n \n The following program leaves 120 on the stack, the factorial of 5:\n \n    5 (dup 0 ==) 'succ (dup pred) '* linrec",
+      "description": "Implements linear recursions as follows:\r\n \r\n   1. Evaluates quot1.\r\n     * If quot1 evaluates to true, then it evaluates quot2.\r\n     * Otherwises it executes quot3 and recurses using the same four quotations.\r\n   2. Finally, it executes quot4.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 120 on the stack, the factorial of 5:\r\n \r\n    5 (dup 0 ==) 'succ (dup pred) '* linrec",
       "kind": "symbol",
       "name": "linrec",
       "signature": "quot1 quot2 quot3 quot4 ==> a*"
@@ -1116,7 +1099,7 @@
       "signature": "num1 ==> num2"
     },
     "loglevel": {
-      "description": "Sets the current logging level to 'sym. 'sym must be one of the following strings or quoted symbols:\n \n   * debug\n   * info\n   * notice\n   * warn\n   * error\n   * fatal\n \n \n Note\n \n The default logging level is _notice_.",
+      "description": "Sets the current logging level to 'sym. 'sym must be one of the following strings or quoted symbols:\r\n \r\n   * debug\r\n   * info\r\n   * notice\r\n   * warn\r\n   * error\r\n   * fatal\r\n \r\n \r\n Note\r\n \r\n The default logging level is _notice_.",
       "kind": "symbol",
       "name": "loglevel",
       "signature": "'sym ==> "
@@ -1125,13 +1108,13 @@
       "description": "Returns the current log level (debug, info, notive, warn, error or fatal).",
       "kind": "symbol",
       "name": "loglevel?",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "lowercase": {
       "description": "Returns a copy of 'sym converted to lowercase.",
       "kind": "symbol",
       "name": "lowercase",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "ls": {
       "description": "Returns a quotation quot containing all children (files and directories) of the directory 'sym.",
@@ -1152,34 +1135,34 @@
       "signature": "quot1 quot2 ==> quot3"
     },
     "map-reduce": {
-      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (dup *) (+) map-reduce",
+      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 35 on the stack:\r\n \r\n     (1 3 5) \r\n     (dup *) (+) map-reduce",
       "kind": "symbol",
       "name": "map-reduce",
       "signature": "quot1 quot2 quot3 ==> int"
     },
     "mapkey": {
-      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l keymap\n \n causes the CTRL+L key to clear the screen.",
+      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\r\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     (clear) 'ctrl+l keymap\r\n \r\n causes the CTRL+L key to clear the screen.",
       "kind": "symbol",
       "name": "mapkey",
       "signature": "quot 'sym ==> "
     },
     "match": {
-      "description": "Returns true if string2 matches string1, false  otherwise.\n \n Tip\n \n string2 can be a sgregex-compatible regular expression.",
+      "description": "Returns true if str2 matches str1, false  otherwise.\r\n \r\n Tip\r\n \r\n str2 can be a sgregex-compatible regular expression.",
       "kind": "symbol",
       "name": "match",
-      "signature": "string1 string2 ==> bool"
+      "signature": "str1 str2 ==> bool"
     },
     "md4": {
       "description": "Returns the MD4 hash of 'sym.",
       "kind": "symbol",
       "name": "md4",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "md5": {
       "description": "Returns the MD5 hash of 'sym.",
       "kind": "symbol",
       "name": "md5",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "med": {
       "description": "Returns the median of the items of quot.",
@@ -1199,17 +1182,11 @@
       "name": "mod",
       "signature": "int1 int2 ==> int3"
     },
-    "module": {
-      "description": "Creates a new module 'sym based on dictionary dict.",
-      "kind": "symbol",
-      "name": "module",
-      "signature": "dict 'sym ==> "
-    },
     "mtime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was last modified.",
       "kind": "symbol",
       "name": "mtime",
-      "signature": "'sym ==> float"
+      "signature": "'sym ==> flt"
     },
     "mv": {
       "description": "Moves the file or directory 'sym1 to 'sym2.",
@@ -1251,7 +1228,7 @@
       "description": "Returns the current time as Unix timestamp with microseconds.",
       "kind": "symbol",
       "name": "now",
-      "signature": " ==> float"
+      "signature": " ==> flt"
     },
     "null?": {
       "description": "Returns true if a is null, false  otherwise.",
@@ -1278,7 +1255,7 @@
       "signature": "quot1 quot2 ==> bool"
     },
     "operator": {
-      "description": "Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\n \n quot is a quotation containing:\n \n * A symbol identifying the type of operator to define (symbol or sigil).\n * A symbol identifying the name of the operator.\n * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\n * A quotation identifying the body of the operator.\n\n The main additional features offered by this way of defining operators are the following:\n\n * Both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\n \n \n Example\n \n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\n\n      (\n        symbol pow\n        (num :base int :exp == num :result)\n        ( \n          (base 0 == exp 0 == and)\n            (nan @result return)\n          when\n          (base 1 == exp inf == and)\n            (nan @result return)\n          when\n          (base inf == exp 0 == and)\n            (nan @result return)\n          when\n          exp 1 - :n\n          base  (dup) n times (*) n times @result\n        )\n      ) ::",
+      "description": "Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\r\n \r\n quot is a quotation containing:\r\n \r\n * A symbol identifying the type of operator to define (symbol or sigil).\r\n * A symbol identifying the name of the operator.\r\n * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\r\n * A quotation identifying the body of the operator.\r\n\r\n The main additional features offered by this way of defining operators are the following:\r\n\r\n * Both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\r\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\r\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).\r\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\r\n \r\n \r\n Example\r\n \r\n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\r\n\r\n      (\r\n        symbol pow\r\n        (num :base int :exp == num :result)\r\n        ( \r\n          (base 0 == exp 0 == and)\r\n            (nan @result return)\r\n          when\r\n          (base 1 == exp inf == and)\r\n            (nan @result return)\r\n          when\r\n          (base inf == exp 0 == and)\r\n            (nan @result return)\r\n          when\r\n          exp 1 - :n\r\n          base  (dup) n times (*) n times @result\r\n        )\r\n      ) ::",
       "kind": "symbol",
       "name": "operator",
       "signature": "quot ==> a*"
@@ -1296,16 +1273,16 @@
       "signature": "bool1 bool2 ==> bool3"
     },
     "ord": {
-      "description": "Returns the ASCII code int corresponding to the single character string.",
+      "description": "Returns the ASCII code int corresponding to the single character str.",
       "kind": "symbol",
       "name": "ord",
-      "signature": "string ==> int"
+      "signature": "str ==> int"
     },
     "os": {
       "description": "Returns the host operating system. It can be one of the following strings: windows, macosx, linux, netbsd, freebsd, openbsd, solaris, aix, standalone.",
       "kind": "symbol",
       "name": "os",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "over": {
       "description": "Pushes a copy of the second element on top of the stack.",
@@ -1314,19 +1291,19 @@
       "signature": "a1 a2 ==> a1 a2 a1"
     },
     "parse": {
-      "description": "Parses string and returns a quoted program quot.",
+      "description": "Parses str and returns a quoted program quot.",
       "kind": "symbol",
       "name": "parse",
-      "signature": "string ==> quot"
+      "signature": "str ==> quot"
     },
     "parse-url": {
-      "description": "Parses the url string into its components and stores them into url.",
+      "description": "Parses the url str into its components and stores them into url.",
       "kind": "symbol",
       "name": "parse-url",
-      "signature": "string ==> url"
+      "signature": "str ==> url"
     },
     "partition": {
-      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) partition",
+      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 3 5) (2 4 6) on the stack:\r\n \r\n     (1 2 3 4 5 6) \r\n     (odd?) partition",
       "kind": "symbol",
       "name": "partition",
       "signature": "quot1 quot2 ==> quot3 quot4"
@@ -1335,7 +1312,7 @@
       "description": "Reads a line from STDIN displaying \\* for each typed character, and places it on top of the stack as a string.",
       "kind": "symbol",
       "name": "password",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "pi": {
       "description": "Returns the value of the &pi; constant.",
@@ -1371,10 +1348,10 @@
       "description": "Prepends 'sym2 to 'sym1.",
       "kind": "symbol",
       "name": "prefix",
-      "signature": "'sym1 'sym2 ==> string"
+      "signature": "'sym1 'sym2 ==> str"
     },
     "prefix-dequote": {
-      "description": "Dequotes quot using prefix notation (essentially it reverses quot and dequotes it).\n \n \n Example\n \n The following program leaves 4 on the stack:\n\n     (* 8 4) prefix-dequote",
+      "description": "Dequotes quot using prefix notation (essentially it reverses quot and dequotes it).\r\n \r\n \r\n Example\r\n \r\n The following program leaves 4 on the stack:\r\n\r\n     (* 8 4) prefix-dequote",
       "kind": "symbol",
       "name": "prefix-dequote",
       "signature": "quot ==> a"
@@ -1398,13 +1375,13 @@
       "signature": "quot ==> int"
     },
     "prompt": {
-      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\n \n     (\"[$1]$$ \" (.) = %)\n \n Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.",
+      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\r\n \r\n     (\"[$1]$$ \" (.) = %)\r\n \r\n Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.",
       "kind": "symbol",
       "name": "prompt",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "publish": {
-      "description": "Publishes symbol 'sym to the scope of dict.\n \n \n Example\n \n Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:\n 'my-local-symbol ROOT publish",
+      "description": "Publishes symbol 'sym to the scope of dict.\r\n \r\n \r\n Example\r\n \r\n Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:\r\n 'my-local-symbol ROOT publish",
       "kind": "symbol",
       "name": "publish",
       "signature": "'sym dict ==> "
@@ -1413,13 +1390,13 @@
       "description": "Sets environment variable 'sym2 to 'sym1.",
       "kind": "symbol",
       "name": "put-env",
-      "signature": "'sym1 'sym2 ==> string"
+      "signature": "'sym1 'sym2 ==> str"
     },
     "putchr": {
-      "description": "Prints string to STDOUT without printing a new line (string must contain only one character).",
+      "description": "Prints str to STDOUT without printing a new line (str must contain only one character).",
       "kind": "symbol",
       "name": "putchr",
-      "signature": "string ==> a"
+      "signature": "str ==> a"
     },
     "puts": {
       "description": "Prints a and a new line to STDOUT.",
@@ -1476,7 +1453,7 @@
       "signature": "dict:error ==> "
     },
     "random": {
-      "description": "Returns a random number int2 between 0 and int1-1. \n \n \n Note\n \n You must call randomize to initialize the random number generator, otherwise the same sequence of numbers will be returned.",
+      "description": "Returns a random number int2 between 0 and int1-1. \r\n \r\n \r\n Note\r\n \r\n You must call randomize to initialize the random number generator, otherwise the same sequence of numbers will be returned.",
       "kind": "symbol",
       "name": "random",
       "signature": "int1 ==> int2"
@@ -1500,28 +1477,28 @@
       "signature": " ==> quot"
     },
     "recv": {
-      "description": "Waits to receive int characters from dict:socket and returns the resulting data string.",
+      "description": "Waits to receive int characters from dict:socket and returns the resulting data str.",
       "kind": "symbol",
       "name": "recv",
-      "signature": "dict:socket int ==> string"
+      "signature": "dict:socket int ==> str"
     },
     "recv-line": {
-      "description": "Waits to receive a line of data from dict:socket and returns the resulting data string. \"\" is returned if dict:socket is disconnected.\n \n \n Example\n \n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\n \n \n     {} socket \"httpbin.org\" 80 connect =cli\n    \n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" send\n   \n     cli recv-line puts :line\n     (line \"\\}\" match not) \n     (\n       cli recv-line puts @line\n     ) while",
+      "description": "Waits to receive a line of data from dict:socket and returns the resulting data str. \"\" is returned if dict:socket is disconnected.\r\n \r\n \r\n Example\r\n \r\n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\r\n \r\n \r\n     {} socket \"httpbin.org\" 80 connect =cli\r\n    \r\n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" send\r\n   \r\n     cli recv-line puts :line\r\n     (line \"\\}\" match not) \r\n     (\r\n       cli recv-line puts @line\r\n     ) while",
       "kind": "symbol",
       "name": "recv-line",
-      "signature": "dict:socket ==> string"
+      "signature": "dict:socket ==> str"
     },
     "reduce": {
-      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
+      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a and the first element of quot1.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 120 on the stack:\r\n \r\n     (1 2 3 4 5) \r\n     1 (*) reduce",
       "kind": "symbol",
       "name": "reduce",
       "signature": "quot1 a quot2 ==> int"
     },
     "regex": {
-      "description": "Performs a search and/or a search-and-replace operation using pattern string2.\n \n string2 can be one of the following patterns:\n \n   * **/**_search-regex_**/**_modifiers_\n   * **s/**_search-regex_**/**_replacemenet_**/**_modifiers_\n \n quot is always a quotation containing:\n \n   * One or more strings containing the first match and captures (if any), like for the search operator.\n   * A string containing the resuling string after the search-and-replace operation.\n \n \n Tip\n \n * _search-regex_ can be a sgregex-compatible regular expression.\n * _modifiers_ are optionals can contain one or more of the following characters, in any order:\n   * **i**: case-insensitive match.\n   * **m**: multi-line match.\n   * **s**: dot character includes newlines.\n \n \n Example: Search\n \n The following:\n \n \"This is a GOOD idea.\" \"/(good) idea/i\" regex\n \n produces: (\"GOOD idea\", \"GOOD\")\n \n \n Example: Search and Replace\n \n The following:\n \n \"This is a GOOD idea.\" \"s/good/bad/i\" regex\n \n produces: (\"This is a bad idea\")",
+      "description": "Performs a search and/or a search-and-replace operation using pattern str2.\r\n \r\n str2 can be one of the following patterns:\r\n \r\n   * **/**_search-regex_**/**_modifiers_\r\n   * **s/**_search-regex_**/**_replacemenet_**/**_modifiers_\r\n \r\n quot is always a quotation containing:\r\n \r\n   * One or more strings containing the first match and captures (if any), like for the search operator.\r\n   * A string containing the resuling string after the search-and-replace operation.\r\n \r\n \r\n Tip\r\n \r\n * _search-regex_ can be a sgregex-compatible regular expression.\r\n * _modifiers_ are optionals can contain one or more of the following characters, in any order:\r\n   * **i**: case-insensitive match.\r\n   * **m**: multi-line match.\r\n   * **s**: dot character includes newlines.\r\n \r\n \r\n Example: Search\r\n \r\n The following:\r\n \r\n \"This is a GOOD idea.\" \"/(good) idea/i\" regex\r\n \r\n produces: (\"GOOD idea\", \"GOOD\")\r\n \r\n \r\n Example: Search and Replace\r\n \r\n The following:\r\n \r\n \"This is a GOOD idea.\" \"s/good/bad/i\" regex\r\n \r\n produces: (\"This is a bad idea\")",
       "kind": "symbol",
       "name": "regex",
-      "signature": "string1 string2 ==> quot"
+      "signature": "str1 str2 ==> quot"
     },
     "reject": {
       "description": "Returns a new quotatios quot3 including all elements of quot1 that do not satisfy predicate quot2 (i.e. the opposite of filter)",
@@ -1542,19 +1519,19 @@
       "signature": "'sym ==> "
     },
     "repeat": {
-      "description": "Returns string containing 'sym repeated int times.",
+      "description": "Returns str containing 'sym repeated int times.",
       "kind": "symbol",
       "name": "repeat",
-      "signature": "'sym int ==> string"
+      "signature": "'sym int ==> str"
     },
     "replace": {
-      "description": "Returns a copy of string1 containing all occurrences of string2 replaced by string3\n \n Tip\n \n string2 can be a sgregex-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"This is a stupid test. Is it really a stupid test?\" \" s[a-z]+\" \" simple\" replace\n \n produces:\n \n \"This is a simple test. Is it really a simple test?\"",
+      "description": "Returns a copy of str1 containing all occurrences of str2 replaced by str3\r\n \r\n Tip\r\n \r\n str2 can be a sgregex-compatible regular expression.\r\n \r\n \r\n Example\r\n \r\n The following:\r\n \r\n \"This is a stupid test. Is it really a stupid test?\" \" s[a-z]+\" \" simple\" replace\r\n \r\n produces:\r\n \r\n \"This is a simple test. Is it really a simple test?\"",
       "kind": "symbol",
       "name": "replace",
-      "signature": "string1 string2 string3 ==> string4"
+      "signature": "str1 str2 str3 ==> str4"
     },
     "request": {
-      "description": "Performs an HTTP request.\n \n \n Example\n \n The following code constructs a request dictionary and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" url\n     request",
+      "description": "Performs an HTTP request.\r\n \r\n \r\n Example\r\n \r\n The following code constructs a request dictionary and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\r\n \r\n     {}\r\n       \"GET\" url\r\n     request",
       "kind": "symbol",
       "name": "request",
       "signature": "request ==> response"
@@ -1572,7 +1549,7 @@
       "signature": "quot1 ==> quot2"
     },
     "return": {
-      "description": "If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. \n\nIf used outside of the body quotation of an operator definition, it raises an exception.",
+      "description": "If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. \r\n\r\nIf used outside of the body quotation of an operator definition, it raises an exception.",
       "kind": "symbol",
       "name": "return",
       "signature": " ==> "
@@ -1629,10 +1606,10 @@
       "description": "Returns a quotation containing all symbols saved in the [.min\\_symbols](class:file) file.",
       "kind": "symbol",
       "name": "saved-symbols",
-      "signature": " ==> (string*)"
+      "signature": " ==> (str*)"
     },
     "scope": {
-      "description": "Returns a dictionary dict holding a reference to the current scope.\n  \n This can be useful to save a reference to a given execution scope to access later on.\n\n \n Example\n \n The following program leaves {(2) :two ;module} on the stack:\n \n     {} :myscope (2 :two scope @myscope) -",
+      "description": "Returns a dictionary dict holding a reference to the current scope.\r\n  \r\n This can be useful to save a reference to a given execution scope to access later on.\r\n\r\n \r\n Example\r\n \r\n The following program leaves {(2) :two ;module} on the stack:\r\n \r\n     {} :myscope (2 :two scope @myscope) -",
       "kind": "symbol",
       "name": "scope",
       "signature": " ==> dict"
@@ -1641,24 +1618,24 @@
       "description": "Returns a list of all sigils defined in dictionary dict.",
       "kind": "symbol",
       "name": "scope-sigils",
-      "signature": "dict ==> (string*)"
+      "signature": "dict ==> (str*)"
     },
     "scope-symbols": {
       "description": "Returns a list of all symbols defined in dictionary dict.",
       "kind": "symbol",
       "name": "scope-symbols",
-      "signature": "dict ==> (string*)"
-    },
-    "seal": {
-      "description": "Seals symbol 'sym, so that it cannot be re-assigned.",
-      "kind": "symbol",
-      "name": "seal",
-      "signature": "'sym ==> "
+      "signature": "dict ==> (str*)"
     },
     "seal-sigil": {
       "description": "Seals the user-defined sigil 'sym, so that it cannot be re-defined.",
       "kind": "symbol",
       "name": "seal-sigil",
+      "signature": "'sym ==> "
+    },
+    "seal-symbol": {
+      "description": "Seals symbol 'sym, so that it cannot be re-assigned.",
+      "kind": "symbol",
+      "name": "seal-symbol",
       "signature": "'sym ==> "
     },
     "sealed-sigil?": {
@@ -1667,53 +1644,53 @@
       "name": "sealed-sigil?",
       "signature": "'sym ==> bool"
     },
-    "sealed?": {
+    "sealed-symbol?": {
       "description": "Returns true if the symbol 'sym is sealed, false  otherwise.",
       "kind": "symbol",
-      "name": "sealed?",
+      "name": "sealed-symbol?",
       "signature": "'sym ==> bool"
     },
     "search": {
-      "description": "Returns a quotation containing the first occurrence of string2 within string1. Note that:\n \n   * The first element of quot is the matching substring.\n   * Other elements (if any) contain captured substrings.\n \n \n Tip\n \n string2 can be a sgregex-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"192.168.1.1, 127.0.0.1\" \"[0-9]+\\.[0-9]+\\.([0-9]+)\\.([0-9]+)\" search\n \n produces: (\"192.168.1.1\", \"1\", \"1\")",
+      "description": "Returns a quotation containing the first occurrence of str2 within str1. Note that:\r\n \r\n   * The first element of quot is the matching substring.\r\n   * Other elements (if any) contain captured substrings.\r\n \r\n \r\n Tip\r\n \r\n str2 can be a sgregex-compatible regular expression.\r\n \r\n \r\n Example\r\n \r\n The following:\r\n \r\n \"192.168.1.1, 127.0.0.1\" \"[0-9]+\\.[0-9]+\\.([0-9]+)\\.([0-9]+)\" search\r\n \r\n produces: (\"192.168.1.1\", \"1\", \"1\")",
       "kind": "symbol",
       "name": "search",
-      "signature": "string1 string2 ==> quot"
+      "signature": "str1 str2 ==> quot"
     },
     "search-all": {
-      "description": "Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of string2 within string1.",
+      "description": "Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of str2 within str1.",
       "kind": "symbol",
       "name": "search-all",
-      "signature": "string1 string2 ==> quot"
+      "signature": "str1 str2 ==> quot"
     },
     "semver-inc-major": {
-      "description": "Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) string1.",
+      "description": "Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
       "name": "semver-inc-major",
-      "signature": "string1 ==> string2"
+      "signature": "str1 ==> str2"
     },
     "semver-inc-minor": {
-      "description": "Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) string1.",
+      "description": "Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
       "name": "semver-inc-minor",
-      "signature": "string1 ==> string2"
+      "signature": "str1 ==> str2"
     },
     "semver-inc-patch": {
-      "description": "Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) string1.",
+      "description": "Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
       "name": "semver-inc-patch",
-      "signature": "string1 ==> string2"
+      "signature": "str1 ==> str2"
     },
     "semver?": {
-      "description": "Checks whether string is a [SemVer](https://semver.org)-compliant version or not.",
+      "description": "Checks whether str is a [SemVer](https://semver.org)-compliant version or not.",
       "kind": "symbol",
       "name": "semver?",
-      "signature": "string ==> bool"
+      "signature": "str ==> bool"
     },
     "send": {
-      "description": "Sends string to the connected socket dict:socket.",
+      "description": "Sends str to the connected socket dict:socket.",
       "kind": "symbol",
       "name": "send",
-      "signature": "dict:socket string ==> "
+      "signature": "dict:socket str ==> "
     },
     "set": {
       "description": "Sets the value of the _n^th_ element quot1 (zero-based) to a, and returns the modified copy of the quotation quot2.",
@@ -1727,41 +1704,35 @@
       "name": "set-stack",
       "signature": "quot ==> a*"
     },
-    "set-type": {
-      "description": "Sets the type for dictionary dict to 'sym.",
-      "kind": "symbol",
-      "name": "set-type",
-      "signature": "dict 'sym ==> dict"
-    },
     "sha1": {
       "description": "Returns the SHA1 hash of 'sym.",
       "kind": "symbol",
       "name": "sha1",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "sha224": {
       "description": "Returns the SHA224 hash of 'sym.",
       "kind": "symbol",
       "name": "sha224",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "sha256": {
       "description": "Returns the SHA256 hash of 'sym.",
       "kind": "symbol",
       "name": "sha256",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "sha384": {
       "description": "Returns the SHA384 hash of 'sym.",
       "kind": "symbol",
       "name": "sha384",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "sha512": {
       "description": "Returns the SHA512 hash of 'sym.",
       "kind": "symbol",
       "name": "sha512",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "shl": {
       "description": "Computes the *shift left* operation of int1 and int2.",
@@ -1785,7 +1756,7 @@
       "description": "Returns a list of all sigils defined in the [ROOT](class:kwd) scope.",
       "kind": "symbol",
       "name": "sigils",
-      "signature": " ==> (string*)"
+      "signature": " ==> (str*)"
     },
     "sin": {
       "description": "Calculates the sine of num1 (in radians).",
@@ -1818,19 +1789,19 @@
       "signature": "int ==> "
     },
     "slice": {
-      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 slice",
+      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (3 4 5) on the stack:\r\n \r\n     (1 2 3 4 5 6) \r\n     2 4 slice",
       "kind": "symbol",
       "name": "slice",
       "signature": "quot1 int1 int2 ==> quot2"
     },
     "socket": {
-      "description": "Opens a new socket.\n \n dict can be empty or contain any of the following properties, used to specify the domain, type and protocol of the socket respectively.\n \n domain\n : The socket domain. It can be set to one of the following values:\n   \n   *  **ipv4** (default): Internet Protocol version 4.\n   *  **ipv6**: Internet Protocol version 6.\n   *  **unix**: local Unix file (not supported on Windows systems).\n type\n : The socket type. It can be set to one of the following values:\n  \n   * **stream** (default): Reliable stream-oriented service or Stream Socket.\n   * **dgram**: Datagram service or Datagram Socket.\n   * **raw**: Raw protocols atop the network layer.\n   * **seqpacket**: Reliable sequenced packet service.\n protocol\n : The socket protocol. It can be set to one of the following values:\n \n   * **tcp** (default): Transmission Control Protocol.\n   * **udp**: User Datagram Protocol.\n   * **ipv4**: Internet Protocol version 4 (not supported on Windows systems).\n   * **ipv6**: Internet Protocol version 6 (not supported on Windows systems).\n   * **raw**: Raw IP Packets protocol (not supported on Windows systems).\n   * **icmp**: Internet Control Message Protocol (not supported on Windows systems).",
+      "description": "Opens a new socket.\r\n \r\n dict can be empty or contain any of the following properties, used to specify the domain, type and protocol of the socket respectively.\r\n \r\n domain\r\n : The socket domain. It can be set to one of the following values:\r\n   \r\n   *  **ipv4** (default): Internet Protocol version 4.\r\n   *  **ipv6**: Internet Protocol version 6.\r\n   *  **unix**: local Unix file (not supported on Windows systems).\r\n type\r\n : The socket type. It can be set to one of the following values:\r\n  \r\n   * **stream** (default): Reliable stream-oriented service or Stream Socket.\r\n   * **dgram**: Datagram service or Datagram Socket.\r\n   * **raw**: Raw protocols atop the network layer.\r\n   * **seqpacket**: Reliable sequenced packet service.\r\n protocol\r\n : The socket protocol. It can be set to one of the following values:\r\n \r\n   * **tcp** (default): Transmission Control Protocol.\r\n   * **udp**: User Datagram Protocol.\r\n   * **ipv4**: Internet Protocol version 4 (not supported on Windows systems).\r\n   * **ipv6**: Internet Protocol version 6 (not supported on Windows systems).\r\n   * **raw**: Raw IP Packets protocol (not supported on Windows systems).\r\n   * **icmp**: Internet Control Message Protocol (not supported on Windows systems).",
       "kind": "symbol",
       "name": "socket",
       "signature": "dict ==> dict:socket"
     },
     "sort": {
-      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' sort",
+      "description": "Sorts all elements of quot1 according to predicate quot2. \r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 3 5 7 9 13 16) on the stack:\r\n \r\n     (1 9 5 13 16 3 7) ' sort",
       "kind": "symbol",
       "name": "sort",
       "signature": "quot1 quot2 ==> quot3"
@@ -1848,7 +1819,7 @@
       "signature": "'sym1 'sym2 ==> quot"
     },
     "spread": {
-      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves (1 4) on the stack:\n \n (1 2) (3 4) ((0 get) (1 get)) spread",
+      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\r\n \r\n Example\r\n \r\n The following program leaves (1 4) on the stack:\r\n \r\n (1 2) (3 4) ((0 get) (1 get)) spread",
       "kind": "symbol",
       "name": "spread",
       "signature": "a* (quot*) ==> a*"
@@ -1860,7 +1831,7 @@
       "signature": "num1 ==> num2"
     },
     "start-server": {
-      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [request &rArr; response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body handler\n     5555 %port\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
+      "description": "Starts an HTTP server based on the configuration provided in dict.\r\n \r\n dict is a dictionary containing the following keys:\r\n \r\n address\r\n : The address to bind the server to (default: **127.0.0.1**).\r\n port\r\n : The port to bind the server to.\r\n handler\r\n : A quotation with the following signature, used to handle all incoming requests: [request &rArr; response](class:kwd)\r\n \r\n \r\n Example\r\n \r\n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\r\n \r\n     ; Define the request handler\r\n     (\r\n       ; Assume there is a request on the stack, take it off and give it the name req\r\n       :req\r\n       ; Let's see what we got (print req to standard out)\r\n       \"THE REQUEST:\" puts! req puts!\r\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\r\n       req /url :url\r\n       \"THE URL is '$1'.\" url quote ))\r\n       ) case\r\n       :body\r\n       ; Prepare the response\r\n       {} body handler\r\n     5555 %port\r\n     \r\n     ; Start server\r\n     \"Server started on port 5555.\" puts!\r\n     \"Press Ctrl+C to stop.\" puts!\r\n     start-server",
       "kind": "symbol",
       "name": "start-server",
       "signature": "dict ==> "
@@ -1875,7 +1846,7 @@
       "description": "Converts a to its string representation.",
       "kind": "symbol",
       "name": "string",
-      "signature": "a ==> string"
+      "signature": "a ==> str"
     },
     "string?": {
       "description": "Returns true if a is a string, false  otherwise.",
@@ -1890,16 +1861,16 @@
       "signature": "a ==> bool"
     },
     "strip": {
-      "description": "Returns string, which is set to 'sym with leading and trailing spaces removed.",
+      "description": "Returns str, which is set to 'sym with leading and trailing spaces removed.",
       "kind": "symbol",
       "name": "strip",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "substr": {
-      "description": "Returns a substring string2 obtained by retriving int2 characters starting from index int1 within string1.",
+      "description": "Returns a substring str2 obtained by retriving int2 characters starting from index int1 within str1.",
       "kind": "symbol",
       "name": "substr",
-      "signature": "string1 int1 int2 ==> string2"
+      "signature": "str1 int1 int2 ==> str2"
     },
     "succ": {
       "description": "Returns the successor of int1.",
@@ -1911,7 +1882,7 @@
       "description": "Appends 'sym2 to 'sym1.",
       "kind": "symbol",
       "name": "suffix",
-      "signature": "'sym1 'sym2 ==> string"
+      "signature": "'sym1 'sym2 ==> str"
     },
     "sum": {
       "description": "Returns the sum of all items of quot. quot is a quotation of integers.",
@@ -1935,7 +1906,7 @@
       "description": "Returns a list of all symbols defined in the [ROOT](class:kwd) scope.",
       "kind": "symbol",
       "name": "symbols",
-      "signature": " ==> (string*)"
+      "signature": " ==> (str*)"
     },
     "symlink": {
       "description": "Creates symlink 'sym2 for file or directory 'sym1.",
@@ -1950,7 +1921,7 @@
       "signature": "'sym ==> bool"
     },
     "symmetric-difference": {
-      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
+      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (true \"a\" 2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
       "kind": "symbol",
       "name": "symmetric-difference",
       "signature": "quot1 quot2 ==> quot3"
@@ -1980,7 +1951,7 @@
       "signature": "num1 ==> num2"
     },
     "tap": {
-      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (dup /a  succ succ b)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
+      "description": "Performs the following operations:\r\n \r\n 1. Removes a from the stack.\r\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\r\n    1. Pushes a back to the stack.\r\n    2. Dequotes the quotation and saves the result as a.\r\n 3. Push the resulting a back on the stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     {1 :a 2 :b 3 :c} (\r\n       (dup /a  succ succ b)\r\n     ) tap\r\n \r\n Returns {3 :a 3 :b 3 :c}.",
       "kind": "symbol",
       "name": "tap",
       "signature": "a quot ==> a"
@@ -2013,19 +1984,19 @@
       "description": "Returns a copy of 'sym in which the first character of each word is capitalized.",
       "kind": "symbol",
       "name": "titleize",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "to-json": {
       "description": "Converts a into a JSON string.",
       "kind": "symbol",
       "name": "to-json",
-      "signature": "a ==> string"
+      "signature": "a ==> str"
     },
     "to-semver": {
-      "description": "Given a a dictionary dict containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) string on the stack.",
+      "description": "Given a a dictionary dict containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str on the stack.",
       "kind": "symbol",
       "name": "to-semver",
-      "signature": "dict ==> string"
+      "signature": "dict ==> str"
     },
     "to-timestamp": {
       "description": "Converts the timeinfo dictionary dict:timeinfo to the corresponding Unix timestamp.",
@@ -2034,10 +2005,10 @@
       "signature": "dict:timeinfo ==> int"
     },
     "to-yaml": {
-      "description": "Converts a into a YAML string.\n\n \n Note\n \n At present, only min dictionaries containing string values are supported.",
+      "description": "Converts a into a YAML string.\r\n\r\n \r\n Note\r\n \r\n At present, only min dictionaries containing string values are supported.",
       "kind": "symbol",
       "name": "to-yaml",
-      "signature": "a ==> string"
+      "signature": "a ==> str"
     },
     "trunc": {
       "description": "Truncates num to the decimal point.",
@@ -2046,7 +2017,7 @@
       "signature": "num1 ==> num2"
     },
     "try": {
-      "description": "Evaluates a quotation as a try/catch/finally block. \n \n The must contain the following elements:\n \n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\n \n \n Example\n \n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\n \n       (\n         (pop)\n         (format-error puts)\n         (0)\n       ) try",
+      "description": "Evaluates a quotation as a try/catch/finally block. \r\n \r\n The must contain the following elements:\r\n \r\n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\r\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\r\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\r\n \r\n \r\n Example\r\n \r\n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\r\n \r\n       (\r\n         (pop)\r\n         (format-error puts)\r\n         (0)\r\n       ) try",
       "kind": "symbol",
       "name": "try",
       "signature": "(quot1 quot2? quot3?) ==> a*"
@@ -2055,7 +2026,7 @@
       "description": "Puts the data type of a on the stack. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
       "kind": "symbol",
       "name": "type",
-      "signature": "a ==> string"
+      "signature": "a ==> str"
     },
     "type?": {
       "description": "Returns true if the data type of a is the specified type 'sym, false  otherwise.",
@@ -2064,13 +2035,13 @@
       "signature": "a 'sym ==> bool"
     },
     "typeclass": {
-      "description": "Defines a new type class 'sym set to quotation quot, which can be used in operator signatures.\n \n \n Example\n \n Consider the following type class which defines a natural number: \n\n      (:n ((n integer?) (n 0 )) &&) 'natural typeclass\n \n It can now be used in operator signatures, like this:\n \n      (\n        symbol natural-sum\n        (natural :n natural :m == natural :result)\n        (n m + @result)\n      ) ::",
+      "description": "Defines a new type class 'sym set to quotation quot, which can be used in operator signatures.\r\n \r\n \r\n Example\r\n \r\n Consider the following type class which defines a natural number: \r\n\r\n      (:n ((n integer?) (n 0 )) &&) 'natural typeclass\r\n \r\n It can now be used in operator signatures, like this:\r\n \r\n      (\r\n        symbol natural-sum\r\n        (natural :n natural :m == natural :result)\r\n        (n m + @result)\r\n      ) ::",
       "kind": "symbol",
       "name": "typeclass",
       "signature": "quot 'sym ==> "
     },
     "union": {
-      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
+      "description": "Calculates the union quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
       "kind": "symbol",
       "name": "union",
       "signature": "quot1 quot2 ==> quot3"
@@ -2082,21 +2053,21 @@
       "signature": "quot1 quot2 ==> a*"
     },
     "unmapkey": {
-      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\n\n \n Notes\n\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\n * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.",
+      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\r\n * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.",
       "kind": "symbol",
       "name": "unmapkey",
-      "signature": "'sym ==> "
-    },
-    "unseal": {
-      "description": "Unseals the user-defined symbol 'sym, so that it can be re-assigned.",
-      "kind": "symbol",
-      "name": "unseal",
       "signature": "'sym ==> "
     },
     "unseal-sigil": {
       "description": "Unseals sigil 'sym, so that it can be re-defined (system sigils cannot be unsealed).",
       "kind": "symbol",
       "name": "unseal-sigil",
+      "signature": "'sym ==> "
+    },
+    "unseal-symbol": {
+      "description": "Unseals the user-defined symbol 'sym, so that it can be re-assigned.",
+      "kind": "symbol",
+      "name": "unseal-symbol",
       "signature": "'sym ==> "
     },
     "unzip": {
@@ -2115,7 +2086,7 @@
       "description": "Returns the current min version number.",
       "kind": "symbol",
       "name": "version",
-      "signature": " ==> string"
+      "signature": " ==> str"
     },
     "warning": {
       "description": "Prints a and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.",
@@ -2133,16 +2104,16 @@
       "description": "Returns the full path to the directory containing executable 'sym, or an empty string if the executable is not found in **$PATH**.",
       "kind": "symbol",
       "name": "which",
-      "signature": "'sym ==> string"
+      "signature": "'sym ==> str"
     },
     "while": {
-      "description": "Executes quot2 while quot1 evaluates to true.\n \n \n Example\n \n The following program prints all natural numbers from 0 to 10:\n \n     0 :count \n     (count 10 <=) \n     (count puts succ @count) while",
+      "description": "Executes quot2 while quot1 evaluates to true.\r\n \r\n \r\n Example\r\n \r\n The following program prints all natural numbers from 0 to 10:\r\n \r\n     0 :count \r\n     (count 10 <=) \r\n     (count puts succ @count) while",
       "kind": "symbol",
       "name": "while",
       "signature": "quot1 quot2 ==> a*"
     },
     "with": {
-      "description": "Pushes each item of quot1 on the stack using the scope of quot2 as scope. \n\n \n Example\n \n This operator is useful to define symbols on the [ROOT](class:kwd) scope or another scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:\n \n     'lite? (\n      (\n       'crypto    import\n       'math      import\n       'net       import\n       'http      import\n      ) ROOT with\n     ) unless",
+      "description": "Pushes each item of quot1 on the stack using the scope of quot2 as scope. \r\n\r\n \r\n Example\r\n \r\n This operator is useful to define symbols on the [ROOT](class:kwd) scope or another scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:\r\n \r\n     'lite? (\r\n      (\r\n       'crypto    import\r\n       'math      import\r\n       'net       import\r\n       'http      import\r\n      ) ROOT with\r\n     ) unless",
       "kind": "symbol",
       "name": "with",
       "signature": "quot1 quot2 ==> a*"
@@ -2157,7 +2128,7 @@
       "description": "Compresses files included in quotation quot into zip file 'sym.",
       "kind": "symbol",
       "name": "zip",
-      "signature": "'sym quot ==> "
+      "signature": "quot 'sym ==> "
     }
   },
   "sigils": {
@@ -2196,11 +2167,6 @@
       "kind": "symbol",
       "name": "*"
     },
-    "+": {
-      "description": "See module",
-      "kind": "symbol",
-      "name": "+"
-    },
     "/": {
       "description": "See dget",
       "kind": "symbol",
@@ -2235,16 +2201,6 @@
       "description": "See bind",
       "kind": "symbol",
       "name": "@"
-    },
-    "^": {
-      "description": "See call",
-      "kind": "symbol",
-      "name": "^"
-    },
-    "~": {
-      "description": "See delete",
-      "kind": "symbol",
-      "name": "~"
     }
   }
 }

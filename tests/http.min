@@ -1,14 +1,14 @@
-'test load
-'test import
+'test require :test
+;;;
 
-"http" describe
+"http" *test/describe
   
   "postman-echo.com"        :host
   "https://$1" (host) => %   :url
 
-  ("$1/get" (url) => % get-content from-json /headers /user-agent  "min http-module/$1" (version) => % ==) assert
+  ("$1/get" (url) => % get-content from-json /headers /user-agent  "min http-module/$1" (version) => % ==) *test/assert
 
-  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json /args /test "Hello!" ==) assert
+  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json /args /test "Hello!" ==) *test/assert
   "tests/test1.json" rm
 
   (
@@ -18,7 +18,7 @@
       ({"it-it" :Accept-Language} %headers)
       (request)
     ) tap /body from-json /headers /accept-language "it-it" ==
-  ) assert
+  ) *test/assert
 
   (
     {} (
@@ -27,7 +27,7 @@
       ({} to-json %body)
       (request)
     ) tap /body from-json /data {} ==
-  ) assert
+  ) *test/assert
 
   (
     {} (
@@ -36,7 +36,7 @@
       ({"post" :test} to-json %body)
       (request)
     ) tap /headers /content-type "^application/json" match
-  ) assert
+  ) *test/assert
 
   (
     {} (
@@ -45,7 +45,7 @@
       ({} to-json %body)
       (request)
     ) tap /body from-json /data {} ==
-  ) assert
+  ) *test/assert
 
   (
     {} (
@@ -53,8 +53,7 @@
       ("DELETE" %method)
       (request)
     ) tap /body from-json /url "https://$1/delete" (host) => % ==
-  ) assert
+  ) *test/assert
 
-  report
+  *test/report
   clear-stack
-

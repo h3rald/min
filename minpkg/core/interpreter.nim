@@ -234,6 +234,12 @@ proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".
     raise
   i.push i2.stack.newVal
 
+proc pop*(i: In): MinValue =
+  if i.stack.len > 0:
+    return i.stack.pop
+  else:
+    raiseEmptyStack()
+
 # Inherit file/line/column from current symbol
 proc pushSym*(i: In, s: string) =
   i.push MinValue(
@@ -262,10 +268,10 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     else: 
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':
-        let apSymbol = symbol[0..symbol.len-1]
+        let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)
-          i.pushSym "pop" 
+          discard i.pop 
       else:
         var qIndex = symbol.find('"')
         if qIndex > 0:
@@ -288,12 +294,6 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     i.stack.add(v)
   else:
     i.stack.add(val)
-
-proc pop*(i: In): MinValue =
-  if i.stack.len > 0:
-    return i.stack.pop
-  else:
-    raiseEmptyStack()
 
 proc peek*(i: MinInterpreter): MinValue = 
   if i.stack.len > 0:

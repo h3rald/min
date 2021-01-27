@@ -189,9 +189,9 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       return value.isStringLike
     of "sym":
       return value.isSymbol
-    of "float":
+    of "flt":
       return value.isFloat
-    of "string":
+    of "str":
       return value.isString
     of "a":
       return true
@@ -230,7 +230,7 @@ proc validate*(i: In, value: MinValue, t: string): bool =
   return i.basicValidate(value, t)
   
 proc validType*(i: In, s: string): bool =
-  const ts = ["bool", "null", "int", "num", "float", "quot", "dict", "'sym", "sym", "string", "a"]
+  const ts = ["bool", "null", "int", "num", "flt", "quot", "dict", "'sym", "sym", "str", "a"]
   if ts.contains(s):
     return true
   if i.scope.hasSymbol("type:$#" % s):

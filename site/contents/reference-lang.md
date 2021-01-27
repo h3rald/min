@@ -14,14 +14,6 @@ title: "lang Module"
 
 {#alias||::||operator#}
 
-{#sig||~||delete#}
-
-{#sig||+||module#}
-
-{#sig||^||call#}
-
-{#alias||^||call#}
-
 {#sig||?||help#}
 
 {#alias||?||help#}
@@ -75,9 +67,6 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 >  * If {{any}} is a quotation or a dictionary, the empty quotation or dictionary is converted to {{f}}, otherwise it is converted to {{t}}.
 >  * If {{any}} is a string, the empty string, and `"false"` are converted to {{f}}, otherwise it is converted to {{t}}.#}
 
-{#op||call||{{d}} {{sl}}||{{a0p}}||
-Calls operator {{sl}} defined in dictionary {{d}}. #}
-
 {#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
 > This operator takes a quotation containing _n_ different conditional branches. 
 > 
@@ -106,13 +95,13 @@ Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not 
 {#op||define-sigil||{{any}} {{sl}}||{{none}}||
 Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
 
-{#op||defined?||{{sl}}||{{b}}||
+{#op||defined-symbol?||{{sl}}||{{b}}||
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
 {#op||defined-sigil?||{{sl}}||{{b}}||
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
-{#op||delete||{{sl}}||{{none}}||
+{#op||delete-sigil||{{sl}}||{{none}}||
 Deletes the specified symbol {{sl}}.#}
 
 {#op||delete-sigil||{{sl}}||{{none}}||
@@ -170,9 +159,14 @@ Applies the quotation {{q2}} to each element of {{q1}}.#}
 > > %sidebar%
 > > Example
 > > 
-> > The following: 
+> > The following code: 
 > > 
-> > `{"MyError" :error "This is a test error" :message} 'error set-type format-error`
+> >      (
+> >        (
+> >           {"MyError" :error "This is a test error" :message} raise
+> >        ) 
+> >        (format-error)
+> >      ) try
 > > 
 > > produces: `"This is a test error"`#}
 
@@ -281,9 +275,6 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 
 {#op||loglevel?||{{none}}||{{s}}||
 Returns the current log level (debug, info, notive, warn, error or fatal). #}
-
-{#op||module||{{d}} {{sl}}||{{none}}||
-Creates a new module {{sl}} based on dictionary {{d}}. #}
 
 {#op||operator||{{q}}||{{a0p}}||
 > Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
@@ -425,20 +416,17 @@ Returns a list of all sigils defined in dictionary {{d}}.#}
 {#op||scope-symbols||{{d}}||({{s0p}})||
 Returns a list of all symbols defined in dictionary {{d}}.#}
 
-{#op||seal||{{sl}}||{{none}}||
+{#op||seal-symbol||{{sl}}||{{none}}||
 Seals symbol {{sl}}, so that it cannot be re-assigned. #}
 
 {#op||seal-sigil||{{sl}}||{{none}}||
 Seals the user-defined sigil {{sl}}, so that it cannot be re-defined. #}
 
-{#op||sealed?||{{sl}}||{{b}}||
+{#op||sealed-symbol?||{{sl}}||{{b}}||
 Returns {{t}} if the symbol {{sl}} is sealed, {{f}} otherwise.#}
 
 {#op||sealed-sigil?||{{sl}}||{{b}}||
 Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
-
-{#op||set-type||{{d}} {{sl}}||{{d}}||
-Sets the type for dictionary {{d}} to {{sl}}.#}
 
 {#op||sigil-help||{{sl}}||{{help}}|{{null}}||
 Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
@@ -534,7 +522,7 @@ Converts {{any}} into a JSON string.#}
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
-{#op||unseal||{{sl}}||{{none}}||
+{#op||unseal-symbol||{{sl}}||{{none}}||
 Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
 
 {#op||unseal-sigil||{{sl}}||{{none}}||

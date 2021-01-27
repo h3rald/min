@@ -112,5 +112,5 @@ Decompresses zip file {{sl1}} to directory {{sl2}} (created if not present).#}
 {#op||which||{{sl}}||{{s}}||
 Returns the full path to the directory containing executable {{sl}}, or an empty string if the executable is not found in **$PATH**. #}
 
-{#op||zip||{{sl}} {{q}}||{{none}}||
+{#op||zip||{{q}} {{sl}}||{{none}}||
 Compresses files included in quotation {{q}} into zip file {{sl}}.#}

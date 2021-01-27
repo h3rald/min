@@ -175,7 +175,7 @@ proc sys_module*(i: In)=
     sleep ms.intVal.int
 
   def.symbol("chmod") do (i: In):
-    let vals = i.expect("int", "string")
+    let vals = i.expect("int", "str")
     let perms = vals[0]
     let s = vals[1]
     s.getString.setFilePermissions(perms.intVal.toFilePermissions)

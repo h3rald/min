@@ -65,7 +65,7 @@ proc time_module*(i: In)=
     i.push time.utc.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
 
   def.symbol("tformat") do (i: In):
-    let vals = i.expect("string", "num")
+    let vals = i.expect("str", "num")
     let s = vals[0]
     let t = vals[1]
     var time: Time
