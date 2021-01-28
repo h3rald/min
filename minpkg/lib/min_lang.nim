@@ -168,16 +168,19 @@ proc lang_module*(i: In) =
     if q.qVal.len != 4:
       raiseInvalid("Invalid operator definition")
     let tv = q.qVal[0]
-    if not tv.isSymbol or (tv.symVal != "symbol" and tv.symVal != "sigil"):
-      raiseInvalid("Incorrect operator type specified (it must be 'symbol' or 'sigil', found '$#')" % tv.symVal)
     let t = tv.symVal
     let nv = q.qVal[1]
+    if not tv.isSymbol or (not ["symbol", "sigil",  "typeclass"].contains(t)):
+      raiseInvalid("Incorrect operator type specified (it must be 'symbol', 'sigil', or 'typeclass' - found '$#')" % tv.symVal)
+    
     if not nv.isSymbol:
       raiseInvalid("Operator name must be a symbol")
-    let n = nv.symVal
+    var n = nv.symVal
     when not defined(mini):
       if not n.match(USER_SYMBOL_REGEX):
-        raiseInvalid("Operator name must not contain ivalid characters")
+        raiseInvalid("Operator name must not contain invalid characters")
+    if t == "typeclass":
+      n = "typeclass:"&n
     # Validate signature
     let sv = q.qVal[2]
     if not sv.isQuotation:
@@ -225,8 +228,12 @@ proc lang_module*(i: In) =
           raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
         else:
           if o:
+            if tv.symVal == "typeclass" and (outExpects.len > 0 or v != "bool"):
+              raiseInvalid("typeclasses can only have one boolean output value")
             outExpects.add v
           else:
+            if tv.symVal == "typeclass" and inExpects.len > 0:
+              raiseInvalid("typeclasses can only have one input value")
             inExpects.add v
       else:
         if v[0] != ':':
@@ -303,7 +310,7 @@ proc lang_module*(i: In) =
     doc["kind"] = %t
     doc["signature"] = %docSig
     doc["description"] = %i.currSym.docComment.strip 
-    if t == "symbol":
+    if ["symbol", "typeclass"].contains(t):
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
       i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)
@@ -499,16 +506,6 @@ proc lang_module*(i: In) =
   def.symbol("type") do (i: In):
     let vals = i.expect("a")
     i.push vals[0].typeName.newVal
-
-  def.symbol("typeclass") do (i: In):
-    let vals = i.expect("'sym", "quot")
-    let name = vals[0].getString
-    let symbol = "type:$#" % name
-    let code = vals[1]
-    info "[typeclass] $1 = $2" % [symbol, $code]
-    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-      raiseUndefined("Attempting to redefine sealed typeclass '$1'" % [name])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: code, sealed: false, quotation: true)
 
   def.symbol("symbol-help") do (i: In):
     let vals = i.expect("'sym")

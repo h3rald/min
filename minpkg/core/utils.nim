@@ -203,12 +203,12 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
           if value.isTypedDictionary(split[1]):
             return true
         return false
-      elif i.scope.hasSymbol("type:$#" % t):
+      elif i.scope.hasSymbol("typeclass:$#" % t):
         # Custom type class
         var i2 = i.copy(i.filename)
         i2.withScope():
           i2.push value
-          i2.pushSym("type:$#" % t)
+          i2.pushSym("typeclass:$#" % t)
           let res = i2.pop
           if not res.isBool:
             raiseInvalid("Type class '$#' does not evaluate to a boolean value ($# was returned instead)" % [t, $res])
@@ -233,10 +233,10 @@ proc validType*(i: In, s: string): bool =
   const ts = ["bool", "null", "int", "num", "flt", "quot", "dict", "'sym", "sym", "str", "a"]
   if ts.contains(s):
     return true
-  if i.scope.hasSymbol("type:$#" % s):
+  if i.scope.hasSymbol("typeclass:$#" % s):
     return true
   for tt in s.split("|"):
-    if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("type:$#" % tt):
+    if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
       return false
   return true
 

@@ -254,8 +254,13 @@
     nt"flt"
   ) *test/assert
 
-  (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
-  ("type:natural" defined-symbol?) *test/assert
+ ; (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+  (
+    typeclass natural
+    (int :n ==> bool :out)
+    (((n integer?) (n 0 >)) && @out)
+  ) ::
+  ("typeclass:natural" defined-symbol?) *test/assert
   (
     symbol natural-sum
     (natural :n natural :m ==> natural :result)
