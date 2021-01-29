@@ -277,11 +277,11 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 Returns the current log level (debug, info, notive, warn, error or fatal). #}
 
 {#op||operator||{{q}}||{{a0p}}||
-> Provides a way to define a new operator (symbol or sigil) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
+> Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
 > 
 > {{q}} is a quotation containing:
 > 
-> * A symbol identifying the type of operator to define (`symbol` or `sigil`).
+> * A symbol identifying the type of operator to define (`symbol`, `sigil`, or `typeclass`).
 > * A symbol identifying the name of the operator.
 > * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
 > * A quotation identifying the body of the operator.
@@ -500,24 +500,6 @@ Converts {{any}} into a JSON string.#}
 > >         (format-error puts)
 > >         (0)
 > >       ) try #}
-
-{#op||typeclass||{{q}} {{sl}}||{{none}}||
-> Defines a new type class {{sl}} set to quotation {{q}}, which can be used in operator signatures.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > Consider the following type class which defines a natural number: 
-> >
-> >      (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
-> > 
-> > It can now be used in operator signatures, like this:
-> > 
-> >      (
-> >        symbol natural-sum
-> >        (natural :n natural :m ==> natural :result)
-> >        (n m + @result)
-> >      ) :: #}
 
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}

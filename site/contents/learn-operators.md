@@ -135,9 +135,13 @@ Besides standard base types, you can define your own *type classes* to express c
 
 Consider the following type class definition validating a quotation containing strings:
 
-     ((string?) all?) 'strquot typeclass
+     (
+       typeclass strquot
+       (quot :q ==> bool :o)
+       (q (string?) all? @o)
+     ) ::
 
-The {#link-operator||lang||typeclass#} operator defines a symbol prefixed with `type:` (`type:strquot` in this case) corresponding to a type class that can be used in operator signatures in place of a type, like this:
+The {#link-operator||lang||operator#} operator can be used to define a symbol prefixed with `typeclass:` (`typeclass:strquot` in this case) corresponding to a type class that can be used in operator signatures in place of a type, like this:
 
      (
        symbol join-strings
@@ -152,7 +156,7 @@ This operator will raise an error if anything other than a quotation of strings 
 > %tip%
 > Tip
 > 
-> `type:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
+> `typeclass:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
 
 ### Generics
 
