@@ -1,7 +1,10 @@
 * Implemented "auto-popping" by adding **!** at the end of any symbol.
 * Removed all symbols ending with **!** as auto-popping will work instead.
 * Improved contrast and readability of the min web site.
-* Removed **typeclass** and extended **operator** to create tupe classes as well.
+* Now using **dict:http-response** and **dict:http-response** for HTTP requests/responses.
+* Now using **dict:timeinfo** for time info.
+* Changed **parse-url** to push a **dict:url** on the stack.
+* Removed **typeclass** and extended **operator** to create type classes as well.
 * Renamed **string** and **float** type names (used in operator signatures) to **str** and **flt** respectively.
 * Removed **define-sigil**, use **operator** instead.
 * Removed **module** and **+** (sigil); use **require** to create modules.

@@ -23,7 +23,7 @@ input,
 select, 
 textarea,
 .pure-g [class *= "pure-u"] {
-  font-family: 'Lato', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
 } 
 
 .donate-content-area {
@@ -123,7 +123,8 @@ dt {
 }
 
 code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal {
-  font-family: 'Inconsolata',  monospace;
+  font-family: 'Source Code Pro',  monospace;
+  font-size: 90%;
 }
 
 .kwd, .kwd, .cmd, .file, .dir, .ext, kbd, .kbd {

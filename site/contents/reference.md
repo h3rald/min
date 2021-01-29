@@ -90,6 +90,7 @@ The following notation is used in the signature of all min operators:
        "/min" :path
        "" :anchor
        "" :query
+       ;url
       }
 {{tinfo}}
 : A timeinfo dictionary:
@@ -161,10 +162,6 @@ The following notation is used in the signature of all min operators:
         } :headers     ;optional
         "{\"test\": \"This is a test\"}" :body
       }
-{{t}}
-: true (boolean type).
-{{f}}
-: false (boolean type)
 
 ### Suffixes
 

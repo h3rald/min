@@ -53,6 +53,7 @@ proc http_module*(i: In)=
     url = i.dget(req, "url")
     let resp = cli.request(url = url.getString, httpMethod = meth.getString, body = body.getString, headers = headers)
     var res = newDict(i.scope)
+    res.objType = "http-response"
     res = i.dset(res, "version", resp.version.newVal)
     res = i.dset(res, "status", resp.status[0..2].parseInt.newVal)
     res = i.dset(res, "headers", i.newVal(resp.headers))
@@ -96,6 +97,7 @@ proc http_module*(i: In)=
     i = ii.copy(ii.filename)
     proc handler(req: Request) {.async, gcsafe.} =
       var qreq = newDict(i.scope)
+      qreq.objType = "http-request"
       qreq = i.dset(qreq, "url", newVal($req.url))
       qreq = i.dset(qreq, "headers", i.newVal(req.headers))
       qreq = i.dset(qreq, "method", newVal($req.reqMethod))

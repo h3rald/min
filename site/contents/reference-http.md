@@ -10,13 +10,13 @@ Downloads the contents of URL {{s1}} to the local file {{s2}}. #}
 {#op||get-content||{{s1}}||{{s2}}||
 Retrieves the contents of URL {{s1}} as {{s2}}.#}
 
-{#op||request||{{req}}||{{res}}||
-> Performs an HTTP request.
-> 
+{#op||request||{{d}}||{{res}}||
+> Performs an HTTP request. Note that {{d}} is can be a standard (untyped) dictionary but its fields will be validated like if it was a {{req}}.
+>
 > > %sidebar%
 > > Example
 > > 
-> > The following code constructs a {{req}} dictionary and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
+> > The following code constructs {{d}} and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
 > >     {}
 > >       "GET" %method

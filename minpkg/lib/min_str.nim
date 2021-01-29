@@ -136,6 +136,7 @@ proc str_module*(i: In) =
       let s = vals[0].strVal
       let u = s.parseUri
       var d = newDict(i.scope)
+      d.objType = "url"
       i.dset(d, "scheme", u.scheme.newVal)
       i.dset(d, "username", u.username.newVal)
       i.dset(d, "password", u.password.newVal)
