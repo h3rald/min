@@ -276,6 +276,17 @@
   (2 3 natural-sum 5 ==) *test/assert
   
   (
+   constructor test-c
+   (str :in ==> dict :out)
+   (
+    {}
+      in %test
+    @out
+   )
+  ) ::
+  ("aaa" test-c 'test-c type?) *test/assert
+  
+  (
     symbol add
     ((str|num|quot :t) :a t :b ==> t :result)
     (

@@ -170,8 +170,8 @@ proc lang_module*(i: In) =
     let tv = q.qVal[0]
     let t = tv.symVal
     let nv = q.qVal[1]
-    if not tv.isSymbol or (not ["symbol", "sigil",  "typeclass"].contains(t)):
-      raiseInvalid("Incorrect operator type specified (it must be 'symbol', 'sigil', or 'typeclass' - found '$#')" % tv.symVal)
+    if not tv.isSymbol or (not ["symbol", "sigil",  "typeclass", "constructor"].contains(t)):
+      raiseInvalid("Incorrect operator type specified (it must be 'symbol', 'sigil', 'constructor', or 'typeclass' - found '$#')" % tv.symVal)
     
     if not nv.isSymbol:
       raiseInvalid("Operator name must be a symbol")
@@ -230,6 +230,8 @@ proc lang_module*(i: In) =
           if o:
             if tv.symVal == "typeclass" and (outExpects.len > 0 or v != "bool"):
               raiseInvalid("typeclasses can only have one boolean output value")
+            if tv.symVal == "constructor" and (outExpects.len > 0 or v != "dict"):
+              raiseInvalid("constructors can only have one dictionary output value")
             outExpects.add v
           else:
             if tv.symVal == "typeclass" and inExpects.len > 0:
@@ -286,6 +288,8 @@ proc lang_module*(i: In) =
         for k in 0..outVars.len-1:
           i.pushSym outVars[k]
           let x = i.peek
+          if t == "constructor":
+            x.objType = n
           let o = outExpects[k]
           var r = false;
           if o.contains("|"):
@@ -310,7 +314,7 @@ proc lang_module*(i: In) =
     doc["kind"] = %t
     doc["signature"] = %docSig
     doc["description"] = %i.currSym.docComment.strip 
-    if ["symbol", "typeclass"].contains(t):
+    if ["symbol", "typeclass", "constructor"].contains(t):
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
       i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)

@@ -198,4 +198,30 @@ while tbe fullowing will raise an error, because the value of `t` from `num` to 
 > Generics allow to specify a type as a type union, but the type will remain the same one throughout the same operator call. 
 > By contrast, using the same type union several times within the same signature allows different types to be used in the same call, and that is probably something you dont want!
 
+### Constructors
+
+The {#link-operator||lang||operator#} operator can also be used to create *constructor* symbols. A constructor is a particular type of operator that is used to create a new typed dictionary.
+
+Consider the following example:
+
+     (
+       constructor point
+       (num :x num :y ==> dict :out)
+       (
+         {}
+           x %x
+           y %y
+         @out
+       )
+     ) ::
+     
+The operator above creates a `point` constructor symbol that can be used to create a new `dict:point` typed dictionary by popping two numbers from the stack:
+
+     2 3 point ; {2 :x 3 :y ;point}
+     
+> %note%
+> Tip
+>
+> Except for some native symbols, constructors represent the only way to create new typed dictionaries. The more validations you perform in a constructor, the most effective checking for a specific type using the {#link-operator||logic||type?#} operator will be, as `type?` only checks if a specific type annotation is present on a typed dictionary, nothing else.
+
 {#link-learn||quotations||Quotations#}

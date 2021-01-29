@@ -1,6 +1,7 @@
 * Implemented "auto-popping" by adding **!** at the end of any symbol.
 * Removed all symbols ending with **!** as auto-popping will work instead.
 * Improved contrast and readability of the min web site.
+* Extended **operator** to support the creation of constructor symbols.
 * Now using **dict:http-response** and **dict:http-response** for HTTP requests/responses.
 * Now using **dict:timeinfo** for time info.
 * Changed **parse-url** to push a **dict:url** on the stack.
