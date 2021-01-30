@@ -29,7 +29,7 @@ For example, consider the following program:
          ((true) ("unknown" @type))
        ) case 
        "This is a $1 file." (type) % echo
-     ) :display-file-info
+     ) ^display-file-info
 
 This program defines a symbol `display-file-info` that takes a file name and outputs a message displaying its type if known.
 
@@ -55,7 +55,7 @@ For example, consider the following program:
          i succ @i
        ) while
        f
-     ) :factorial
+     ) ^factorial
 
 This program defines a symbol `factorial` that calculates the factorial of an integer iteratively using the symbol {#link-operator||lang||while#}.
 

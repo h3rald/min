@@ -1,5 +1,5 @@
 "tasks/data/doc-snippets.json" fread from-json :snippets
-"site/contents" ls ("reference-" match) filter =src-files
+"site/contents" ls ("reference-" match) filter :src-files
 "\{\#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+\#\}" :op-regex
 "\{\#sig\|\|([^|]+)\|\|([^#]+)\#\}" :sig-regex
 "\{\#alias\|\|([^|]+)\|\|([^#]+)\#\}" :alias-regex

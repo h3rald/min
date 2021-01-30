@@ -76,9 +76,9 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
   symbol delete-assets
   (dict :config ==>)
   (
-    config get-assets =assets
+    config get-assets :assets
     config /id :id
-    assets (/id) map =assets-ids
+    assets (/id) map :assets-ids
     assets-ids (
       :asset
       {}

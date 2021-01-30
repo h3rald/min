@@ -68,14 +68,12 @@ Currently min provides the following sigils:
 : Alias for {#link-operator||lang||invoke#}. 
 @
 : Alias for {#link-operator||lang||bind#}. 
+^
+: Alias for {#link-operator||lang||lambda#}. 
 >
 : Alias for {#link-operator||lang||save-symbol#}. 
 <
-: Alias for {#link-operator||lang||load-symbol#}. 
-&#61;
-: Alias for {#link-operator||lang||quote-bind#}. 
-\#
-: Alias for {#link-operator||lang||quote-define#}. 
+: Alias for {#link-operator||lang||load-symbol#}.  
 /
 : Alias for {#link-operator||dict||dget#}. 
 %
@@ -162,7 +160,7 @@ The {#link-operator||lang||operator#} operator can be used to define a symbol pr
 
      (
        symbol join-strings
-       (strquot :q ==> string :result)
+       (strquot :q ==> str :result)
        ( 
           q "" (suffix) reduce @result
        )
@@ -182,7 +180,7 @@ This operator will raise an error if anything other than a quotation of strings 
 ```
 (
   symbol add
-  ((string|num|quot :t) :a t :b ==> t :result)
+  ((str|num|quot :t) :a t :b ==> t :result)
   (
    (a type "str" ==)
      (a b suffix @result return)
