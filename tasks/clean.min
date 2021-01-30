@@ -7,7 +7,7 @@
   (==>)
   (
     "Cleaning up build files" notice!
-    . ls ("(\.(htm|zip|exe)|[\/\\]min)$" match) filter =files
+    . ls ("(\.(htm|zip|exe)|[\/\\]min)$" match) filter :files
     files 'rm foreach
     "Done." notice!
   )  
