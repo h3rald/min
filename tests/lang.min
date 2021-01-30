@@ -29,6 +29,11 @@
     30 ==
   ) *test/assert
   
+  (
+    (dup *) ^square
+    3 square 9 ==
+  ) *test/assert
+  
   'five delete-symbol
   (symbols "five" in? false  ==) *test/assert
 
@@ -111,11 +116,7 @@
   (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) *test/assert
 
   (
-   (
-     symbol mysucc
-     (num :n ==> num :o)
-     (n 1 + @o)
-   ) ::
+   (1 +) ^mysucc
    'mysucc source (1 +) ==) *test/assert
 
   (6 

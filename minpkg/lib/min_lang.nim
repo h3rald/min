@@ -469,6 +469,20 @@ proc lang_module*(i: In) =
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
     
+  def.symbol("lambda") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let sym = vals[0]
+    var q1 = vals[1]
+    var symbol: string
+    symbol = sym.getString
+    when not defined(mini):
+      if not symbol.match USER_SYMBOL_REGEX:
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
+    info "[define] $1 = $2" % [symbol, $q1]
+    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: true)
+    
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
@@ -902,23 +916,6 @@ proc lang_module*(i: In) =
         raiseInvalid("Attempting to unseal system sigil: " & sym)
     s.sealed = false
     i.scope.setSigil(sym, s, true)
-  
-  #def.symbol("quote-bind") do (i: In):
-  #  let vals = i.expect("str", "a")
-  #  let s = vals[0]
-  #  let m = vals[1]
-  #  i.push @[m].newVal
-  #  i.push s
-  #  i.pushSym "bind"
-
-  #def.symbol("quote-define") do (i: In):
-  #  let vals = i.expect("str", "a")
-  #  let s = vals[0]
-  #  let m = vals[1]
-  #  i.push @[m].newVal
-  #  i.push s
-  #  i.pushSym "define"
-
 
   def.symbol("args") do (i: In):
     var args = newSeq[MinValue](0)
@@ -1070,11 +1067,8 @@ proc lang_module*(i: In) =
   def.sigil("<") do (i: In):
     i.pushSym("load-symbol")
 
-  def.sigil("#") do (i: In):
-    i.pushSym("quote-bind")
-
-  def.sigil("=") do (i: In):
-    i.pushSym("quote-define")
+  def.sigil("^") do (i: In):
+    i.pushSym("lambda")
 
   # Shorthand symbol aliases
 
@@ -1089,6 +1083,9 @@ proc lang_module*(i: In) =
 
   def.symbol("@") do (i: In):
     i.pushSym("bind")
+    
+  def.symbol("^") do (i: In):
+    i.pushSym("lambda")
 
   def.symbol("'") do (i: In):
     i.pushSym("quote")

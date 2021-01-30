@@ -1,7 +1,7 @@
 #!/usr/bin/env min
 
 ;Capture a reference of default symbols before more are added
-symbols =min-symbols
+symbols :min-symbols
 2 :n-args
 1 :taskspec-arg
 
@@ -15,7 +15,7 @@ when
 ; Validation
 (args size n-args <) ("No task specified" error 1 exit) when
 
-args taskspec-arg get ":" split =taskspec
+args taskspec-arg get ":" split :taskspec
 taskspec 0 get :task
 "default" :subtask
 (taskspec size 1 >) (taskspec 1 get @subtask) when

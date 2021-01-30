@@ -41,13 +41,9 @@ Symbol used to separate input and output values in operator signatures.#}
 
 {#alias||=-=||expect-empty-stack#}
 
-{#sig||#||quote-bind#}
+{#sig||^||lambda#}
 
-{#alias||#||quote-bind#}
-
-{#sig||=||quote-define#}
-
-{#alias||=||quote-define#}
+{#alias||^||lambda#}
 
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
@@ -90,7 +86,7 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 Returns {{t}} if the current program has been compiled.#}
 
 {#op||define||{{any}} {{sl}}||{{none}}||
-Defines a new symbol {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
+Defines a new symbol {{sl}}, containing the specified value.#}
 
 {#op||define-sigil||{{any}} {{sl}}||{{none}}||
 Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
@@ -229,6 +225,11 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > > 
 > >     {{100 :b} :a} :test *test/a/b
  #}
+ 
+ {#op||lambda||{{q}} {{sl}}||{{none}}||
+Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
+
+Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
 
 {#op||line-info||{{none}}||{{d}}||
 Returns a dictionary {{d}} containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.#}
@@ -358,12 +359,6 @@ Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
-
-{#op||quote-bind||{{any}} {{sl}}||{{none}}||
-Quotes {{any}} and binds the quotation to the existing symbol {{sl}}. #}
-
-{#op||quote-define||{{any}} {{sl}}||{{none}}||
-Quotes {{any}} and assigns the quotation to the symbol {{sl}}, creating it if not already defined. #}
 
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}

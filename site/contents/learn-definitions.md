@@ -58,38 +58,6 @@ If we want to change the value of the original `a` symbol defined in the outermo
        ) dequote
      ) dequote
 
-## quote-define and quote-bind
-
-So far, we saw how to use the {#link-operator||lang||define#} and {#link-operator||lang||bind#} operator (or better, their shorthand sigils `:` and `@`) to define new symbols or bind values to existing ones.
-
-Consider the following example:
-
-     (1 2 3 4 5) :my-list
-     my-list (dup *) map
-
-If run the program above in min shell by pasting the first and then the second line in it, you'll get an error similar to the following:
-
-     (!) <repl>(1,19) [map]: Incorrect values found on the stack:
-     - expected: {top} quot quot {bottom}
-     - got:      {top} quot int {bottom}
-         <repl>(1,19) in symbol: map
-
-This error says that when the {#link-operator||lang||map#} operator was evaluated, there were incorrect values on the stack. Two quotations were expected, but instead, a quotation and an integer were found. How did this happen? 
-
-Basically, when `my-list` was pushed on the stack, it pushed all its items on top of the stack. If you run {#link-operator||stack||get-stack#}, it will return the following list:
-
-     (1 2 3 4 5 (dup *))
-
-This happens because by default min assumes that when you define a quotation you want to define a new operator rather than a list. The following program works as expected, and it returns a list containing the squares of the first five integer numbers:
-
-     (dup *) :square
-     (1 2 3 4 5) (square) map
-
-To avoid this behavior -- i.e. whenever you want to define a list of items rather than an operator that will be immediately evaluated when pushed on the stack, you have to use the {#link-operator||lang||quote-define#} and the {#link-operator||lang||quote-bind#} or their respective sigils `#` and `=`:
-
-     (1 2 3 4 5) #my-list
-     my-list (dup *) map ;Returns (1 4 9 16 25) 
-
 ## Sealing symbols
 
 Finally, symbols can be sealed to prevent accidental updates or deletions. By default, all symbols defined in the core min modules are sealed, so the following code if run in min shell will result in an error:

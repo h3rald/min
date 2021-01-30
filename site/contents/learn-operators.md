@@ -12,6 +12,8 @@ Every min program needs _operators_ to:
 
 There are two types of operators: _symbols_ and _sigils_.
 
+## Symbols
+
 _Symbols_ are the most common type of operator. A min symbol is a single word that is either provided by one of the predefined min {#link-page||reference||modules#} like `dup` or `.` or defined by the user. User-defined symbols must:
 
 * Start with a letter or an underscore (\_).
@@ -32,6 +34,21 @@ It is possible to define operator symbols using the {#link-operator||lang||opera
  * Specify a quotation containing the code that the operator will execute.
 
 Also, symbol operator definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+
+### Using the lambda operator
+
+Sometimes you just want to bind a piece of code to a symbol to reuse it later, typically something simple and easy-to-read. In these cases, you can use the {#link-operator||lang||lambda#} operator (or the `^` sigil). For example, the previous `square` operator definition could be rewritten simply as the following.
+
+     (dup *) ^square
+     
+Note that this feels like using {#link-operator||lang||define#}, but the main difference between {#link-operator||lang||lambda#} and {#link-operator||lang||define#} is that `lambda` only works on quotations doesn't auto-quote them, so that they are immediately evaluated when the corresponding symbol is pushed on the stack.
+
+Also note that unlike with {#link-operator||lang||operator#}, symbols defined with {#link-operator||lang||lambda#}:
+* have no built-in validation of input and output values.
+* do not support the `return` symbol to immediately end their execution.
+* have no built-in stack pollution checks.
+
+## Sigils
 
 Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. 
 
