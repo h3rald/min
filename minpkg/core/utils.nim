@@ -251,7 +251,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
         pelements.add(generics[e])
       else:
         pelements.add e
-    let stack = pelements.reverse.join(" ")
+    let stack = pelements.join(" ")
     result = "Incorrect values found on the stack:\n"
     result &= "- expected: " & stack & " $1\n" % sym
     var other = ""

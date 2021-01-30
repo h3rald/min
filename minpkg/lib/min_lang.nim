@@ -225,7 +225,7 @@ proc lang_module*(i: In) =
         if v == "==>":
           o = true
         elif not i.validType(v) and not generics.hasKey(v):
-          raiseInvalid("Invalid type specified in signature at position $#" % $(c+1))
+          raiseInvalid("Invalid type '$#' specified in signature at position $#" % [v, $(c+1)])
         else:
           if o:
             if tv.symVal == "typeclass" and (outExpects.len > 0 or v != "bool"):
