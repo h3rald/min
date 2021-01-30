@@ -458,10 +458,8 @@ proc lang_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
-    var isQuot = true
-    if not q1.isQuotation:
-      q1 = @[q1].newVal
-      isQuot = false
+    var isQuot = q1.isQuotation
+    q1 = @[q1].newVal
     symbol = sym.getString
     when not defined(mini):
       if not symbol.match USER_SYMBOL_REGEX:
@@ -476,10 +474,8 @@ proc lang_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
-    var isQuot = true
-    if not q1.isQuotation:
-      q1 = @[q1].newVal
-      isQuot = false
+    var isQuot = q1.isQuotation
+    q1 = @[q1].newVal
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, quotation: isQuot))
@@ -630,18 +626,6 @@ proc lang_module*(i: In) =
       i.push sym.val
     else:
       raiseInvalid("No source available for native symbol '$1'." % str)
-
- # def.symbol("call") do (i: In):
- #   let vals = i.expect("'sym", "dict")
- #   let symbol = vals[0]
- #   let q = vals[1]
- #   let s = symbol.getString
- #   let origScope = i.scope
- #   i.scope = q.scope
- #   i.scope.parent = origScope
- #   let sym = i.scope.getSymbol(s)
- #   i.apply(sym)
- #   i.scope = origScope
 
   def.symbol("invoke") do (i: In):
     let vals = i.expect("'sym")
@@ -919,21 +903,21 @@ proc lang_module*(i: In) =
     s.sealed = false
     i.scope.setSigil(sym, s, true)
   
-  def.symbol("quote-bind") do (i: In):
-    let vals = i.expect("str", "a")
-    let s = vals[0]
-    let m = vals[1]
-    i.push @[m].newVal
-    i.push s
-    i.pushSym "bind"
+  #def.symbol("quote-bind") do (i: In):
+  #  let vals = i.expect("str", "a")
+  #  let s = vals[0]
+  #  let m = vals[1]
+  #  i.push @[m].newVal
+  #  i.push s
+  #  i.pushSym "bind"
 
-  def.symbol("quote-define") do (i: In):
-    let vals = i.expect("str", "a")
-    let s = vals[0]
-    let m = vals[1]
-    i.push @[m].newVal
-    i.push s
-    i.pushSym "define"
+  #def.symbol("quote-define") do (i: In):
+  #  let vals = i.expect("str", "a")
+  #  let s = vals[0]
+  #  let m = vals[1]
+  #  i.push @[m].newVal
+  #  i.push s
+  #  i.pushSym "define"
 
 
   def.symbol("args") do (i: In):
@@ -1094,12 +1078,6 @@ proc lang_module*(i: In) =
 
   # Shorthand symbol aliases
 
-  def.symbol("#") do (i: In):
-    i.pushSym("quote-bind")
-
-  def.symbol("=") do (i: In):
-    i.pushSym("quote-define")
-    
   def.symbol("=-=") do (i: In):
     i.pushSym("expect-empty-stack")
 

@@ -14,18 +14,18 @@
   (symbols "five" in?) *test/assert
 
   (
-    ((1 2 3 4 5 6)) :test-data
+    (1 2 3 4 5 6) :test-data
 
     (
       :item
       "_$1" (item) => % :namesym
-      (item dup *) namesym define
+      item (dup *) cons namesym define
       namesym ROOT publish
     ) :def
 
-    test-data (def) foreach
+    test-data def foreach
 
-    _2 _5 _1 + +
+    _2 -> _5 -> _1 -> + +
     30 ==
   ) *test/assert
   
@@ -110,7 +110,13 @@
 
   (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) *test/assert
 
-  ((1 +) :mysucc 'mysucc source (1 +) ==) *test/assert
+  (
+   (
+     symbol mysucc
+     (num :n ==> num :o)
+     (n 1 + @o)
+   ) ::
+   'mysucc source (1 +) ==) *test/assert
 
   (6 
     (
@@ -297,7 +303,7 @@
        (a b + @result return)
      when
      (a type "quot" ==)
-       (a b concat #result return)
+       (a b concat @result return)
      when
     )
   ) ::

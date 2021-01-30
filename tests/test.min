@@ -1,61 +1,68 @@
-;; test module
 "." :ok
 
-("  " print!) :padding
-
-;; *test/describe
 (
-  :name
-  "Testing: [" print! name print! "]" puts! 
-  padding
-  () 
-) :describe
+  symbol padding
+  (==>)
+  ("  " print!)
+) ::
 
-;; *test/assert
 (
- ' :check      ; save the check quotation to validate
- ' :results    ; save the result symbol to update
- (
+  symbol describe
+  ('sym :name ==> quot :out)
+  (
+    "Testing: [" print! name print! "]" puts! 
+    padding
+    () @out
+  )
+) ::
+
+(
+  symbol assert
+  (quot :results quot :check ==> quot :out)
+  (
    (
-     (check -> true ==)
-     (format-error puts! false)
-   ) try
-   
- )
- ( 
-   ok results append quote @results 
-   "." print!
- )
- (
-   check results append quote @results 
-   "x" print!
- )
- if
- results
-) :assert
-
-;; *test/report
-(
- newline
- ' :results ; save the results collected so far
- 0 :total
- 0 :failed
- results (
-   total succ @total
-   (ok !=) (failed succ @failed) () if
- ) map
- "$# tests executed - $# failed." (total failed) =% puts!
- (
-   =result
-   result
-   (ok !=)
-   (
-     ('failures defined-symbol?) (failures succ @failures) () if
-     padding "FAILED: " print! result puts!
+     (
+       (check -> true ==)
+       (format-error puts! false)
+     ) try
    )
-   ()
+   ( 
+     ok results append @results 
+     "." print!
+   )
+   (
+     check results append @results 
+     "x" print!
+   )
    if
- )
- map
- pop ;Remove results accomulator from get-stack
-) :report
+   results @out
+  )
+) ::
+
+(
+  symbol report
+  (quot :results ==>)
+  (
+    newline
+    0 :total
+    0 :failed
+    results (
+      total succ @total
+      (ok !=) (failed succ @failed) () if
+    ) map
+    "$# tests executed - $# failed." (total failed) =% puts!
+    (
+      :result
+      result
+      (ok !=)
+      (
+         ('failures defined-symbol?) (failures succ @failures) () if
+         padding "FAILED: " print! result puts!
+      )
+      ()
+      if
+    )
+    map
+    pop ;Remove results accomulator from get-stack
+  )
+) ::
