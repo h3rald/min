@@ -51,10 +51,7 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
     response /body :body
     response handle-errors 
     (body length 0 >) (body from-json) ({}) if
-    (quotation?)
-      (#result)
-      (@result)
-    if
+    @result
   )
 ) ::
 ;; Execute a request using the Github API.
@@ -67,7 +64,7 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
     {}
       "/releases/$#/assets" (id) =% %endpoint
       "GET" %method
-    gh-req #result
+    gh-req @result
   )
 ) ::
 ;; Retrieve the assets from an existing Github release.
