@@ -321,6 +321,14 @@ proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) =
   for s in a.qVal:
     if not s.isNumber:
       raiseInvalid("A quotation of numbers is required on the stack")
+      
+proc reqQuotationOfIntegers*(i: var MinInterpreter, a: var MinValue) =
+  a = i.pop
+  if not a.isQuotation:
+    raiseInvalid("A quotation is required on the stack")
+  for s in a.qVal:
+    if not s.isInt:
+      raiseInvalid("A quotation of integers is required on the stack")
 
 proc reqQuotationOfSymbols*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop

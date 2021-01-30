@@ -219,7 +219,7 @@ proc num_module*(i: In)=
     
   def.symbol("range") do (i: In):
     var s: MinValue
-    i.reqQuotationOfNumbers s
+    i.reqQuotationOfIntegers s
     var a = s.qVal[0]
     var b = s.qVal[1]
     var step = 1.newVal
