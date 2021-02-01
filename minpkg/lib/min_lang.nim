@@ -517,6 +517,18 @@ proc lang_module*(i: In) =
     dict.scope = i.scope
     i.push dict
 
+  def.symbol("parent-scope") do (i: In):
+    let vals = i.expect("dict")
+    let d = vals[0]
+    if d.scope.parent.isNil:
+      i.push newNull()
+      return
+    var dict = newDict(d.scope.parent)
+    dict.objType = "module"
+    dict.filename = i.filename
+    dict.scope = d.scope.parent
+    i.push dict
+
   def.symbol("type") do (i: In):
     let vals = i.expect("a")
     i.push vals[0].typeName.newVal

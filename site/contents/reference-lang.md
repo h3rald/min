@@ -321,6 +321,9 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 {#op||opts||{{none}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
+{#op||parent-scope||{{d1}}||{{d2}}||
+Returns a dictionary {{d2}} holding a reference to the parent scope of {{d1}} or {{null}} if {{d1}} is ROOT.#}
+
 {#op||parse||{{s}}||{{q}}||
 Parses {{s}} and returns a quoted program {{q}}. #}
 
