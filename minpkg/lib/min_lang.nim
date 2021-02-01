@@ -573,6 +573,7 @@ proc lang_module*(i: In) =
           echo ""
           for l in lines:
             echo "  " & l
+      echo "==="
     if i.scope.hasSymbol(s):
       found = true
       let sym = i.scope.getSymbol(s)
