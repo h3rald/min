@@ -215,7 +215,7 @@ proc lang_module*(i: In) =
         let g = vv.qVal[1].getString
         if not i.validType(t):
           raiseInvalid("Invalid type '$#' in generic in signature at position $#" % [$t, $(c+1)])
-        if g[0] != ':':
+        if g[0] != ':' and g[0] != '^':
           raiseInvalid("No mapping symbol specified in generic in signature at position $#" % $(c+1))
         v = g[1..g.len-1]
         generics[v] = t
@@ -238,7 +238,7 @@ proc lang_module*(i: In) =
               raiseInvalid("typeclasses can only have one input value")
             inExpects.add v
       else:
-        if v[0] != ':':
+        if v[0] != ':' and v[0] != '^':
           raiseInvalid("No mapping symbol specified in signature at position $#" % $(c+1))
         else:
           if o:
@@ -286,8 +286,9 @@ proc lang_module*(i: In) =
           discard
         # Validate output
         for k in 0..outVars.len-1:
-          i.pushSym outVars[k]
-          let x = i.peek
+          #i.pushSym outVars[k]
+          #let x = i.peek
+          let x = i.scope.symbols[outVars[k]].val
           if t == "constructor":
             x.objType = n
           let o = outExpects[k]
@@ -302,11 +303,13 @@ proc lang_module*(i: In) =
             r = i.validate(x, o, generics)
           if not r:
             discard i.pop
-            var tp = t
+            var tp = o
             if generics.hasKey(o):
               tp = generics[o]
               generics = origGenerics
-            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x]) 
+            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
+          # Push output on stack
+          i.pushSym outVars[k]
       generics = origGenerics
     # Define symbol/sigil
     var doc = newJObject()
@@ -478,7 +481,7 @@ proc lang_module*(i: In) =
     when not defined(mini):
       if not symbol.match USER_SYMBOL_REGEX:
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-    info "[define] $1 = $2" % [symbol, $q1]
+    info "[lambd] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: true)
@@ -495,6 +498,17 @@ proc lang_module*(i: In) =
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, quotation: isQuot))
     if not res:
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
+      
+  def.symbol("lambda-bind") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let sym = vals[0]
+    var q1 = vals[1] 
+    var symbol: string
+    symbol = sym.getString
+    info "[lambda-bind] $1 = $2" % [symbol, $q1]
+    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, quotation: true))
+    if not res:
+      raiseUndefined("Attempting to lambda-bind undefined symbol: " & symbol)
 
   def.symbol("delete-symbol") do (i: In):
     let vals = i.expect("'sym")
@@ -1082,6 +1096,9 @@ proc lang_module*(i: In) =
 
   def.sigil("^") do (i: In):
     i.pushSym("lambda")
+    
+  def.sigil("~") do (i: In):
+    i.pushSym("lambda-bind")
 
   # Shorthand symbol aliases
 
@@ -1099,6 +1116,9 @@ proc lang_module*(i: In) =
     
   def.symbol("^") do (i: In):
     i.pushSym("lambda")
+    
+  def.symbol("~") do (i: In):
+    i.pushSym("lambda-bind")
 
   def.symbol("'") do (i: In):
     i.pushSym("quote")
