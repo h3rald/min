@@ -48,6 +48,11 @@ Also note that unlike with {#link-operator||lang||operator#}, symbols defined wi
 * do not support the `return` symbol to immediately end their execution.
 * have no built-in stack pollution checks.
 
+> %tip
+> Tip
+> 
+> You can use {#link-operator||lang||lambda-bind#} to re-set a previously set lambda.
+
 ## Sigils
 
 Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. 
@@ -172,6 +177,25 @@ This operator will raise an error if anything other than a quotation of strings 
 > Tip
 > 
 > `typeclass:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
+
+#### Capturing lambdas
+
+You can also specify a lambda to be captured to an output value, like this:
+
+     (
+       symbol square
+       (==> quot ^o)
+       (
+         (dup *) ~o
+       )
+     ) ::
+     
+Essentially, this allows you to push a lambda on the stack from an operator.
+
+Note that:
+* Lambdas must be captured using the `^` sigil in signatures and bound using {#link-operator||lang||lambda-bind#} in the operator body.
+* Lambdas cannot be captured in input values (they have already been pushed on the stack).
+* Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
 
 ### Generics
 

@@ -198,6 +198,7 @@ proc lang_module*(i: In) =
     var inVars = newSeq[string](0)
     var outExpects= newSeq[string](0)
     var outVars = newSeq[string](0)
+    var rawOutVars = newSeq[string](0)
     var generics: CritBitTree[string]
     var origGenerics: CritBitTree[string]
     var o = false
@@ -239,11 +240,16 @@ proc lang_module*(i: In) =
             inExpects.add v
       else:
         if v[0] != ':' and v[0] != '^':
-          raiseInvalid("No mapping symbol specified in signature at position $#" % $(c+1))
+          raiseInvalid("No capturing symbol specified in signature at position $#" % $(c+1))
         else:
           if o:
+            if v[0] == '^' and outExpects[outExpects.len-1] != "quot":
+              raiseInvalid("Only quotations can be captured to a lambda, found $# instead at position $#" % [outExpects[outExpects.len-1], $(c+1)])
+            rawOutVars.add v
             outVars.add v[1..v.len-1]
           else:
+            if v[0] == '^':
+              raiseInvalid("A lambda capturing symbol was specified in signature at position $#. Lambda capturing symbols are only allowed for output values" % $(c+1))
             inVars.add v[1..v.len-1]
       c.inc()
     if not o:
@@ -286,9 +292,9 @@ proc lang_module*(i: In) =
           discard
         # Validate output
         for k in 0..outVars.len-1:
-          #i.pushSym outVars[k]
-          #let x = i.peek
-          let x = i.scope.symbols[outVars[k]].val
+          var x = i.scope.symbols[outVars[k]].val
+          if rawOutVars[k][0] == ':':
+            x = x.qVal[0]
           if t == "constructor":
             x.objType = n
           let o = outExpects[k]
@@ -302,7 +308,6 @@ proc lang_module*(i: In) =
           else:
             r = i.validate(x, o, generics)
           if not r:
-            discard i.pop
             var tp = o
             if generics.hasKey(o):
               tp = generics[o]
