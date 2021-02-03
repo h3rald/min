@@ -921,14 +921,14 @@ proc lang_module*(i: In) =
     let sym = vals[0].getString
     var s = i.scope.getSymbol(sym) 
     s.sealed = true
-    i.scope.setSymbol(sym, s)
+    i.scope.setSymbol(sym, s, true)
     
   def.symbol("seal-sigil") do (i: In):
     let vals = i.expect("'sym")
     let sym = vals[0].getString
     var s = i.scope.getSigil(sym) 
     s.sealed = true
-    i.scope.setSigil(sym, s)
+    i.scope.setSigil(sym, s, true)
 
   def.symbol("unseal-symbol") do (i: In):
     let vals = i.expect("'sym")
