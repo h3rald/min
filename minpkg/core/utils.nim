@@ -235,9 +235,15 @@ proc validType*(i: In, s: string): bool =
     return true
   if i.scope.hasSymbol("typeclass:$#" % s):
     return true
-  for tt in s.split("|"):
-    if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
-      return false
+  for ta in s.split("&"):
+    for to in ta.split("|"):
+      var tt = to
+      if to.len < 2:
+        return false
+      if to[0] == '!':
+        tt = to[1..to.len-1]
+      if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
+        return false
   return true
 
 proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
@@ -293,18 +299,32 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   for element in elements:
     let value = i.pop
     result.add value
-    var split = element.split("|")
-    if split.len > 1:
+    let ands = element.split("&")
+    if ands.len > 1:
+      let ors = element.split("|")
       var res = false
-      for t in split:
-        if i.validate(value, t):
+      for to in ors:
+        var t = to
+        var neg = false
+        if t.len > 1 and t[0] == '!':
+          t = t[1..element.len-1]
+          neg = true
+        if i.validate(value, t) or neg:
           res = true
           break
       if not res:
         raiseInvalid(message(value.typeName))
-    elif not i.validate(value, element):
-      raiseInvalid(message(value.typeName))
-    valid.add element
+      valid.add element
+    else:
+      var el = element
+      var neg = false
+      if element.len > 1 and element[0] == '!':
+        el = element[1..element.len-1]
+        neg = true
+      if i.validate(value, element) or neg:
+        valid.add element
+      else: 
+        raiseInvalid(message(value.typeName))
 
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
