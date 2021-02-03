@@ -2,6 +2,7 @@
 ### Fixes
 
 * Added `===` at the end of integrated help descriptions (#127).
+* Fixed override propagation when setting isymbols in upper scopes (#133).
 
 ### Mew additions
  
