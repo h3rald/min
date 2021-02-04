@@ -274,37 +274,29 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
     let ors = el.split("|")
     for to in ors:
       let ands = to.split("&")
-      echo ors
-      echo to, "-to"
-      echo ands
       var andr = true
       for ta in ands:
         var t = ta
         var neg = false
-        echo t, "-ta"
         if t.len > 1 and t[0] == '!':
           t = t[1..t.len-1]
           neg = true
-          echo "neg!"
-        echo t, "-t"
-        andr = i.validate(value, t)
+        andr = i.validate(value, t, generics)
         if neg:
           andr = not andr
         if not andr:
-          echo t, "- false!"
-          vTypes[c] = t
+          if neg:
+            vTypes[c] = t
+          else:
+           vTypes[c] = "!"&t
           break
       if andr:
         res = true 
-        echo "res true ", to
         break
     if res:
       valid.add el
     elif generics.hasKey(el):
       valid.add(generics[el])
-    # Todo re-add!
-    #elif not i.validate(value, el, generics):
-    # raiseInvalid(message(value.typeName, elements, generics))
     else:
       raiseInvalid(message(vTypes[c], elements, generics))
     c = c+1
