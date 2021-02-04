@@ -264,26 +264,52 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
     if valid.len > 0:
       other = valid.reverse.join(" ") & " "
     result &= "- got:      " & invalid & " " & other & sym
+  var res = false
+  var vTypes = newSeq[string](0)
+  var c = 0
   for el in elements:
-    var element = el
     let value = i.pop
     result.add value
-    var split = element.split("|")
-    if split.len > 1:
-      var res = false
-      for t in split:
-        if i.validate(value, t, generics):
-          res = true
+    vTypes.add value.typeName
+    let ors = el.split("|")
+    for to in ors:
+      let ands = to.split("&")
+      echo ors
+      echo to, "-to"
+      echo ands
+      var andr = true
+      for ta in ands:
+        var t = ta
+        var neg = false
+        echo t, "-ta"
+        if t.len > 1 and t[0] == '!':
+          t = t[1..t.len-1]
+          neg = true
+          echo "neg!"
+        echo t, "-t"
+        andr = i.validate(value, t)
+        if neg:
+          andr = not andr
+        if not andr:
+          echo t, "- false!"
+          vTypes[c] = t
           break
-      if not res:
-        raiseInvalid(message(value.typeName, elements, generics))
-    elif not i.validate(value, element, generics):
-      raiseInvalid(message(value.typeName, elements, generics))
-    if generics.hasKey(el):
+      if andr:
+        res = true 
+        echo "res true ", to
+        break
+    if res:
+      valid.add el
+    elif generics.hasKey(el):
       valid.add(generics[el])
+    # Todo re-add!
+    #elif not i.validate(value, el, generics):
+    # raiseInvalid(message(value.typeName, elements, generics))
     else:
-      valid.add element
-    
+      raiseInvalid(message(vTypes[c], elements, generics))
+    c = c+1
+        
+# TODO: review
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   let stack = elements.reverse.join(" ")
   let sym = i.currSym.getString
@@ -300,8 +326,8 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
     let value = i.pop
     result.add value
     let ands = element.split("&")
-    if ands.len > 1:
-      let ors = element.split("|")
+    for a in ands:
+      let ors = a.split("|")
       var res = false
       for to in ors:
         var t = to
@@ -314,17 +340,16 @@ proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
           break
       if not res:
         raiseInvalid(message(value.typeName))
-      valid.add element
-    else:
-      var el = element
-      var neg = false
-      if element.len > 1 and element[0] == '!':
-        el = element[1..element.len-1]
-        neg = true
-      if i.validate(value, element) or neg:
-        valid.add element
-      else: 
-        raiseInvalid(message(value.typeName))
+      else:
+        var el = element
+        var neg = false
+        if element.len > 1 and element[0] == '!':
+          el = element[1..element.len-1]
+          neg = true
+        if i.validate(value, element) or neg:
+          valid.add element
+        else: 
+          raiseInvalid(message(value.typeName))
 
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
