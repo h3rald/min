@@ -310,6 +310,39 @@
   ) ::
   ("a" "b" add "ab" ==) *test/assert
   ((1 2 3) (4 5) add (1 2 3 4 5) ==) *test/assert
+  
+  (
+    (typeclass fiveplus
+      (int :n ==> bool :o)
+      (
+        n 5 > @o
+      )
+    ) ::
+
+    (typeclass tenminus
+      (int :n ==> bool :o)
+      (
+        n 10 < @o
+      )
+    ) ::
+
+    (typeclass even
+      (int :n ==> bool :o)
+      (
+        n 2 mod 0 == @o
+      )
+    ) ::
+
+    (symbol test
+      (!even|tenminus&fiveplus :n ==> bool :o)
+      (
+        true @o
+      )
+    ) ::
+    6 test
+    11 test
+    and 
+  ) *test/assert
 
   *test/report
   ; Tidy up

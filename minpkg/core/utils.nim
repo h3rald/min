@@ -246,6 +246,7 @@ proc validType*(i: In, s: string): bool =
         return false
   return true
 
+# The following is used in operator signatures
 proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
@@ -288,7 +289,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
           if neg:
             vTypes[c] = t
           else:
-           vTypes[c] = "!"&t
+           vTypes[c] = value.typeName
           break
       if andr:
         res = true 
@@ -300,49 +301,12 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
     else:
       raiseInvalid(message(vTypes[c], elements, generics))
     c = c+1
-        
-# TODO: review
-proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
-  let stack = elements.reverse.join(" ")
-  let sym = i.currSym.getString
-  var valid = newSeq[string](0)
-  result = newSeq[MinValue](0)
-  let message = proc(invalid: string): string =
-    result = "Incorrect values found on the stack:\n"
-    result &= "- expected: " & stack & " $1\n" % sym
-    var other = ""
-    if valid.len > 0:
-      other = valid.reverse.join(" ") & " "
-    result &= "- got:      " & invalid & " " & other & sym
-  for element in elements:
-    let value = i.pop
-    result.add value
-    let ands = element.split("&")
-    for a in ands:
-      let ors = a.split("|")
-      var res = false
-      for to in ors:
-        var t = to
-        var neg = false
-        if t.len > 1 and t[0] == '!':
-          t = t[1..element.len-1]
-          neg = true
-        if i.validate(value, t) or neg:
-          res = true
-          break
-      if not res:
-        raiseInvalid(message(value.typeName))
-      else:
-        var el = element
-        var neg = false
-        if element.len > 1 and element[0] == '!':
-          el = element[1..element.len-1]
-          neg = true
-        if i.validate(value, element) or neg:
-          valid.add element
-        else: 
-          raiseInvalid(message(value.typeName))
 
+# The following is used in expect symbol and native symbol expectations.
+proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
+  var c: CritBitTree[string]
+  return i.expect(elements, c)
+        
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:

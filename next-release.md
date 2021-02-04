@@ -28,3 +28,50 @@ Note that:
 * Lambdas must be captured using the `^` sigil in signatures and bound using `lambda-bind` in the operator body.
 * Lambdas cannot be captured in input values (they have already been pushed on the stack).
 * Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
+
+#### Type Expressions
+
+When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one kf the following operators:
+
+* `|` (or)
+* `&` (and)
+* `!` (not)
+
+Suppose for example you defined the following type classes:
+
+```
+(typeclass fiveplus
+    (int :n ==> bool :o)
+    (
+      n 5 > @o
+    )
+) ::
+
+(typeclass tenminus
+    (int :n ==> bool :o)
+    (
+      n 10 < @o
+    )
+) ::
+
+(typeclass even
+    (int :n ==> bool :o)
+    (
+      n 2 mod 0 == @o
+    )
+) ::
+```
+
+You can combine them in a type expression as following:
+
+```
+(symbol test
+    (!even|tenminus&fiveplus :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+4 test  ; error
+6 test  ; true
+11 test ; true 
+```

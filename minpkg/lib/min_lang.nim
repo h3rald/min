@@ -971,7 +971,7 @@ proc lang_module*(i: In) =
         else:
           discard
     i.push opts
-
+  
   def.symbol("expect") do (i: In):
     var q: MinValue
     i.reqQuotationOfSymbols q

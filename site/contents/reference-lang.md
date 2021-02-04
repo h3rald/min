@@ -121,7 +121,7 @@ Exits the program or shell with {{i}} as return code. #}
 > > Tips
 > > 
 > > * You can specify a typed dictionary by prepending the type name with `dict:`. Example: `dict:socket`
-> > * You can specify two or more matching types by separating the type names with a pipe: `string|quot`
+> > * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: `string|quot`
 
 > > %sidebar%
 > > Example
