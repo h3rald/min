@@ -34,7 +34,7 @@ proc lang_module*(i: In) =
 
   when not defined(mini):
   
-    def.symbol("from-json") do (i: In):
+    def.symbol("from-json") do (i: In) {.gcsafe.}:
       let vals = i.expect("str")
       let s = vals[0]
       i.push i.fromJson(s.getString.parseJson)
@@ -476,6 +476,21 @@ proc lang_module*(i: In) =
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: isQuot)
+    
+  def.symbol("typealias") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let sym = vals[0].getString
+    var s = vals[1].getString
+    if not i.validType(s):
+      raiseInvalid("Invalid type expression: $#" % s)
+    let symbol = "typealias:"&sym
+    when not defined(mini):
+      if not sym.match USER_SYMBOL_REGEX:
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % sym)
+    info "[typealias] $1 = $2" % [sym, s]
+    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: s.newVal, sealed: false, quotation: false)
     
   def.symbol("lambda") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -976,7 +991,7 @@ proc lang_module*(i: In) =
     var q: MinValue
     i.reqQuotationOfSymbols q
     i.push(i.expect(q.qVal.mapIt(it.getString())).reversed.newVal)
-  
+    
   def.symbol("infix-dequote") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
