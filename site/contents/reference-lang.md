@@ -499,6 +499,9 @@ Converts {{any}} into a JSON string.#}
 > >         (0)
 > >       ) try #}
 
+{#op||typealias||{{sl1}} {{sl2}}||{{none}}||
+Creates a type alias {{sl1}} for type expression {{sl2}}.#}
+
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 

@@ -193,13 +193,14 @@ You can also specify a lambda to be captured to an output value, like this:
 Essentially, this allows you to push a lambda on the stack from an operator.
 
 Note that:
+
 * Lambdas must be captured using the `^` sigil in signatures and bound using {#link-operator||lang||lambda-bind#} in the operator body.
 * Lambdas cannot be captured in input values (they have already been pushed on the stack).
 * Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
 
 ### Type expressions
 
-When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one kf the following operators:
+When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one of the following operators:
 
 * `|` (or)
 * `&` (and)
@@ -262,6 +263,7 @@ For example, you can create an alias of part of the type expression used in the 
 ```
 
 Note that:
+
 * Type aliases be used to create an alias for any type expression.
 * Aliased type expressions can contain standard {{m}} types, dictionary types, type classes, and even other type aliases.
 * The {#link-operator||lang||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.
