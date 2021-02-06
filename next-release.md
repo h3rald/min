@@ -1,34 +1,100 @@
-* Implemented "auto-popping" by adding **!** at the end of any symbol (#104).
-* Removed all symbols ending with **!** as auto-popping will work instead.
-* Improved contrast and readability of the min web site (#107).
-* Extended **operator** to support the creation of constructor symbols.
-* Now using **dict:http-response** and **dict:http-response** for HTTP requests/responses.
-* Now using **dict:timeinfo** for time info.
-* Changed **parse-url** to push a **dict:url** on the stack.
-* Fixed #115 and #118.
 
-### Breaking changes
+### Fixes
 
-This release also introduces quite a lot of breaking changes aiming at addressing some language inconsistencies and making the language more stable overall (see #111 for more information).
+* Added `===` at the end of integrated help descriptions (#127).
+* Fixed override propagation when setting isymbols in upper scopes (#133).
 
-**Read this carefully! It is most likely that your code will break when you upgrade.**
+### Mew additions
+ 
+* New symbol: [parent-scope](https://min-lang.org/reference-lang/#op-parent-scope) (#117).
 
+### Notable changes
 
-* Removed **quote-define** (=) and **quote-bind** (#).
-* **define** (:) now auto-quote quotations as well.
-* To quickly bind a quotation to a symbol (and essentially create a symbol operator but with no validations or constraints), use the new **lambda** symbol or **^** (alias, sigil) -- addresses also #114.
-* Removed **typeclass** and extended **operator** to create type classes as well.
-* Renamed **string** and **float** type names (used in operator signatures) to **str** and **flt** respectively.
-* Removed **define-sigil**, use **operator** instead.
-* Removed **module** and **+** (sigil); use **require** to create modules.
-* Removed **call**, **^** (sigil, alias -- reused for **lambda**, see above); use **invoke** to access module/dictionary symbols.
-* Removed **set-type** symbol.
-* Removed **~** sigil (rarely used).
-* Renamed the following symbols:
-  * `int` -> `integer`
-  * `bool` -> `boolean`
-  * `delete` -> `delete-symbol`
-  * `defined?` -> `defined-symbol?`
-  * `seal` -> `seal-symbol`
-  * `sealed?` -> `sealed-symbol?`
-  * `unseal` -> `unseal-symbol`
+#### Lambda capturing in operator output values
+
+You can now specify a lambda to be captured to an output value, like this:
+
+     (
+       symbol square
+       (==> quot ^o)
+       (
+         (dup *) ~o
+       )
+     ) ::
+     
+Essentially, this allows you to push a lambda on the stack from an operator.
+
+Note that:
+
+* Lambdas must be captured using the `^` sigil in signatures and bound using `lambda-bind` in the operator body.
+* Lambdas cannot be captured in input values (they have already been pushed on the stack).
+* Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
+
+#### Type Expressions
+
+When specifying types in operator signatures or through the `expect` operator, you can specify a logical expression containing types and type classes joined with one of the following operators:
+
+* `|` (or)
+* `&` (and)
+* `!` (not)
+
+Suppose for example you defined the following type classes:
+
+```
+(typeclass fiveplus
+    (int :n ==> bool :o)
+    (
+      n 5 > @o
+    )
+) ::
+
+(typeclass tenminus
+    (int :n ==> bool :o)
+    (
+      n 10 < @o
+    )
+) ::
+
+(typeclass even
+    (int :n ==> bool :o)
+    (
+      n 2 mod 0 == @o
+    )
+) ::
+```
+
+You can combine them in a type expression as following:
+
+```
+(symbol test
+    (!even|tenminus&fiveplus :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+4 test  ; error
+6 test  ; true
+11 test ; true 
+```
+
+### Type aliases
+
+You can now define  *type aliases* using the `typealias` operator.
+
+For example, you can create an alias of part of the type expression used in the previous example, like this:
+
+```
+'tenminus&fiveplus 'five-to-ten typealias
+
+(symbol test
+    (!even|five-to-ten :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+```
+
+Note that:
+* Type aliases be used to create an alias for any type expression.
+* Aliased type expressions can contain standard min types, dictionary types, type classes, and even other type aliases.
+* The `typealias` operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.

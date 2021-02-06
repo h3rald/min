@@ -121,7 +121,7 @@ Exits the program or shell with {{i}} as return code. #}
 > > Tips
 > > 
 > > * You can specify a typed dictionary by prepending the type name with `dict:`. Example: `dict:socket`
-> > * You can specify two or more matching types by separating the type names with a pipe: `string|quot`
+> > * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: `string|quot`
 
 > > %sidebar%
 > > Example
@@ -321,6 +321,9 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 {#op||opts||{{none}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
+{#op||parent-scope||{{d1}}||{{d2}}||
+Returns a dictionary {{d2}} holding a reference to the parent scope of {{d1}} or {{null}} if {{d1}} is ROOT.#}
+
 {#op||parse||{{s}}||{{q}}||
 Parses {{s}} and returns a quoted program {{q}}. #}
 
@@ -495,6 +498,9 @@ Converts {{any}} into a JSON string.#}
 > >         (format-error puts)
 > >         (0)
 > >       ) try #}
+
+{#op||typealias||{{sl1}} {{sl2}}||{{none}}||
+Creates a type alias {{sl1}} for type expression {{sl2}}.#}
 
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}

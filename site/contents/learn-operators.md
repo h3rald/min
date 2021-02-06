@@ -48,6 +48,11 @@ Also note that unlike with {#link-operator||lang||operator#}, symbols defined wi
 * do not support the `return` symbol to immediately end their execution.
 * have no built-in stack pollution checks.
 
+> %tip
+> Tip
+> 
+> You can use {#link-operator||lang||lambda-bind#} to re-set a previously set lambda.
+
 ## Sigils
 
 Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. 
@@ -137,7 +142,7 @@ In a signature, a type expression must precede the capturing symbol. Such type e
 * One of the following shorthand symbols identifying a well-known {{m}} base type (see the {#link-page||reference||reference#} section for more information): `a`, `bool`, `null`, `str`, `int`, `num`, `flt`, `'sym`, `quot`, or `dict`.
 * A typed dictionary like `dict:module` or `dict:datastore`.
 * A type class (see below).
-* a union of types/typed dictionaries/type classes, like `str|int`.
+* a type expression like `str|int`.
 
 > %note%
 > Note
@@ -172,6 +177,96 @@ This operator will raise an error if anything other than a quotation of strings 
 > Tip
 > 
 > `typeclass:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
+
+#### Capturing lambdas
+
+You can also specify a lambda to be captured to an output value, like this:
+
+     (
+       symbol square
+       (==> quot ^o)
+       (
+         (dup *) ~o
+       )
+     ) ::
+     
+Essentially, this allows you to push a lambda on the stack from an operator.
+
+Note that:
+
+* Lambdas must be captured using the `^` sigil in signatures and bound using {#link-operator||lang||lambda-bind#} in the operator body.
+* Lambdas cannot be captured in input values (they have already been pushed on the stack).
+* Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
+
+### Type expressions
+
+When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one of the following operators:
+
+* `|` (or)
+* `&` (and)
+* `!` (not)
+
+Suppose for example you defined the following type classes:
+
+```
+(typeclass fiveplus
+    (int :n ==> bool :o)
+    (
+      n 5 > @o
+    )
+) ::
+
+(typeclass tenminus
+    (int :n ==> bool :o)
+    (
+      n 10 < @o
+    )
+) ::
+
+(typeclass even
+    (int :n ==> bool :o)
+    (
+      n 2 mod 0 == @o
+    )
+) ::
+```
+
+You can combine them in a type expression as following:
+
+```
+(symbol test
+    (!even|tenminus&fiveplus :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+4 test  ; error
+6 test  ; true
+11 test ; true 
+```
+
+### Type aliases
+
+As you can see, type expressions can quickly become quite long and complex. To avoid this, you can define *type aliases* using the {#link-operator||lang||typealias#} operator. 
+
+For example, you can create an alias of part of the type expression used in the previous example, like this:
+
+```
+'tenminus&fiveplus 'five-to-ten typealias
+
+(symbol test
+    (!even|five-to-ten :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+```
+
+Note that:
+
+* Type aliases be used to create an alias for any type expression.
+* Aliased type expressions can contain standard {{m}} types, dictionary types, type classes, and even other type aliases.
+* The {#link-operator||lang||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.
 
 ### Generics
 

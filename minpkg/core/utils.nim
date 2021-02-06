@@ -171,6 +171,33 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 
 # Validators
 
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool {.gcsafe.}
+
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue, generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool {.gcsafe.} =
+  vTypes.add value.typeName
+  let ors = element.split("|")
+  for to in ors:
+    let ands = to.split("&")
+    var andr = true
+    for ta in ands:
+      var t = ta
+      var neg = false
+      if t.len > 1 and t[0] == '!':
+        t = t[1..t.len-1]
+        neg = true
+      andr = i.validate(value, t, generics)
+      if neg:
+        andr = not andr
+      if not andr:
+        if neg:
+          vTypes[c] = t
+        else:
+          vTypes[c] = value.typeName
+          break
+    if andr:
+      result = true 
+      break
+
 proc basicValidate*(i: In, value: MinValue, t: string): bool =
   case t:
     of "bool":
@@ -196,6 +223,8 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
     of "a":
       return true
     else:
+      let tc = "typeclass:$#" % t
+      let ta = "typealias:$#" % t
       if t.contains(":"):
         var split = t.split(":")
         # Typed dictionaries 
@@ -203,7 +232,14 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
           if value.isTypedDictionary(split[1]):
             return true
         return false
-      elif i.scope.hasSymbol("typeclass:$#" % t):
+      elif i.scope.hasSymbol(ta):
+        # Custom type alias
+        let element = i.scope.getSymbol(ta).val.getString
+        var fakeGenerics: CritBitTree[string]
+        var vTypes = newSeq[string](0)
+        var c = 0
+        return i.validateValueType(element, value, fakeGenerics, vTypes, c)
+      elif i.scope.hasSymbol(tc):
         # Custom type class
         var i2 = i.copy(i.filename)
         i2.withScope():
@@ -235,12 +271,23 @@ proc validType*(i: In, s: string): bool =
     return true
   if i.scope.hasSymbol("typeclass:$#" % s):
     return true
-  for tt in s.split("|"):
-    if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
-      return false
+  for ta in s.split("|"):
+    for to in ta.split("&"):
+      var tt = to
+      if to.len < 2:
+        return false
+      if to[0] == '!':
+        tt = to[1..to.len-1]
+      if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
+        let ta = "typealias:$#" % tt
+        if i.scope.hasSymbol(ta):
+          return i.validType(i.scope.getSymbol(ta).val.getString)
+        return false
   return true
+  
 
-proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
+# The following is used in operator signatures
+proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] {.gcsafe.}=
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
@@ -258,54 +305,26 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
     if valid.len > 0:
       other = valid.reverse.join(" ") & " "
     result &= "- got:      " & invalid & " " & other & sym
+  var res = false
+  var vTypes = newSeq[string](0)
+  var c = 0
   for el in elements:
-    var element = el
     let value = i.pop
     result.add value
-    var split = element.split("|")
-    if split.len > 1:
-      var res = false
-      for t in split:
-        if i.validate(value, t, generics):
-          res = true
-          break
-      if not res:
-        raiseInvalid(message(value.typeName, elements, generics))
-    elif not i.validate(value, element, generics):
-      raiseInvalid(message(value.typeName, elements, generics))
-    if generics.hasKey(el):
+    res = i.validateValueType(el, value, generics, vTypes, c)
+    if res:
+      valid.add el
+    elif generics.hasKey(el):
       valid.add(generics[el])
     else:
-      valid.add element
-    
-proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
-  let stack = elements.reverse.join(" ")
-  let sym = i.currSym.getString
-  var valid = newSeq[string](0)
-  result = newSeq[MinValue](0)
-  let message = proc(invalid: string): string =
-    result = "Incorrect values found on the stack:\n"
-    result &= "- expected: " & stack & " $1\n" % sym
-    var other = ""
-    if valid.len > 0:
-      other = valid.reverse.join(" ") & " "
-    result &= "- got:      " & invalid & " " & other & sym
-  for element in elements:
-    let value = i.pop
-    result.add value
-    var split = element.split("|")
-    if split.len > 1:
-      var res = false
-      for t in split:
-        if i.validate(value, t):
-          res = true
-          break
-      if not res:
-        raiseInvalid(message(value.typeName))
-    elif not i.validate(value, element):
-      raiseInvalid(message(value.typeName))
-    valid.add element
+      raiseInvalid(message(vTypes[c], elements, generics))
+    c = c+1
 
+# The following is used in expect symbol and native symbol expectations.
+proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
+  var c: CritBitTree[string]
+  return i.expect(elements, c)
+        
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:

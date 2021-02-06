@@ -42,13 +42,13 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override =
   # check if a symbol already exists in current scope
   if not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed." % key) 
+      raiseInvalid("Symbol '$1' is sealed ." % key) 
     scope.symbols[key] = value
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
     if not scope.parent.isNil:
-      result = scope.parent.setSymbol(key, value)
+      result = scope.parent.setSymbol(key, value, override)
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
