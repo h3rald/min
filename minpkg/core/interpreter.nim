@@ -267,7 +267,7 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
       i.apply i.scope.getSymbol(symbol) 
     else: 
       # Check if symbol ends with ! (auto-popping)
-      if symbol.len > 2 and symbol[symbol.len-1] == '!':
+      if symbol.len > 1 and symbol[symbol.len-1] == '!':
         let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)

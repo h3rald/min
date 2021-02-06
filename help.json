@@ -722,7 +722,7 @@
       "signature": "int ==> "
     },
     "expect": {
-      "description": "Validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating the type names with a pipe: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
+      "description": "Validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
       "kind": "symbol",
       "name": "expect",
       "signature": "quot1 ==> quot2"
@@ -1290,6 +1290,12 @@
       "kind": "symbol",
       "name": "over",
       "signature": "a1 a2 ==> a1 a2 a1"
+    },
+    "parent-scope": {
+      "description": "Returns a dictionary dict2 holding a reference to the parent scope of dict1 or null if dict1 is ROOT.",
+      "kind": "symbol",
+      "name": "parent-scope",
+      "signature": "dict1 ==> dict2"
     },
     "parse": {
       "description": "Parses str and returns a quoted program quot.",
