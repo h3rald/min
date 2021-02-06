@@ -75,3 +75,25 @@ You can combine them in a type expression as following:
 6 test  ; true
 11 test ; true 
 ```
+
+### Type aliases
+
+You can definenow  *type aliases* using the {#link-operator||lang||typealias#} operator. Mmmm
+
+For example, you can create an alias of part of the type expression used in the previous example, like this:
+
+```
+'tenminus&fiveplus 'five-to-ten typealias
+
+(symbol test
+    (!even|five-to-ten :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+```
+
+Note that:
+* Type aliases be used to create an alias for any type expression.
+* Aliased type expressions can contain standard {{m}} types, dictionary types, type classes, and even other type aliases.
+* The {#link-operator||lang||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.

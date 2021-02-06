@@ -197,7 +197,7 @@ Note that:
 * Lambdas cannot be captured in input values (they have already been pushed on the stack).
 * Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
 
-### Type Expressions
+### Type expressions
 
 When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one kf the following operators:
 
@@ -243,6 +243,28 @@ You can combine them in a type expression as following:
 6 test  ; true
 11 test ; true 
 ```
+
+### Type aliases
+
+As you can see, type expressions can quickly become quite long and complex. To avoid this, you can define *type aliases* using the {#link-operator||lang||typealias#} operator. 
+
+For example, you can create an alias of part of the type expression used in the previous example, like this:
+
+```
+'tenminus&fiveplus 'five-to-ten typealias
+
+(symbol test
+    (!even|five-to-ten :n ==> bool :o)
+    (
+      true @o
+    )
+) ::
+```
+
+Note that:
+* Type aliases be used to create an alias for any type expression.
+* Aliased type expressions can contain standard {{m}} types, dictionary types, type classes, and even other type aliases.
+* The {#link-operator||lang||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.
 
 ### Generics
 

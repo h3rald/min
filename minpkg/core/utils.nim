@@ -189,7 +189,6 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
       if neg:
         andr = not andr
       if not andr:
-        echo t
         if neg:
           vTypes[c] = t
         else:
