@@ -291,7 +291,7 @@
     @out
    )
   ) ::
-  ("aaa" test-c 'test-c type?) *test/assert
+  ("aaa" test-c 'dict:test-c type?) *test/assert
   
   (
     symbol add

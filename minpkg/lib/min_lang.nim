@@ -277,7 +277,7 @@ proc lang_module*(i: In) =
           i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv, quotation: inVals[k].isQuotation)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
-          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: @[newNull()].newVal, quotation: true)
         # Actually execute the body of the operator
         var endSnapshot: seq[MinValue]
         var snapShot: seq[MinValue]

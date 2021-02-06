@@ -83,7 +83,7 @@ Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
 Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
 
 {#op||type?||{{any}} {{sl}}||{{b}}||
-Returns {{t}} if the data type of {{any}} is the specified type {{sl}}, {{f}} otherwise. #}
+Returns {{t}} if the data type of {{any}} satisfies the specified type expression {{sl}}, {{f}} otherwise. #}
 
 {#op||xor||{{b1}} {{b2}}||{{b3}}||
 Returns {{t}} if {{b1}} and {{b2}} are different, {{f}} otherwise.#}

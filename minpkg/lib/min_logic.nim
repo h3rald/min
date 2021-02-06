@@ -227,10 +227,10 @@ proc logic_module*(i: In)=
 
   def.symbol("type?") do (i: In):
     let vals = i.expect("'sym", "a")
-    if vals[1].isTypedDictionary(vals[0].getString):
-      i.push true.newVal
-    else:
-      i.push (vals[1].typename == vals[0].getString).newVal
+    let t = vals[0].getString
+    let v = vals[1]
+    let res = i.validateValueType(t, v)
+    i.push res.newVal
       
   def.symbol("&&") do (i: In):
     i.pushSym("expect-all")

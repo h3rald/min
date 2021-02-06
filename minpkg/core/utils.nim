@@ -198,6 +198,12 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
       result = true 
       break
 
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool {.gcsafe.} =
+  var g: CritBitTree[string]
+  var s = newSeq[string](0)
+  var c = 0
+  return i.validateValueType(element, value, g, s, c)
+
 proc basicValidate*(i: In, value: MinValue, t: string): bool =
   case t:
     of "bool":
@@ -235,10 +241,7 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       elif i.scope.hasSymbol(ta):
         # Custom type alias
         let element = i.scope.getSymbol(ta).val.getString
-        var fakeGenerics: CritBitTree[string]
-        var vTypes = newSeq[string](0)
-        var c = 0
-        return i.validateValueType(element, value, fakeGenerics, vTypes, c)
+        return i.validateValueType(element, value)
       elif i.scope.hasSymbol(tc):
         # Custom type class
         var i2 = i.copy(i.filename)
