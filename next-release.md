@@ -1,7 +1,12 @@
+### Breaking changes
+
+* #141 - The **'** symbol is now an alias of the **quotesym** symbol (but its behavior remains the same: it can be used to created quotes symbols from a string), and the **'** sigil is equivalent to the new **quotesym** symbol, not **quote**.
+
 ### Fixes
 
 * Now adding **help.json** to installation folder when installing via nimble.
 
-### New Features
+### New features
 
-* The symbol **type?** is now able to check if a value satisfies a type expression, not only a simple type (#144). Note however that it is now necessary to prepend dictionary types with `dict:` (as in type expressions).
+* #144 - The symbol **type?** is now able to check if a value satisfies a type expression, not only a simple type. Note however that it is now necessary to prepend dictionary types with `dict:` (as in type expressions).
+* #141 - A new **quotesym** symbol has been added to transform a string into a quoted symbol. This is equivalent to the behavior of the **'** sigil.

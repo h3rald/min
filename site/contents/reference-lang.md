@@ -4,9 +4,9 @@ title: "lang Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||&apos;||quote#}
+{#sig||&apos;||quotesym#}
 
-{#alias||&apos;||quote#}
+{#alias||&apos;||quotesym#}
 
 {#sig||:||define#}
 
@@ -362,6 +362,10 @@ Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
+
+{#op||quotesym||{{str}}||({{sym}})||
+Creates a symbol with the value of {{str}} and wraps it in a quotation. #}
+
 
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}

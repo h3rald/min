@@ -1089,12 +1089,15 @@ proc lang_module*(i: In) =
     else:
       i.eval(""""[$1]\n$$ " (.) => %""")
 
-  # Sigils
-
-  def.sigil("'") do (i: In):
+  def.symbol("quotesym") do (i: In):
     let vals = i.expect("str")
     let s = vals[0]
     i.push(@[i.newSym(s.strVal)].newVal)
+
+  # Sigils
+
+  def.sigil("'") do (i: In):
+    i.pushSym("quotesym")
 
   def.sigil(":") do (i: In):
     i.pushSym("define")
@@ -1141,7 +1144,7 @@ proc lang_module*(i: In) =
     i.pushSym("lambda-bind")
 
   def.symbol("'") do (i: In):
-    i.pushSym("quote")
+    i.pushSym("quotesym")
 
   def.symbol("->") do (i: In):
     i.pushSym("dequote")
