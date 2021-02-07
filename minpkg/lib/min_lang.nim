@@ -501,7 +501,7 @@ proc lang_module*(i: In) =
     when not defined(mini):
       if not symbol.match USER_SYMBOL_REGEX:
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-    info "[lambd] $1 = $2" % [symbol, $q1]
+    info "[lambda] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: true)

@@ -4,6 +4,7 @@ import
   sequtils,
   os,
   critbits,
+  json,
   algorithm
 when defined(mini):
   import
@@ -194,7 +195,7 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_sy
      v.obj = val.obj
    return v
 
-proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, extern:"min_exported_symbol_$1".}=
   if op.kind == minProcOp:
     op.prc(i)
   else:
@@ -202,6 +203,8 @@ proc apply*(i: In, op: MinOperator) {.gcsafe, extern:"min_exported_symbol_$1".}=
       var newscope = newScopeRef(i.scope)
       i.withScope(newscope):
         for e in op.val.qVal:
+          if e.isSymbol and e.symVal == sym:
+            raiseInvalid("Symbol '$#' evaluates to itself" % sym)
           i.push e
     else:
       i.push(op.val)
@@ -264,7 +267,7 @@ proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}=
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
     if i.scope.hasSymbol(symbol):
-      i.apply i.scope.getSymbol(symbol) 
+      i.apply i.scope.getSymbol(symbol), symbol
     else: 
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':

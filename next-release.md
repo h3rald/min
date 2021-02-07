@@ -4,7 +4,10 @@
 
 ### Fixes
 
+* #147 - Fixed an error when processing operator output values.
 * Now adding **help.json** to installation folder when installing via nimble.
+* #151 - Added documentation for **integer**.
+* #152 - Now preventing infinite recursion in case a symbol evaluates to itsel.
 
 ### New features
 
