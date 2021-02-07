@@ -45,14 +45,14 @@ proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
-    raiseInvalid("Key '$1' is set to a native value that cannot be retrieved." % [s.getString])
+    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." % [s.getString])
   result = q.dVal[s.getString].val
 
 proc dget*(i: In, q: MinValue, s: string): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s].kind == minProcOp:
-    raiseInvalid("Key $1 is set to a native value that cannot be retrieved." % [s])
+    raiseInvalid("Key $1 is set to an operator and it cannot be retrieved." % [s])
   result = q.dVal[s].val
 
 proc dhas*(q: MinValue, s: MinValue): bool =
@@ -103,7 +103,7 @@ proc values*(i: In, q: MinValue): MinValue =
   var r = newSeq[MinValue](0)
   for item in q.dVal.values:
     if item.kind == minProcOp:
-      raiseInvalid("Dictionary contains native values that cannot be accessed.")
+      raiseInvalid("Dictionary contains operators that cannot be accessed.")
     r.add item.val
   return r.newVal
   
@@ -112,7 +112,7 @@ proc pairs*(i: In, q: MinValue): MinValue =
   var r = newSeq[MinValue](0)
   for key, value in q.dVal.pairs:
     if value.kind == minProcOp:
-      raiseInvalid("Dictionary contains native values that cannot be accessed.")
+      raiseInvalid("Dictionary contains operators that cannot be accessed.")
     r.add key.newVal
     r.add value.val
   return r.newVal

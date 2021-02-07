@@ -686,7 +686,7 @@ proc lang_module*(i: In) =
     if sym.kind == minValOp:
       i.push sym.val
     else:
-      raiseInvalid("No source available for native symbol '$1'." % str)
+      raiseInvalid("Unable to display source: '$1' is an operator." % str)
 
   def.symbol("invoke") do (i: In):
     let vals = i.expect("'sym")
@@ -701,7 +701,8 @@ proc lang_module*(i: In) =
       let symId = parts[p+1] 
       let origScope = i.scope
       i.scope = mdl.scope
-      i.scope.parent = origScope
+      if not i.scope.parent.isNil:
+        i.scope.parent = origScope
       let sym = i.scope.getSymbol(symId)
       i.apply(sym)
       i.scope = origScope
