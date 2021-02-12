@@ -277,7 +277,7 @@ proc lang_module*(i: In) =
           i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv, quotation: inVals[k].isQuotation)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
-          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull(), quotation: false)
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: @[newNull()].newVal, quotation: true)
         # Actually execute the body of the operator
         var endSnapshot: seq[MinValue]
         var snapShot: seq[MinValue]
@@ -501,7 +501,7 @@ proc lang_module*(i: In) =
     when not defined(mini):
       if not symbol.match USER_SYMBOL_REGEX:
         raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
-    info "[lambd] $1 = $2" % [symbol, $q1]
+    info "[lambda] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, quotation: true)
@@ -686,7 +686,7 @@ proc lang_module*(i: In) =
     if sym.kind == minValOp:
       i.push sym.val
     else:
-      raiseInvalid("No source available for native symbol '$1'." % str)
+      raiseInvalid("Unable to display source: '$1' is an operator." % str)
 
   def.symbol("invoke") do (i: In):
     let vals = i.expect("'sym")
@@ -701,7 +701,8 @@ proc lang_module*(i: In) =
       let symId = parts[p+1] 
       let origScope = i.scope
       i.scope = mdl.scope
-      i.scope.parent = origScope
+      if not i.scope.parent.isNil:
+        i.scope.parent = origScope
       let sym = i.scope.getSymbol(symId)
       i.apply(sym)
       i.scope = origScope
@@ -1089,12 +1090,15 @@ proc lang_module*(i: In) =
     else:
       i.eval(""""[$1]\n$$ " (.) => %""")
 
-  # Sigils
-
-  def.sigil("'") do (i: In):
+  def.symbol("quotesym") do (i: In):
     let vals = i.expect("str")
     let s = vals[0]
     i.push(@[i.newSym(s.strVal)].newVal)
+
+  # Sigils
+
+  def.sigil("'") do (i: In):
+    i.pushSym("quotesym")
 
   def.sigil(":") do (i: In):
     i.pushSym("define")
@@ -1141,7 +1145,7 @@ proc lang_module*(i: In) =
     i.pushSym("lambda-bind")
 
   def.symbol("'") do (i: In):
-    i.pushSym("quote")
+    i.pushSym("quotesym")
 
   def.symbol("->") do (i: In):
     i.pushSym("dequote")

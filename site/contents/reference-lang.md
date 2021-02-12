@@ -4,9 +4,9 @@ title: "lang Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||&apos;||quote#}
+{#sig||&apos;||quotesym#}
 
-{#alias||&apos;||quote#}
+{#alias||&apos;||quotesym#}
 
 {#sig||:||define#}
 
@@ -138,7 +138,7 @@ Exits the program or shell with {{i}} as return code. #}
 Raises an error if the stack is not empty.#}
 
 {#op||float||{{any}}||{{flt}}||
-> Converts {{any}} to an integer value based on the following rules:
+> Converts {{any}} to a float value based on the following rules:
 > 
 >   * If {{any}} is {{t}}, it is converted to `1.0`.
 >   * If {{any}} is {{f}}, it is converted to `0.0`.
@@ -205,7 +205,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 > >      (2 + 3 * 5) infix-dequote  
  #}
 
-{#op||int||{{any}}||{{i}}||
+{#op||integer||{{any}}||{{i}}||
 > Converts {{any}} to an integer value based on the following rules:
 > 
 >   * If {{any}} is {{t}}, it is converted to `1`.
@@ -362,6 +362,10 @@ Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
+
+{#op||quotesym||{{str}}||({{sym}})||
+Creates a symbol with the value of {{str}} and wraps it in a quotation. #}
+
 
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}

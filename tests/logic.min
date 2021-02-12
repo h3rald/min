@@ -136,13 +136,13 @@
   (1 stringlike? false ==) *test/assert
   ('test stringlike?) *test/assert
 
-  ({} 'module type? false ==) *test/assert
-  ((1 2 3) 'module type? false ==) *test/assert
-  (4 'module type? false ==) *test/assert
-  (logic 'module type?) *test/assert
+  ({} 'dict:module type? false ==) *test/assert
+  ((1 2 3) 'dict:module type? false ==) *test/assert
+  (4 'dict:module type? false ==) *test/assert
+  (logic 'dict:module type?) *test/assert
   (1 "int" type?) *test/assert
   ("test" "str" type?) *test/assert
-  (ROOT "module" type?) *test/assert
+  (ROOT "dict:module" type?) *test/assert
 
   (7 0 / inf ==) *test/assert
   (-7 0 / -inf ==) *test/assert

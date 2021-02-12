@@ -45,14 +45,14 @@ proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
-    raiseInvalid("Key '$1' is set to a native value that cannot be retrieved." % [s.getString])
+    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." % [s.getString])
   result = q.dVal[s.getString].val
 
 proc dget*(i: In, q: MinValue, s: string): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s].kind == minProcOp:
-    raiseInvalid("Key $1 is set to a native value that cannot be retrieved." % [s])
+    raiseInvalid("Key $1 is set to an operator and it cannot be retrieved." % [s])
   result = q.dVal[s].val
 
 proc dhas*(q: MinValue, s: MinValue): bool =
@@ -103,7 +103,7 @@ proc values*(i: In, q: MinValue): MinValue =
   var r = newSeq[MinValue](0)
   for item in q.dVal.values:
     if item.kind == minProcOp:
-      raiseInvalid("Dictionary contains native values that cannot be accessed.")
+      raiseInvalid("Dictionary contains operators that cannot be accessed.")
     r.add item.val
   return r.newVal
   
@@ -112,7 +112,7 @@ proc pairs*(i: In, q: MinValue): MinValue =
   var r = newSeq[MinValue](0)
   for key, value in q.dVal.pairs:
     if value.kind == minProcOp:
-      raiseInvalid("Dictionary contains native values that cannot be accessed.")
+      raiseInvalid("Dictionary contains operators that cannot be accessed.")
     r.add key.newVal
     r.add value.val
   return r.newVal
@@ -198,6 +198,12 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
       result = true 
       break
 
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool {.gcsafe.} =
+  var g: CritBitTree[string]
+  var s = newSeq[string](0)
+  var c = 0
+  return i.validateValueType(element, value, g, s, c)
+
 proc basicValidate*(i: In, value: MinValue, t: string): bool =
   case t:
     of "bool":
@@ -235,10 +241,7 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       elif i.scope.hasSymbol(ta):
         # Custom type alias
         let element = i.scope.getSymbol(ta).val.getString
-        var fakeGenerics: CritBitTree[string]
-        var vTypes = newSeq[string](0)
-        var c = 0
-        return i.validateValueType(element, value, fakeGenerics, vTypes, c)
+        return i.validateValueType(element, value)
       elif i.scope.hasSymbol(tc):
         # Custom type class
         var i2 = i.copy(i.filename)
