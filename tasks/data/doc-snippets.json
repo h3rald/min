@@ -45,6 +45,7 @@
     "sl": "'sym",
     "sl1": "'sym1",
     "sl2": "'sym2",
+    "sym": "sym",
     "f": "false ",
     "t": "true",
     "null": "null",

@@ -44,6 +44,7 @@
 {{sl => [&apos;sym](class:kwd)}}
 {{sl1 => [&apos;sym<sub>1</sub>](class:kwd)}}
 {{sl2 => [&apos;sym<sub>2</sub>](class:kwd)}}
+{{sym => [sym](class:kwd)}}
 {{f => [false](class:kwd)}} 
 {{t => [true](class:kwd)}}
 {{null => [null](class:kwd)}}

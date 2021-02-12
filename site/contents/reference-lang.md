@@ -363,8 +363,8 @@ Exits the program or shell with 0 as return code. #}
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
 
-{#op||quotesym||{{str}}||({{sym}})||
-Creates a symbol with the value of {{str}} and wraps it in a quotation. #}
+{#op||quotesym||{{s}}||({{sym}})||
+Creates a symbol with the value of {{s}} and wraps it in a quotation. #}
 
 
 {#op||raise||{{e}}||{{none}}||

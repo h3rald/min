@@ -32,7 +32,7 @@
       "name": "&"
     },
     "'": {
-      "description": "See quote",
+      "description": "See quotesym",
       "kind": "symbol",
       "name": "'"
     },
@@ -794,7 +794,7 @@
       "signature": "quot1 ==> quot2"
     },
     "float": {
-      "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.0.\n   * If a is false , it is converted to 0.0.\n   * If a is null, it is converted to 0.0\n.  * If a is a integer, it is converted to float value.\n   * If a is a float, no conversion is performed.\n   * If a is a string, it is parsed as a float value.",
+      "description": "Converts a to a float value based on the following rules:\n \n   * If a is true, it is converted to 1.0.\n   * If a is false , it is converted to 0.0.\n   * If a is null, it is converted to 0.0\n.  * If a is a integer, it is converted to float value.\n   * If a is a float, no conversion is performed.\n   * If a is a string, it is parsed as a float value.",
       "kind": "symbol",
       "name": "float",
       "signature": "a ==> flt"
@@ -997,10 +997,10 @@
       "name": "insert",
       "signature": "quot1 a int ==> quot2"
     },
-    "int": {
+    "integer": {
       "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.\n   * If a is false , it is converted to 0.\n   * If a is null, it is converted to 0.\n   * If a is an integer, no conversion is performed.\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\n   * If a is a string, it is parsed as an integer value.",
       "kind": "symbol",
-      "name": "int",
+      "name": "integer",
       "signature": "a ==> int"
     },
     "integer?": {
@@ -1434,6 +1434,12 @@
       "kind": "symbol",
       "name": "quote-map",
       "signature": "quot1 ==> quot2"
+    },
+    "quotesym": {
+      "description": "Creates a symbol with the value of str and wraps it in a quotation.",
+      "kind": "symbol",
+      "name": "quotesym",
+      "signature": "str ==> (sym)"
     },
     "r2d": {
       "description": "Converts num1 from radians to degrees.",
@@ -2024,10 +2030,16 @@
       "signature": "a ==> str"
     },
     "type?": {
-      "description": "Returns true if the data type of a is the specified type 'sym, false  otherwise.",
+      "description": "Returns true if the data type of a satisfies the specified type expression 'sym, false  otherwise.",
       "kind": "symbol",
       "name": "type?",
       "signature": "a 'sym ==> bool"
+    },
+    "typealias": {
+      "description": "Creates a type alias 'sym1 for type expression 'sym2.",
+      "kind": "symbol",
+      "name": "typealias",
+      "signature": "'sym1 'sym2 ==> "
     },
     "union": {
       "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
@@ -2142,7 +2154,7 @@
       "name": "&"
     },
     "'": {
-      "description": "See quote",
+      "description": "See quotesym",
       "kind": "symbol",
       "name": "'"
     },
