@@ -7,13 +7,11 @@ title: "Get Started"
 
 You can download one of the following pre-built min binaries:
 
-* {#release||{{$version}}||macosx||macOS||x64#} <small>[{#lite-release||{{$version}}||macosx||macOS||x64#}, {#mini-release||{{$version}}||macosx||macOS||x64#}]</small>
-* {#release||{{$version}}||windows||Windows||x64#} <small>[{#lite-release||{{$version}}||windows||Windows||x64#}, {#mini-release||{{$version}}||windows||Windows||x64#}]</small>
-* {#release||{{$version}}||linux||Linux||x64#} <small>[{#lite-release||{{$version}}||linux||Linux||x64#}, {#mini-release||{{$version}}||linux||Linux||x64#}]</small>
+* {#release||{{$version}}||macosx||macOS||x64#}
+* {#release||{{$version}}||windows||Windows||x64#}
+* {#release||{{$version}}||linux||Linux||x64#}
 
 {#release -> [min v$1 for $3 ($4)](https://github.com/h3rald/min/releases/download/v$1/min\_v$1\_$2\_$4.zip) #}
-{#lite-release -> [lite](https://github.com/h3rald/min/releases/download/v$1/litemin\_v$1\_$2\_$4.zip) #}
-{#mini-release -> [mini](https://github.com/h3rald/min/releases/download/v$1/minimin\_v$1\_$2\_$4.zip) #}
 
 {{guide-download}}
 
@@ -52,57 +50,6 @@ If this flag is not specified:
   * {#link-operator||crypto||encode#} 
   * {#link-operator||crypto||decode#} 
   * {#link-operator||crypto||aes#} 
-
-#### -d:lite
-
-If the **d:lite** flag is specified, a more minimal executable file will be generated (typically, it should be called "litemin"), however the following functionalities will not be available:
-
-* The {#link-module||crypto#}
-* The {#link-module||net#}
-* The {#link-module||http#}
-* The {#link-module||math#}
-* The {#link-operator||sys||zip#} and {#link-operator||sys||unzip#} operators.
-
-#### -d:mini
-
-If the **d:mini** flag is specified, an even more minimal executable file will be generated (typically, it should be called "minimin"), however the following functionalities will not be available:
-
-* The {#link-module||crypto#}
-* The {#link-module||net#}
-* The {#link-module||http#}
-* The {#link-module||math#}
-* The {#link-module||io#}
-* The {#link-module||fs#}
-* The {#link-module||sys#}
-* The following operators:
-  * {#link-operator||lang||load#}
-  * {#link-operator||lang||require#}
-  * {#link-operator||lang||to-json#}
-  * {#link-operator||lang||from-json#}
-  * {#link-operator||lang||raw-args#}
-  * {#link-operator||lang||save-symbol#}
-  * {#link-operator||lang||load-symbol#}
-  * {#link-operator||lang||saved-symbol#}
-  * {#link-operator||lang||loaded-symbol#}
-  * {#link-operator||str||search#}
-  * {#link-operator||str||match#}
-  * {#link-operator||str||replace#}
-  * {#link-operator||str||regex#}
-  * {#link-operator||str||semver?#}
-  * {#link-operator||str||from-semver#}
-  * {#link-operator||str||parse-url#}
-  * {#link-operator||str||decode-url#}
-  * {#link-operator||str||encode-url#}
-  * {#link-operator||sys||zip#}
-  * {#link-operator||sys||unzip#}
-
-Additionally:
-
-* No checks will be performed when defining symbols.
-* Only the simple REPL will be available.
-* There will be no support for dynamic libraries.
-* The **-m, \-\-module-path** and **-a, \-\-asset-path** options have no effect.
-* No environment configuration files ([.minrc](class:file), [.min_symbols](class:file)) are used.
 
 ## Building a Docker image
 

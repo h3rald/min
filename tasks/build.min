@@ -100,19 +100,6 @@
 ;; Generate the min development guide and site.
 
 (
-  symbol lite
-  (==>)
-  ("" "lite" os cz)
-) ::
-;; Builds litemin on the current OS.
-
-(
-  symbol mini
-  (==>)
-  ("" "mini" os cz)
-) ::
-;; Builds minimin on the current OS.
-(
   symbol dev
   (==>)
   ("dev" "" os cz)
@@ -131,50 +118,14 @@
 ) ::
 ;; Builds min for Linux.
 (
-  symbol linux-lite
-  (==>)
-  ("" "lite" "linux" cz)
-) ::
-;; Builds litemin for Linux.
-(
-  symbol linux-mini
-  (==>)
-  ("" "mini" "linux" cz)
-) ::
-;; Builds minimin for Linux.
-(
   symbol macosx
   (==>)
   ("" "" "macosx" cz)
 ) ::
 ;; Builds min for macOS.
 (
-  symbol macosx-lite
-  (==>)
-  ("" "lite" "macosx" cz)
-) ::
-;; Builds litemin for macOS.
-(
-  symbol macosx-mini
-  (==>)
-  ("" "mini" "macosx" cz)
-) ::
-;; Builds minimin for macOS.
-(
   symbol windows
   (==>)
   ("" "" "windows" cz)
 ) ::
 ;; Builds min for Windows.
-(
-  symbol windows-lite
-  (==>)
-  ("" "lite" "windows" cz)
-) ::
-;; Builds litemin for Windows.
-(
-  symbol windows-mini
-  (==>)
-  ("" "mini" "windows" cz)
-) ::
-;; Builds minimin for Windows.

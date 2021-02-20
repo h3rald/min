@@ -12,14 +12,8 @@
     *build/site
     *build/vim
     *build/windows
-    *build/windows-lite
-    *build/windows-mini
     *build/linux
-    *build/linux-lite
-    *build/linux-mini
     *build/macosx
-    *build/macosx-lite
-    *build/macosx-mini
     *github/update
     *github/upload
   )
