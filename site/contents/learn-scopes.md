@@ -5,6 +5,7 @@ title: "Scopes"
 {@ _defs_.md || 0 @}
 
 As explained in [Definitions](/learn-definitions), min uses lexical scoping to resolve symbols and sigils. A *scope* is an execution context (a symbol table really) that:
+
 * is created while a new quotation is being dequoted or a dictionary is created.
 * is destroyed after a quotation has been dequoted.
 * is attached to a dictionary.
