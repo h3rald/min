@@ -1,19 +1,12 @@
 import 
   streams, 
   strutils, 
-  sequtils
-
-when defined(mini):
-  import
-    minpkg/core/minilogger
-else:
-  import 
-    json,
-    os,
-    algorithm,
-    logging,
-    minpkg/packages/niftylogger
-import 
+  sequtils, 
+  json,
+  os,
+  algorithm,
+  logging,
+  minpkg/packages/niftylogger,
   minpkg/core/baseutils,
   minpkg/core/env,
   minpkg/core/parser, 
@@ -29,22 +22,16 @@ import
   minpkg/lib/min_num,
   minpkg/lib/min_str,
   minpkg/lib/min_logic,
-  minpkg/lib/min_time
-
-when not defined(mini):
-  import
-    minpkg/packages/nimline/nimline,
-    minpkg/lib/min_sys,
-    minpkg/lib/min_io,
-    minpkg/lib/min_dstore,
-    minpkg/lib/min_fs
-
-when not defined(lite) and not defined(mini):
-  import 
-    minpkg/lib/min_http,
-    minpkg/lib/min_net,
-    minpkg/lib/min_crypto,
-    minpkg/lib/min_math
+  minpkg/lib/min_time,
+  minpkg/packages/nimline/nimline,
+  minpkg/lib/min_sys,
+  minpkg/lib/min_io,
+  minpkg/lib/min_dstore,
+  minpkg/lib/min_fs,
+  minpkg/lib/min_http,
+  minpkg/lib/min_net,
+  minpkg/lib/min_crypto,
+  minpkg/lib/min_math
 
 export 
   env,
@@ -53,12 +40,8 @@ export
   utils,
   value,
   scope,
-  min_lang
-
-when defined(mini):
-  export minilogger
-else:
-  export niftylogger
+  min_lang,
+  niftylogger
 
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
@@ -160,31 +143,25 @@ proc stdLib*(i: In) =
   i.num_module
   i.str_module
   i.time_module
-  when not defined(mini):
-    i.sys_module
-    i.fs_module
-    i.dstore_module
-    i.io_module
-  when not defined(lite) and not defined(mini):
-    i.crypto_module
-    i.net_module
-    i.math_module
-    i.http_module
+  i.sys_module
+  i.fs_module
+  i.dstore_module
+  i.io_module
+  i.crypto_module
+  i.net_module
+  i.math_module
+  i.http_module
   if customPrelude == "":
     i.eval PRELUDE, "<prelude>"
   else:
     try:
       i.eval customPrelude.readFile, customPrelude
     except:
-      when defined(mini):
-        minilogger.warn("Unable to process custom prelude code in $1" % customPrelude)
-      else:
-        logging.warn("Unable to process custom prelude code in $1" % customPrelude)
-  when not defined(mini):
-    try:
-      i.eval MINRC.readFile()
-    except:
-      error "An error occurred evaluating the .minrc file."
+      logging.warn("Unable to process custom prelude code in $1" % customPrelude)
+  try:
+    i.eval MINRC.readFile()
+  except:
+    error "An error occurred evaluating the .minrc file."
 
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
@@ -208,10 +185,9 @@ proc interpret*(i: In, s: string): MinValue =
 proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.}
 
 proc compile*(i: In, s: Stream, main = true): seq[string] = 
-  when not defined(mini):
-    if "nim".findExe == "":
-      logging.error "Nim compiler not found, unable to compile."
-      quit(7)
+  if "nim".findExe == "":
+    logging.error "Nim compiler not found, unable to compile."
+    quit(7)
   result = newSeq[string](0)
   i.open(s, i.filename)
   discard i.parser.getToken() 
@@ -295,11 +271,6 @@ when isMainModule:
   var MODULEPATH = ""
   var exeName = "min"
   var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt, default if no file specidied)\n"
-  when defined(lite):
-    exeName = "litemin"
-  when defined(mini):
-    iOpt = ""
-    exeName = "minimin"
 
   proc printResult(i: In, res: MinValue) =
     if res.isNil:
@@ -345,31 +316,29 @@ when isMainModule:
       if $line != "":
         i.printResult(r)
 
-  when not defined(mini):
+  proc minRepl*(i: var MinInterpreter) =
+    i.stdLib()
+    var s = newStringStream("")
+    i.open(s, "<repl>")
+    var line: string
+    echo "$# shell v$#" % [exeName, pkgVersion]
+    while true:
+      let symbols = toSeq(i.scope.symbols.keys)
+      EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
+        return ed.getCompletions(symbols)
+      # evaluate prompt
+      i.push(i.newSym("prompt"))
+      let vals = i.expect("str")
+      let v = vals[0] 
+      let prompt = v.getString()
+      line = EDITOR.readLine(prompt)
+      let r = i.interpret($line)
+      if $line != "":
+        i.printResult(r)
 
-    proc minRepl*(i: var MinInterpreter) =
-      i.stdLib()
-      var s = newStringStream("")
-      i.open(s, "<repl>")
-      var line: string
-      echo "$# shell v$#" % [exeName, pkgVersion]
-      while true:
-        let symbols = toSeq(i.scope.symbols.keys)
-        EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
-          return ed.getCompletions(symbols)
-        # evaluate prompt
-        i.push(i.newSym("prompt"))
-        let vals = i.expect("str")
-        let v = vals[0] 
-        let prompt = v.getString()
-        line = EDITOR.readLine(prompt)
-        let r = i.interpret($line)
-        if $line != "":
-          i.printResult(r)
-
-    proc minRepl*() = 
-      var i = newMinInterpreter(filename = "<repl>")
-      i.minRepl()
+  proc minRepl*() = 
+    var i = newMinInterpreter(filename = "<repl>")
+    i.minRepl()
 
   proc minSimpleRepl*() = 
     var i = newMinInterpreter(filename = "<repl>")
@@ -460,15 +429,13 @@ when isMainModule:
   var op = "interpret"
   if COMPILE:
     op = "compile"
-
-  when not defined(mini):
-    if MODULEPATH.len > 0:
-      for f in walkDirRec(MODULEPATH):
-        if f.endsWith(".min"):
-          MINMODULES.add f
-    elif REPL:
-      minRepl()
-      quit(0)
+  if MODULEPATH.len > 0:
+    for f in walkDirRec(MODULEPATH):
+      if f.endsWith(".min"):
+        MINMODULES.add f
+  elif REPL:
+    minRepl()
+    quit(0)
   if s != "":
     minStr(s)
   elif file != "":
@@ -477,11 +444,8 @@ when isMainModule:
     minSimpleRepl()
     quit(0)
   else:
-    when defined(mini):
-      minStream newFileStream(stdin), "stdin", op
+    if isatty(stdin):
+      minRepl()
+      quit(0)
     else:
-      if isatty(stdin):
-        minRepl()
-        quit(0)
-      else:
-        minStream newFileStream(stdin), "stdin", op
+      minStream newFileStream(stdin), "stdin", op

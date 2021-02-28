@@ -17,7 +17,7 @@ if findExe("musl-gcc") != "":
   switch("gcc.exe", "musl-gcc")
   switch("gcc.linkerexe", "musl-gcc")
 
-when defined(ssl) and not defined(mini):
+when defined(ssl):
   switch("threads", "on")
   when defined(windows): 
     # TODO",  change once issue nim#15220 is resolved

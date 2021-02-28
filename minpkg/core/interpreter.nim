@@ -5,14 +5,9 @@ import
   os,
   critbits,
   json,
-  algorithm
-when defined(mini):
-  import
-    minilogger
-else:
-  import 
-    base64,
-    logging
+  algorithm,
+  base64,
+  logging
 import 
   baseutils,
   value,
@@ -153,9 +148,9 @@ proc open*(i: In, stream:Stream, filename: string) =
 proc close*(i: In) = 
   i.parser.close();
 
-proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".} 
+proc push*(i: In, val: MinValue) {.gcsafe.} 
 
-proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc call*(i: In, q: var MinValue): MinValue {.gcsafe.}=
   var i2 = newMinInterpreter("<call>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -169,7 +164,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe, extern:"min_exported_symb
     raise
   return i2.stack.newVal
 
-proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe.}=
   var i2 = newMinInterpreter("<call-value>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -182,7 +177,7 @@ proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe, extern:"min_exported
     raise
   return i2.stack[0]
 
-proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe.}=
    # Assuming val is a dictionary
    var v = newDict(i.scope)
    for item in val.scope.symbols.pairs:
@@ -195,7 +190,7 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe, extern:"min_exported_sy
      v.obj = val.obj
    return v
 
-proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, extern:"min_exported_symbol_$1".}=
+proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe.}=
   if op.kind == minProcOp:
     op.prc(i)
   else:
@@ -219,7 +214,7 @@ proc dequote*(i: In, q: var MinValue) =
   else:
     i.push(q)
 
-proc apply*(i: In, q: var MinValue) {.gcsafe, extern:"min_exported_symbol_$1_2".}=
+proc apply*(i: In, q: var MinValue) {.gcsafe.}=
   var i2 = newMinInterpreter("<apply>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -254,7 +249,7 @@ proc pushSym*(i: In, s: string) =
     outerSym: i.currSym.symVal, 
     docComment: i.currSym.docComment)
 
-proc push*(i: In, val: MinValue) {.gcsafe, extern:"min_exported_symbol_$1".}= 
+proc push*(i: In, val: MinValue) {.gcsafe.}= 
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
@@ -324,8 +319,7 @@ template handleErrors*(i: In, body: untyped) =
     i.trace = @[]
     raise MinTrappedException(msg: msg)
 
-
-proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
+proc interpret*(i: In, parseOnly=false): MinValue {.discardable.} =
   var val: MinValue
   var q: MinValue
   if parseOnly:
@@ -344,14 +338,14 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable, extern:"min_exp
   if i.stack.len > 0:
     return i.stack[i.stack.len - 1]
 
-proc rawCompile*(i: In, indent = ""): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+proc rawCompile*(i: In, indent = ""): seq[string] {.discardable.} =
   while i.parser.token != tkEof: 
     if i.trace.len == 0:
       i.stackcopy = i.stack
     handleErrors(i) do:
       result.add i.parser.compileMinValue(i, push = true, indent)
     
-proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+proc compileFile*(i: In, main: bool): seq[string] {.discardable.} =
   result = newSeq[string](0)
   if not main:
     result.add "COMPILEDMINFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
@@ -359,27 +353,25 @@ proc compileFile*(i: In, main: bool): seq[string] {.discardable, extern:"min_exp
   else:
     result = i.rawCompile("")
 
-proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable, extern:"min_exported_symbol_$1".} =
+proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable.} =
   result = newSeq[string](0)
   result.add "import min"
   if files.len > 0 or (ASSETPATH != "" and not defined(mini)):
     result.add "import critbits"
-  when not defined(mini):
-    if ASSETPATH != "":
-      result.add "import base64"
+  if ASSETPATH != "":
+    result.add "import base64"
   result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
-  when not defined(mini): 
-    if ASSETPATH != "":
-      for f in walkDirRec(ASSETPATH):
-        let file = simplifyPath(i.filename, f)
-        logging.notice("- Including: $#" % file)
-        let ef = file.readFile.encode
-        let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
-        result.add asset
+  if ASSETPATH != "":
+    for f in walkDirRec(ASSETPATH):
+      let file = simplifyPath(i.filename, f)
+      logging.notice("- Including: $#" % file)
+      let ef = file.readFile.encode
+      let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
+      result.add asset
 
-proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable.}=
   var i2 = i.copy(name)
   i2.open(newStringStream(s), name)
   discard i2.parser.getToken() 
@@ -389,7 +381,7 @@ proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discard
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable.}=
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
