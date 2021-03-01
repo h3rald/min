@@ -27,10 +27,10 @@
 
   ("systest" mkdir . ls (. "systest") => "/" join in?) *test/assert
 
-  ("systest" cd . "systest" match) *test/assert
+  ("systest" cd . "systest" match?) *test/assert
   .. cd
 
-  ("./min -v" & 'output dget "\." match) *test/assert
+  ("./min -v" & 'output dget "\." match?) *test/assert
 
   ("PATH" env?) *test/assert
 

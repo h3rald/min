@@ -29,17 +29,19 @@
 
   ("This is test #1" "test #([0-9])" search ("test #1" "1") ==) *test/assert 
 
-  ("This is a random string" "random" match true ==) *test/assert
+  ("This is a random string" "random" match?) *test/assert
 
   ("something is not something else" "some" "any" replace "anything is not anything else" ==) *test/assert
 
-  ("MiN is a concatenative programming language" "/^min/i" =~ ("MiN") ==) *test/assert
+  ("MiN is a concatenative programming language" "(?i)^min" search ("MiN") ==) *test/assert
 
-  ("This is a difficult test" "s/difficult/simple/" =~ ("This is a simple test") ==) *test/assert
+  ("This is a difficult test" "difficult" "simple" replace "This is a simple test" ==) *test/assert
 
-  ("This is a DIFFICULT\n test" "s/difficult/simple/mis" =~ ("This is a simple\n test") ==) *test/assert
+  ("This is a DIFFICULT\n test" "(?mi)difficult" "simple" replace "This is a simple\n test" ==) *test/assert
+
+  ("This is again another test" "(again|still|yet)" (1 get :m "_$#_" (m) =%) replace-apply "This is _again_ another test" ==) *test/assert
   
-  ("/api/items/test-1" "/\\/api\\/items\\/(.+)/" regex 1 get "test-1" ==) *test/assert
+  ("/api/items/test-1" "\\/api\\/items\\/(.+)" search 1 get "test-1" ==) *test/assert
 
   ("this is a test" uppercase "THIS IS A TEST" ==) *test/assert
 

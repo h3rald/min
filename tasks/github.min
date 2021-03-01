@@ -140,7 +140,7 @@ draft-release-template ("version" min-version "body" release-body) =% :draft-rel
   (
     config /id :id
     config delete-assets
-    . ls ("\.zip$" match) filter 
+    . ls ("\.zip$" match?) filter 
     (
       filename :file
       "Uploading: $#" (file) =% notice!

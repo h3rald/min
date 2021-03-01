@@ -35,7 +35,7 @@
       ("POST" %method)
       ({"post" :test} to-json %body)
       (request)
-    ) tap /headers /content-type "^application/json" match
+    ) tap /headers /content-type "^application/json" match?
   ) *test/assert
 
   (

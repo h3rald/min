@@ -135,7 +135,7 @@
 
   (opts {} ==) *test/assert
 
-  (args first "\.min$" match) *test/assert
+  (args first "\.min$" match?) *test/assert
 
   (3 string "3" ==) *test/assert
   
@@ -279,7 +279,7 @@
     (@err)
   ) try
   pop ;Remove 3 that was left on the stack.
-  (err format-error "expected: natural natural natural-sum" match) *test/assert
+  (err format-error "expected: natural natural natural-sum" match?) *test/assert
   (2 3 natural-sum 5 ==) *test/assert
   
   (

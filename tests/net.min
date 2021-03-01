@@ -25,7 +25,7 @@
     (response line) => "\n" join puts @response 
   ) while
 
-  (response "200 OK" match) *test/assert
+  (response "200 OK" match?) *test/assert
 
   (srv1 srv2 ==) *test/assert
   (cli1 cli2 !=) *test/assert

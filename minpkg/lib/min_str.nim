@@ -1,6 +1,8 @@
 import 
   strutils, 
-  sequtils 
+  sequtils,
+  nre,
+  uri
 import 
   ../core/parser, 
   ../core/value, 
@@ -8,13 +10,15 @@ import
   ../core/baseutils,
   ../core/utils
 
-when not defined(mini):
-  import 
-    ../packages/nim-sgregex/sgregex,
-    uri
-
 proc str_module*(i: In) = 
   let def = i.define()
+
+  when defined(windows): 
+    {.passL: "-static -Lminpkg/vendor/pcre/windows -lpcre".}
+  elif defined(linux):
+    {.passL: "-static -Lminpkg/vendor/pcre/linux -lpcre".}
+  elif defined(macosx):
+    {.passL: "-Bstatic -Lminpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
 
   def.symbol("interpolate") do (i: In):
     let vals = i.expect("quot", "str")
@@ -119,115 +123,107 @@ proc str_module*(i: In) =
     let index = str.strVal.find(reg.strVal)
     i.push index.newVal
 
-  when not defined(mini):
-  
-    def.symbol("encode-url") do (i: In):
-      let vals = i.expect("str")
-      let s = vals[0].strVal
-      i.push s.encodeUrl.newVal
-      
-    def.symbol("decode-url") do (i: In):
-      let vals = i.expect("str")
-      let s = vals[0].strVal
-      i.push s.decodeUrl.newVal
-      
-    def.symbol("parse-url") do (i: In):
-      let vals = i.expect("str")
-      let s = vals[0].strVal
-      let u = s.parseUri
-      var d = newDict(i.scope)
-      d.objType = "url"
-      i.dset(d, "scheme", u.scheme.newVal)
-      i.dset(d, "username", u.username.newVal)
-      i.dset(d, "password", u.password.newVal)
-      i.dset(d, "hostname", u.hostname.newVal)
-      i.dset(d, "port", u.port.newVal)
-      i.dset(d, "path", u.path.newVal)
-      i.dset(d, "query", u.query.newVal)
-      i.dset(d, "anchor", u.anchor.newVal)
-      i.push d
-  
-    def.symbol("search") do (i: In):
-      let vals = i.expect("str", "str")
-      let reg = vals[0]
-      let str = vals[1]
-      var matches = str.strVal.search(reg.strVal, "m")
-      var res = newSeq[MinValue](matches.len)
-      for i in 0..matches.len-1:
-        res[i] = matches[i].newVal
-      i.push res.newVal
+  def.symbol("encode-url") do (i: In):
+    let vals = i.expect("str")
+    let s = vals[0].strVal
+    i.push s.encodeUrl.newVal
+    
+  def.symbol("decode-url") do (i: In):
+    let vals = i.expect("str")
+    let s = vals[0].strVal
+    i.push s.decodeUrl.newVal
+    
+  def.symbol("parse-url") do (i: In):
+    let vals = i.expect("str")
+    let s = vals[0].strVal
+    let u = s.parseUri
+    var d = newDict(i.scope)
+    d.objType = "url"
+    i.dset(d, "scheme", u.scheme.newVal)
+    i.dset(d, "username", u.username.newVal)
+    i.dset(d, "password", u.password.newVal)
+    i.dset(d, "hostname", u.hostname.newVal)
+    i.dset(d, "port", u.port.newVal)
+    i.dset(d, "path", u.path.newVal)
+    i.dset(d, "query", u.query.newVal)
+    i.dset(d, "anchor", u.anchor.newVal)
+    i.push d
 
-    def.symbol("match") do (i: In):
-      let vals = i.expect("str", "str")
-      let reg = vals[0]
-      let str = vals[1]
-      if str.strVal.match(reg.strVal):
-        i.push true.newVal
-      else:
-        i.push false.newVal
+  def.symbol("search") do (i: In):
+    let vals = i.expect("str", "str")
+    let reg = re(vals[0].strVal)
+    let str = vals[1]
+    let m = str.strVal.find(reg)
+    let matches = m.get.captures
+    var res = newSeq[MinValue](0)
+    res.add m.get.match.newVal
+    for i in 0..reg.captureCount-1:
+      res.add matches[i].newVal
+    i.push res.newVal
 
-    def.symbol("search-all") do (i: In):
-      let vals = i.expect("str", "str")
-      var res = newSeq[MinValue](0)
-      let reg = vals[0].strVal
-      let str = vals[1].strVal
-      let rawMatches = str.searchAll(reg, "m")
-      for m in rawMatches:
-        var matches = newSeq[MinValue](0)
-        for capture in m:
-          matches.add capture.newVal
-        res.add matches.newVal
-      i.push res.newVal
+  def.symbol("match?") do (i: In):
+    let vals = i.expect("str", "str")
+    let reg = re(vals[0].strVal)
+    let str = vals[1].strVal
+    i.push str.find(reg).isSome.newVal
 
-    def.symbol("replace-apply") do (i: In):
-      let vals = i.expect("quot", "str", "str")
-      let q = vals[0]
-      let reg = vals[1]
-      let s_find = vals[2]
-      var i2 = i.copy(i.filename)
-      let repFn = proc(a: seq[string]): string =
-        var ss = newSeq[MinValue](0)
-        for s in a:
-          ss.add s.newVal
-        i2.push ss.newVal
-        i2.push q
-        i2.pushSym "dequote"
-        return i2.pop.getString
-      i.push sgregex.replacefn(s_find.strVal, reg.strVal, "", repFn).newVal
+  def.symbol("search-all") do (i: In):
+    let vals = i.expect("str", "str")
+    var res = newSeq[MinValue](0)
+    let reg = re(vals[0].strVal)
+    let str = vals[1].strVal
+    for m in str.findIter(reg):
+      let matches = m.captures
+      var mres = newSeq[MinValue](0)
+      mres.add m.match.newVal
+      for i in 0..reg.captureCount-1:
+        mres.add matches[i].newVal
+      res.add mres.newval
+    i.push res.newVal
 
-    def.symbol("replace") do (i: In):
-      let vals = i.expect("str", "str", "str")
-      let s_replace = vals[0]
-      let reg = vals[1]
-      let s_find = vals[2]
-      i.push sgregex.replace(s_find.strVal, reg.strVal, s_replace.strVal).newVal
+  def.symbol("replace-apply") do (i: In):
+    let vals = i.expect("quot", "str", "str")
+    let q = vals[0]
+    let reg = re(vals[1].strVal)
+    let s_find = vals[2].strVal
+    var i2 = i.copy(i.filename)
+    let repFn = proc(match: RegexMatch): string =
+      var ss = newSeq[MinValue](0)
+      ss.add match.match.newVal
+      for s in match.captures:
+        ss.add s.get.newVal
+      i2.push ss.newVal
+      i2.push q
+      i2.pushSym "dequote"
+      return i2.pop.getString
+    i.push s_find.replace(reg, repFn).newVal
 
-    def.symbol("regex") do (i: In):
-      let vals = i.expect("str", "str")
-      let reg = vals[0]
-      let str = vals[1]
-      let results = str.strVal =~ reg.strVal
-      var res = newSeq[MinValue](0)
-      for r in results:
-        res.add(r.newVal)
-      i.push res.newVal
+  def.symbol("replace") do (i: In):
+    let vals = i.expect("str", "str", "str")
+    let s_replace = vals[0].strVal
+    let reg = re(vals[1].strVal)
+    let s_find = vals[2].strVal
+    i.push s_find.replace(reg, s_replace).newVal
 
-    def.symbol("semver?") do (i: In):
-      let vals = i.expect("str")
-      let v = vals[0].strVal
-      i.push v.match("^\\d+\\.\\d+\\.\\d+$").newVal
-      
-    def.symbol("from-semver") do (i: In):
-      let vals = i.expect("str")
-      let v = vals[0].strVal
-      let parts = v.search("^(\\d+)\\.(\\d+)\\.(\\d+)$")
-      if parts[0].len == 0:
-        raiseInvalid("String '$1' is not a basic semver" % v)
-      var d = newDict(i.scope)
-      i.dset(d, "major", parts[1].parseInt.newVal)
-      i.dset(d, "minor", parts[2].parseInt.newVal)
-      i.dset(d, "patch", parts[3].parseInt.newVal)
-      i.push d
+  def.symbol("semver?") do (i: In):
+    let vals = i.expect("str")
+    let v = vals[0].strVal
+    let m = v.match(re"^\d+\.\d+\.\d+$")
+    i.push m.isSome.newVal
+    
+  def.symbol("from-semver") do (i: In):
+    let vals = i.expect("str")
+    let v = vals[0].strVal
+    let reg = re"^(\d+)\.(\d+)\.(\d+)$" 
+    let rawMatch = v.match(reg)
+    if rawMatch.isNone:
+      raiseInvalid("String '$1' is not a basic semver" % v)
+    let parts = rawMatch.get.captures
+    var d = newDict(i.scope)
+    i.dset(d, "major", parts[0].parseInt.newVal)
+    i.dset(d, "minor", parts[1].parseInt.newVal)
+    i.dset(d, "patch", parts[2].parseInt.newVal)
+    i.push d
     
   def.symbol("to-semver") do (i: In):
     let vals = i.expect("dict")
