@@ -17,7 +17,10 @@ if findExe("musl-gcc") != "":
   switch("gcc.exe", "musl-gcc")
   switch("gcc.linkerexe", "musl-gcc")
 
-switch("dynlibOverride", "pcre64")
+when defined(windows): 
+  switch("dynlibOverride", "pcre64")
+else:
+  switch("dynlibOverride", "pcre")
 
 when defined(ssl):
   switch("threads", "on")
