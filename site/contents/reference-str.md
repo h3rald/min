@@ -61,12 +61,12 @@ Returns the length of {{sl}}.#}
 {#op||lowercase||{{sl}}||{{s}}||
 Returns a copy of {{sl}} converted to lowercase.#}
 
-{#op||match||{{s1}} {{s2}}||{{b}}||
+{#op||match?||{{s1}} {{s2}}||{{b}}||
 > Returns {{t}} if {{s2}} matches {{s1}}, {{f}} otherwise.
 > > %tip%
 > > Tip
 > > 
-> > {{s2}} can be a {{sgregex}}-compatible regular expression.#}
+> > {{s2}} is a {{pcre}}#}.
 
 {#op||ord||{{s}}||{{i}}||
 Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
@@ -85,7 +85,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > %tip%
 > > Tip
 > > 
-> > {{s2}} can be a {{sgregex}}-compatible regular expression.
+> > {{s2}} is a {{pcre}}.
 > 
 > > %sidebar%
 > > Example
@@ -103,7 +103,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > %tip%
 > > Tip
 > > 
-> > {{s2}} can be a {{sgregex}}-compatible regular expression.
+> > {{s2}} is a {{pcre}}.
 > 
 > > %sidebar%
 > > Example
@@ -122,46 +122,6 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > >      ("-3-" "3")
 > >      ("-4-" "4") #}
 
-{#op||regex||{{s1}} {{s2}}||{{q}}||
-> Performs a search and/or a search-and-replace operation using pattern {{s2}}.
-> 
-> {{s2}} can be one of the following patterns:
-> 
->   * **/**_search-regex_**/**_modifiers_
->   * **s/**_search-regex_**/**_replacemenet_**/**_modifiers_
-> 
-> {{q}} is always a quotation containing:
-> 
->   * One or more strings containing the first match and captures (if any), like for the `search` operator.
->   * A string containing the resuling string after the search-and-replace operation.
-> 
-> > %tip%
-> > Tip
-> > 
-> > * _search-regex_ can be a {{sgregex}}-compatible regular expression.
-> > * _modifiers_ are optionals can contain one or more of the following characters, in any order:
-> >   * **i**: case-insensitive match.
-> >   * **m**: multi-line match.
-> >   * **s**: dot character includes newlines.
-> 
-> > %sidebar%
-> > Example: Search
-> > 
-> > The following:
-> > 
-> > `"This is a GOOD idea." "/(good) idea/i" regex`
-> > 
-> > produces: `("GOOD idea", "GOOD")`
-> 
-> > %sidebar%
-> > Example: Search and Replace
-> > 
-> > The following:
-> > 
-> > `"This is a GOOD idea." "s/good/bad/i" regex`
-> > 
-> > produces: `("This is a bad idea")`#}
-
 {#op||search||{{s1}} {{s2}}||{{q}}||
 > Returns a quotation containing the first occurrence of {{s2}} within {{s1}}. Note that:
 > 
@@ -171,7 +131,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > %tip%
 > > Tip
 > > 
-> > {{s2}} can be a {{sgregex}}-compatible regular expression.
+> > {{s2}} is a {{pcre}}.
 > 
 > > %sidebar%
 > > Example
@@ -198,7 +158,7 @@ Increments the patch digit of the [SemVer](https://semver.org)-compliant string 
 Checks whether {{s}} is a [SemVer](https://semver.org)-compliant version or not. #}
 
 {#op||split||{{sl1}} {{sl2}}||{{q}}||
-Splits {{sl1}} using separator {{sl2}} and returns the resulting strings within the quotation {{q}}. #}
+Splits {{sl1}} using separator {{sl2}} (a {{pcre}}) and returns the resulting strings within the quotation {{q}}. #}
 
 {#op||strip||{{sl}}||{{s}}||
 Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#} 

@@ -49,15 +49,11 @@ proc str_module*(i: In) =
 
   def.symbol("split") do (i: In):
     let vals = i.expect("'sym", "'sym")
-    let sep = vals[0].getString
+    let sep = re(vals[0].getString)
     let s = vals[1].getString
     var q = newSeq[MinValue](0)
-    if (sep == ""):
-      for c in s:
-        q.add ($c).newVal
-    else:
-      for e in s.split(sep):
-        q.add e.newVal
+    for e in s.split(sep):
+      q.add e.newVal
     i.push q.newVal
 
   def.symbol("join") do (i: In):

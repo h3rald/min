@@ -59,7 +59,7 @@
 {{sock2 => [dict:socket<sub>2</sub>](class:kwd)}}
 {{m => _min_}}
 
-{{sgregex => [sgregex](https://github.com/snake5/sgregex).}}
+{{pcre => [Perl Compatible Regular Expression](https://www.pcre.org/)}}
 
 {#op => 
 <a id="op-$1"></a>
