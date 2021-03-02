@@ -1,1 +1,2202 @@
-{}
+{
+  "operators": {
+    "!": {
+      "description": "See system",
+      "kind": "symbol",
+      "name": "!"
+    },
+    "!!": {
+      "description": "See system!",
+      "kind": "symbol",
+      "name": "!!"
+    },
+    "!=": {
+      "description": "",
+      "kind": "symbol",
+      "name": "!=",
+      "signature": "a1 a2 ==> bool"
+    },
+    "$": {
+      "description": "See get-env",
+      "kind": "symbol",
+      "name": "$"
+    },
+    "%": {
+      "description": "See interpolate",
+      "kind": "symbol",
+      "name": "%"
+    },
+    "&": {
+      "description": "See run",
+      "kind": "symbol",
+      "name": "&"
+    },
+    "'": {
+      "description": "See quotesym",
+      "kind": "symbol",
+      "name": "'"
+    },
+    "*": {
+      "description": "",
+      "kind": "symbol",
+      "name": "*",
+      "signature": "num1 num2 ==> num3"
+    },
+    "+": {
+      "description": "",
+      "kind": "symbol",
+      "name": "+",
+      "signature": "num1 num2 ==> num3"
+    },
+    "-": {
+      "description": "",
+      "kind": "symbol",
+      "name": "-",
+      "signature": "num1 num2 ==> num3"
+    },
+    "-inf": {
+      "description": "",
+      "kind": "symbol",
+      "name": "-inf",
+      "signature": " ==> num"
+    },
+    ".": {
+      "description": "",
+      "kind": "symbol",
+      "name": ".",
+      "signature": " ==> str"
+    },
+    "..": {
+      "description": "",
+      "kind": "symbol",
+      "name": "..",
+      "signature": " ==> str"
+    },
+    "/": {
+      "description": "",
+      "kind": "symbol",
+      "name": "/",
+      "signature": "num1 num2 ==> num3"
+    },
+    ":": {
+      "description": "See define",
+      "kind": "symbol",
+      "name": ":"
+    },
+    "::": {
+      "description": "See operator",
+      "kind": "symbol",
+      "name": "::"
+    },
+    "<": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "<",
+      "signature": "a1 a2 ==> bool"
+    },
+    "<=": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "<=",
+      "signature": "a1 a2 ==> bool"
+    },
+    "=%": {
+      "description": "See apply-interpolate",
+      "kind": "symbol",
+      "name": "=%"
+    },
+    "=-=": {
+      "description": "See expect-empty-stack",
+      "kind": "symbol",
+      "name": "=-="
+    },
+    "==": {
+      "description": "",
+      "kind": "symbol",
+      "name": "==",
+      "signature": "a1 a2 ==> bool"
+    },
+    "==>": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "==>",
+      "signature": " ==> "
+    },
+    "=>": {
+      "description": "See apply",
+      "kind": "symbol",
+      "name": "=>"
+    },
+    "=~": {
+      "description": "See regex",
+      "kind": "symbol",
+      "name": "=~"
+    },
+    ">": {
+      "description": ".",
+      "kind": "symbol",
+      "name": ">",
+      "signature": "a1 a2 ==> bool"
+    },
+    "><": {
+      "description": "See infix-dequote",
+      "kind": "symbol",
+      "name": "><"
+    },
+    ">=": {
+      "description": ".",
+      "kind": "symbol",
+      "name": ">=",
+      "signature": "a1 a2 ==> bool"
+    },
+    ">>": {
+      "description": "See prefix-dequote",
+      "kind": "symbol",
+      "name": ">>"
+    },
+    "?": {
+      "description": "See help",
+      "kind": "symbol",
+      "name": "?"
+    },
+    "@": {
+      "description": "See bind",
+      "kind": "symbol",
+      "name": "@"
+    },
+    "ROOT": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ROOT",
+      "signature": " ==> dict"
+    },
+    "^": {
+      "description": "See lambda",
+      "kind": "symbol",
+      "name": "^"
+    },
+    "abs": {
+      "description": "",
+      "kind": "symbol",
+      "name": "abs",
+      "signature": "num1 ==> num2"
+    },
+    "accept": {
+      "description": "",
+      "kind": "symbol",
+      "name": "accept",
+      "signature": "dict:socket1 dict:socket2 ==> dict:socket1"
+    },
+    "acos": {
+      "description": "",
+      "kind": "symbol",
+      "name": "acos",
+      "signature": "num1 ==> num2"
+    },
+    "aes": {
+      "description": "",
+      "kind": "symbol",
+      "name": "aes",
+      "signature": "'sym1 'sym2 ==> str"
+    },
+    "all?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "all?",
+      "signature": "quot1 quot2 ==> bool"
+    },
+    "and": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "and",
+      "signature": "bool1 bool2 ==> bool3"
+    },
+    "any?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "any?",
+      "signature": "quot1 quot2 ==> bool"
+    },
+    "append": {
+      "description": "",
+      "kind": "symbol",
+      "name": "append",
+      "signature": "a quot ==> (a* a)"
+    },
+    "apply": {
+      "description": "",
+      "kind": "symbol",
+      "name": "apply",
+      "signature": "quot ==> (a*)"
+    },
+    "apply-interpolate": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "apply-interpolate",
+      "signature": "str quot ==> str"
+    },
+    "args": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "args",
+      "signature": " ==> quot"
+    },
+    "asin": {
+      "description": "",
+      "kind": "symbol",
+      "name": "asin",
+      "signature": "num1 ==> num2"
+    },
+    "ask": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "ask",
+      "signature": "str1 ==> str2"
+    },
+    "atan": {
+      "description": "",
+      "kind": "symbol",
+      "name": "atan",
+      "signature": "num1 ==> num2"
+    },
+    "atime": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "atime",
+      "signature": "'sym ==> flt"
+    },
+    "avg": {
+      "description": "",
+      "kind": "symbol",
+      "name": "avg",
+      "signature": "quot ==> num"
+    },
+    "bind": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bind",
+      "signature": "a 'sym ==> "
+    },
+    "bitand": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bitand",
+      "signature": "int1 int2 ==> int3"
+    },
+    "bitnot": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bitnot",
+      "signature": "int1 ==> int2"
+    },
+    "bitor": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bitor",
+      "signature": "int1 int2 ==> int3"
+    },
+    "bitxor": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bitxor",
+      "signature": "int1 int2 ==> int3"
+    },
+    "bool": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "bool",
+      "signature": "a ==> bool"
+    },
+    "boolean?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "boolean?",
+      "signature": "a ==> bool"
+    },
+    "capitalize": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "capitalize",
+      "signature": "'sym ==> str"
+    },
+    "case": {
+      "description": "",
+      "kind": "symbol",
+      "name": "case",
+      "signature": "((quot1 quot2)*) ==> a*"
+    },
+    "cd": {
+      "description": "",
+      "kind": "symbol",
+      "name": "cd",
+      "signature": "'sym ==> "
+    },
+    "ceil": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ceil",
+      "signature": "num ==> int"
+    },
+    "chmod": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "chmod",
+      "signature": "'sym int ==> "
+    },
+    "choose": {
+      "description": "",
+      "kind": "symbol",
+      "name": "choose",
+      "signature": "((str1 quot1)+) str2 ==> a*"
+    },
+    "chr": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "chr",
+      "signature": "int ==> str"
+    },
+    "clear": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "clear",
+      "signature": " ==> "
+    },
+    "clear-stack": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "clear-stack",
+      "signature": "a ==> "
+    },
+    "cleave": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "cleave",
+      "signature": "a1 (quot*) ==> a*"
+    },
+    "close": {
+      "description": "",
+      "kind": "symbol",
+      "name": "close",
+      "signature": "dict:socket ==> "
+    },
+    "column-print": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "column-print",
+      "signature": "quot int ==> a"
+    },
+    "compiled?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "compiled?",
+      "signature": " ==> bool"
+    },
+    "concat": {
+      "description": "",
+      "kind": "symbol",
+      "name": "concat",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "confirm": {
+      "description": "",
+      "kind": "symbol",
+      "name": "confirm",
+      "signature": "str ==> bool"
+    },
+    "connect": {
+      "description": "",
+      "kind": "symbol",
+      "name": "connect",
+      "signature": "dict:socket str int ==> dict:socket"
+    },
+    "cons": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "cons",
+      "signature": "a1 (a*) ==> (a1 a*)"
+    },
+    "cos": {
+      "description": "",
+      "kind": "symbol",
+      "name": "cos",
+      "signature": "num1 ==> num2"
+    },
+    "cosh": {
+      "description": "",
+      "kind": "symbol",
+      "name": "cosh",
+      "signature": "num1 ==> num2"
+    },
+    "cp": {
+      "description": "",
+      "kind": "symbol",
+      "name": "cp",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "cpu": {
+      "description": "",
+      "kind": "symbol",
+      "name": "cpu",
+      "signature": " ==> str"
+    },
+    "ctime": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "ctime",
+      "signature": "'sym ==> flt"
+    },
+    "d2r": {
+      "description": "",
+      "kind": "symbol",
+      "name": "d2r",
+      "signature": "num1 ==> num2"
+    },
+    "datetime": {
+      "description": "",
+      "kind": "symbol",
+      "name": "datetime",
+      "signature": "int ==> str"
+    },
+    "ddel": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ddel",
+      "signature": "dict 'sym ==> dict"
+    },
+    "ddup": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ddup",
+      "signature": "dict1 ==> dict2"
+    },
+    "debug": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "debug",
+      "signature": "a ==> a"
+    },
+    "decode": {
+      "description": "",
+      "kind": "symbol",
+      "name": "decode",
+      "signature": "'sym ==> str"
+    },
+    "define": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "define",
+      "signature": "a 'sym ==> "
+    },
+    "define-sigil": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "define-sigil",
+      "signature": "a 'sym ==> "
+    },
+    "defined-sigil?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "defined-sigil?",
+      "signature": "'sym ==> bool"
+    },
+    "defined-symbol?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "defined-symbol?",
+      "signature": "'sym ==> bool"
+    },
+    "delete-sigil": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "delete-sigil",
+      "signature": "'sym ==> "
+    },
+    "dequote": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "dequote",
+      "signature": "quot ==> a*"
+    },
+    "dget": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dget",
+      "signature": "dict 'sym ==> a"
+    },
+    "dhas?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dhas?",
+      "signature": "dict 'sym ==> bool"
+    },
+    "dictionary?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dictionary?",
+      "signature": "a ==> bool"
+    },
+    "difference": {
+      "description": "",
+      "kind": "symbol",
+      "name": "difference",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "dip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "dip",
+      "signature": "a1 (a2) ==> a* a1"
+    },
+    "dir?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dir?",
+      "signature": "'sym ==> bool"
+    },
+    "dirname": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "dirname",
+      "signature": "'sym ==> str"
+    },
+    "div": {
+      "description": "",
+      "kind": "symbol",
+      "name": "div",
+      "signature": "int1 int2 ==> int3"
+    },
+    "dkeys": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dkeys",
+      "signature": "dict ==> (str*)"
+    },
+    "download": {
+      "description": "",
+      "kind": "symbol",
+      "name": "download",
+      "signature": "str1 str2 ==> "
+    },
+    "dpairs": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dpairs",
+      "signature": "dict ==> (a*)"
+    },
+    "dpick": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dpick",
+      "signature": "dict1 quot ==> dict2"
+    },
+    "drop": {
+      "description": "",
+      "kind": "symbol",
+      "name": "drop",
+      "signature": "quot1 int ==> quot2"
+    },
+    "dsdelete": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsdelete",
+      "signature": "dict:datastore 'sym ==> dict:datastore"
+    },
+    "dset": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dset",
+      "signature": "dict a 'sym ==> dict"
+    },
+    "dsget": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsget",
+      "signature": "dict:datastore 'sym ==> dict"
+    },
+    "dsinit": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsinit",
+      "signature": "'sym ==> dict:datastore"
+    },
+    "dspost": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dspost",
+      "signature": "dict:datastore 'sym dict ==> dict:datastore"
+    },
+    "dsput": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsput",
+      "signature": "dict:datastore 'sym dict ==> dict:datastore"
+    },
+    "dsquery": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsquery",
+      "signature": "dict:datastore 'sym quot ==> (dict*)"
+    },
+    "dsread": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dsread",
+      "signature": "'sym ==> dict:datastore"
+    },
+    "dswrite": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dswrite",
+      "signature": "dict:datastore ==> dict:datastore"
+    },
+    "dtype": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dtype",
+      "signature": "dict ==> str"
+    },
+    "dup": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "dup",
+      "signature": "a1 ==> a1 a1"
+    },
+    "dvalues": {
+      "description": "",
+      "kind": "symbol",
+      "name": "dvalues",
+      "signature": "dict ==> (a*)"
+    },
+    "e": {
+      "description": "",
+      "kind": "symbol",
+      "name": "e",
+      "signature": " ==> num"
+    },
+    "encode": {
+      "description": "",
+      "kind": "symbol",
+      "name": "encode",
+      "signature": "'sym ==> str"
+    },
+    "env?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "env?",
+      "signature": "'sym ==> bool"
+    },
+    "error": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "error",
+      "signature": "a ==> a"
+    },
+    "escape": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "escape",
+      "signature": "'sym ==> str"
+    },
+    "eval": {
+      "description": "",
+      "kind": "symbol",
+      "name": "eval",
+      "signature": "str ==> a*"
+    },
+    "even?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "even?",
+      "signature": "int ==> bool"
+    },
+    "exists?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "exists?",
+      "signature": "'sym ==> bool"
+    },
+    "exit": {
+      "description": "",
+      "kind": "symbol",
+      "name": "exit",
+      "signature": "int ==> "
+    },
+    "expect": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "expect",
+      "signature": "quot1 ==> quot2"
+    },
+    "expect-all": {
+      "description": "",
+      "kind": "symbol",
+      "name": "expect-all",
+      "signature": "quot ==> bool"
+    },
+    "expect-any": {
+      "description": "",
+      "kind": "symbol",
+      "name": "expect-any",
+      "signature": "quot ==> bool"
+    },
+    "expect-empty-stack": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "expect-empty-stack",
+      "signature": " ==> "
+    },
+    "fappend": {
+      "description": "",
+      "kind": "symbol",
+      "name": "fappend",
+      "signature": "str1 str2 ==> "
+    },
+    "fatal": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "fatal",
+      "signature": "a ==> a"
+    },
+    "file?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "file?",
+      "signature": "'sym ==> bool"
+    },
+    "filename": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "filename",
+      "signature": "'sym ==> str"
+    },
+    "filter": {
+      "description": "",
+      "kind": "symbol",
+      "name": "filter",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "find": {
+      "description": "",
+      "kind": "symbol",
+      "name": "find",
+      "signature": "quot1 quot2 ==> int"
+    },
+    "first": {
+      "description": "",
+      "kind": "symbol",
+      "name": "first",
+      "signature": "quot ==> a"
+    },
+    "flatten": {
+      "description": "",
+      "kind": "symbol",
+      "name": "flatten",
+      "signature": "quot1 ==> quot2"
+    },
+    "float": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "float",
+      "signature": "a ==> flt"
+    },
+    "float?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "float?",
+      "signature": "a ==> bool"
+    },
+    "floor": {
+      "description": "",
+      "kind": "symbol",
+      "name": "floor",
+      "signature": "num ==> int"
+    },
+    "foreach": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "foreach",
+      "signature": "quot1 quot2 ==> a*"
+    },
+    "format-error": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "format-error",
+      "signature": "dict:error ==> str"
+    },
+    "fperms": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "fperms",
+      "signature": "'sym ==> int"
+    },
+    "fread": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "fread",
+      "signature": "str ==> str"
+    },
+    "from-json": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "from-json",
+      "signature": "str ==> a"
+    },
+    "from-semver": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "from-semver",
+      "signature": "str ==> dict"
+    },
+    "from-yaml": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "from-yaml",
+      "signature": "str ==> a"
+    },
+    "fsize": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "fsize",
+      "signature": "'sym ==> int"
+    },
+    "fstats": {
+      "description": "}",
+      "kind": "symbol",
+      "name": "fstats",
+      "signature": "'sym ==> dict"
+    },
+    "ftype": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "ftype",
+      "signature": "'sym ==> str"
+    },
+    "fwrite": {
+      "description": "",
+      "kind": "symbol",
+      "name": "fwrite",
+      "signature": "str1 str2 ==> "
+    },
+    "get": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "get",
+      "signature": "quot int ==> a"
+    },
+    "get-content": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "get-content",
+      "signature": "str1 ==> str2"
+    },
+    "get-env": {
+      "description": "",
+      "kind": "symbol",
+      "name": "get-env",
+      "signature": "'sym ==> str"
+    },
+    "get-stack": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "get-stack",
+      "signature": " ==> (a*)"
+    },
+    "getchr": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "getchr",
+      "signature": " ==> int"
+    },
+    "gets": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "gets",
+      "signature": " ==> str"
+    },
+    "hardlink": {
+      "description": "",
+      "kind": "symbol",
+      "name": "hardlink",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "harvest": {
+      "description": "",
+      "kind": "symbol",
+      "name": "harvest",
+      "signature": "quot1 ==> quot2"
+    },
+    "help": {
+      "description": "",
+      "kind": "symbol",
+      "name": "help",
+      "signature": "'sym ==> "
+    },
+    "hidden?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "hidden?",
+      "signature": "'sym ==> bool"
+    },
+    "id": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "id",
+      "signature": " ==> "
+    },
+    "if": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "if",
+      "signature": "quot1 quot2 quot3 ==> a*"
+    },
+    "import": {
+      "description": "",
+      "kind": "symbol",
+      "name": "import",
+      "signature": "'sym ==> "
+    },
+    "in?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "in?",
+      "signature": "quot a ==> bool"
+    },
+    "indent": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "indent",
+      "signature": "'sym int ==> str"
+    },
+    "indexof": {
+      "description": "",
+      "kind": "symbol",
+      "name": "indexof",
+      "signature": "str1 str2 ==> int"
+    },
+    "inf": {
+      "description": "",
+      "kind": "symbol",
+      "name": "inf",
+      "signature": " ==> num"
+    },
+    "infix-dequote": {
+      "description": "",
+      "kind": "symbol",
+      "name": "infix-dequote",
+      "signature": "quot ==> a"
+    },
+    "info": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "info",
+      "signature": "a ==> a"
+    },
+    "insert": {
+      "description": "",
+      "kind": "symbol",
+      "name": "insert",
+      "signature": "quot1 a int ==> quot2"
+    },
+    "integer": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "integer",
+      "signature": "a ==> int"
+    },
+    "integer?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "integer?",
+      "signature": "a ==> bool"
+    },
+    "intersection": {
+      "description": "",
+      "kind": "symbol",
+      "name": "intersection",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "invoke": {
+      "description": "",
+      "kind": "symbol",
+      "name": "invoke",
+      "signature": "'sym ==> a*"
+    },
+    "join": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "join",
+      "signature": "quot 'sym ==> str"
+    },
+    "keep": {
+      "description": "",
+      "kind": "symbol",
+      "name": "keep",
+      "signature": "a1 quot ==> a* a1"
+    },
+    "lambda": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "lambda",
+      "signature": "quot 'sym ==> "
+    },
+    "last": {
+      "description": "",
+      "kind": "symbol",
+      "name": "last",
+      "signature": "quot ==> a"
+    },
+    "length": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "length",
+      "signature": "'sym ==> int"
+    },
+    "line-info": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "line-info",
+      "signature": " ==> dict"
+    },
+    "linrec": {
+      "description": "",
+      "kind": "symbol",
+      "name": "linrec",
+      "signature": "quot1 quot2 quot3 quot4 ==> a*"
+    },
+    "lite?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "lite?",
+      "signature": " ==> bool"
+    },
+    "ln": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ln",
+      "signature": "num1 ==> num2"
+    },
+    "load": {
+      "description": "",
+      "kind": "symbol",
+      "name": "load",
+      "signature": "'sym ==> a*"
+    },
+    "load-symbol": {
+      "description": "",
+      "kind": "symbol",
+      "name": "load-symbol",
+      "signature": "'sym ==> a*"
+    },
+    "log10": {
+      "description": "",
+      "kind": "symbol",
+      "name": "log10",
+      "signature": "num1 ==> num2"
+    },
+    "log2": {
+      "description": "",
+      "kind": "symbol",
+      "name": "log2",
+      "signature": "num1 ==> num2"
+    },
+    "loglevel": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "loglevel",
+      "signature": "'sym ==> "
+    },
+    "loglevel?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "loglevel?",
+      "signature": " ==> str"
+    },
+    "lowercase": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "lowercase",
+      "signature": "'sym ==> str"
+    },
+    "ls": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ls",
+      "signature": "'sym ==> quot"
+    },
+    "ls-r": {
+      "description": "",
+      "kind": "symbol",
+      "name": "ls-r",
+      "signature": "'sym ==> quot"
+    },
+    "map": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "map",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "map-reduce": {
+      "description": "",
+      "kind": "symbol",
+      "name": "map-reduce",
+      "signature": "quot1 quot2 quot3 ==> int"
+    },
+    "mapkey": {
+      "description": "",
+      "kind": "symbol",
+      "name": "mapkey",
+      "signature": "quot 'sym ==> "
+    },
+    "match": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "match",
+      "signature": "str1 str2 ==> bool"
+    },
+    "md4": {
+      "description": "",
+      "kind": "symbol",
+      "name": "md4",
+      "signature": "'sym ==> str"
+    },
+    "md5": {
+      "description": "",
+      "kind": "symbol",
+      "name": "md5",
+      "signature": "'sym ==> str"
+    },
+    "med": {
+      "description": "",
+      "kind": "symbol",
+      "name": "med",
+      "signature": "quot ==> num"
+    },
+    "mkdir": {
+      "description": "",
+      "kind": "symbol",
+      "name": "mkdir",
+      "signature": "'sym ==> "
+    },
+    "mod": {
+      "description": "",
+      "kind": "symbol",
+      "name": "mod",
+      "signature": "int1 int2 ==> int3"
+    },
+    "mtime": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "mtime",
+      "signature": "'sym ==> flt"
+    },
+    "mv": {
+      "description": "",
+      "kind": "symbol",
+      "name": "mv",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "nan": {
+      "description": "",
+      "kind": "symbol",
+      "name": "nan",
+      "signature": " ==> nan"
+    },
+    "newline": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "newline",
+      "signature": " ==> "
+    },
+    "nip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "nip",
+      "signature": "a1 a2 ==> a2"
+    },
+    "not": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "not",
+      "signature": "bool1 ==> bool2"
+    },
+    "notice": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "notice",
+      "signature": "a ==> a"
+    },
+    "now": {
+      "description": "",
+      "kind": "symbol",
+      "name": "now",
+      "signature": " ==> flt"
+    },
+    "null?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "null?",
+      "signature": "a ==> bool"
+    },
+    "number?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "number?",
+      "signature": "a ==> bool"
+    },
+    "odd?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "odd?",
+      "signature": "int ==> bool"
+    },
+    "one?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "one?",
+      "signature": "quot1 quot2 ==> bool"
+    },
+    "operator": {
+      "description": "",
+      "kind": "symbol",
+      "name": "operator",
+      "signature": "quot ==> a*"
+    },
+    "opts": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "opts",
+      "signature": " ==> dict"
+    },
+    "or": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "or",
+      "signature": "bool1 bool2 ==> bool3"
+    },
+    "ord": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "ord",
+      "signature": "str ==> int"
+    },
+    "os": {
+      "description": "",
+      "kind": "symbol",
+      "name": "os",
+      "signature": " ==> str"
+    },
+    "over": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "over",
+      "signature": "a1 a2 ==> a1 a2 a1"
+    },
+    "parent-scope": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "parent-scope",
+      "signature": "dict1 ==> dict2"
+    },
+    "parse": {
+      "description": "",
+      "kind": "symbol",
+      "name": "parse",
+      "signature": "str ==> quot"
+    },
+    "parse-url": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "parse-url",
+      "signature": "str ==> dict:url"
+    },
+    "partition": {
+      "description": "",
+      "kind": "symbol",
+      "name": "partition",
+      "signature": "quot1 quot2 ==> quot3 quot4"
+    },
+    "password": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "password",
+      "signature": " ==> str"
+    },
+    "pi": {
+      "description": "",
+      "kind": "symbol",
+      "name": "pi",
+      "signature": " ==> num"
+    },
+    "pick": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "pick",
+      "signature": "a1 a2 a3 ==> a1 a2 a3 a1"
+    },
+    "pop": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "pop",
+      "signature": "a ==> "
+    },
+    "pow": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "pow",
+      "signature": "num1 num2 ==> num3"
+    },
+    "pred": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "pred",
+      "signature": "int1 ==> int2"
+    },
+    "prefix": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "prefix",
+      "signature": "'sym1 'sym2 ==> str"
+    },
+    "prefix-dequote": {
+      "description": "",
+      "kind": "symbol",
+      "name": "prefix-dequote",
+      "signature": "quot ==> a"
+    },
+    "prepend": {
+      "description": "",
+      "kind": "symbol",
+      "name": "prepend",
+      "signature": "a quot ==> (a a*)"
+    },
+    "print": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "print",
+      "signature": "a ==> a"
+    },
+    "product": {
+      "description": "",
+      "kind": "symbol",
+      "name": "product",
+      "signature": "quot ==> int"
+    },
+    "prompt": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "prompt",
+      "signature": " ==> str"
+    },
+    "publish": {
+      "description": "",
+      "kind": "symbol",
+      "name": "publish",
+      "signature": "'sym dict ==> "
+    },
+    "put-env": {
+      "description": "",
+      "kind": "symbol",
+      "name": "put-env",
+      "signature": "'sym1 'sym2 ==> str"
+    },
+    "putchr": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "putchr",
+      "signature": "str ==> a"
+    },
+    "puts": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "puts",
+      "signature": "a ==> a"
+    },
+    "quit": {
+      "description": "",
+      "kind": "symbol",
+      "name": "quit",
+      "signature": " ==> "
+    },
+    "quotation?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "quotation?",
+      "signature": "a ==> bool"
+    },
+    "quote": {
+      "description": "",
+      "kind": "symbol",
+      "name": "quote",
+      "signature": "a ==> (a)"
+    },
+    "quote-map": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "quote-map",
+      "signature": "quot1 ==> quot2"
+    },
+    "quotesym": {
+      "description": "",
+      "kind": "symbol",
+      "name": "quotesym",
+      "signature": "str ==> (sym)"
+    },
+    "r2d": {
+      "description": "",
+      "kind": "symbol",
+      "name": "r2d",
+      "signature": "num1 ==> num2"
+    },
+    "raise": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "raise",
+      "signature": "dict:error ==> "
+    },
+    "random": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "random",
+      "signature": "int1 ==> int2"
+    },
+    "randomize": {
+      "description": "",
+      "kind": "symbol",
+      "name": "randomize",
+      "signature": " ==> {{null}"
+    },
+    "range": {
+      "description": "",
+      "kind": "symbol",
+      "name": "range",
+      "signature": "quot2 ==> quot2"
+    },
+    "raw-args": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "raw-args",
+      "signature": " ==> quot"
+    },
+    "recv": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "recv",
+      "signature": "dict:socket int ==> str"
+    },
+    "recv-line": {
+      "description": "",
+      "kind": "symbol",
+      "name": "recv-line",
+      "signature": "dict:socket ==> str"
+    },
+    "reduce": {
+      "description": "",
+      "kind": "symbol",
+      "name": "reduce",
+      "signature": "quot1 a quot2 ==> int"
+    },
+    "regex": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "regex",
+      "signature": "str1 str2 ==> quot"
+    },
+    "reject": {
+      "description": ")",
+      "kind": "symbol",
+      "name": "reject",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "remove": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "remove",
+      "signature": "quot1 int ==> quot2"
+    },
+    "remove-symbol": {
+      "description": "",
+      "kind": "symbol",
+      "name": "remove-symbol",
+      "signature": "'sym ==> "
+    },
+    "repeat": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "repeat",
+      "signature": "'sym int ==> str"
+    },
+    "replace": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "replace",
+      "signature": "str1 str2 str3 ==> str4"
+    },
+    "request": {
+      "description": "",
+      "kind": "symbol",
+      "name": "request",
+      "signature": "dict ==> dict:http-response"
+    },
+    "require": {
+      "description": "",
+      "kind": "symbol",
+      "name": "require",
+      "signature": "'sym ==> dict"
+    },
+    "rest": {
+      "description": "",
+      "kind": "symbol",
+      "name": "rest",
+      "signature": "quot1 ==> quot2"
+    },
+    "return": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "return",
+      "signature": " ==> "
+    },
+    "reverse": {
+      "description": "",
+      "kind": "symbol",
+      "name": "reverse",
+      "signature": "quot1 ==> quot2"
+    },
+    "rm": {
+      "description": "",
+      "kind": "symbol",
+      "name": "rm",
+      "signature": "'sym ==> "
+    },
+    "rmdir": {
+      "description": "",
+      "kind": "symbol",
+      "name": "rmdir",
+      "signature": "'sym ==> "
+    },
+    "rolldown": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "rolldown",
+      "signature": "a1 a2 a3 ==> a2 a3 a1"
+    },
+    "rollup": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "rollup",
+      "signature": "a1 a2 a3 ==> a3 a2 a1"
+    },
+    "round": {
+      "description": "",
+      "kind": "symbol",
+      "name": "round",
+      "signature": "num1 int ==> num2"
+    },
+    "run": {
+      "description": "",
+      "kind": "symbol",
+      "name": "run",
+      "signature": "'sym ==> dict"
+    },
+    "save-symbol": {
+      "description": "",
+      "kind": "symbol",
+      "name": "save-symbol",
+      "signature": "'sym ==> "
+    },
+    "saved-symbols": {
+      "description": "",
+      "kind": "symbol",
+      "name": "saved-symbols",
+      "signature": " ==> (str*)"
+    },
+    "scope": {
+      "description": "",
+      "kind": "symbol",
+      "name": "scope",
+      "signature": " ==> dict"
+    },
+    "scope-sigils": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "scope-sigils",
+      "signature": "dict ==> (str*)"
+    },
+    "scope-symbols": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "scope-symbols",
+      "signature": "dict ==> (str*)"
+    },
+    "seal-sigil": {
+      "description": "",
+      "kind": "symbol",
+      "name": "seal-sigil",
+      "signature": "'sym ==> "
+    },
+    "seal-symbol": {
+      "description": "",
+      "kind": "symbol",
+      "name": "seal-symbol",
+      "signature": "'sym ==> "
+    },
+    "sealed-sigil?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "sealed-sigil?",
+      "signature": "'sym ==> bool"
+    },
+    "sealed-symbol?": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "sealed-symbol?",
+      "signature": "'sym ==> bool"
+    },
+    "search": {
+      "description": "`",
+      "kind": "symbol",
+      "name": "search",
+      "signature": "str1 str2 ==> quot"
+    },
+    "search-all": {
+      "description": "",
+      "kind": "symbol",
+      "name": "search-all",
+      "signature": "str1 str2 ==> quot"
+    },
+    "semver-inc-major": {
+      "description": "",
+      "kind": "symbol",
+      "name": "semver-inc-major",
+      "signature": "str1 ==> str2"
+    },
+    "semver-inc-minor": {
+      "description": "",
+      "kind": "symbol",
+      "name": "semver-inc-minor",
+      "signature": "str1 ==> str2"
+    },
+    "semver-inc-patch": {
+      "description": "",
+      "kind": "symbol",
+      "name": "semver-inc-patch",
+      "signature": "str1 ==> str2"
+    },
+    "semver?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "semver?",
+      "signature": "str ==> bool"
+    },
+    "send": {
+      "description": "",
+      "kind": "symbol",
+      "name": "send",
+      "signature": "dict:socket str ==> "
+    },
+    "set": {
+      "description": "",
+      "kind": "symbol",
+      "name": "set",
+      "signature": "quot1 a int ==> quot2"
+    },
+    "set-stack": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "set-stack",
+      "signature": "quot ==> a*"
+    },
+    "sha1": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sha1",
+      "signature": "'sym ==> str"
+    },
+    "sha224": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sha224",
+      "signature": "'sym ==> str"
+    },
+    "sha256": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sha256",
+      "signature": "'sym ==> str"
+    },
+    "sha384": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sha384",
+      "signature": "'sym ==> str"
+    },
+    "sha512": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sha512",
+      "signature": "'sym ==> str"
+    },
+    "shl": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "shl",
+      "signature": "int1 int2 ==> int3"
+    },
+    "shorten": {
+      "description": "",
+      "kind": "symbol",
+      "name": "shorten",
+      "signature": "quot1 int ==> quot2"
+    },
+    "shr": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "shr",
+      "signature": "int1 int2 ==> int3"
+    },
+    "sigils": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "sigils",
+      "signature": " ==> (str*)"
+    },
+    "sin": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sin",
+      "signature": "num1 ==> num2"
+    },
+    "sinh": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sinh",
+      "signature": "num1 ==> num2"
+    },
+    "sip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "sip",
+      "signature": "a1 (a2) ==> a* a1"
+    },
+    "size": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "size",
+      "signature": "quot ==> int"
+    },
+    "sleep": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "sleep",
+      "signature": "int ==> "
+    },
+    "slice": {
+      "description": "",
+      "kind": "symbol",
+      "name": "slice",
+      "signature": "quot1 int1 int2 ==> quot2"
+    },
+    "socket": {
+      "description": "",
+      "kind": "symbol",
+      "name": "socket",
+      "signature": "dict ==> dict:socket"
+    },
+    "sort": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sort",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "source": {
+      "description": "",
+      "kind": "symbol",
+      "name": "source",
+      "signature": "'sym ==> quot"
+    },
+    "split": {
+      "description": "",
+      "kind": "symbol",
+      "name": "split",
+      "signature": "'sym1 'sym2 ==> quot"
+    },
+    "spread": {
+      "description": "",
+      "kind": "symbol",
+      "name": "spread",
+      "signature": "a* (quot*) ==> a*"
+    },
+    "sqrt": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sqrt",
+      "signature": "num1 ==> num2"
+    },
+    "start-server": {
+      "description": "",
+      "kind": "symbol",
+      "name": "start-server",
+      "signature": "dict ==> "
+    },
+    "stop-server": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "stop-server",
+      "signature": " ==> "
+    },
+    "string": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "string",
+      "signature": "a ==> str"
+    },
+    "string?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "string?",
+      "signature": "a ==> bool"
+    },
+    "stringlike?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "stringlike?",
+      "signature": "a ==> bool"
+    },
+    "strip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "strip",
+      "signature": "'sym ==> str"
+    },
+    "substr": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "substr",
+      "signature": "str1 int1 int2 ==> str2"
+    },
+    "succ": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "succ",
+      "signature": "int1 ==> int2"
+    },
+    "suffix": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "suffix",
+      "signature": "'sym1 'sym2 ==> str"
+    },
+    "sum": {
+      "description": "",
+      "kind": "symbol",
+      "name": "sum",
+      "signature": "quot ==> int"
+    },
+    "swap": {
+      "description": "",
+      "kind": "symbol",
+      "name": "swap",
+      "signature": "a1 a2 ==> a2 a1"
+    },
+    "swons": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "swons",
+      "signature": "(a*) a1 ==> (a1 a*)"
+    },
+    "symbols": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "symbols",
+      "signature": " ==> (str*)"
+    },
+    "symlink": {
+      "description": "",
+      "kind": "symbol",
+      "name": "symlink",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "symlink?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "symlink?",
+      "signature": "'sym ==> bool"
+    },
+    "symmetric-difference": {
+      "description": "",
+      "kind": "symbol",
+      "name": "symmetric-difference",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "system": {
+      "description": "",
+      "kind": "symbol",
+      "name": "system",
+      "signature": "'sym ==> int"
+    },
+    "take": {
+      "description": "",
+      "kind": "symbol",
+      "name": "take",
+      "signature": "quot1 int ==> quot2"
+    },
+    "tan": {
+      "description": "",
+      "kind": "symbol",
+      "name": "tan",
+      "signature": "num1 ==> num2"
+    },
+    "tanh": {
+      "description": "",
+      "kind": "symbol",
+      "name": "tanh",
+      "signature": "num1 ==> num2"
+    },
+    "tap": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "tap",
+      "signature": "a quot ==> a"
+    },
+    "tau": {
+      "description": "",
+      "kind": "symbol",
+      "name": "tau",
+      "signature": " ==> num"
+    },
+    "timeinfo": {
+      "description": "",
+      "kind": "symbol",
+      "name": "timeinfo",
+      "signature": "int ==> dict:timeinfo"
+    },
+    "times": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "times",
+      "signature": "quot int ==> a*"
+    },
+    "timestamp": {
+      "description": "",
+      "kind": "symbol",
+      "name": "timestamp",
+      "signature": " ==> int"
+    },
+    "titleize": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "titleize",
+      "signature": "'sym ==> str"
+    },
+    "to-json": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "to-json",
+      "signature": "a ==> str"
+    },
+    "to-semver": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "to-semver",
+      "signature": "dict ==> str"
+    },
+    "to-timestamp": {
+      "description": "",
+      "kind": "symbol",
+      "name": "to-timestamp",
+      "signature": "dict:timeinfo ==> int"
+    },
+    "to-yaml": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "to-yaml",
+      "signature": "a ==> str"
+    },
+    "trunc": {
+      "description": "",
+      "kind": "symbol",
+      "name": "trunc",
+      "signature": "num1 ==> num2"
+    },
+    "try": {
+      "description": "",
+      "kind": "symbol",
+      "name": "try",
+      "signature": "(quot1 quot2? quot3?) ==> a*"
+    },
+    "type": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "type",
+      "signature": "a ==> str"
+    },
+    "type?": {
+      "description": "",
+      "kind": "symbol",
+      "name": "type?",
+      "signature": "a 'sym ==> bool"
+    },
+    "typealias": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "typealias",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "union": {
+      "description": "",
+      "kind": "symbol",
+      "name": "union",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "unless": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "unless",
+      "signature": "quot1 quot2 ==> a*"
+    },
+    "unmapkey": {
+      "description": "",
+      "kind": "symbol",
+      "name": "unmapkey",
+      "signature": "'sym ==> "
+    },
+    "unseal-sigil": {
+      "description": "",
+      "kind": "symbol",
+      "name": "unseal-sigil",
+      "signature": "'sym ==> "
+    },
+    "unseal-symbol": {
+      "description": "",
+      "kind": "symbol",
+      "name": "unseal-symbol",
+      "signature": "'sym ==> "
+    },
+    "unzip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "unzip",
+      "signature": "'sym1 'sym2 ==> "
+    },
+    "uppercase": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "uppercase",
+      "signature": "'sym1 ==> 'sym2"
+    },
+    "version": {
+      "description": "",
+      "kind": "symbol",
+      "name": "version",
+      "signature": " ==> str"
+    },
+    "warning": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "warning",
+      "signature": "a ==> a"
+    },
+    "when": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "when",
+      "signature": "quot1 quot2 ==> a*"
+    },
+    "which": {
+      "description": "",
+      "kind": "symbol",
+      "name": "which",
+      "signature": "'sym ==> str"
+    },
+    "while": {
+      "description": "",
+      "kind": "symbol",
+      "name": "while",
+      "signature": "quot1 quot2 ==> a*"
+    },
+    "with": {
+      "description": "",
+      "kind": "symbol",
+      "name": "with",
+      "signature": "quot1 quot2 ==> a*"
+    },
+    "xor": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "xor",
+      "signature": "bool1 bool2 ==> bool3"
+    },
+    "zip": {
+      "description": ".",
+      "kind": "symbol",
+      "name": "zip",
+      "signature": "quot 'sym ==> "
+    }
+  },
+  "sigils": {
+    "!": {
+      "description": "See system",
+      "kind": "symbol",
+      "name": "!"
+    },
+    "$": {
+      "description": "See get-env",
+      "kind": "symbol",
+      "name": "$"
+    },
+    "%": {
+      "description": "See dset",
+      "kind": "symbol",
+      "name": "%"
+    },
+    "&": {
+      "description": "See run",
+      "kind": "symbol",
+      "name": "&"
+    },
+    "'": {
+      "description": "See quotesym",
+      "kind": "symbol",
+      "name": "'"
+    },
+    "*": {
+      "description": "See invoke",
+      "kind": "symbol",
+      "name": "*"
+    },
+    "/": {
+      "description": "See dget",
+      "kind": "symbol",
+      "name": "/"
+    },
+    ":": {
+      "description": "See define",
+      "kind": "symbol",
+      "name": ":"
+    },
+    "<": {
+      "description": "See load-symbol",
+      "kind": "symbol",
+      "name": "<"
+    },
+    ">": {
+      "description": "See save-symbol",
+      "kind": "symbol",
+      "name": ">"
+    },
+    "?": {
+      "description": "See help",
+      "kind": "symbol",
+      "name": "?"
+    },
+    "@": {
+      "description": "See bind",
+      "kind": "symbol",
+      "name": "@"
+    },
+    "^": {
+      "description": "See lambda",
+      "kind": "symbol",
+      "name": "^"
+    }
+  }
+}
