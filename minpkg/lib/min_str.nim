@@ -154,8 +154,11 @@ proc str_module*(i: In) =
     let reg = re(vals[0].strVal)
     let str = vals[1]
     let m = str.strVal.find(reg)
-    let matches = m.get.captures
     var res = newSeq[MinValue](0)
+    if m.isNone:
+      i.push res.newVal
+      return
+    let matches = m.get.captures
     res.add m.get.match.newVal
     for i in 0..reg.captureCount-1:
       res.add matches[i].newVal
@@ -191,7 +194,10 @@ proc str_module*(i: In) =
       var ss = newSeq[MinValue](0)
       ss.add match.match.newVal
       for s in match.captures:
-        ss.add s.get.newVal
+        if s.isNone:
+          ss.add "".newVal
+        else: 
+          ss.add s.get.newVal
       i2.push ss.newVal
       i2.push q
       i2.pushSym "dequote"

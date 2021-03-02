@@ -1,13 +1,13 @@
 "tasks/data/doc-snippets.json" fread from-json :snippets
 "site/contents" ls ("reference-" match?) filter :src-files
-"\{\#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+\#\}" :op-regex
-"\{\#sig\|\|([^|]+)\|\|([^#]+)\#\}" :sig-regex
-"\{\#alias\|\|([^|]+)\|\|([^#]+)\#\}" :alias-regex
-"\{\{([^}]+)\}\}" :snippet-regex
-">( >)*" :block-regex
-"%([^%]+)%" :title-regex
-"\{@[^@]+@\}" :incl-regex
-"`([^`]+)`" :code-regex
+"(?m)\{#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|([^#])+#\}" :op-regex
+"(?m)\{#sig\|\|([^|]+)\|\|([^#]+)#\}" :sig-regex
+"(?m)\{#alias\|\|([^|]+)\|\|([^#]+)#\}" :alias-regex
+"(?m)\{\{([^}]+)\}\}" :snippet-regex
+"(?m)\>( \>)*" :block-regex
+"(?m)%([^%]+)%" :title-regex
+"(?m)\{@[^@]+@\}" :incl-regex
+"(?m)`([^`]+)`" :code-regex
 
 (
   symbol fix-name
