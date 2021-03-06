@@ -8,5 +8,5 @@
 
 ### New features
 
-* Now including statically-compiled PCRE V8.44 library used for regular expression support.
+* Now including statically-linked PCRE v8.44 library used for regular expression support.
 * Upgraded OpenSSL to v1.1.1j.
