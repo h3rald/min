@@ -1,12 +1,3 @@
-### Breaking Changes
+### Fixes
 
-* No longer distributing lite and mini variants.
-* Removed **regex** and **=~** symbols, use **search**, **replace**, **search-all**, **replace-apply** instead.
-* Regular expressions are PCRE compliant.
-* Renamed **match** into **match?**.
-* The **split** operator now takes a PCRE as a separator.
-
-### New features
-
-* Now including statically-linked PCRE v8.44 library used for regular expression support.
-* Upgraded OpenSSL to v1.1.1j.
+* Fixed **search** symbol to always return a quotation containing the same number of elements (1 + number of captures). If no matches are found, the quotation contains empty strings.

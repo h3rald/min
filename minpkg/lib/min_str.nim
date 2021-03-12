@@ -152,6 +152,9 @@ proc str_module*(i: In) =
     let m = str.strVal.find(reg)
     var res = newSeq[MinValue](0)
     if m.isNone:
+      res.add "".newVal
+      for i in 0..reg.captureCount-1:
+        res.add "".newVal
       i.push res.newVal
       return
     let matches = m.get.captures

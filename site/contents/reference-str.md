@@ -127,6 +127,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > 
 >   * The first element of {{q}} is the matching substring.
 >   * Other elements (if any) contain captured substrings.
+>   * If no matches are found, the quotation contains empty strings.
 > 
 > > %tip%
 > > Tip
