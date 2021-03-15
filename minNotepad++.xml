@@ -29,7 +29,7 @@
             <Keywords name="Keywords3">: + @ = # ~ ^ * &gt; &lt; / ? % $ ! &amp;</Keywords>
             <Keywords name="Keywords4">eval exit ROOT version</Keywords>
             <Keywords name="Keywords5">-&gt; =&gt;</Keywords>
-            <Keywords name="Keywords6">compiled? defined-symbol? lite? loglevel? all? any? in? dhas? hidden? boolean? dictionary? float? integer? null? number? quotation? type? semver? env? dir? exists? file? symlink? stringlike? even? odd? sealed-symbol?</Keywords>
+            <Keywords name="Keywords6">compiled? defined-symbol? loglevel? all? any? in? dhas? hidden? boolean? dictionary? float? integer? null? number? quotation? type? semver? env? dir? exists? file? symlink? stringlike? even? odd? sealed-symbol?</Keywords>
             <Keywords name="Keywords7">puts! tap! debug! error! info! notice! print! warning! system!</Keywords>
             <Keywords name="Keywords8">+ - -inf * / inf nan randomize e pi</Keywords>
             <Keywords name="Delimiters">00&quot; 01 02&quot; 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23</Keywords>

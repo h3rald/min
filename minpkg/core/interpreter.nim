@@ -83,9 +83,8 @@ template withDictScope*(i: In, s: ref MinScope, body: untyped): untyped =
 
 proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var path = pwd
-  when not defined(mini): 
-    if not pwd.isAbsolute:
-      path = joinPath(getCurrentDir(), pwd)
+  if not pwd.isAbsolute:
+    path = joinPath(getCurrentDir(), pwd)
   var stack:MinStack = newSeq[MinValue](0)
   var trace:MinStack = newSeq[MinValue](0)
   var stackcopy:MinStack = newSeq[MinValue](0)
@@ -105,9 +104,8 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
 
 proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
   var path = filename
-  when not defined(mini): 
-    if not filename.isAbsolute:
-      path = joinPath(getCurrentDir(), filename)
+  if not filename.isAbsolute:
+    path = joinPath(getCurrentDir(), filename)
   result = newMinInterpreter()
   result.filename = filename
   result.pwd =  path.parentDirEx
@@ -356,7 +354,7 @@ proc compileFile*(i: In, main: bool): seq[string] {.discardable.} =
 proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable.} =
   result = newSeq[string](0)
   result.add "import min"
-  if files.len > 0 or (ASSETPATH != "" and not defined(mini)):
+  if files.len > 0 or (ASSETPATH != ""):
     result.add "import critbits"
   if ASSETPATH != "":
     result.add "import base64"

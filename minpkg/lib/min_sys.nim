@@ -3,9 +3,8 @@ import
   osproc, 
   strutils,
   critbits,
-  logging
-when not defined(lite):
-  import sequtils
+  logging,
+  tables
 import 
   ../core/parser, 
   ../core/env,
@@ -14,8 +13,7 @@ import
   ../core/utils,
   ../core/fileutils
 
-when not defined(lite):
-  import ../packages/nim-miniz/src/nim_miniz
+import zippy/ziparchives
 
 proc unix(s: string): string =
   return s.replace("\\", "/")
@@ -225,18 +223,28 @@ proc sys_module*(i: In)=
   def.sigil("&") do (i: In):
     i.pushSym("run")
 
-  when not defined(lite):
-    def.symbol("unzip") do (i: In):
-      let vals = i.expect("'sym", "'sym")
-      let dir = vals[0]
-      let f = vals[1]
-      nim_miniz.unzip(f.getString, dir.getString)
+  def.symbol("unzip") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    var dir = vals[0].getString
+    let f = vals[1].getString
+    if dir.len < 1:
+      raiseInvalid("No destination directory was specified.")
+    if dir[0] != '.' and dir.len > 1 and dir[1] != '/':
+      dir = "./" & dir
+    extractAll(f, dir)
 
-    def.symbol("zip") do (i: In):
-      let vals = i.expect("'sym", "quot")
-      let file = vals[0]
-      let files = vals[1]
-      nim_miniz.zip(files.qVal.mapIt(it.getString), file.getString)
+  def.symbol("zip") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let file = vals[0]
+    let files = vals[1]
+    let archive = ZipArchive()
+    for rawEntry in files.qVal:
+      let entry = rawEntry.getString.relativePath(getCurrentDir())
+      if entry.dirExists:
+        archive.addDir(entry)
+      else:
+        archive.contents[entry] = ArchiveEntry(contents: readFile(entry))
+    archive.writeZipArchive(file.getString)
 
   def.finalize("sys")
     

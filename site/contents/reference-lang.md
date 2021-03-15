@@ -250,9 +250,6 @@ Returns a dictionary {{d}} containing a **filename**, **line**, and **column** p
 > >    5 (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
-{#op||lite?||{{none}}||{{b}}||
-Returns {{t}} if min was built in _lite_ mode. #}
-
 {#op||load||{{sl}}||{{a0p}}||
 Parses and interprets the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified. #}
 
@@ -534,19 +531,4 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 > >     (count puts succ @count) while #}
 
 {#op||with||{{q1}} {{q2}}||{{a0p}}||
-Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. 
-
-> > %sidebar%
-> > Example
-> > 
-> > This operator is useful to define symbols on the [ROOT](class:kwd) scope or another scope. For example min's prelude includes the following code used to import certain modules only if min was not compiled in lite mode:
-> > 
-> >     'lite? (
-> >      (
-> >       'crypto    import
-> >       'math      import
-> >       'net       import
-> >       'http      import
-> >      ) ROOT with
-> >     ) unless
- #}
+Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. #}

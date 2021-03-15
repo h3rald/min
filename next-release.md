@@ -1,3 +1,11 @@
-### Fixes
+### BREAKING CHANGES
 
-* Fixed **search** symbol to always return a quotation containing the same number of elements (1 + number of captures). If no matches are found, the quotation contains empty strings.
+* Removed **lite?** and **mini?** symbols, as they are no longer necessary.
+
+### New Features
+
+* Now using [zippy](https://github.com/guzba/zippy) for the **zip** and **unzip** symbols.
+
+### Fixes and Improvements
+
+* Removed conditional compilations related to mini and lite variants as they are no longer needed.

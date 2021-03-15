@@ -6,21 +6,13 @@
 'seq       import
 'dict      import
 'time      import
-(mini?) (
-  (
-    'io     import
-    'fs     import
-    'sys    import
-    'dstore import
-  ) ROOT with
-) unless
-(lite? mini? or) (
-  (
-    'crypto import
-    'math   import
-    'net    import
-    'http   import
-  ) ROOT with
-) unless
+'io     import
+'fs     import
+'sys    import
+'dstore import
+'crypto import
+'math   import
+'net    import
+'http   import
 ; Unseal prompt symbol
 'prompt    unseal-symbol

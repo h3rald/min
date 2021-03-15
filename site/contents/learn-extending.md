@@ -49,19 +49,15 @@ By default, when min is started it loads the following *prelude.min* program:
 'dict      import
 'time      import
 'fs        import
-'lite? (
-  (
-    'crypto    import
-    'math      import
-    'net       import
-    'http      import
-  ) ROOT with
-) unless
+'crypto    import
+'math      import
+'net       import
+'http      import
 ; Unseal prompt symbol
 'prompt    unseal-symbol
 ```
 
-Essentially, this causes min to import *all* the modules (except for some if the **lite** flag was defined at compilation time) and unseals the {#link-operator||lang||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
+Essentially, this causes min to import *all* the modules and unseals the {#link-operator||lang||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
 
 > %min-terminal%
 > [$](class:prompt) min -i -p:myfile.min

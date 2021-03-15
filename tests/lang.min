@@ -196,8 +196,6 @@
 
   ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) *test/assert
 
-  (lite? false ==) *test/assert
-
   ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) *test/assert
 
   ((2 < 3 and (4 > 2)) >< true) *test/assert

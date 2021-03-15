@@ -38,16 +38,6 @@
     }
   },
   "packages": {
-    "nim-sgregex": {
-      "name": "nim-sgregex",
-      "src": "https://github.com/h3rald/nim-sgregex.git",
-      "git": true
-    },
-    "nim-miniz": {
-      "name": "nim-miniz",
-      "src": "https://github.com/h3rald/nim-miniz.git",
-      "git": true
-    },
     "nimline": {
       "name": "nimline",
       "src": "https://github.com/h3rald/nimline.git",

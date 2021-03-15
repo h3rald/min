@@ -19,7 +19,7 @@ Because creating a programming language is something that every programmer needs
 
 I always wanted to build a minimalist language, but that could also be used for real work and provided a standard library for common tasks and functionalities like regular expression support, cryptography, execution of external programs, shell-like operators, and keywords to work with files, and more.
 
-Additionally, I wanted it to be fully self-contained, cross-platform, and tiny. About 1MB (or more, depending on the platform and whether SSL support is enabled or not) is not really tiny, but I feel it's a good compromise compared to the alternatives out there, considering that you only need _one file_ to run any min program.
+Additionally, I wanted it to be fully self-contained, cross-platform, and small. Not stupidly small, but I feel it's a good compromise compared to the alternatives out there, considering that you only need _one file_ to run any min program.
 
  I also created a static site generator called [HastySite](https://github.com/h3rald/hastysite), which also powers <https://min-lang.org>. HastySite internally uses min as the language to write the [rules](https://github.com/h3rald/min/blob/master/site/rules.min) to process the source files of the site, and also all its [scripts](https://github.com/h3rald/min/tree/master/site/scripts).
 

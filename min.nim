@@ -49,92 +49,90 @@ var MINMODULES* = newSeq[string](0)
 var customPrelude {.threadvar.} : string
 customPrelude = ""
 
-when not defined(mini):
-  if logging.getHandlers().len == 0:
-    newNiftyLogger().addHandler()
+if logging.getHandlers().len == 0:
+  newNiftyLogger().addHandler()
 
-  proc getExecs(): seq[string] =
-    var res = newSeq[string](0)
-    let getFiles = proc(dir: string) =
-      for c, s in walkDir(dir, true):
-        if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
-          res.add s
-    getFiles(getCurrentDir())
-    for dir in "PATH".getEnv.split(PathSep):
-      getFiles(dir)
-    res.sort(system.cmp)
-    return res
+proc getExecs(): seq[string] =
+  var res = newSeq[string](0)
+  let getFiles = proc(dir: string) =
+    for c, s in walkDir(dir, true):
+      if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
+        res.add s
+  getFiles(getCurrentDir())
+  for dir in "PATH".getEnv.split(PathSep):
+    getFiles(dir)
+  res.sort(system.cmp)
+  return res
 
-  proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
-    var words = ed.lineText.split(" ")
-    var word: string
-    if words.len == 0:
-      word = ed.lineText
+proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
+  var words = ed.lineText.split(" ")
+  var word: string
+  if words.len == 0:
+    word = ed.lineText
+  else:
+    word = words[words.len-1]
+  if word.startsWith("'"):
+    return symbols.mapIt("'" & $it)
+  if word.startsWith("~"):
+    return symbols.mapIt("~" & $it)
+  if word.startsWith("?"):
+    return symbols.mapIt("?" & $it)
+  if word.startsWith("@"):
+    return symbols.mapIt("@" & $it)
+  if word.startsWith("#"):
+    return symbols.mapIt("#" & $it)
+  if word.startsWith(">"):
+    return symbols.mapIt(">" & $it)
+  if word.startsWith("*"):
+    return symbols.mapIt("*" & $it)
+  if word.startsWith("("):
+    return symbols.mapIt("(" & $it)
+  if word.startsWith("<"):
+    return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
+  if word.startsWith("$"):
+    return toSeq(envPairs()).mapIt("$" & $it[0])
+  if word.startsWith("!"):
+    return getExecs().mapIt("!" & $it)
+  if word.startsWith("!!"):
+    return getExecs().mapIt("!!" & $it)
+  if word.startsWith("!\""):
+    return getExecs().mapIt("!\"" & $it)
+  if word.startsWith("!!\""):
+    return getExecs().mapIt("!!\"" & $it)
+  if word.startsWith("&\""):
+    return getExecs().mapIt("&\"" & $it)
+  if word.startsWith("&"):
+    return getExecs().mapIt("&" & $it)
+  if word.startsWith("\""):
+    var f = word[1..^1]
+    if f == "":
+      f = getCurrentDir().replace("\\", "/")  
+      return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
+    elif f.dirExists:
+      f = f.replace("\\", "/")
+      if f[f.len-1] != '/':
+        f = f & "/"
+      return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
     else:
-      word = words[words.len-1]
-    if word.startsWith("'"):
-      return symbols.mapIt("'" & $it)
-    if word.startsWith("~"):
-      return symbols.mapIt("~" & $it)
-    if word.startsWith("?"):
-      return symbols.mapIt("?" & $it)
-    if word.startsWith("@"):
-      return symbols.mapIt("@" & $it)
-    if word.startsWith("#"):
-      return symbols.mapIt("#" & $it)
-    if word.startsWith(">"):
-      return symbols.mapIt(">" & $it)
-    if word.startsWith("*"):
-      return symbols.mapIt("*" & $it)
-    if word.startsWith("("):
-      return symbols.mapIt("(" & $it)
-    if word.startsWith("<"):
-      return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
-    if word.startsWith("$"):
-      return toSeq(envPairs()).mapIt("$" & $it[0])
-    if word.startsWith("!"):
-      return getExecs().mapIt("!" & $it)
-    if word.startsWith("!!"):
-      return getExecs().mapIt("!!" & $it)
-    if word.startsWith("!\""):
-      return getExecs().mapIt("!\"" & $it)
-    if word.startsWith("!!\""):
-      return getExecs().mapIt("!!\"" & $it)
-    if word.startsWith("&\""):
-      return getExecs().mapIt("&\"" & $it)
-    if word.startsWith("&"):
-      return getExecs().mapIt("&" & $it)
-    if word.startsWith("\""):
-      var f = word[1..^1]
-      if f == "":
-        f = getCurrentDir().replace("\\", "/")  
-        return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
-      elif f.dirExists:
-        f = f.replace("\\", "/")
-        if f[f.len-1] != '/':
-          f = f & "/"
-        return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
+      var dir: string
+      if f.contains("/") or dir.contains("\\"):
+        dir = f.parentDir
+        let file = f.extractFileName
+        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
       else:
-        var dir: string
-        if f.contains("/") or dir.contains("\\"):
-          dir = f.parentDir
-          let file = f.extractFileName
-          return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
-        else:
-          dir = getCurrentDir()
-          return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
-    return symbols
+        dir = getCurrentDir()
+        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
+  return symbols
 
 
 proc stdLib*(i: In) =
-  when not defined(mini):
-    setLogFilter(logging.lvlNotice)
-    if not MINSYMBOLS.fileExists:
-      MINSYMBOLS.writeFile("{}")
-    if not MINHISTORY.fileExists:
-      MINHISTORY.writeFile("")
-    if not MINRC.fileExists:
-      MINRC.writeFile("")
+  setLogFilter(logging.lvlNotice)
+  if not MINSYMBOLS.fileExists:
+    MINSYMBOLS.writeFile("{}")
+  if not MINHISTORY.fileExists:
+    MINHISTORY.writeFile("")
+  if not MINRC.fileExists:
+    MINRC.writeFile("")
   i.lang_module
   i.stack_module
   i.seq_module
@@ -196,29 +194,20 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
     let dotindex = i.filename.rfind(".")
     let nimFile = i.filename[0..dotindex-1] & ".nim"
     if main:
-      when defined(mini):
-        minilogger.notice("Generating $#..." % nimFile)
-      else:
-        logging.notice("Generating $#..." % nimFile)
+      logging.notice("Generating $#..." % nimFile)
       result = i.initCompiledFile(MINMODULES)
       for m in MINMODULES:
         let f = m.replace("\\", "/")
         result.add "### $#" % f
-        when defined(mini):
-          minilogger.notice("- Including: $#" % f)
-        else:
-          logging.notice("- Including: $#" % f)
+        logging.notice("- Including: $#" % f)
         result = result.concat(minFile(f, "compile", main = false))
       result.add "### $# (main)" % i.filename
       result = result.concat(i.compileFile(main))
       writeFile(nimFile, result.join("\n"))
-      when not defined(mini):
-        let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
-        logging.notice("Calling Nim compiler:")
-        logging.notice(cmd)
-        discard execShellCmd(cmd)
-      else:
-        minilogger.notice("$# generated successfully, call the nim compiler to compile it.")
+      let cmd = "nim c $#$#" % [NIMOPTIONS&" ", nimFile]
+      logging.notice("Calling Nim compiler:")
+      logging.notice(cmd)
+      discard execShellCmd(cmd)
     else:
       result = result.concat(i.compileFile(main))
   except:
@@ -246,10 +235,7 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   try:
     fileLines = fn.readFile().splitLines()
   except:
-    when defined(mini):
-      minilogger.fatal("Cannot read from file: " & fn)
-    else:
-      logging.fatal("Cannot read from file: " & fn)
+    logging.fatal("Cannot read from file: " & fn)
     quit(3)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
@@ -258,9 +244,8 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   minStream(newStringStream(contents), fn, op, main)
 
 when isMainModule:
-  when not defined(mini):
-    import terminal
   import 
+    terminal,
     parseopt,
     critbits,
     minpkg/core/meta
@@ -345,7 +330,7 @@ when isMainModule:
     i.minSimpleRepl()
       
 
-  let usage* = """  $exe v$version - a tiny concatenative programming language
+  let usage* = """  $exe v$version - a small but practical concatenative programming language
   (c) 2014-2021 Fabio Cevasco
   
   Usage:
@@ -374,10 +359,7 @@ when isMainModule:
 
   var file, s: string = ""
   var args = newSeq[string](0)
-  when defined(mini):
-    minilogger.setLogFilter(minilogger.lvlNotice)
-  else:
-    logging.setLogFilter(logging.lvlNotice)
+  logging.setLogFilter(logging.lvlNotice)
   var p = initOptParser()
   
   for kind, key, val in getopt(p):
@@ -399,10 +381,7 @@ when isMainModule:
           of "log", "l":
             if file == "":
               var val = val
-              when defined(mini):
-                minilogger.setLogLevel(val)
-              else:
-                niftylogger.setLogLevel(val)
+              niftylogger.setLogLevel(val)
           of "passN", "n":
               NIMOPTIONS = val
           of "evaluate", "e":
@@ -417,7 +396,7 @@ when isMainModule:
               echo pkgVersion
               quit(0)
           of "interactive", "i":
-            if file == "" and not defined(mini):
+            if file == "": 
               REPL = true
           of "interactive-simple", "j":
             if file == "":
