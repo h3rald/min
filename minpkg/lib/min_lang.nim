@@ -5,12 +5,12 @@ import
   json,
   parseopt,
   algorithm,
+  nre,
   os,
   logging,
   ../core/baseutils,
   ../packages/niftylogger,
-  ../packages/nimline/nimline,
-  ../packages/nim-sgregex/sgregex
+  ../packages/nimline/nimline
 import 
   ../core/env,
   ../core/meta,
@@ -166,7 +166,7 @@ proc lang_module*(i: In) =
     if not nv.isSymbol:
       raiseInvalid("Operator name must be a symbol")
     var n = nv.symVal
-    if not n.match(USER_SYMBOL_REGEX):
+    if not n.contains(re(USER_SYMBOL_REGEX)):
       raiseInvalid("Operator name must not contain invalid characters")
     if t == "typeclass":
       n = "typeclass:"&n
@@ -443,7 +443,7 @@ proc lang_module*(i: In) =
     var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
-    if not symbol.match USER_SYMBOL_REGEX:
+    if not symbol.contains re(USER_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
@@ -457,7 +457,7 @@ proc lang_module*(i: In) =
     if not i.validType(s):
       raiseInvalid("Invalid type expression: $#" % s)
     let symbol = "typealias:"&sym
-    if not sym.match USER_SYMBOL_REGEX:
+    if not sym.contains re(USER_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % sym)
     info "[typealias] $1 = $2" % [sym, s]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
@@ -470,7 +470,7 @@ proc lang_module*(i: In) =
     var q1 = vals[1]
     var symbol: string
     symbol = sym.getString
-    if not symbol.match USER_SYMBOL_REGEX:
+    if not symbol.contains re(USER_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[lambda] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
@@ -928,7 +928,7 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     let sym = vals[0].getString
     var s = i.scope.getSigil(sym) 
-    if not sym.match USER_SYMBOL_REGEX:
+    if not sym.contains re(USER_SYMBOL_REGEX):
       # Prevent accidentally unsealing system sigils
       # Not that they can redefined, but still
       raiseInvalid("Attempting to unseal system sigil: " & sym)

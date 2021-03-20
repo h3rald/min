@@ -1,11 +1,11 @@
 import 
   strutils,
   logging,
+  nre,
   critbits,
   terminal
 import 
   ../packages/nimline/nimline,
-  ../packages/nim-sgregex/sgregex,
   ../core/parser, 
   ../core/value, 
   ../core/env,
@@ -109,9 +109,9 @@ proc io_module*(i: In) =
     let s = vals[0]
     proc confirm(): bool =
       let answer = ed.readLine(s.getString & " [yes/no]: ")
-      if answer.match("^y(es)?$", "i"):
+      if answer.contains(re"(?i)^y(es)?$"):
         return true
-      elif answer.match("^no?$", "i"):
+      elif answer.contains(re"(?i)^no?$"):
         return false
       else:
         stdout.write "Invalid answer. Please enter 'yes' or 'no': "
