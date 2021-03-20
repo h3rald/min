@@ -2,7 +2,7 @@
 
 ;Routing
 (
-  (dict) expect -> =meta
+  (dict) expect -> :meta
   meta /id :id
   meta /ext :ext
   (
@@ -19,56 +19,56 @@
       ) tap
     ))
   ) case
-) :set-destination
+) ^set-destination
 
 ;Processing operators
 (
-  ('sym dict) expect -> :tpl =meta
+  ('sym dict) expect -> :tpl :meta
   "" :page
   "" :contents
   meta (
     (input-fread @contents meta)
     (settings /title %site)
     (settings /version %version)
-    (=temp contents temp markdown @contents temp)
+    (:temp contents temp markdown @contents temp)
     (contents %contents)
-    (=temp tpl temp mustache @page temp)
+    (:temp tpl temp mustache @page temp)
     (page %contents)
   ) tap
-) :process-md-with-template
+) ^process-md-with-template
 
 (
-  (dict) expect -> =meta
+  (dict) expect -> :meta
   meta /content-type :ct
   meta ct process-md-with-template
-) :process-md-content
+) ^process-md-content
 
 (
-  (dict) expect -> =meta
+  (dict) expect -> :meta
   meta /ext :ext
   meta
   (
     ((".md" ext ==) (process-md-content))
   ) case
-) :process-content
+) ^process-content
 
 (
-  (dict) expect -> =meta
+  (dict) expect -> :meta
   "" :contents
   meta (
     (input-fread @contents meta)
-    (=temp contents preprocess-css @contents temp)
+    (:temp contents preprocess-css @contents temp)
     (contents %contents)
   ) tap
   output-fwrite
-) :process-css-asset
+) ^process-css-asset
 
 ;Main
 contents (
   (dict) expect -> 
   dup
   (
-    ((/id "^_" match) ()) ;Ignore files starting with underscore.
+    ((/id "^_" match?) ()) ;Ignore files starting with underscore.
     ((true) (process-content set-destination output-fwrite)) 
   ) case
 ) foreach
@@ -77,7 +77,7 @@ assets (
   (dict) expect -> 
   dup
   (
-    ((/ext ".css" match) (process-css-asset))
+    ((/ext ".css" match?) (process-css-asset))
     ((true) (output-cp))
   ) case
 ) foreach
