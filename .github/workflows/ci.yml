@@ -42,6 +42,9 @@ jobs:
       - name: Install nifty
         run: nimble install -y nifty
         
+      - name: Install zippy
+        run: nimble install zippy
+        
       - name: Install deps
         run: nifty install
       
