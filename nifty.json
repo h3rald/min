@@ -5,6 +5,9 @@
       "git+src": {
         "cmd": "git clone {{src}} --depth 1"
       },
+      "nimble+name": {
+        "cmd": "nimble install {{name}}"
+      },
       "git+src+tag": {
         "cmd": "git clone --branch {{tag}} {{src}} --depth 1"
       },
@@ -19,6 +22,9 @@
         "cmd": "git pull",
         "pwd": "{{name}}"
       },
+      "nimble+name": {
+        "cmd": "nimble upgrade {{name}}"
+      },
       "curl+src+name": {
         "cmd": "curl {{src}} -o {{name}}"
       },
@@ -32,12 +38,19 @@
         "cmd": "git pull",
         "pwd": "{{name}}"
       },
+      "nimble+name": {
+        "cmd": "nimble upgrade {{name}}"
+      },
       "curl+src+name": {
         "cmd": "curl {{src}} -o {{name}}"
       }
     }
   },
   "packages": {
+    "zippy": {
+      "name": "zippy",
+      "nimble": true
+    },
     "nimline": {
       "name": "nimline",
       "src": "https://github.com/h3rald/nimline.git",
