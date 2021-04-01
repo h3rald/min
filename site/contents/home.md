@@ -33,6 +33,10 @@ title: "Welcome to the min programming language"
       <li>Includes a small but useful <strong>standard library</strong> for practical tasks.</li>
       <li>Self-contained, statically compiled into single file.</li>
     </ul>
+    <p><small>
+    Don't need all of these features? If you are looking for something even smaller and more bare-bones,
+    check out <a href="https://h3rald.com/mn/">mn</a>, min's even more minimalist little brother.
+    </small></p>
   </section>
   <section class="pure-u-1 pure-u-md-1-2">
     <h2>Examples</h2>
