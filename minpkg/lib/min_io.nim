@@ -115,6 +115,7 @@ proc io_module*(i: In) =
         return false
       else:
         stdout.write "Invalid answer. Please enter 'yes' or 'no': "
+        stdout.flushFile()
         return confirm()
     i.push confirm().newVal
 
@@ -126,6 +127,7 @@ proc io_module*(i: In) =
     if q.qVal.len <= 0:
       raiseInvalid("No choices to display")
     stdout.writeLine(s.getString)
+    stdout.flushFile()
     proc choose(): int =
       var c = 0
       for item in q.qVal:

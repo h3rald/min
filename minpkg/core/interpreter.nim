@@ -178,10 +178,8 @@ proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe.}=
 proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe.}=
    # Assuming val is a dictionary
    var v = newDict(i.scope)
-   for item in val.scope.symbols.pairs:
-     v.scope.symbols[item.key] = item.val
-   for item in val.scope.sigils.pairs:
-     v.scope.sigils[item.key] = item.val
+   v.scope.symbols = val.scope.symbols
+   v.scope.sigils = val.scope.sigils
    if val.objType != "":
      v.objType = val.objType
    if not val.obj.isNil:

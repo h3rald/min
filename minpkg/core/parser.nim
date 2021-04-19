@@ -779,6 +779,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
 
 proc print*(a: MinValue) =
   stdout.write($$a)
+  stdout.flushFile()
 
 # Predicates
 

@@ -38,6 +38,10 @@ Returns {{t}} if {{a1}} is equal to {{a2}}, {{f}} otherwise. #}
 {#op||!=||{{a1}} {{a2}}||{{b}}||
 Returns {{t}} if {{a1}} is not equal to {{a2}}, {{f}} otherwise. #}
 
+{#alias||&vert;&vert;||expect-any#}
+
+{#alias||&&||expect-all#}
+
 {#op||and||{{b1}} {{b2}}||{{b3}}||
 Returns {{t}} if {{b1}} is equal to {{b2}}, {{f}} otherwise.#}
 
