@@ -12,8 +12,6 @@ title: "sys Module"
 
 {#alias||&excl;||system#}
 
-{#alias||&excl;&excl;||system!#}
-
 {#sig||&||run#}
 
 {#alias||&||run#}
