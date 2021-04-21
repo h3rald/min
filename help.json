@@ -5,11 +5,6 @@
       "kind": "symbol",
       "name": "!"
     },
-    "!!": {
-      "description": "See system!",
-      "kind": "symbol",
-      "name": "!!"
-    },
     "!=": {
       "description": "Returns true if a1 is not equal to a2, false  otherwise.",
       "kind": "symbol",
@@ -49,9 +44,10 @@
       "signature": "num1 num2 ==> num3"
     },
     "-": {
-      "description": "See dequote",
+      "description": "Subtracts num2 from num1.",
       "kind": "symbol",
-      "name": "-"
+      "name": "-",
+      "signature": "num1 num2 ==> num3"
     },
     "-inf": {
       "description": "Returns negative infinity.",

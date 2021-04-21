@@ -81,7 +81,7 @@
     config /version :min-version
     "tasks/data/min.vim" fread :template
     timestamp "dd MMM YYYY" tformat :date
-    min-symbols " " join :symbols
+    min-symbols ("||" !=) filter " " join :symbols
     "min.vim" :out-file
     "Building - min.vim" notice!
     template ("date" date "version" min-version "symbols" symbols) =% out-file fwrite 

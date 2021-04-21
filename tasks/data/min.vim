@@ -12,15 +12,15 @@ setl iskeyword=@,36-39,+,-,*,.,/,:,~,!,48-57,60-65,94-95,192-255
 setl iskeyword+=^
 
 syntax keyword          minDefaultSymbol $symbols
-
-syntax match            minDefaultSigil       ;\<[/:@'~!?$$%&=<>#^*#+]; contained
-syntax match            minQuote              ;\<['];
-syntax match            minQuotedBinding      ;#;
-syntax match            minBinding            ;@;
+syntax match            minDefaultSymbol ;||;
 
 syntax keyword          minCommentTodo        TODO FIXME XXX TBD contained
 syntax match            minComment            /;.*$$/ contains=minCommentTodo
 syntax region           minComment            start=;#|; end=;|#; contains=minCommentTodo
+
+syntax match            minDefaultSigil       ;\<[/:@'~!?$$%&=<>#^*#+]; contained
+syntax match            minQuote              ;\<['];
+syntax match            minBinding            ;@;
 
 syntax match            minNumber             ;[-+]\=\d\+\(\.\d*\)\=;
 syntax keyword          minBoolean            true false
@@ -29,7 +29,6 @@ syntax region           minString             start=+"+ skip=+\\\\\|\\$$"+  end=
 syntax region           minSigilSymbol        start=;\<[/:@'~!?$$%&=<>^*#+]; end=;\>; contains=minDefaultSigil  
 syntax region           minQuotedSymbol       start=;\<[']; end=;\>; contains=minQuote
 syntax region           minBoundSymbol        start=;@; end=;\>; contains=minBinding
-syntax region           minQuotedBoundSymbol  start=;#; end=;\>; contains=minQuotedBinding
 syntax match            minSymbol             ;[a-zA-Z._][a-zA-Z0-9/!?+*._-]*;
 
 syntax match            minParen              ;(\|)\|{\|}; 
@@ -47,12 +46,10 @@ hi default link         minBoolean            Boolean
 hi default link         minDefaultSymbol      Statement
 hi default link         minQuote              Delimiter
 hi default link         minBinding            Delimiter
-hi default link         minQuotedBinding      Delimiter
 hi default link         minDefaultSigil       Delimiter
 hi default link         minSymbol             Identifier
 hi default link         minQuotedSymbol       Special
 hi default link         minBoundSymbol        Special
-hi default link         minQuotedBoundSymbol  Special
 hi default link         minParen              Special
 hi default link         minSharpBang          Preproc
 
