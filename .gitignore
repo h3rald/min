@@ -11,6 +11,7 @@ libdyntools*
 dyntools.nim
 *.zip
 packages/
+site/assets/downloads/
 site/output/
 site/temp/
 dynlibs/
