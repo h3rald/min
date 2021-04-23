@@ -23,7 +23,7 @@
     (musl-gcc length 0 >)
       ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)
     when
-    "nim c $# -d:ssl $# --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts ! pop
+    "nim c $# -d:ssl $# --opt:size --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts ! pop
     {}
       target-os %os
       config /version %version
