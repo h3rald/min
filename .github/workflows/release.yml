@@ -1,141 +1,100 @@
-name: Release
+name: Add artifacts to current release
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
-  # Run only when a new tag is pushed
-  push:
-    branches:
-      - 'test-**'
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    # Allows you to run this workflow manually from the Actions tab
+    workflow_dispatch:
 
 jobs:
+    release:
+        name: "Build and upload artifacts"
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os:
+                    - ubuntu-latest
+                    - macos-latest
+                    - windows-latest
 
-  # First, build and package our different assets
-  package:
-    name: "Package"
-
-    # Set up a matrix of different configurations:
-    # for now Linux and MacOS (Windows can obviously be added as well)
-    # Here, we could also add flags - under a different matrix key - 
-    # for different builds: e.g. lite vs non-lite
-      
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-
-    env:
-      CHOOSENIM_CHOOSE_VERSION: stable
-      CHOOSENIM_NO_ANALYTICS: 1
-
-    steps:
-      # Cancel other actions of the same type that might be already running
-    
-      - name: "Cancel similar actions in progress"
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ github.token }}
-
-      # Checks out the repository
-      - uses: actions/checkout@v2
-      
-      # Install libraries
-      - name: install musl-gcc
-        run: sudo apt-get install -y musl-tools 
-        if: matrix.os == 'ubuntu-latest'
-      
-      # Set path
-      - name: Update $PATH
-        run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
-
-      # Install the compiler
-      - name: Install Nim
-        run: |
-          curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
-          sh init.sh -y
-
-      # Install dependencies
-      - name: Install nifty
-        run: nimble install -y nifty
-        
-      - name: Install deps
-        run: nifty install
-      
-      # Build for linux
-      - name: Build (Linux)
-        run: nim c -d:release -d:ssl --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux  -o:min min
-        if: matrix.os == 'ubuntu-latest'
-
-      # Build for MacOS
-      - name: Build (MacOS)
-        run: nim c -d:release -d:ssl -o:min min
-        if: matrix.os == 'macos-latest'
-      
-      # Package the resulting binary (along with the license and readme file)
-      - name: Create artifact
-        run: |
-          install -m 0755 ./min .
-          tar czf min-${{runner.os}}.tar.gz min README.md LICENSE
-
-      # And upload it, so that we can reuse all of them later as release assets
-      - name: Upload Artifact
-        uses: 'actions/upload-artifact@v1'
-        with:
-          name: min-${{runner.os}}.tar.gz
-          path: min-${{runner.os}}.tar.gz
-          
-  # Then, let's prepare our new release and upload the assets above
-  upload:
-    name: "Upload"
-    runs-on: ubuntu-latest
-    if: ${{ always() }}
-    
-    # This should run after all matrix job (for linux, mac, etc) above have finished
-    needs: [package]
-    
-    steps:
-      - name: "Cancel similar actions in progress"
-        uses: styfle/cancel-workflow-action@0.6.0
-        with:
-          access_token: ${{ github.token }}
-
-      # Download all of the previously created assets 
-      # and put them in an ./assets folder
-      - uses: actions/download-artifact@v2
-        with:
-          path: ./assets
-      
-      # That's just for debugging to make sure everything is in place
-      - name: Display structure of downloaded files
-        run: ls -R
-
-      # Create a new release
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            ${{ github.ref }}
-          draft: false
-          prerelease: false
+            CHOOSENIM_CHOOSE_VERSION: stable
+            CHOOSENIM_NO_ANALYTICS: 1
 
-      # Post all of the above assets (under ./assets) 
-      # as part of the newly created release
-      - name: Upload Release Assets
-        id: upload-release-assets
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create-release.outputs.id }}
-          assets_path: ./assets
+        steps:
+            # Cancel other actions of the same type that might be already running
+            - name: "Cancel similar actions in progress"
+              uses: styfle/cancel-workflow-action@0.6.0
+              with:
+                  access_token: ${{ github.token }}
+                  
+            # Detects OS and provide Nim-friendly OS identifiers
+            - name: Detect current OS
+              id: os
+              run: echo "::set-output name=id::${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'macosx' || matrix.os == 'windows-latest' && 'windows'}}"
 
-      # Celebrate! :)
+            # Checks out the repository
+            - uses: actions/checkout@v2
+
+            # Installs libraries
+            - name: install musl-gcc
+              run: sudo apt-get install -y musl-tools
+              if: matrix.os == 'ubuntu-latest'
+
+            # Sets path (Linux, macOS)
+            - name: Update $PATH
+              run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
+              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+
+            # Sets path (Windows)
+            - name: Update %PATH%
+              run: echo "${HOME}/.nimble/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+              if: matrix.os == 'windows-latest'
+
+            # Install the Nim compiler and dependencies
+            - name: Install Nim and deps
+              run: |
+                  curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
+                  sh init.sh -y
+                  nimble install zippy
+                  nimble install nifty
+                  nifty install
+            # Build for Linux
+            - name: Build (Linux)
+              run: nimble build -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl --opt:size
+              if: matrix.os == 'ubuntu-latest'
+
+            # Build for macOS/Windows
+            - name: Build (macOS, Windows)
+              run: nimble build -d:release -d:ssl --opt:size
+              if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
+
+            # Retrieve ID and Name of the current (draft) release
+            - name: "Get current release"
+              id: current-release
+              uses: InsonusK/get-latest-release@v1.0.1
+              with:
+                  myToken: ${{ github.token }}
+                  exclude_types: "release"
+                  view_top: 1
+
+            # Package the resulting Linux/macOS binary
+            - name: Create artifact (Linux, macOS)
+              run: zip min_${{steps.current-release.outputs.tag_name}}_${{steps.os.outputs.id}}_x64.zip min
+              if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+              
+            # Package the resulting Windows binary
+            - name: Create artifact (Windows)
+              run: Compress-Archive -Path mn.exe -DestinationPath min_${{steps.current-release.outputs.tag_name}}_windows_x64.zip
+              if: matrix.os == 'windows-latest'
+
+            # Upload artifacts to current draft release
+            - name: "Upload to current release"
+              uses: xresloader/upload-to-github-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  file: "min_v*.zip"
+                  overwrite: true
+                  tag_name: ${{steps.current-release.outputs.tag_name}}
+                  release_id: ${{steps.current-release.outputs.id }}
+                  verbose: true
