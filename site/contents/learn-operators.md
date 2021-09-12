@@ -29,6 +29,7 @@ It is possible to define operator symbols using the {#link-operator||lang||opera
      ;; Calculates the square of n.
 
  The {#link-operator||lang||operator#} symbol provides way to:
+ 
  * Specify the name of the symbol operator (**square** in this case)
  * Specify a signature to identify the type of the input and output values (in this case, the operator takes a numeric input value and produces a numeric output value). Also, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation.
  * Specify a quotation containing the code that the operator will execute.
@@ -44,11 +45,12 @@ Sometimes you just want to bind a piece of code to a symbol to reuse it later, t
 Note that this feels like using {#link-operator||lang||define#}, but the main difference between {#link-operator||lang||lambda#} and {#link-operator||lang||define#} is that `lambda` only works on quotations doesn't auto-quote them, so that they are immediately evaluated when the corresponding symbol is pushed on the stack.
 
 Also note that unlike with {#link-operator||lang||operator#}, symbols defined with {#link-operator||lang||lambda#}:
+
 * have no built-in validation of input and output values.
 * do not support the `return` symbol to immediately end their execution.
 * have no built-in stack pollution checks.
 
-> %tip
+> %tip%
 > Tip
 > 
 > You can use {#link-operator||lang||lambda-bind#} to re-set a previously set lambda.
