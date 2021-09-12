@@ -43,8 +43,10 @@ If the **-d:ssl** flag is specified when compiling, min will be built with SSL s
 * use all the cryptographic symbols defined in the {#link-module||crypto#}.
 
 If this flag is not specified:
+
 * It will not be possible to perform HTTPS requests
 * Only the following symbols will be exposed by the {#link-module||crypto#}:
+
   * {#link-operator||crypto||md5#} 
   * {#link-operator||crypto||sha1#} 
   * {#link-operator||crypto||encode#} 
