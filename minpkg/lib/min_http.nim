@@ -51,7 +51,7 @@ proc http_module*(i: In)=
       body = i.dget(req, "body")
     meth = i.dget(req, "method")
     url = i.dget(req, "url")
-    let resp = cli.request(url = url.getString, httpMethod = meth.getString, body = body.getString, headers = headers)
+    let resp = cli.request(url = url.getString, httpMethod = parseEnum[HttpMethod](meth.getString), body = body.getString, headers = headers)
     var res = newDict(i.scope)
     res.objType = "http-response"
     res = i.dset(res, "version", resp.version.newVal)

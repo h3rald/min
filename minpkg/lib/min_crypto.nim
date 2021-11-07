@@ -47,7 +47,7 @@ proc crypto_module*(i: In)=
 
     proc hash(s: string, kind: EVP_MD, size: int): string =
       var hash_length: cuint = 0
-      var hash = alloc[ptr cuchar](size)
+      var hash = alloc[ptr uint8](size)
       let ctx = EVP_MD_CTX_new()
       discard EVP_DigestInit_ex(ctx, kind, nil)
       discard EVP_DigestUpdate(ctx, unsafeAddr s[0], s.len.cuint)
