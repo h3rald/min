@@ -44,12 +44,12 @@ proc time_module*(i: In)=
     try:
       let year = i.dget(dict, "year").intVal.int
       let month = Month(i.dget(dict, "month").intVal.int - 1)
-      let monthday = i.dget(dict, "day").intVal.int
+      let monthday = MonthdayRange(i.dget(dict, "day").intVal.int)
       let hour: HourRange = i.dget(dict, "hour").intVal.int
       let minute: MinuteRange = i.dget(dict, "minute").intVal.int
       let second: SecondRange = i.dget(dict, "second").intVal.int
       let timezone = i.dget(dict, "timezone").intVal.int
-      let tinfo = datetime(monthday, month, year, hour, minute, second, 00, utc())
+      let tinfo = dateTime(year, month, monthday, hour, minute, second, 0, utc())
       i.push (tinfo + timezone.seconds).toTime.toUnix.int.newVal
     except:
       raiseInvalid("An invalid timeinfo dictionary was provided.")
