@@ -133,7 +133,10 @@
 
   ({3 :a 5 :b} scope-symbols ("a" "b") ==) *test/assert
 
-  (opts {} ==) *test/assert
+  (dev?)
+    ((opts {true :d} ==) *test/assert)
+    ((opts {} ==) *test/assert)
+  if
 
   (args first "\.min$" match?) *test/assert
 
@@ -271,14 +274,19 @@
     (natural :n natural :m ==> natural :result)
     (n m + @result)
   ) ::
-  null :err
-  (
-    (3 -3 natural-sum)
-    (@err)
-  ) try
-  pop ;Remove 3 that was left on the stack.
-  (err format-error "expected: natural natural natural-sum" match?) *test/assert
-  (2 3 natural-sum 5 ==) *test/assert
+  (dev?)
+    (
+      null :err
+      (
+        (3 -3 natural-sum)
+        (@err)
+      ) try
+      pop ;Remove 3 that was left on the stack.
+      (err format-error "expected: natural natural natural-sum" match?) *test/assert
+      (2 3 natural-sum 5 ==) *test/assert
+    )
+  when
+  
   
   (
    constructor test-c

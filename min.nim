@@ -380,7 +380,7 @@ when isMainModule:
           of "prelude", "p":
             customPrelude = val
           of "dev", "d":
-            SAFE = true
+            DEV = true
           of "log", "l":
             if file == "":
               var val = val

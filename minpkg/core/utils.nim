@@ -292,7 +292,7 @@ proc validType*(i: In, s: string): bool =
 
 # The following is used in operator signatures
 proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] {.gcsafe.}=
-  if not SAFE:
+  if not DEV:
     # Ignore validation, just return elements
     result = newSeq[MinValue](0)
     for el in elements:

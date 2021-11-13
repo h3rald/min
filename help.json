@@ -26,6 +26,16 @@
       "kind": "symbol",
       "name": "&"
     },
+    "&&": {
+      "description": "See expect-all",
+      "kind": "symbol",
+      "name": "&&"
+    },
+    "&vert;&vert;": {
+      "description": "See expect-any",
+      "kind": "symbol",
+      "name": "&vert;&vert;"
+    },
     "'": {
       "description": "See quotesym",
       "kind": "symbol",
@@ -44,10 +54,9 @@
       "signature": "num1 num2 ==> num3"
     },
     "-": {
-      "description": "Subtracts num2 from num1.",
+      "description": "See dequote",
       "kind": "symbol",
-      "name": "-",
-      "signature": "num1 num2 ==> num3"
+      "name": "-"
     },
     "-inf": {
       "description": "Returns negative infinity.",
@@ -512,6 +521,12 @@
       "name": "dequote",
       "signature": "quot ==> a*"
     },
+    "dev?": {
+      "description": "Returns true if the current program is being executed in development mode.",
+      "kind": "symbol",
+      "name": "dev?",
+      "signature": " ==> bool"
+    },
     "dget": {
       "description": "Returns the value of key 'sym from dictionary dict.",
       "kind": "symbol",
@@ -717,7 +732,7 @@
       "signature": "int ==> "
     },
     "expect": {
-      "description": "Validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
+      "description": "If the -d (--dev) flag is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). If the -d (--dev) flag is not specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
       "kind": "symbol",
       "name": "expect",
       "signature": "quot1 ==> quot2"
@@ -1257,7 +1272,7 @@
       "signature": "quot1 quot2 ==> bool"
     },
     "operator": {
-      "description": "Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\n \n quot is a quotation containing:\n \n * A symbol identifying the type of operator to define (symbol, sigil, or typeclass).\n * A symbol identifying the name of the operator.\n * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\n * A quotation identifying the body of the operator.\n\n The main additional features offered by this way of defining operators are the following:\n\n * Both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\n \n \n Example\n \n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\n\n      (\n        symbol pow\n        (num :base int :exp == num :result)\n        ( \n          (base 0 == exp 0 == and)\n            (nan @result return)\n          when\n          (base 1 == exp inf == and)\n            (nan @result return)\n          when\n          (base inf == exp 0 == and)\n            (nan @result return)\n          when\n          exp 1 - :n\n          base  (dup) n times (*) n times @result\n        )\n      ) ::",
+      "description": "Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\n \n quot is a quotation containing:\n \n * A symbol identifying the type of operator to define (symbol, sigil, or typeclass).\n * A symbol identifying the name of the operator.\n * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\n * A quotation identifying the body of the operator.\n\n The main additional features offered by this way of defining operators are the following:\n\n * If in development mode (-d or --dev flag specified at run time), both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\n \n \n Example\n \n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\n\n      (\n        symbol pow\n        (num :base int :exp == num :result)\n        ( \n          (base 0 == exp 0 == and)\n            (nan @result return)\n          when\n          (base 1 == exp inf == and)\n            (nan @result return)\n          when\n          (base inf == exp 0 == and)\n            (nan @result return)\n          when\n          exp 1 - :n\n          base  (dup) n times (*) n times @result\n        )\n      ) ::",
       "kind": "symbol",
       "name": "operator",
       "signature": "quot ==> a*"

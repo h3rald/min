@@ -993,6 +993,9 @@ proc lang_module*(i: In) =
   def.symbol("compiled?") do (i: In):
     i.push MINCOMPILED.newVal
 
+  def.symbol("dev?") do (i: In):
+    i.push DEV.newVal
+
   def.symbol("line-info") do (i: In):
     var d = newDict(i.scope)
     i.dset(d, "filename", i.currSym.filename.newVal)

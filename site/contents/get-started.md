@@ -111,7 +111,7 @@ min also supports running programs from standard input, so the following command
 
 > %tip%
 > 
-> You can enable runtime checks and validations by spacifying `-d` (`--dev`) when running a min program.
+> You can enable _development mode_ (runtime checks and validations) by spacifying `-d` (`--dev`) when running a min program. If development mode is not enabled, min programs run faster.
 
 ## Compiling a min Program
 
