@@ -569,7 +569,7 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
     of minSymbol:
       return a.symVal
     of minString:
-      return "\"$1\"" % a.strVal.replace("\"", "\\\"")
+      return "\""&a.strVal.escapeJsonUnquoted&"\""
     of minInt:
       return $a.intVal
     of minFloat:
