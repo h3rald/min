@@ -115,7 +115,7 @@ Parses and interprets {{s}}. #}
 Exits the program or shell with {{i}} as return code. #}
 
 {#op||expect||{{q1}}||{{q2}}||
-> If the `-s` or `--safe` is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}} (in reverse order). If the neither `-s` nor `--safe` is specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. 
+> If the `-d` (`--dev`) flag is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in {{q1}} (_n_ is {{q1}}'s length) and if all the elements are valid returns them wrapped in {{q2}} (in reverse order). If the `-d` (`--dev`) flag is not specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. 
 
 > > %tip%
 > > Tips
@@ -286,7 +286,7 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 >
 > The main additional features offered by this way of defining operators are the following:
 >
-> * (if the `-s` or `--safe` is specified when running the program) Both input and output values are checked against a type (like when using the `expect` operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.
+> * If in development mode (`-d` or `--dev` flag specified at run time), both input and output values are checked against a type (like when using the `expect` operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.
 > * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.
 > * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).
 > * It is possible to use the `return` symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.

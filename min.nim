@@ -343,7 +343,7 @@ when isMainModule:
                               compiled executable (if -c is set)
     -c, --compile             Compile the specified file
     -e, --evaluate            Evaluate a $exe program inline
-    -s, --safe                Enable runtime checks
+    -d, --dev                 Enable "development mode" (runtime checks)
     -h, --help                Print this help$iOpt
     -j, --interactive-simple  Start $exe shell (without advanced prompt)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
@@ -379,7 +379,7 @@ when isMainModule:
             ASSETPATH = val
           of "prelude", "p":
             customPrelude = val
-          of "runtime-checks", "r":
+          of "dev", "d":
             SAFE = true
           of "log", "l":
             if file == "":
