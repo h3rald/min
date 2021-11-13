@@ -109,6 +109,10 @@ min also supports running programs from standard input, so the following command
 > 
 > [$](class:prompt) cat myfile.min | min
 
+> %tip%
+> 
+> You can enable runtime checks and validations by spacifying `-s` or `--safe` when running a min program.
+
 ## Compiling a min Program
 
 min programs can be compiled to a single executable simply by specifying the `-c` (or `--compile`) flag when executing a min file:

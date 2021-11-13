@@ -18,3 +18,6 @@ var EDITOR* {.threadvar.}: LineEditor
 EDITOR = initEditor(historyFile = MINHISTORY)
 var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false
+var SAFE* {.threadvar.}: bool
+SAFE = false
+

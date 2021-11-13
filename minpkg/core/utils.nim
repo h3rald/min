@@ -7,6 +7,7 @@ import
   value,
   json,
   scope,
+  env,
   interpreter
   
 # Library methods
@@ -291,6 +292,12 @@ proc validType*(i: In, s: string): bool =
 
 # The following is used in operator signatures
 proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] {.gcsafe.}=
+  if not SAFE:
+    # Ignore validation, just return elements
+    result = newSeq[MinValue](0)
+    for el in elements:
+      result.add i.pop
+    return result
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
