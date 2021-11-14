@@ -22,6 +22,9 @@ Returns the full path to the current directory. #}
 {#op||..||{{none}}||{{s}}||
 Returns the full path to the parent directory. #}
 
+{#op||admin?||{{none}}||{{b}}||
+Returns {{t}} if the program is being run with administrative privileges. #}
+
 {#op||chmod||{{sl}} {{i}}||{{none}}||
 > Sets the permissions of file or directory {{sl}} to {{i}}. {{i}} is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.
 > 

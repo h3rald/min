@@ -26,4 +26,5 @@
 
 ### Fixes and Improvements
 
+* Fixed Nim 1.6.0 compilation warnings.
 * string values are now properly escaped when printed.

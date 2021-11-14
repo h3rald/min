@@ -185,6 +185,18 @@
       "name": "abs",
       "signature": "num1 ==> num2"
     },
+    "absolute-path": {
+      "description": "Returns the absolute path to 'sym.",
+      "kind": "symbol",
+      "name": "absolute-path",
+      "signature": "'sym ==> str"
+    },
+    "absolute-path?": {
+      "description": "Returns true if 'sym is an absolute path.",
+      "kind": "symbol",
+      "name": "absolute-path?",
+      "signature": "'sym ==> bool"
+    },
     "accept": {
       "description": "Makes dict:socket2 (server) accept a connection from dict:socket1 (client). Returns the client socket dict:socket1 from which it will be possible to receive data from.",
       "kind": "symbol",
@@ -196,6 +208,12 @@
       "kind": "symbol",
       "name": "acos",
       "signature": "num1 ==> num2"
+    },
+    "admin?": {
+      "description": "Returns true if the program is being run with administrative privileges.",
+      "kind": "symbol",
+      "name": "admin?",
+      "signature": " ==> bool"
     },
     "aes": {
       "description": "Encrypts or decrypts 'sym1 using the Advanced Encryption Standard (AES) in CTR mode, using 'sym2 as password.",
@@ -731,6 +749,18 @@
       "name": "exit",
       "signature": "int ==> "
     },
+    "expand-filename": {
+      "description": "Returns the absolute path to the file name 'sym.",
+      "kind": "symbol",
+      "name": "expand-filename",
+      "signature": "'sym ==> str"
+    },
+    "expand-symlink": {
+      "description": "Returns the absolute path to the symlink 'sym (an error is raised if 'sym is not a symlink).",
+      "kind": "symbol",
+      "name": "expand-symlink",
+      "signature": "'sym ==> str"
+    },
     "expect": {
       "description": "If the -d (--dev) flag is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). If the -d (--dev) flag is not specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
       "kind": "symbol",
@@ -1043,6 +1073,12 @@
       "name": "join",
       "signature": "quot 'sym ==> str"
     },
+    "join-path": {
+      "description": "Joins the strings contained in quot with /.",
+      "kind": "symbol",
+      "name": "join-path",
+      "signature": "quot ==> str"
+    },
     "keep": {
       "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ keep",
       "kind": "symbol",
@@ -1228,6 +1264,12 @@
       "kind": "symbol",
       "name": "nip",
       "signature": "a1 a2 ==> a2"
+    },
+    "normalized-path": {
+      "description": "Returns the normalized path to 'sym.",
+      "kind": "symbol",
+      "name": "normalized-path",
+      "signature": "'sym ==> str"
     },
     "not": {
       "description": "Negates bool1.",
@@ -1516,6 +1558,12 @@
       "kind": "symbol",
       "name": "reject",
       "signature": "quot1 quot2 ==> quot3"
+    },
+    "relative-path": {
+      "description": "Returns the path of 'sym1 relative to 'sym2.",
+      "kind": "symbol",
+      "name": "relative-path",
+      "signature": "'sym1 'sym2 ==> str"
     },
     "remove": {
       "description": "Returns the _n^th_ element of quot1 (zero-based), and returns the modified copy of the quotation quot2.",
@@ -2069,6 +2117,12 @@
       "name": "union",
       "signature": "quot1 quot2 ==> quot3"
     },
+    "unix-path": {
+      "description": "Converts all backslashes in 'sym to slashes.",
+      "kind": "symbol",
+      "name": "unix-path",
+      "signature": "'sym ==> str"
+    },
     "unless": {
       "description": "If 1 evaluates to false  then evaluates 2.",
       "kind": "symbol",
@@ -2134,6 +2188,12 @@
       "kind": "symbol",
       "name": "while",
       "signature": "quot1 quot2 ==> a*"
+    },
+    "windows-path": {
+      "description": "Converts all slashes in 'sym to backslashes.",
+      "kind": "symbol",
+      "name": "windows-path",
+      "signature": "'sym ==> str"
     },
     "with": {
       "description": "Pushes each item of quot1 on the stack using the scope of quot2 as scope.",

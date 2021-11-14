@@ -121,15 +121,15 @@ proc fs_module*(i: In) =
       if not p.isStringLike:
         raiseInvalid("A quotation of strings is required")
       fragments.add(p.getString)
-    i.push fragments.joinPath.newVal
+    i.push fragments.joinPath.unix.newVal
   
   def.symbol("expand-filename") do (i: In):
     let vals = i.expect("'sym")
-    i.push vals[0].getString.expandFilename.newVal
+    i.push vals[0].getString.expandFilename.unix.newVal
 
   def.symbol("expand-symlink") do (i: In):
     let vals = i.expect("'sym")
-    i.push vals[0].getString.expandSymlink.newVal
+    i.push vals[0].getString.expandSymlink.unix.newVal
 
   def.symbol("normalized-path") do (i: In):
     let vals = i.expect("'sym")
@@ -141,11 +141,11 @@ proc fs_module*(i: In) =
     let vals = i.expect("'sym", "'sym")
     let p = vals[1].getString
     let base = vals[0].getString
-    i.push relativePath(p, base).newVal
+    i.push relativePath(p, base).unix.newVal
 
   def.symbol("absolute-path") do (i: In):
     let vals = i.expect("'sym")
-    i.push vals[0].getString.absolutePath.newVal
+    i.push vals[0].getString.absolutePath.unix.newVal
 
   def.symbol("windows-path") do (i: In):
     let vals = i.expect("'sym")
