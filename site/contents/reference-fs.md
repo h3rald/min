@@ -10,6 +10,21 @@ Returns a timestamp corresponding to the time that file/directory {{sl}} was las
 {#op||ctime||{{sl}}||{{flt}}||
 Returns a timestamp corresponding to the time that file/directory {{sl}} was created.#}
 
+{#op||dirname||{{sl}}||{{s}}||
+Returns the path of the directory containing path {{sl}}.#}
+
+{#op||dir?||{{sl}}||{{b}}||
+Returns {{t}} if the specified path {{sl}} exists and is a directory. #}
+
+{#op||exists?||{{sl}}||{{b}}||
+Returns {{t}} if the specified file or directory {{sl}} exists. #}
+
+{#op||file?||{{sl}}||{{b}}||
+Returns {{t}} if the specified path {{sl}} exists and is a file. #}
+
+{#op||filename||{{sl}}||{{s}}||
+Returns the file name of path {{sl}}.#}
+
 {#op||fperms||{{sl}}||{{i}}||
 Returns the Unix permissions (expressed as a three-digit number) of file/directory {{sl}}.#}
 
@@ -49,3 +64,5 @@ Returns {{t}} if file/directory {{sl}} is hidden, {{f}} otherwise.#}
 {#op||mtime||{{sl}}||{{flt}}||
 Returns a timestamp corresponding to the time that file/directory {{sl}} was last modified.#}
 
+{#op||symlink?||{{sl}}||{{b}}||
+Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}

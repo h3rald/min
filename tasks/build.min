@@ -6,6 +6,10 @@
   symbol cz
   ('sym :stage 'sym :variant 'sym :target-os ==>)
   (
+    true :pack-result
+    (stage "^(release-nopack|dev)$" match?)
+      (false @pack-result)
+    when
     "-d:release" :d-stage
     (stage "dev" ==)
       ("-d:dev" @d-stage)
@@ -24,12 +28,14 @@
       ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)
     when
     "nim c $# -d:ssl $# --opt:size --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts ! pop
-    {}
-      target-os %os
-      config /version %version
-      o-variant %exe
-    (stage "dev" !=)
-      (pack)
+    (pack-result)
+      (
+        {}
+          target-os %os
+          config /version %version
+          o-variant %exe
+        pack
+      )
     when
   )
 ) ::
@@ -108,7 +114,7 @@
 (
   symbol default
   (==>)
-  ("" "" os cz)
+  ("release-nopack" "" os cz)
 ) ::
 ;; Builds min on the current OS.
 (

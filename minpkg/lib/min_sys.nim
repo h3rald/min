@@ -2,21 +2,17 @@ import
   os, 
   osproc, 
   strutils,
-  critbits,
   logging,
   tables
 import 
   ../core/parser, 
-  ../core/env,
+  ../core/baseutils,
   ../core/value, 
   ../core/interpreter, 
   ../core/utils,
   ../core/fileutils
 
 import zippy/ziparchives
-
-proc unix(s: string): string =
-  return s.replace("\\", "/")
 
 proc sys_module*(i: In)=
   let def = i.define()
@@ -90,37 +86,6 @@ proc sys_module*(i: In)=
   
   def.symbol("cpu") do (i: In):
     i.push hostCPU.newVal
-  
-  def.symbol("exists?") do (i: In):
-    let vals = i.expect("'sym")
-    let f = vals[0].getString
-    var found = false
-    if MINCOMPILED:
-      let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
-      
-      found = COMPILEDASSETS.hasKey(cf)
-    if found:
-      i.push true.newVal
-    else:
-      i.push newVal(f.fileExists or f.dirExists)
-    
-  def.symbol("file?") do (i: In):
-    let vals = i.expect("'sym")
-    let f = vals[0].getString
-    var found = false
-    if MINCOMPILED:
-      let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
-      
-      found = COMPILEDASSETS.hasKey(cf)
-    if found:
-      i.push true.newVal
-    else:
-      i.push f.fileExists.newVal
-    
-  def.symbol("dir?") do (i: In):
-    let vals = i.expect("'sym")
-    let f = vals[0]
-    i.push f.getString.dirExists.newVal
     
   def.symbol("rm") do (i: In):
     let vals = i.expect("'sym")
@@ -178,11 +143,6 @@ proc sys_module*(i: In)=
     let s = vals[1]
     s.getString.setFilePermissions(perms.intVal.toFilePermissions)
 
-  def.symbol("symlink?") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0]
-    i.push s.getString.symlinkExists.newVal
-
   def.symbol("symlink") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let dest = vals[0]
@@ -194,16 +154,6 @@ proc sys_module*(i: In)=
     let dest = vals[0]
     let src = vals[1]
     src.getString.createHardlink dest.getString
-
-  def.symbol("filename") do (i: In):
-    let vals = i.expect("'sym")
-    let f = vals[0]
-    i.push f.getString.extractFilename.unix.newVal
-
-  def.symbol("dirname") do (i: In):
-    let vals = i.expect("'sym")
-    let f = vals[0]
-    i.push f.getString.parentDir.unix.newVal
 
   def.symbol("$") do (i: In):
     i.pushSym("get-env")
@@ -245,6 +195,9 @@ proc sys_module*(i: In)=
       else:
         archive.contents[entry] = ArchiveEntry(contents: readFile(entry))
     archive.writeZipArchive(file.getString)
+
+  def.symbol("admin?") do (i: In):
+    i.push isAdmin().newVal
 
   def.finalize("sys")
     

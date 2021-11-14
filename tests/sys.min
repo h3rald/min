@@ -44,10 +44,6 @@
 
   ("TEST" "test.txt" fwrite "test.txt" file?) *test/assert
 
-  ("systest" exists?) *test/assert
-
-  ("systest" dir?) *test/assert
-
   ("test.txt" "test2.txt" cp "test2.txt" file?) *test/assert
 
   ("test.txt" "test1.txt" mv "test1.txt" file?) *test/assert
@@ -66,8 +62,6 @@
   .. cd
 
   ("systest" rmdir . ls (. "systest") => "/" join in? false ==) *test/assert
-
-  
 
   *test/report
   clear-stack

@@ -44,21 +44,6 @@ Returns the host CPU. It can be one of the following strings i386, alpha, powerp
 {#op||env?||{{sl}}||{{b}}||
 Returns {{t}} if environment variable {{sl}} exists, {{f}} otherwise. #}
 
-{#op||dir?||{{sl}}||{{b}}||
-Returns {{t}} if the specified path {{sl}} exists and is a directory. #}
-
-{#op||dirname||{{sl}}||{{s}}||
-Returns the path of the directory containing path {{sl}}.#}
-
-{#op||exists?||{{sl}}||{{b}}||
-Returns {{t}} if the specified file or directory {{sl}} exists. #}
-
-{#op||file?||{{sl}}||{{b}}||
-Returns {{t}} if the specified path {{sl}} exists and is a file. #}
-
-{#op||filename||{{sl}}||{{s}}||
-Returns the file name of path {{sl}}.#}
-
 {#op||get-env||{{sl}}||{{s}}||
 Returns environment variable {{sl}}. #}
 
@@ -97,9 +82,6 @@ Halts program execution for {{i}} milliseconds.#}
 
 {#op||symlink||{{sl1}} {{sl2}}||{{none}}||
 Creates symlink {{sl2}} for file or directory {{sl1}}. #}
-
-{#op||symlink?||{{sl}}||{{b}}||
-Returns {{t}} if the specified path {{sl}} exists and is a symbolic link. #}
 
 {#op||system||{{sl}}||{{i}}||
 Executes the external command {{sl}} in the current directory and pushes its return code on the stack. #}

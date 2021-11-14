@@ -18,6 +18,9 @@ proc simplifyPath*(filename: string, f: string): string =
     result = file
   else:
     result = pwd&"/"&file
+
+proc unix*(s: string): string =
+  return s.replace("\\", "/")
   
 proc parentDirEx*(s: string): string =
   return s.parentDir

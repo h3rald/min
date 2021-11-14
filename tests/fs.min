@@ -14,6 +14,30 @@
   ("test.txt" hidden? false ==) *test/assert
 
   ("test.txt" fstats 'type dget "file" ==) *test/assert
+
+  ("tests" dir?) *test/assert
+
+  ("tests" exists?) *test/assert
+
+  ("tests/fs.min" file?) *test/assert
+
+  (("a" "b" "c") join-path "a/b/c" ==) *test/assert
+
+  ("/home/h3rald" windows-path "\\home\\h3rald" ==) *test/assert
+
+  ("/home/h3rald" absolute-path?) *test/assert
+
+  ("tests/sys.min" expand-filename unix-path . "/tests/sys.min" suffix unix-path ==) *test/assert
+
+  ("./../tests" normalized-path unix-path "../tests" ==) *test/assert
+
+  ((. "tests/lang.min") => join-path . relative-path unix-path "tests/lang.min" ==) *test/assert
+
+  ("tests/lang.min" absolute-path unix-path (. "tests/lang.min") => join-path unix-path ==) *test/assert
+
+  ("./test" absolute-path? not) *test/assert
+
+  ("c:/windows" windows-path "c:\\windows" ==)  *test/assert
   
   *test/report
   clear-stack
