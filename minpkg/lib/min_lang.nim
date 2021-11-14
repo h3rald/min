@@ -162,7 +162,6 @@ proc lang_module*(i: In) =
     let nv = q.qVal[1]
     if not tv.isSymbol or (not ["symbol", "sigil",  "typeclass", "constructor"].contains(t)):
       raiseInvalid("Incorrect operator type specified (it must be 'symbol', 'sigil', 'constructor', or 'typeclass' - found '$#')" % tv.symVal)
-    
     if not nv.isSymbol:
       raiseInvalid("Operator name must be a symbol")
     var n = nv.symVal
@@ -268,17 +267,23 @@ proc lang_module*(i: In) =
         for k in 0..outVars.len-1:
           i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: @[newNull()].newVal, quotation: true)
         # Actually execute the body of the operator
-        var endSnapshot: seq[MinValue]
-        var snapShot: seq[MinValue]
-        try:
-          snapshot = deepCopy(i.stack)
-          i.dequote bv
-          endSnapshot = i.stack
-          let d= snapshot.diff(endSnapshot)
-          if d.len > 0 :
-            raiseInvalid("Operator '$#' is polluting the stack -- $#" % [n, $d.newVal])
-        except MinReturnException:
-          discard
+        if DEV:
+          var endSnapshot: seq[MinValue]
+          var snapShot: seq[MinValue]
+          try:
+            snapshot = deepCopy(i.stack)
+            i.dequote bv
+            endSnapshot = i.stack
+            let d= snapshot.diff(endSnapshot)
+            if d.len > 0 :
+              raiseInvalid("Operator '$#' is polluting the stack -- $#" % [n, $d.newVal])
+          except MinReturnException:
+            discard
+        else:
+          try:
+            i.dequote bv
+          except MinReturnException:
+            discard
         # Validate output
         for k in 0..outVars.len-1:
           var x = i.scope.symbols[outVars[k]].val
@@ -286,22 +291,23 @@ proc lang_module*(i: In) =
             x = x.qVal[0]
           if t == "constructor":
             x.objType = n
-          let o = outExpects[k]
-          var r = false;
-          if o.contains("|"):
-            let types = o.split("|")
-            for ut in types:
-              if i.validate(x, ut, generics):
-                r = true
-                break
-          else:
-            r = i.validate(x, o, generics)
-          if not r:
-            var tp = o
-            if generics.hasKey(o):
-              tp = generics[o]
-              generics = origGenerics
-            raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
+          if DEV:
+            let o = outExpects[k]
+            var r = false;
+            if o.contains("|"):
+              let types = o.split("|")
+              for ut in types:
+                if i.validate(x, ut, generics):
+                  r = true
+                  break
+            else:
+              r = i.validate(x, o, generics)
+            if not r:
+              var tp = o
+              if generics.hasKey(o):
+                tp = generics[o]
+                generics = origGenerics
+              raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
           # Push output on stack
           i.pushSym outVars[k]
       generics = origGenerics
