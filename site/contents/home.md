@@ -15,7 +15,7 @@ title: "Welcome to the min programming language"
       <a href="https://github.com/h3rald/min/issues">Issues</a> | 
       <a href="https://github.com/h3rald/min/discussions">Discussions</a> |
       <a href="https://h3rald.com/min/Min_DeveloperGuide.htm">Guide</a> <br>
-      <a href="https://www.youtube.com/watch?v=vyHuh_kGR28&list=PLxLdEZg8DRwRXNrY7yyGU0-g_GRSyRGKo&index=12">NimConf 2021 Presentation</a> 
+      <a href="https://www.youtube.com/watch?v=vyHuh_kGR28&list=PLxLdEZg8DRwRXNrY7yyGU0-g_GRSyRGKo&index=12">NimConf 2021 Talk</a> 
     </small>
   </section>
 </div>
