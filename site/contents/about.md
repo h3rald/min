@@ -33,7 +33,7 @@ min's parser started off as a fork of Nim's JSON parser -- adapted to process a 
 
 ## Who?
 
-min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [Peter Munch-Ellingsen](https://peterme.net), [Yanis Zafirópulos](https://github.com/drkameleon), and [baykus871](https://github.com/baykus871).
+min was created and implemented by [Fabio Cevasco](https://h3rald.com), with contributions by [Peter Munch-Ellingsen](https://peterme.net), [Yanis Zafirópulos](https://github.com/drkameleon), and **baykus871**.
 
 Special thanks to [mwgkgk](https://github.com/mwgkgk) for contributing to the design of native dictionaries.
 
