@@ -72,11 +72,11 @@
     "https://github.com/h3rald/min/releases/download/v$1/min_v$1_$2_x64.zip" (version opsys) =% :remote
     "min_$#.zip" (opsys) =% :local
     "wget $# -O $#" (remote local) =% :cmd
-    cmd run!
+    cmd system 
     "assets/downloads/$#/" (opsys) =% :dir
     "assets/downloads/" mkdir
-    "unzip %# -d %#" (local dir) =% @cmd
-    cmd run!
+    "unzip $# -d $#" (local dir) =% @cmd
+    cmd system!
     local rm
   ) foreach
 ) ^download-latest-min-exes
