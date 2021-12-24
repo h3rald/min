@@ -57,7 +57,7 @@ Also note that unlike with {#link-operator||lang||operator#}, symbols defined wi
 
 ## Sigils
 
-Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for for commonly-used symbols. 
+Besides symbols, you can also define sigils. min provides a set of predefined _sigils_ as abbreviations for commonly used symbols. 
 
 A sigil can be prepended to a double-quoted string or a single word (with no spaces) which will be treated as a string instead of using the corresponding symbol. 
 
@@ -100,7 +100,7 @@ Besides system sigils, you can also create your own sigils. Unlike system sigils
 * can only be prepended to double-quoted strings
 * can be unsealed, deleted, redefined, and sealed.
 
-Sigils can be a very powerful construct and a way to reduce boulerplate code: you can define a sigil to use as you would use any symbol which requires a single string or quoted symbol on the stack.
+Sigils can be a very powerful construct and a way to reduce boilerplate code: you can define a sigil to use as you would use any symbol which requires a single string or quoted symbol on the stack.
 
 Like symbols, sigils can be defined with the {#link-operator||lang||operator#} operator, like this:
 
@@ -110,7 +110,7 @@ Like symbols, sigils can be defined with the {#link-operator||lang||operator#} o
        (json from-json @result)
      ) operator
 
-This definition will add a `j` sigil that will process the follwing string as JSON code, so for example:
+This definition will add a `j` sigil that will process the following string as JSON code, so for example:
 
      j"{\"test\": true}"
 
@@ -129,7 +129,7 @@ Typically, but not always, operators push one or more value to the stack. While 
 
 ## Operator signatures
 
-When defining symbols and sigils witb the {#link-operator||lang||operator#} operator, you must specify a *signature* that will be used to validate and captuee input and output values:
+When defining symbols and sigils with the {#link-operator||lang||operator#} operator, you must specify a *signature* that will be used to validate and capture input and output values:
 
      (
        symbol square
@@ -137,7 +137,7 @@ When defining symbols and sigils witb the {#link-operator||lang||operator#} oper
        (n dup * @result)
      ) operator
 
-In this case for example tbe `square` symbol expects a number on the stack, which will be captured to tbe symbol `n` and it will place a number on the stack which needs to be bound in the operator body to the symbol `result`.
+In this case for example the `square` symbol expects a number on the stack, which will be captured to the symbol `n` and it will place a number on the stack which needs to be bound in the operator body to the symbol `result`.
 
 In a signature, a type expression must precede the capturing symbol. Such type expression can be:
 
@@ -149,7 +149,7 @@ In a signature, a type expression must precede the capturing symbol. Such type e
 > %note%
 > Note
 > 
-> If the operator you are defining doesn't require any input value or doesn't leave ang output value on the srack, simply don't put anything before or after the `==>` separator, respectively. For example, the signature of the {#link-operator||lang||puts!#} operator could be written like `(a ==>)`.
+> If the operator you are defining doesn't require any input value or doesn't leave ang output value on the stack, simply don't put anything before or after the `==>` separator, respectively. For example, the signature of the {#link-operator||lang||puts!#} operator could be written like `(a ==>)`.
 
 ### Type classes
 
@@ -178,7 +178,7 @@ This operator will raise an error if anything other than a quotation of strings 
 > %tip%
 > Tip
 > 
-> `typeclass:`-prefixed symbols are just like ordinary shmbols: they are lexically scoped, they can be sealed, unsealed and deleted.
+> `typeclass:`-prefixed symbols are just like ordinary symbols: they are lexically scoped, they can be sealed, unsealed and deleted.
 
 #### Capturing lambdas
 
@@ -292,7 +292,7 @@ Note that:
 ) ::
 ```
 
-In this case, `t` is set to the type union `stribg|num|quot`, and the `add` method above can be use too sum two numbers or join two strings or quotations.
+In this case, `t` is set to the type union `stribg|num|quot`, and the `add` method above can be used to sum two numbers or join two strings or quotations.
 
 Note that the value of `t` is evaluated to the type of the first value that is processed. In other words, the following programs will work as expected:
 
@@ -300,7 +300,7 @@ Note that the value of `t` is evaluated to the type of the first value that is p
      
      "hello, " "world" ;outputs "hello, world"
 
-while tbe fullowing will raise an error, because the value of `t` from `num` to `quot` within the same operator use:
+while the following will raise an error, because the value of `t` from `num` to `quot` within the same operator use:
 
      12 "test" add ;raises an error
      
@@ -308,7 +308,7 @@ while tbe fullowing will raise an error, because the value of `t` from `num` to 
 > Generics vs type unions
 >
 > Generics allow to specify a type as a type union, but the type will remain the same one throughout the same operator call. 
-> By contrast, using the same type union several times within the same signature allows different types to be used in the same call, and that is probably something you dont want!
+> By contrast, using the same type union several times within the same signature allows different types to be used in the same call, and that is probably something you don't want!
 
 ### Constructors
 
