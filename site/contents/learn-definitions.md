@@ -14,12 +14,12 @@ Being a concatenative language, min does not really need named parameters or var
 
 This program takes a single string corresponding to a file path and returns true if it's a .zip file bigger than 1MB that was modified in the last hour. Sure, it is remarkable that no variables are needed for such a program, but it is not very readable: because no variables are used, it is often necessary to make copies of elements and push them to the end of the stack -- that's what the {#link-operator||stack||dup#} and {#link-operator||stack||swap#} are used for.
 
-The good news is that you can use the {#link-operator||lang||define#} operator and the `:` sigil to define new symbols, and symbols can also be set to literals of course.
+The good news is that you can use the {#link-operator||lang||define#} operator and the `:` sigil to define new symbols, and symbols can also be set to fixed values (literals).
 
 Consider the following program:
 
      :filepath
-     filepath "\.zip$" match
+     filepath "\.zip$" match?
      filepath fsize 1000000 >
      filepath mtime now 3600 - >
      and and

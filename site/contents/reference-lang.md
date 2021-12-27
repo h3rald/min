@@ -234,6 +234,10 @@ Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike wi
 
 Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
 
+{#op||lambda-bind||{{q}} {{sl}}||{{none}}||
+Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. #}
+
+
 {#op||line-info||{{none}}||{{d}}||
 Returns a dictionary {{d}} containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.#}
 
@@ -250,7 +254,7 @@ Returns a dictionary {{d}} containing a **filename**, **line**, and **column** p
 > > 
 > > The following program leaves `120` on the stack, the factorial of 5:
 > > 
-> >    5 (dup 0 ==) 'succ (dup pred) '* linrec
+> >      5 (dup 0 ==) 'succ (dup pred) '* linrec
  #}
 
 {#op||load||{{sl}}||{{a0p}}||
