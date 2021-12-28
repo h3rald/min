@@ -869,12 +869,11 @@ proc lang_module*(i: In) =
   
   def.symbol("times") do (i: In):
     let vals = i.expect("int", "quot")
-    var t = vals[0]
+    var t = vals[0].intVal
     var prog = vals[1]
-    if t.intVal < 1:
-      raiseInvalid("A non-zero natural number is required")
-    for c in 1..t.intVal:
-      i.dequote(prog)
+    if t > 0:
+      for c in 1..t:
+        i.dequote(prog)
   
   def.symbol("while") do (i: In):
     let vals = i.expect("quot", "quot")
