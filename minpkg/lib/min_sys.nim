@@ -177,9 +177,8 @@ proc sys_module*(i: In)=
     let vals = i.expect("'sym", "'sym")
     var dir = vals[0].getString
     let f = vals[1].getString
-    if dir.len < 1:
-      raiseInvalid("No destination directory was specified.")
-    if dir[0] != '.' and dir.len > 1 and dir[1] != '/':
+    dir = dir.unix
+    if not dir.contains("/"):
       dir = "./" & dir
     extractAll(f, dir)
 
