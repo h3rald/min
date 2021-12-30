@@ -63,7 +63,7 @@ A sigil can be prepended to a double-quoted string or a single word (with no spa
 
 For example, the following executes the command `ls -al` and pushes the command return code on the stack:
 
-     !"ls -al"`
+     !"ls -al"
 
 Currently min provides the following sigils:
 
@@ -118,7 +118,7 @@ This definition will add a `j` sigil that will process the following string as J
 
     {true :test}
 
-Also, sigil definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, sigil definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
 
 ## Auto-popping
 
