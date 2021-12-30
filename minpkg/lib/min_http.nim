@@ -131,6 +131,9 @@ proc http_module*(i: In)=
       var headers = newHttpHeaders()
       for k in items(i.keys(rawHeaders).qVal):
         headers[k.getString] = i.dget(rawHeaders, k.getString).getString
+      # clear stack
+      while i.stack.len > 0:
+        discard i.pop
       await req.respond(status.intVal.HttpCode, body.getString, headers)
     try:
       waitFor server.serve(port = port.intVal.Port, callback = handler, address = address.getString)
