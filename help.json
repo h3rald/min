@@ -551,6 +551,12 @@
       "name": "dget",
       "signature": "dict 'sym ==> a"
     },
+    "dget-raw": {
+      "description": "Returns the value of key 'sym from dictionary dict, wrapped in a dict:rawval.",
+      "kind": "symbol",
+      "name": "dget-raw",
+      "signature": "dict 'sym ==> dict:rawval"
+    },
     "dhas?": {
       "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\n \n \n Example\n  \n The following program returns true:\n \n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
       "kind": "symbol",
@@ -630,10 +636,10 @@
       "signature": "dict:datastore 'sym ==> dict:datastore"
     },
     "dset": {
-      "description": "Sets the value of the 'sym of dict1  to a, and returns the modified dictionary dict.",
+      "description": "Sets the value of the 'sym of dict1  to 'sym (treating it as a symbol), and returns the modified dictionary dict.",
       "kind": "symbol",
       "name": "dset",
-      "signature": "dict a 'sym ==> dict"
+      "signature": "dict 'sym 'sym ==> dict"
     },
     "dsget": {
       "description": "Retrieves item dict from datastore dict:datastore. dict is retrieved by specifying 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/).",
@@ -1091,6 +1097,12 @@
       "name": "lambda",
       "signature": "quot 'sym ==> "
     },
+    "lambda-bind": {
+      "description": "Binds the specified quotation to an existing symbol 'sym which was previously-set via lambda.",
+      "kind": "symbol",
+      "name": "lambda-bind",
+      "signature": "quot 'sym ==> "
+    },
     "last": {
       "description": "Returns the last element of quot.",
       "kind": "symbol",
@@ -1110,7 +1122,7 @@
       "signature": " ==> dict"
     },
     "linrec": {
-      "description": "Implements linear recursions as follows:\n \n   1. Evaluates quot1.\n     * If quot1 evaluates to true, then it evaluates quot2.\n     * Otherwises it executes quot3 and recurses using the same four quotations.\n   2. Finally, it executes quot4.\n \n \n Example\n \n The following program leaves 120 on the stack, the factorial of 5:\n \n    5 (dup 0 ==) 'succ (dup pred) '* linrec",
+      "description": "Implements linear recursions as follows:\n \n   1. Evaluates quot1.\n     * If quot1 evaluates to true, then it evaluates quot2.\n     * Otherwises it executes quot3 and recurses using the same four quotations.\n   2. Finally, it executes quot4.\n \n \n Example\n \n The following program leaves 120 on the stack, the factorial of 5:\n \n      5 (dup 0 ==) 'succ (dup pred) '* linrec",
       "kind": "symbol",
       "name": "linrec",
       "signature": "quot1 quot2 quot3 quot4 ==> a*"
@@ -1194,7 +1206,7 @@
       "signature": "quot1 quot2 quot3 ==> int"
     },
     "mapkey": {
-      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l keymap\n \n causes the CTRL+L key to clear the screen.",
+      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l mapkey \n \n causes the CTRL+L key to clear the screen.",
       "kind": "symbol",
       "name": "mapkey",
       "signature": "quot 'sym ==> "
@@ -1493,6 +1505,12 @@
       "name": "quote-map",
       "signature": "quot1 ==> quot2"
     },
+    "quoted-symbol?": {
+      "description": "Returns true if a is a quoted symbol, false  otherwise.",
+      "kind": "symbol",
+      "name": "quoted-symbol?",
+      "signature": "a ==> bool"
+    },
     "quotesym": {
       "description": "Creates a symbol with the value of str and wraps it in a quotation.",
       "kind": "symbol",
@@ -1535,6 +1553,12 @@
       "name": "raw-args",
       "signature": " ==> quot"
     },
+    "raw-get": {
+      "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
+      "kind": "symbol",
+      "name": "raw-get",
+      "signature": "quot int ==> dict:rawval"
+    },
     "recv": {
       "description": "Waits to receive int characters from dict:socket and returns the resulting data str.",
       "kind": "symbol",
@@ -1548,10 +1572,10 @@
       "signature": "dict:socket ==> str"
     },
     "reduce": {
-      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
+      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
       "kind": "symbol",
       "name": "reduce",
-      "signature": "quot1 a quot2 ==> int"
+      "signature": "quot1 a1 quot2 ==> a2"
     },
     "reject": {
       "description": "Returns a new quotatios quot3 including all elements of quot1 that do not satisfy predicate quot2 (i.e. the opposite of filter)",
@@ -1768,6 +1792,12 @@
       "kind": "symbol",
       "name": "set-stack",
       "signature": "quot ==> a*"
+    },
+    "set-sym": {
+      "description": "Sets the value of the _n^th_ element quot1 (zero-based) to 'sym (treating it as a symbol), and returns the modified copy of the quotation quot2.",
+      "kind": "symbol",
+      "name": "set-sym",
+      "signature": "quot1 'sym int ==> quot2"
     },
     "sha1": {
       "description": "Returns the SHA1 hash of 'sym.",
@@ -2094,7 +2124,7 @@
       "signature": "(quot1 quot2? quot3?) ==> a*"
     },
     "type": {
-      "description": "Puts the data type of a on the stack. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
+      "description": "Returns the type of a.",
       "kind": "symbol",
       "name": "type",
       "signature": "a ==> str"

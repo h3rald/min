@@ -507,8 +507,8 @@ Converts {{any}} into a JSON string.#}
 > >         (0)
 > >       ) try #}
 
-{#op||type||{{a}}||{{s}}||
-Returns the type of {{a}}.#}
+{#op||type||{{any}}||{{s}}||
+Returns the type of {{any}}.#}
 
 {#op||typealias||{{sl1}} {{sl2}}||{{none}}||
 Creates a type alias {{sl1}} for type expression {{sl2}}.#}
