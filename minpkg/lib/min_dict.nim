@@ -21,11 +21,30 @@ proc dict_module*(i: In)=
     let k = vals[0]
     let d = vals[1]
     i.push i.dget(d, k)
+
+  def.symbol("dget-raw") do (i: In):
+    let vals = i.expect("'sym", "dict")
+    let k = vals[0]
+    let d = vals[1]
+    let v = i.dget(d, k)
+    var rv = newDict(i.scope)
+    rv.objType = "rawval"
+    i.dset(rv, "type", v.typeName.newVal)
+    i.dset(rv, "val", v)
+    i.dset(rv, "str", newVal($v))
+    i.push rv
     
   def.symbol("dset") do (i: In):
     let vals = i.expect("'sym", "a", "dict")
     let k = vals[0]
     let m = vals[1]
+    var d = vals[2]
+    i.push i.dset(d, k, m) 
+
+  def.symbol("dset-sym") do (i: In):
+    let vals = i.expect("'sym", "'sym", "dict")
+    let k = vals[0]
+    let m = newSym(vals[1].getString)
     var d = vals[2]
     i.push i.dset(d, k, m) 
 

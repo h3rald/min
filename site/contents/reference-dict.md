@@ -17,6 +17,9 @@ Removes {{sl}} from {{d1}} and returns {{d1}}. #}
 {#op||dget||{{d}} {{sl}}||{{any}}||
 Returns the value of key {{sl}} from dictionary {{d}}. #}
 
+{#op||dget-raw||{{d}} {{sl}}||{{rawval}}||
+Returns the value of key {{sl}} from dictionary {{d}}, wrapped in a {{rawval}}. #}
+
 {#op||dhas?||{{d}} {{sl}}||{{b}}||
 > Returns {{t}} if dictionary {{d}} contains the key {{sl}}, {{f}} otherwise.
 > 
@@ -47,6 +50,9 @@ Returns a quotation containing all the keys (odd items) and values (even items) 
 
 {#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
+
+{#op||dset||{{d}} {{sl}} {{sl}}||{{d}}||
+Sets the value of the {{sl}} of {{d1}}  to {{sl}} (treating it as a symbol), and returns the modified dictionary {{d}}. #}
 
 {#op||dtype||{{d}}||{{s}}||
 Returns a string set to the type of {{d}} (empty if the dictionary has no type). #}

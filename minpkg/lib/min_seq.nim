@@ -105,7 +105,18 @@ proc seq_module*(i: In)=
     let vals = i.expect("int", "a", "quot")
     let index = vals[0]
     let val = vals[1]
-    let q = vals[2]
+    var q = newVal(vals[2].qVal)
+    let ix = index.intVal
+    if q.qVal.len < ix or ix < 0:
+      raiseOutOfBounds("Index out of bounds")
+    q.qVal[ix.int] = val
+    i.push q
+
+  def.symbol("set-sym") do (i: In):
+    let vals = i.expect("int", "'sym", "quot")
+    let index = vals[0]
+    let val = newSym(vals[1].getString)
+    var q = newVal(vals[2].qVal)
     let ix = index.intVal
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")

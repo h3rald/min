@@ -161,6 +161,9 @@ Returns a new quotation {{q2}} containing all elements of {{q1}} in reverse orde
 {#op||set||{{q1}} {{any}} {{i}}||{{q2}}||
 Sets the value of the _n^th_ element {{q1}} (zero-based) to {{any}}, and returns the modified copy of the quotation {{q2}}. #}
 
+{#op||set-sym||{{q1}} {{sl}} {{i}}||{{q2}}||
+Sets the value of the _n^th_ element {{q1}} (zero-based) to {{sl}} (treating it as a symbol), and returns the modified copy of the quotation {{q2}}. #}
+
 {#op||shorten||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}. #}
 

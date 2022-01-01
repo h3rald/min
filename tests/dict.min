@@ -29,6 +29,10 @@
 
   (2 {(2 3 +) :sum} /sum -> + 7 ==) *test/assert
 
+  ({a :test} "test" dget-raw /str "a" ==) *test/assert
+
+  ({} 'test 'aaa dset-sym {aaa :test} ==) *test/assert
+
   (
     {} :archives
     ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
