@@ -132,6 +132,9 @@ Returns a new quotation containing the contents of {{q}} with {{any}} prepended.
 {#op||quote-map||{{q1}}||{{q2}}||
 Returns a new quotation {{q2}} obtained by quoting each element of {{q1}}.#}
 
+{#op||raw-get||{{q}} {{i}}||{{rawval}}||
+Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
+
 {#op||reduce||{{q1}} {{a1}} {{q2}}||{{a2}}||
 > Combines each successive element of {{q1}} using {{q2}}. On the first iteration, the first two inputs processed by {{q2}} are {{a1}} and the first element of {{q1}}.
 > 

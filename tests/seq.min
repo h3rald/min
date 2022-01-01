@@ -17,6 +17,8 @@
 
   ((1 2 3 4) 2 get 3 ==) *test/assert
 
+  ((a b c) 1 get-raw /type "sym" ==) *test/assert
+
   ((1 2 3 4) 222 2 set (1 2 222 4) ==) *test/assert
 
   ((1 2 3 4) 2 remove (1 2 4) ==) *test/assert

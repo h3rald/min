@@ -85,7 +85,22 @@ proc seq_module*(i: In)=
     if q.qVal.len < ix or ix < 0:
       raiseOutOfBounds("Index out of bounds")
     i.push q.qVal[ix.int]
-  
+
+  def.symbol("get-raw") do (i: In):
+    let vals = i.expect("int", "quot")
+    let index = vals[0]
+    let q = vals[1]
+    let ix = index.intVal
+    if q.qVal.len < ix or ix < 0:
+      raiseOutOfBounds("Index out of bounds")
+    let v = q.qVal[ix.int]
+    var rv = newDict(i.scope)
+    rv.objType = "rawval"
+    i.dset(rv, "type", v.typeName.newVal)
+    i.dset(rv, "val", v)
+    i.dset(rv, "str", newVal($v))
+    i.push rv
+    
   def.symbol("set") do (i: In):
     let vals = i.expect("int", "a", "quot")
     let index = vals[0]

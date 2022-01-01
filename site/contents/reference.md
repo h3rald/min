@@ -129,6 +129,15 @@ The following notation is used in the signature of all min operators:
        "tcp" :protocol
        ;socket
       }
+{{rawval}}
+: A raw value dictionary obtained via the {#link-operator||seq||get-raw#} or {#link-operator||dict||dget-raw#} operators:
+
+      {
+       "sym" :type
+       "my-symbol" :str
+       my-symbol :val
+       ;rawval
+      }
 {{dstore}}
 : A datastore dictionary that must be created through the {#link-operator||dstore||dsinit#} or {#link-operator||dstore||dsread#} operator:
 

@@ -53,6 +53,7 @@
 {{help => [dict:help](class:kwd)}}
 {{sock => [dict:socket](class:kwd)}}
 {{url => [dict:url](class:kwd)}}
+{{rawval => [dict:rawval](class:kwd)}}
 {{req => [dict:http-request](class:kwd)}}
 {{res => [dict:http-response](class:kwd)}}
 {{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}
