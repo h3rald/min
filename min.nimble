@@ -8,6 +8,7 @@ author        = pkgAuthor
 description   = pkgDescription
 license       = "MIT"
 bin           = @[pkgName]
+installExt    = @["nim", "c", "h", "a"]
 installFiles  = @["min.yml", "min.nim", "prelude.min", "help.json"]
 installDirs   = @["minpkg"]
 
