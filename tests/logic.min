@@ -136,6 +136,10 @@
   (1 stringlike? false ==) *test/assert
   ('test stringlike?) *test/assert
 
+  (("a") quoted-symbol? not) *test/assert
+  ('test quoted-symbol?) *test/assert
+  ((aaa bbb) quoted-symbol? not) *test/assert
+
   ({} 'dict:module type? false ==) *test/assert
   ((1 2 3) 'dict:module type? false ==) *test/assert
   (4 'dict:module type? false ==) *test/assert

@@ -80,6 +80,9 @@ Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 {#op||quotation?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
 
+{#op||quoted-symbol?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a quoted symbol, {{f}} otherwise. #}
+
 {#op||string?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
 

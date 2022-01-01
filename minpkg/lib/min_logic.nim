@@ -212,6 +212,13 @@ proc logic_module*(i: In)=
       i.push true.newVal
     else:
       i.push false.newVal
+  
+  def.symbol("quoted-symbol?") do (i: In):
+    let item = i.pop
+    if item.kind == minQuotation and item.qVal.len == 1 and item.qVal[0].kind == minSymbol:
+      i.push true.newVal
+    else:
+      i.push false.newVal
 
   def.symbol("stringlike?") do (i: In):
     if i.pop.isStringLike:
