@@ -291,9 +291,6 @@ proc str_module*(i: In) =
     var s = a & b
     i.push s.newVal
 
-  def.symbol("=~") do (i: In):
-    i.pushSym("regex")
-
   def.symbol("%") do (i: In):
     i.pushSym("interpolate")
 

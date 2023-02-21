@@ -32,7 +32,7 @@ Puts a quotation containing the contents of the stack on the stack.#}
 Does nothing.#}
 
 {#op||keep||{{a1}} {{q}}||{{a0p}} {{a1}}||
-> Applies each quotation contained in the first element to each subsequent corresponding element.
+> Removes the first element from the stack, dequotes it, and restores the second element.
 > > %sidebar%
 > > Example
 > > 
@@ -61,8 +61,8 @@ Moves the third and second element into second and third position and moves the 
 {#op||set-stack||{{q}}||{{a0p}}||
 Substitute the existing stack with the contents of {{q}}.#}
 
-{#op||sip||{{a1}} ({{a2}})||{{a0p}} {{a1}}||
-Saves the {{a1}}, dequotes {{a2}}, and restores {{a1}}.#}
+{#op||sip||{{q1}} {{q2}}||{{a0p}} {{q1}}||
+Saves the {{q1}}, dequotes {{q2}}, and restores {{q1}}.#}
 
 {#op||spread||{{a0p}} ({{q}}{{0p}})||{{a0p}}||
 > Applies each quotation contained in the first element to each subsequent corresponding element.

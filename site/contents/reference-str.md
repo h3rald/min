@@ -8,8 +8,6 @@ title: "str Module"
 
 {#alias||=%||apply-interpolate#}
 
-{#alias||=~||regex#}
-
 {#op||apply-interpolate||{{s}} {{q}}||{{s}}||
 The same as pushing `apply` and then `interpolate` on the stack.#}
 
@@ -99,7 +97,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > `"This is a simple test. Is it really a simple test?"`#}
 
 {#op||replace-apply||{{s1}} {{s2}} {{q}}||{{s3}}||
-> Returns a copy of {{s1}} containing all occurrences of {{s2}} replaced by applying {{q}} to each quotation correponding to each match.
+> Returns a copy of {{s1}} containing all occurrences of {{s2}} replaced by applying {{q}} to each quotation corresponding to each match.
 > > %tip%
 > > Tip
 > > 
@@ -110,13 +108,13 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > The following:
 > > 
-> > `":1::2::3::4:" ":(\d):" (=m m 1 get :d "-$#-" (d) =%) replace-apply`
+> > `":1::2::3::4:" ":(\d):" (1 get :d "-$#-" (d) =%) replace-apply`
 > > 
 > > produces:
 > > 
 > > `"-1--2--3--4-"`
 > > 
-> > Note that for each match the following quotations (each containing tbe full matcb and the captured matches) are produced as input for the replace quotation:
+> > Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation:
 > >      ("-1-" "1")
 > >      ("-2-" "2")
 > >      ("-3-" "3")
@@ -165,7 +163,7 @@ Splits {{sl1}} using separator {{sl2}} (a {{pcre}}) and returns the resulting st
 Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#} 
 
 {#op||substr||{{s1}} {{i1}} {{i2}}||{{s2}}||
-Returns a substring {{s2}} obtained by retriving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
+Returns a substring {{s2}} obtained by retrieving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
 
 {#op||suffix||{{sl1}} {{sl2}}||{{s}}||
 Appends {{sl2}} to {{sl1}}.#}

@@ -8,7 +8,7 @@ title: "Learn: Definitions"
 Being a concatenative language, min does not really need named parameters or variables: symbols just pop elements off the main stack in order, and that's normally enough. There is however one small problem with the traditional concatenative paradigm; consider the following program for example:
 
      dup dup 
-     "\.zip$" match 
+     "\.zip$" match?
      swap fsize 1000000 > and 
      swap mtime now 3600 - >
 

@@ -39,6 +39,7 @@ If that's the case, simply run **nimble install min**. This will actually instal
 #### -d:ssl
 
 If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
+
 * perform HTTPS requests with the {#link-module||http#}.
 * use all the cryptographic symbols defined in the {#link-module||crypto#}.
 
@@ -111,7 +112,7 @@ min also supports running programs from standard input, so the following command
 
 > %tip%
 > 
-> You can enable _development mode_ (runtime checks and validations) by spacifying `-d` (`--dev`) when running a min program. If development mode is not enabled, min programs run faster.
+> You can enable _development mode_ (runtime checks and validations) by specifying `-d` (`--dev`) when running a min program. If development mode is not enabled, min programs run faster.
 
 ## Compiling a min Program
 
@@ -152,4 +153,4 @@ Similarly, you can also bundle additional files in the executable by specifying 
 * If you are using [Visual Studio Code](https://code.visualstudio.com/), you can install the official [min extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) which provides syntax highlighting support, code folding, and auto-indentation.
 * If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
 * If you are using [Sublime Text 3](https://www.sublimetext.com/3), Rafael Carrasco created a min syntax definition file that is available [here](https://github.com/rscarrasco/min-sublime-syntax).
-* If you are hsing [Notepad++](https://notepad-plus-plus.org), a [Notepad++ language file](https://github.com/h3rald/min/blob/master/minNotepad++.xml) contributed by baykus871 is available in tbe repo.
+* If you are using [Notepad++](https://notepad-plus-plus.org), a [Notepad++ language file](https://github.com/h3rald/min/blob/master/minNotepad++.xml) contributed by baykus871 is available in the repo.

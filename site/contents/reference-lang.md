@@ -145,8 +145,8 @@ Raises an error if the stack is not empty.#}
 > 
 >   * If {{any}} is {{t}}, it is converted to `1.0`.
 >   * If {{any}} is {{f}}, it is converted to `0.0`.
->   * If {{any}} is {{null}}, it is converted to `0.0`
->.  * If {{any}} is a integer, it is converted to float value.
+>   * If {{any}} is {{null}}, it is converted to `0.0`.
+>   * If {{any}} is a integer, it is converted to float value.
 >   * If {{any}} is a float, no conversion is performed.
 >   * If {{any}} is a string, it is parsed as a float value.#}
 
@@ -219,7 +219,7 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 >   * If {{any}} is a string, it is parsed as an integer value.#}
 
 {#op||invoke||{{sl}}||{{a0p}}||
-> Assming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
+> Assuming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
 > 
 > > %sidebar%
 > > Example
@@ -279,7 +279,7 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 > > The default logging level is _notice_.#}
 
 {#op||loglevel?||{{none}}||{{s}}||
-Returns the current log level (debug, info, notive, warn, error or fatal). #}
+Returns the current log level (debug, info, notice, warn, error or fatal). #}
 
 {#op||operator||{{q}}||{{a0p}}||
 > Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
@@ -288,14 +288,14 @@ Returns the current log level (debug, info, notive, warn, error or fatal). #}
 > 
 > * A symbol identifying the type of operator to define (`symbol`, `sigil`, or `typeclass`).
 > * A symbol identifying the name of the operator.
-> * A quotation defining the signature of the operatorm containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
+> * A quotation defining the signature of the operator, containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
 > * A quotation identifying the body of the operator.
 >
 > The main additional features offered by this way of defining operators are the following:
 >
 > * If in development mode (`-d` or `--dev` flag specified at run time), both input and output values are checked against a type (like when using the `expect` operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.
 > * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.
-> * An exception is automatically raised if the operator body pollutes the stack by adding or removing elementa from the stack (besides adding the declared output values).
+> * An exception is automatically raised if the operator body pollutes the stack by adding or removing elements from the stack (besides adding the declared output values).
 > * It is possible to use the `return` symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.
 > 
 > > %sidebar%
