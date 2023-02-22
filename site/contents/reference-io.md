@@ -95,5 +95,5 @@ Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the 
 > > * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.
  #}
 
-{#op||warning||{{any}}||{{any}}||
-Prints {{any}} and a new line to STDERR, if logging level is set to [warning](class:kwd) or lower.#}
+{#op||warn||{{any}}||{{any}}||
+Prints {{any}} and a new line to STDERR, if logging level is set to [warn](class:kwd) or lower.#}

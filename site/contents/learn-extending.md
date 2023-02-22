@@ -19,13 +19,13 @@ When you just want to create more high-level min operator using functionalities 
 To create a new module, simply create a file containing your operator definitions implemented using either the {#link-operator||lang||operator#} operator or the {#link-operator||lang||lambda#} operator
 
 ```
-(dup *)             ^pow2
-(dup dup * *)       ^pow3
-(dup dup dup * * *) ^pow4
+(dup *)       ^pow2
+(dup dup * *) ^pow3
+(dup * dup *) ^pow4
 
 ```
 
-Save your code to a file (e.g. *quickpows.min*) and you can use it in other nim files using the {#link-operator||lang||require#} operator and the {#link-operator||lang||import#} (if you want to import the operators in the current scope):
+Save your code to a file (e.g. *quickpows.min*) and you can use it in other Nim files using the {#link-operator||lang||require#} operator and the {#link-operator||lang||import#} (if you want to import the operators in the current scope):
 
 ```
 'quickpows require :qp

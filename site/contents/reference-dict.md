@@ -46,12 +46,12 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
  #}
 
 {#op||dpairs||{{d}}||({{a0p}})||
-Returns a quotation containing all the keys (odd items) and values (even items) of dictiionary {{d}}. #}
+Returns a quotation containing all the keys (odd items) and values (even items) of dictionary {{d}}. #}
 
 {#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
 
-{#op||dset||{{d}} {{sl}} {{sl}}||{{d}}||
+{#op||dset-sym||{{d}} {{sl}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{sl}} (treating it as a symbol), and returns the modified dictionary {{d}}. #}
 
 {#op||dtype||{{d}}||{{s}}||

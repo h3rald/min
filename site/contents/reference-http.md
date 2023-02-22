@@ -67,7 +67,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       dup puts!
 > >     )
 > >     ; The request handler is ready, give it the name handler
-> >     =handler
+> >     :handler
 > >     
 > >     ; Create the parameter dictionary for the server
 > >     {}
