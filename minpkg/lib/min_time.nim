@@ -51,7 +51,7 @@ proc time_module*(i: In)=
       let timezone = i.dget(dict, "timezone").intVal.int
       let tinfo = dateTime(year, month, monthday, hour, minute, second, 0, utc())
       i.push (tinfo + timezone.seconds).toTime.toUnix.int.newVal
-    except:
+    except CatchableError:
       raiseInvalid("An invalid timeinfo dictionary was provided.")
 
   def.symbol("datetime") do (i: In):

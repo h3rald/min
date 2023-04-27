@@ -14,7 +14,7 @@ installDirs   = @["minpkg"]
 
 # Dependencies
 
-requires "nim >= 1.6.2, zippy >= 0.5.6"
+requires "nim >= 1.6.12, zippy >= 0.5.6"
 
 before install:
   exec "nimble install -y nifty"

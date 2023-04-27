@@ -139,7 +139,7 @@ proc io_module*(i: In) =
       var choice: int
       try:
         choice = answer.parseInt
-      except:
+      except CatchableError:
         choice = 0
       if choice <= 0 or choice > c:
         echo "Invalid choice."

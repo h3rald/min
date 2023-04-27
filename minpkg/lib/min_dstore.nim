@@ -87,7 +87,7 @@ proc dstore_module*(i: In)=
         var check = i.pop
         if check.isBool and check.boolVal == true:
           res.add e
-      except:
+      except CatchableError:
         discard
     i.push res.newVal
       

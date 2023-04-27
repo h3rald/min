@@ -154,11 +154,11 @@ proc stdLib*(i: In) =
   else:
     try:
       i.eval customPrelude.readFile, customPrelude
-    except:
+    except CatchableError:
       logging.warn("Unable to process custom prelude code in $1" % customPrelude)
   try:
     i.eval MINRC.readFile()
-  except:
+  except CatchableError:
     error "An error occurred evaluating the .minrc file."
 
 proc interpret*(i: In, s: Stream) =
@@ -167,7 +167,7 @@ proc interpret*(i: In, s: Stream) =
   discard i.parser.getToken() 
   try:
     i.interpret()
-  except:
+  except CatchableError:
     discard
   i.close()
 
@@ -176,7 +176,7 @@ proc interpret*(i: In, s: string): MinValue =
   discard i.parser.getToken() 
   try:
     result = i.interpret()
-  except:
+  except CatchableError:
     discard
     i.close()
     
@@ -210,7 +210,7 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
       discard execShellCmd(cmd)
     else:
       result = result.concat(i.compileFile(main))
-  except:
+  except CatchableError:
     discard
   i.close()
 
@@ -234,7 +234,7 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   var contents = ""
   try:
     fileLines = fn.readFile().splitLines()
-  except:
+  except CatchableError:
     logging.fatal("Cannot read from file: " & fn)
     quit(3)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":

@@ -253,7 +253,7 @@ proc lang_module*(i: In) =
       var inVals: seq[MinValue]
       try: 
         inVals = i.expect(inExpects, generics)
-      except:
+      except CatchableError:
         generics = origGenerics
         raise
       i.withScope():
@@ -410,7 +410,7 @@ proc lang_module*(i: In) =
           continue
         i.dset(dict, pair[0].strip, pair[1].strip.newVal)
       i.push(dict)
-    except:
+    except CatchableError:
       raiseInvalid("Invalid/unsupported YAML object (only dictionaries with string values are supported)")
 
   def.symbol("to-yaml") do (i: In):
@@ -427,7 +427,7 @@ proc lang_module*(i: In) =
           raiseInvalid(err)
         yaml &= "$1: $2\n" % [key.strVal, value.strVal]
       i.push(yaml.strip.newVal)
-    except:
+    except CatchableError:
       raiseInvalid(err)
 
   def.symbol("loglevel") do (i: In):
@@ -740,7 +740,7 @@ proc lang_module*(i: In) =
       let e = (MinRuntimeError)getCurrentException()
       i.push e.data
       i.dequote(catch)
-    except:
+    except CatchableError:
       if not hasCatch:
         return
       let e = getCurrentException()

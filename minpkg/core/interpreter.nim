@@ -156,7 +156,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe.}=
     i2.withScope(): 
       for v in q.qVal:
         i2.push v
-  except:
+  except CatchableError:
     i.currSym = i2.currSym
     i.trace = i2.trace
     raise
@@ -169,7 +169,7 @@ proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe.}=
   try:
     i2.withScope(): 
       i2.push v
-  except:
+  except CatchableError:
     i.currSym = i2.currSym
     i.trace = i2.trace
     raise
@@ -222,7 +222,7 @@ proc apply*(i: In, q: var MinValue) {.gcsafe.}=
           i2.dequote(v2)
         else:
           i2.push v
-  except:
+  except CatchableError:
     i.currSym = i2.currSym
     i.trace = i2.trace
     raise
@@ -307,7 +307,7 @@ template handleErrors*(i: In, body: untyped) =
     raise MinTrappedException(msg: msg)
   except MinTrappedException:
     raise
-  except:
+  except CatchableError:
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
     i.error(msg)
@@ -382,7 +382,7 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable.}=
   var contents = ""
   try:
     fileLines = s.readFile().splitLines()
-  except:
+  except CatchableError:
     fatal("Cannot read from file: " & s)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
@@ -404,7 +404,7 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   var contents = ""
   try:
     fileLines = s.readFile().splitLines()
-  except:
+  except CatchableError:
     fatal("Cannot read from file: " & s)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
