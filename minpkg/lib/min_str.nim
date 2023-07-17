@@ -2,6 +2,7 @@ import
   strutils, 
   sequtils,
   nre,
+  std/macros,
   uri
 import 
   ../core/parser, 
@@ -14,11 +15,11 @@ proc str_module*(i: In) =
   let def = i.define()
 
   when defined(windows): 
-    {.passL: "-static -Lminpkg/vendor/pcre/windows -lpcre".}
+    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
   elif defined(linux):
-    {.passL: "-static -Lminpkg/vendor/pcre/linux -lpcre".}
+    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux -lpcre".}
   elif defined(macosx):
-    {.passL: "-Bstatic -Lminpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
+    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
 
   def.symbol("interpolate") do (i: In):
     let vals = i.expect("quot", "str")

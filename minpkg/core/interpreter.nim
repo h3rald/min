@@ -301,7 +301,7 @@ template handleErrors*(i: In, body: untyped) =
   except MinRuntimeError:
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
-    error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    i.error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
     i.stackTrace()
     i.trace = @[]
     raise MinTrappedException(msg: msg)

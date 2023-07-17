@@ -1,6 +1,7 @@
 import
   base64,
   strutils,
+  std/macros,
   times,
   ../vendor/aes/aes
 import
@@ -39,11 +40,11 @@ proc crypto_module*(i: In)=
   when defined(ssl):
 
     when defined(windows): 
-      {.passL: "-static -Lminpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
     elif defined(linux):
-      {.passL: "-static -Lminpkg/vendor/openssl/linux -lssl -lcrypto".}
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
     elif defined(macosx):
-      {.passL: "-Bstatic -Lminpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
     proc hash(s: string, kind: EVP_MD, size: int): string =
       var hash_length: cuint = 0
