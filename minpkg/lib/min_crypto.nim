@@ -15,7 +15,8 @@ import
 when defined(ssl):
   import 
     openssl
-  
+
+  proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
   proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
   proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
 else:
@@ -47,12 +48,11 @@ proc crypto_module*(i: In)=
       {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
     proc hash(s: string, kind: EVP_MD, size: int): string =
-      var hash_length: cuint = 0
-      var hash = alloc[ptr uint8](size)
+      var hash = alloc[ptr cuint](size)
       let ctx = EVP_MD_CTX_new()
       discard EVP_DigestInit_ex(ctx, kind, nil)
-      discard EVP_DigestUpdate(ctx, unsafeAddr s[0], s.len.cuint)
-      discard EVP_DigestFinal_ex(ctx, hash, cast[ptr cuint](hash_length))
+      discard EVP_DigestUpdate(ctx, s.cstring, s.len.cuint)
+      discard EVP_DigestFinal_ex(ctx, hash, nil)
       EVP_MD_CTX_free(ctx)
       var hashStr = newString(size)
       copyMem(addr(hashStr[0]), hash, size)
@@ -67,7 +67,11 @@ proc crypto_module*(i: In)=
     def.symbol("md4") do (i: In):
       let vals = i.expect("'sym")
       let s = vals[0].getString
-      i.push hash(s, EVP_md4(), 32).newVal
+      var result = ""
+      var str = MD4(s.cstring, s.len.culong)
+      for i in 0 ..< 16:
+        result.add str[i].BiggestInt.toHex(2).toLower
+      i.push result.newVal
 
     def.symbol("sha1") do (i: In):
       let vals = i.expect("'sym")
