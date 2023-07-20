@@ -49,7 +49,7 @@ jobs:
         run: nifty install
       
       - name: Build
-        run: nimble build -d:release -d:ssl --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
+        run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
       
       - name: Test
         run: ./min tests/all.min

@@ -60,12 +60,12 @@ jobs:
                   nifty install
             # Build for Linux
             - name: Build (Linux)
-              run: nimble build -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl --opt:size
+              run: nimble build -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'ubuntu-latest'
 
             # Build for macOS/Windows
             - name: Build (macOS, Windows)
-              run: nimble build -d:release -d:ssl --opt:size
+              run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
 
             # Retrieve ID and Name of the current (draft) release
