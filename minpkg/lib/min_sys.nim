@@ -56,7 +56,7 @@ proc sys_module*(i: In)=
     let cmd = vals[0]
     let res = execCmdEx(cmd.getString)
     var d = newDict(i.scope)
-    i.dset(d, "output", res.output.newVal)
+    i.dset(d, "output", res.output.strip.newVal)
     i.dset(d, "code", res.exitCode.newVal)
     i.push(d)
   

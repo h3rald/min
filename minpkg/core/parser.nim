@@ -15,6 +15,7 @@ type
     tkError,
     tkEof,
     tkString,
+    tkCommand,
     tkInt,
     tkFloat,
     tkBracketLe,
@@ -29,6 +30,7 @@ type
     minInt,
     minFloat,
     minQuotation,
+    minCommand,
     minDictionary,
     minString,
     minSymbol,
@@ -51,6 +53,7 @@ type
     errBracketRiExpected,  ## ``)`` expected
     errBraceRiExpected,    ## ``}`` expected
     errQuoteExpected,      ## ``"`` or ``'`` expected
+    errSqBracketRiExpected,## ``]`` expected
     errEOC_Expected,       ## ``*/`` expected
     errEofExpected,        ## EOF expected
     errExprExpected
@@ -80,6 +83,7 @@ type
       of minNull: discard
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
+      of minCommand: cmdVal*: string
       of minDictionary:
         scope*: ref MinScope 
         obj*: pointer 
@@ -159,6 +163,7 @@ const
     "')' expected",
     "'}' expected",
     "'\"' expected",
+    "']' expected",
     "'*/' expected",
     "EOF expected",
     "expression expected"
@@ -167,6 +172,7 @@ const
     "invalid token",
     "EOF",
     "string literal",
+    "command literal",
     "int literal",
     "float literal",
     "(", 
@@ -331,12 +337,70 @@ proc parseString(my: var MinParser): MinTokenKind =
       inc(pos)
   my.bufpos = pos # store back
 
+proc parseCommand(my: var MinParser): MinTokenKind =
+  result = tkCommand
+  var pos = my.bufpos + 1
+  var buf = my.buf
+  while true:
+    case buf[pos] 
+    of '\0': 
+      my.err = errSqBracketRiExpected
+      result = tkError
+      break
+    of ']':
+      inc(pos)
+      break
+    of '\\':
+      case buf[pos+1]
+      of '\\', '"', '\'', '/': 
+        add(my.a, buf[pos+1])
+        inc(pos, 2)
+      of 'b':
+        add(my.a, '\b')
+        inc(pos, 2)      
+      of 'f':
+        add(my.a, '\f')
+        inc(pos, 2)      
+      of 'n':
+        add(my.a, '\L')
+        inc(pos, 2)      
+      of 'r':
+        add(my.a, '\C')
+        inc(pos, 2)    
+      of 't':
+        add(my.a, '\t')
+        inc(pos, 2)
+      of 'u':
+        inc(pos, 2)
+        var r: int
+        if handleHexChar(buf[pos], r): inc(pos)
+        if handleHexChar(buf[pos], r): inc(pos)
+        if handleHexChar(buf[pos], r): inc(pos)
+        if handleHexChar(buf[pos], r): inc(pos)
+        add(my.a, toUTF8(Rune(r)))
+      else: 
+        # don't bother with the error
+        add(my.a, buf[pos])
+        inc(pos)
+    of '\c': 
+      pos = lexbase.handleCR(my, pos)
+      buf = my.buf
+      add(my.a, '\c')
+    of '\L': 
+      pos = lexbase.handleLF(my, pos)
+      buf = my.buf
+      add(my.a, '\L')
+    else:
+      add(my.a, buf[pos])
+      inc(pos)
+  my.bufpos = pos # store back
+
 proc parseSymbol(my: var MinParser): MinTokenKind = 
   result = tkSymbol
   var pos = my.bufpos
   var buf = my.buf
   if not(buf[pos] in Whitespace):
-    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}', '{']):
+    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}', '{', '[', ']']):
         if buf[pos] == '"':
           add(my.a, buf[pos])
           my.bufpos = pos
@@ -459,6 +523,8 @@ proc getToken*(my: var MinParser): MinTokenKind =
   of ')':
     inc(my.bufpos)
     result = tkBracketRi
+  of '[':
+    result = parseCommand(my)
   of '{':
     inc(my.bufpos)
     result = tkBraceLe
@@ -596,6 +662,8 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         d = d & ";" & a.objType
       d = d.strip & "}"
       return d
+    of minCommand:
+      return "[" & a.cmdVal & "]"
 
 proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
   case a.kind:
@@ -617,6 +685,8 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         q = q & $i & " "
       q = q.strip & ")"
       return q
+    of minCommand:
+      return "[" & a.cmdVal & "]"
     of minDictionary:
       var d = "{"
       for i in a.dVal.pairs:
@@ -647,6 +717,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     discard getToken(p)
   of tkString:
     result = MinValue(kind: minString, strVal: p.a)
+    p.a = ""
+    discard getToken(p)
+  of tkCommand:
+    result = MinValue(kind: minCommand, cmdVal: p.a)
     p.a = ""
     discard getToken(p)
   of tkInt:
@@ -791,6 +865,9 @@ proc isSymbol*(s: MinValue): bool =
 
 proc isQuotation*(s: MinValue): bool = 
   return s.kind == minQuotation
+
+proc isCommand*(s: MinValue): bool = 
+  return s.kind == minCommand
 
 proc isString*(s: MinValue): bool = 
   return s.kind == minString

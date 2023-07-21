@@ -8,6 +8,8 @@ proc typeName*(v: MinValue): string =
       return "int"
     of minFloat:
       return "flt"
+    of minCommand: 
+      return "cmd"
     of minDictionary: 
       if v.isTypedDictionary:
         return "dict:" & v.objType
@@ -53,6 +55,9 @@ proc newDict*(parentScope: ref MinScope): MinValue =
 proc newSym*(s: string): MinValue =
   return MinValue(kind: minSymbol, symVal: s)
 
+proc newCmd*(s: string): MinValue =
+  return MinValue(kind: minCommand, cmdVal: s)
+
 proc hash*(v: MinValue): Hash =
   return hash($v)
 
@@ -71,6 +76,8 @@ proc getString*(v: MinValue): string =
     return v.symVal
   elif v.isString:
     return v.strVal
+  elif v.isCommand:
+    return v.cmdVal
   elif v.isQuotation:
     if v.qVal.len != 1:
       raiseInvalid("Quotation is not a quoted symbol")

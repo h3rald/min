@@ -267,6 +267,8 @@ when isMainModule:
         for item in res.qVal:
           echo  "   " & $item
         echo " ".repeat(n.len) & ")"
+      elif res.isCommand:
+        echo " [" & res.cmdVal & "]"
       elif res.isDictionary and res.dVal.len > 1:
         echo " {"
         for item in res.dVal.pairs:

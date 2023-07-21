@@ -3,6 +3,7 @@ import
   strutils, 
   sequtils,
   os,
+  std/osproc,
   critbits,
   json,
   algorithm,
@@ -282,6 +283,10 @@ proc push*(i: In, val: MinValue) {.gcsafe.}=
           else:
             raiseUndefined("Undefined symbol '$1'" % [val.symVal])
     discard i.trace.pop
+  elif val.kind == minCommand:
+    i.debug(val)
+    let res = execCmdEx(val.cmdVal)
+    i.push res.output.strip.newVal
   elif val.kind == minDictionary and val.objType != "module":
     # Dictionary must be copied every time they are interpreted, otherwise when they are used in cycles they reference each other.
     var v = i.copyDict(val)

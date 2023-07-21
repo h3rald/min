@@ -128,6 +128,8 @@ proc `%`*(i: In, a: MinValue): JsonNode =
       return newJNull()
     of minSymbol:
       return %(";sym:$1" % [a.getstring])
+    of minCommand:
+      return %(";cmd:$1" % [a.getstring])
     of minString:
       return %a.strVal
     of minInt:
@@ -157,6 +159,8 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
       let s = json.getStr
       if s.startsWith(";sym:"):
         result = s.replace(";sym:", "").newSym
+      elif s.startsWith(";cmd:"):
+        result = s.replace(";cmd:", "").newCmd
       else:
         result = json.getStr.newVal
     of JObject:
@@ -217,6 +221,8 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       return value.isNumber
     of "quot":
       return value.isQuotation
+    of "cmd":
+      return value.isCommand
     of "dict":
       return value.isDictionary
     of "'sym":

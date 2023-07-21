@@ -63,6 +63,8 @@
 
   ("systest" rmdir . ls (. "systest") => "/" join in? false ==) *test/assert
 
+  ([ls] &ls /output ==) *test/assert
+
   *test/report
   clear-stack
   "systest" rmdir

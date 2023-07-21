@@ -19,6 +19,8 @@ string (str)
 : A series of characters wrapped in double quotes: "Hello, World!".
 quotation (quot)
 : A list of elements, which may also contain symbols. Quotations can be used to create heterogenous lists of elements of any data type, and also to create a block of code that will be evaluated later on (quoted program). Example: (1 2 3 + \*)
+command (cmd)
+: A command string wrapped in square brackets that will be immediately executed on the current shell and converted into the command standard output. Example: `[ls -a]`
 dictionary (dict)
 : A key/value table. Dictionaries are implemented as an immediately-dequoted quotation, are enclosed in curly braces, and are represented by their symbol definitions. Note that dictionary keys must start with `:`and be followed by a double-quoted string, or a single word (which can be written without double quotes). The {#link-module||dict#} provides some operators on dictionaries.
 

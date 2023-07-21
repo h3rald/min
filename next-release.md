@@ -1,5 +1,6 @@
 ### New Features 
 
+* Implemented support for executing commands by wrapping strings in `[ ]`, like in [mn](https://h3rald.com/mn)
 
 ### Fixes and Improvements
 
