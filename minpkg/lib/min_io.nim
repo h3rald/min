@@ -180,4 +180,10 @@ proc io_module*(i: In) =
     f.write(b.strVal)
     f.close()
 
+  def.symbol("write") do (i: In):
+    i.pushSym("fwrite")
+
+  def.symbol("read") do (i: In):
+    i.pushSym("fread")
+
   def.finalize("io")

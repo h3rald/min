@@ -132,4 +132,10 @@ proc stack_module*(i: In)=
     i.dequote(a)
     i.push b
 
+  def.symbol("getstack") do (i: In):
+    i.pushSym("get-stack")
+
+  def.symbol("setstack") do (i: In):
+    i.pushSym("set-stack")
+
   def.finalize("stack")

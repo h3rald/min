@@ -1070,6 +1070,11 @@ proc lang_module*(i: In) =
     let s = vals[0]
     i.push(@[i.newSym(s.strVal)].newVal)
 
+  def.symbol("quotecmd") do (i: In):
+    let vals = i.expect("str")
+    let s = vals[0]
+    i.push(@[newCmd(s.strVal)].newVal)
+
   # Sigils
 
   def.sigil("'") do (i: In):
@@ -1142,5 +1147,8 @@ proc lang_module*(i: In) =
     
   def.symbol("><") do (i: In):
     i.pushSym("infix-dequote")
+
+  def.symbol("lambdabind") do (i: In):
+    i.pushSym("lambda-bind")
 
   def.finalize("ROOT")

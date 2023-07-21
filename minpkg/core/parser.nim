@@ -20,6 +20,8 @@ type
     tkFloat,
     tkBracketLe,
     tkBracketRi,
+    tkSqBracketLe,
+    tkSqBracketRi,
     tkBraceLe,
     tkBraceRi,
     tkSymbol,
@@ -177,6 +179,8 @@ const
     "float literal",
     "(", 
     ")",
+    "[",
+    "]",
     "{",
     "}",
     "symbol",
@@ -809,6 +813,11 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       result.add indent&qvar&".add "&v
     eat(p, tkBracketRi)
     result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")" 
+  of tkSqBracketLe, tkSqBracketRi:
+    discard getToken(p)
+  of tkCommand:
+    result = @[op&"MinValue(kind: minCommand, cmdVal: "&p.a.escapeEx&")"]
+    discard getToken(p)
   of tkBraceLe:
     result = newSeq[string](0)
     var val: MinValue
