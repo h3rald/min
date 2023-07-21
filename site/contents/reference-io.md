@@ -82,6 +82,8 @@ Prints {{any}} to STDOUT.#}
 {#op||putchr||{{s}}||{{any}}||
 Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
 
+{#alias||read||fread#}
+
 {#op||type||{{any}}||{{s}}||
 Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}
 
@@ -97,3 +99,5 @@ Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the 
 
 {#op||warn||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warn](class:kwd) or lower.#}
+
+{#alias||write||fwrite#}

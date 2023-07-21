@@ -234,6 +234,8 @@ Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike wi
 
 Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
 
+{#alias||lambdabind||lambda-bind#}
+
 {#op||lambda-bind||{{q}} {{sl}}||{{none}}||
 Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. #}
 
@@ -366,6 +368,9 @@ Exits the program or shell with 0 as return code. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
+
+{#op||quotecmd||{{s}}||({{sym}})||
+Creates a command with the value of {{s}} and wraps it in a quotation. #}
 
 {#op||quotesym||{{s}}||({{sym}})||
 Creates a symbol with the value of {{s}} and wraps it in a quotation. #}
