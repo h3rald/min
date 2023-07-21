@@ -804,7 +804,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   of tkBracketLe:
     CVARCOUNT.inc
     var qvar = "q" & $CVARCOUNT
-    result.add indent&"var "&qvar&" = newSeq[MinValue](0)"
+    result.add indent&"var "&qvar&" = newSeq[V](0)"
     discard getToken(p)
     while p.token != tkBracketRi: 
       var instructions = p.compileMinValue(i, false, indent)
@@ -854,7 +854,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result.add indent&"var "&scopevar&" = newScopeRef(nil)"
     result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
   of tkSymbol:
-    result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&", column: " & $p.getColumn & ", line: " & $p.lineNumber & ", filename: "&p.filename.escapeEx&")"]
+    result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&")"]
     p.a = ""
     discard getToken(p)
   else:
