@@ -25,6 +25,8 @@ Removes the first and second element from the stack, dequotes the first element,
 {#op||dup||{{a1}}||{{a1}} {{a1}}||
 Duplicates the first element on the stack.#}
 
+{#alias||getstack||get-stack#}
+
 {#op||get-stack||{{none}}||({{a0p}})||
 Puts a quotation containing the contents of the stack on the stack.#}
 
@@ -57,6 +59,8 @@ Moves the third element in first position, the second in third position and the 
 
 {#op||rollup||{{a1}} {{a2}} {{a3}}||{{a3}} {{a2}} {{a1}}||
 Moves the third and second element into second and third position and moves the first element into third position.#}
+
+{#alias||setstack||set-stack#}
 
 {#op||set-stack||{{q}}||{{a0p}}||
 Substitute the existing stack with the contents of {{q}}.#}
