@@ -68,6 +68,16 @@ jobs:
               run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
 
+            # UPX compress (Linux/macOS)
+            - name: UPX (Linux/macOS)
+              run: upx --best min
+              if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+
+            # UPX compress (Windows)
+            - name: UPX (Windows)
+              run: upx --best min.exe
+              if: matrix.os == 'windows-latest'
+
             # Retrieve ID and Name of the current (draft) release
             - name: "Get current release"
               id: current-release
