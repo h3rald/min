@@ -8,5 +8,5 @@
 
 ### Fixes and Improvements
 
-n/a
+* Fixed OpenSSL support on Windows.
 
