@@ -4,7 +4,7 @@
 
 ### New Features
 
-* Significantly improved the min shell prompt by leveraging the nim-noise library
+* Improved the min shell prompt (especially on Linux and macOS) by leveraging the nim-noise library, which supports unicode and multiple lines.
 
 ### Fixes and Improvements
 
