@@ -21,7 +21,7 @@ Although not as advanced, the min REPL is not dissimilar from an OS system shell
 
 ## Autocompletion and shortcuts
 
-The min shell features smart tab autocompletion and keyboard shortcut implemented using the [nimline](https://github.com/h3rald/nimline) library.
+The min shell features smart tab autocompletion and keyboard shortcut implemented using the [nim-noise](https://github.com/jangko/nim-noise) library.
 
 The following behaviors are implemented when pressing the `TAB` key within:
 
@@ -32,23 +32,7 @@ Context                                                        | Result
 ...a word starting with `$`                                    | Auto-completes the current word using environment variable names.
 ...a word starting with `'`, `@`, `#`, `>`, `<`, `*`, `(`, `?` | Auto-completes the current word using symbol names.
 
-Additionally, the following common shortcuts are also available:
-
-Key            | Effect
----------------|------------------------
-`INSERT`       | Switches between insert and replace mode.
-`UP`           | Displays the previous history entry.
-`DOWN`         | Displays the next history entry.
-`CTRL+d`       | Terminates the min shell.
-`CTRL+u`       | Clears the current line.
-`CTRL+b`       | Goes to the beginning of the line.
-`CTRL+e`       | Goes to the end of the line.
-
-> %tip%
-> Tip
-> 
-> If you want, you can define your own keyboard shortcuts using the {#link-operator||io||mapkey#} operator.
-
+Additionally, some [additional Emacs-style shortcuts](https://github.com/jangko/nim-noise) are also available.
 
 ## Shell configuration files
 

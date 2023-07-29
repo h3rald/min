@@ -3,18 +3,34 @@ import
   logging,
   nre,
   critbits,
-  terminal
+  terminal,
+  noise
 import 
-  ../packages/nimline/nimline,
   ../core/parser, 
   ../core/value, 
   ../core/env,
   ../core/interpreter, 
   ../core/utils
 
-var ORIGKEYMAP {.threadvar.}: CritBitTree[KeyCallback] 
-for key, value in KEYMAP.pairs:
-  ORIGKEYMAP[key] = value
+when defined(windows):
+  proc putchr*(c: cint): cint {.discardable, header: "<conio.h>", importc: "_putch".}
+    ## Prints an ASCII character to stdout.
+  proc getchr*(): cint {.header: "<conio.h>", importc: "_getch".}
+    ## Retrieves an ASCII character from stdin.
+else:
+  proc putchr*(c: cint) {.header: "stdio.h", importc: "putchar"} =
+    ## Prints an ASCII character to stdout.
+    stdout.write(c.chr)
+    stdout.flushFile()
+
+  proc getchr*(): cint =
+    ## Retrieves an ASCII character from stdin.
+    stdout.flushFile()
+    return getch().ord.cint
+
+#var ORIGKEYMAP {.threadvar.}: CritBitTree[KeyCallback] 
+#for key, value in KEYMAP.pairs:
+#  ORIGKEYMAP[key] = value
 
 proc io_module*(i: In) =
   let def = i.define()
@@ -23,26 +39,27 @@ proc io_module*(i: In) =
     stdout.eraseScreen
     stdout.setCursorPos(0, 0)
 
-  def.symbol("unmapkey") do (i: In):
-    let vals = i.expect("'sym")
-    let key = vals[0].getString.toLowerAscii
-    if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
-      raiseInvalid("Unrecognized key: " & key)
-    if KEYMAP.hasKey(key):
-      if ORIGKEYMAP.hasKey(key):
-        KEYMAP[key] = ORIGKEYMAP[key]
-      else:
-        KEYMAP.excl(key)
+  when false:
+    def.symbol("unmapkey") do (i: In):
+      let vals = i.expect("'sym")
+      let key = vals[0].getString.toLowerAscii
+      if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
+        raiseInvalid("Unrecognized key: " & key)
+      if KEYMAP.hasKey(key):
+        if ORIGKEYMAP.hasKey(key):
+          KEYMAP[key] = ORIGKEYMAP[key]
+        else:
+          KEYMAP.excl(key)
 
-  def.symbol("mapkey") do (i: In):
-    let vals = i.expect("'sym", "quot")
-    let key = vals[0].getString.toLowerAscii
-    var q = vals[1]
-    if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
-      raiseInvalid("Unrecognized key: " & key)
-    var ic = i.copy(i.filename)
-    KEYMAP[key] = proc (ed: var LineEditor) {.gcsafe.} =
-      ic.apply(q)
+    def.symbol("mapkey") do (i: In):
+      let vals = i.expect("'sym", "quot")
+      let key = vals[0].getString.toLowerAscii
+      var q = vals[1]
+      if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
+        raiseInvalid("Unrecognized key: " & key)
+      var ic = i.copy(i.filename)
+      KEYMAP[key] = proc (ed: var LineEditor) {.gcsafe.} =
+        ic.apply(q)
   
   def.symbol("newline") do (i: In):
     echo ""
@@ -94,21 +111,31 @@ proc io_module*(i: In) =
     putchr(ch[0].getString[0].cint)
 
   def.symbol("password") do (i: In) {.gcsafe.}:
-    var ed = initEditor()
-    i.push ed.password("Enter Password: ").newVal
+    let newline = '\n'.ord.cint
+    stdout.write("Enter Password: ")
+    var c = getchr()
+    var s = ""
+    while c != newline:
+      putchr('*'.ord.cint)
+      s &= c.chr
+    i.push s.newVal
 
   def.symbol("ask") do (i: In) {.gcsafe.}:
-    var ed = initEditor()
     let vals = i.expect("str")
     let s = vals[0]
-    i.push ed.readLine(s.getString & ": ").newVal
+    var ed = Noise.init()
+    ed.setPrompt(s.getString & ": ")
+    discard ed.readLine()
+    i.push ed.getLine.newVal
 
   def.symbol("confirm") do (i: In) {.gcsafe.}:
-    var ed = initEditor()
+    var ed = Noise.init()
     let vals = i.expect("str")
     let s = vals[0]
     proc confirm(): bool =
-      let answer = ed.readLine(s.getString & " [yes/no]: ")
+      ed.setPrompt(s.getString & " [yes/no]: ")
+      discard ed.readLine()
+      let answer = ed.getLine()
       if answer.contains(re"(?i)^y(es)?$"):
         return true
       elif answer.contains(re"(?i)^no?$"):
@@ -120,7 +147,7 @@ proc io_module*(i: In) =
     i.push confirm().newVal
 
   def.symbol("choose") do (i: In) {.gcsafe.}:
-    var ed = initEditor()
+    var ed = Noise.init()
     let vals = i.expect("'sym", "quot")
     let s = vals[0]
     var q = vals[1]
@@ -135,7 +162,9 @@ proc io_module*(i: In) =
           raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
         c.inc
         echo "$1 - $2" % [$c, item.qVal[0].getString]
-      let answer = ed.readLine("Enter your choice ($1 - $2): " % ["1", $c])
+        ed.setPrompt("Enter your choice ($1 - $2): " % ["1", $c])
+      discard ed.readLine()
+      let answer = ed.getLine()
       var choice: int
       try:
         choice = answer.parseInt

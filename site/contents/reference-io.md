@@ -49,24 +49,6 @@ Reads single character from STDIN without waiting for ENTER key and places its A
 {#op||info||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.#}
 
-{#op||mapkey||{{q}} {{sl}}||{{none}}||
-> Maps the named key/key combination {{sl}} to the quotation {{q}}, so that {{q}} is executed when key {{sl}} is pressed. 
->
-> > %note%
-> > Notes
-> >
-> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
-> > * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program:
-> > 
-> >     (clear) 'ctrl+l mapkey 
-> > 
-> > causes the `CTRL+L` key to clear the screen. #}
-
 {#op||newline||{{none}}||{{none}}||
 Prints a new line to STDOUT.#}
 
@@ -86,16 +68,6 @@ Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one 
 
 {#op||type||{{any}}||{{s}}||
 Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}
-
-{#op||unmapkey||{{sl}}||{{none}}||
-> Unmaps a previously-mapped key or key-combination {{sl}}, restoring the default mapping if available.
->
-> > %note%
-> > Notes
-> >
-> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
-> > * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.
- #}
 
 {#op||warn||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warn](class:kwd) or lower.#}
