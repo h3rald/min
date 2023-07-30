@@ -319,9 +319,8 @@ when isMainModule:
       let res = EDITOR.readLine()
       if res == false:
         quit(0)
-      line = EDITOR.getLine()
-      let r = i.interpret(line)
-      if line != "":
+      let r = i.interpret(EDITOR.getLine())
+      if $line != "":
         i.printResult(r)
 
   proc minRepl*() = 
