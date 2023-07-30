@@ -23,5 +23,10 @@
    xnode to-xml 
    "<test attr1=\"a\"><a1 />text...</test>" == ) *test/assert
 
+   (
+    "<test a=\"1\"><b>test</b></test>" from-xml :xnode
+    xnode /children first /children first /text "test" ==
+   ) *test/assert   
+
   *test/report
   clear-stack
