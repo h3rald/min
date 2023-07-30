@@ -13,7 +13,7 @@ import
     ../core/utils
 
 
-let xmltypes = "dict:xml-text|dict:xml-verbatim-text|dict:xml-element|dict:xml-cdata|dict:xml-comment|dict:xml-entity"
+let xmltypes = "dict:xml-text|dict:xml-element|dict:xml-cdata|dict:xml-comment|dict:xml-entity"
 
 proc newXDict(i: In, xml: XmlNode): MinValue =
     result = newDict(i.scope)
@@ -22,7 +22,7 @@ proc newXDict(i: In, xml: XmlNode): MinValue =
             result.objType = "xml-text"
             i.dset(result, "text", xml.text.newVal)
         of xnVerbatimText:
-            result.objType = "xml-verbatim-text"
+            result.objType = "xml-text"
             i.dset(result, "text", xml.text.newVal)
         of xnElement:
             result.objType = "xml-element"
@@ -32,8 +32,9 @@ proc newXDict(i: In, xml: XmlNode): MinValue =
             for child in xml.items:
                 children.add i.newXDict(child)
             i.dset(result, "children", children.newVal)
-            for attr in xml.attrs.pairs:
-                i.dset(attributes, attr.key, attr.value.newVal)
+            if not xml.attrs.isNil:
+                for attr in xml.attrs.pairs:
+                    i.dset(attributes, attr.key, attr.value.newVal)
             i.dset(result, "attributes", attributes)
         of xnCData:
             result.objType = "xml-cdata"
@@ -49,8 +50,6 @@ proc newXml(i: In, xdict: MinValue): XmlNode =
      case xdict.objType:
         of "xml-text":
             result = newText(i.dget(xdict, "text").getString)
-        of "xml-verbatim-text":
-            result = newVerbatimText(i.dget(xdict, "text").getString)
         of "xml-element":
             let tag = i.dget(xdict, "tag").getString
             let attributes = i.dget(xdict, "attributes")
@@ -98,10 +97,6 @@ proc xml_module*(i: In) =
     def.symbol("xtext") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newText(vals[0].getString))  
-
-    def.symbol("xverbatimtext") do (i: In):
-        let vals = i.expect("'sym")
-        i.push i.newXDict(newVerbatimText(vals[0].getString)) 
 
     def.symbol("xentity") do (i: In):
         let vals = i.expect("'sym")
