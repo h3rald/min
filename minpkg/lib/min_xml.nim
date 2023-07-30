@@ -59,7 +59,10 @@ proc newXml(i: In, xdict: MinValue): XmlNode =
             for attr in i.keys(attributes).qVal:
                 let key = attr.getString
                 let val = i.dget(attributes, attr).getString
-                attrs.add {key: key, val: val}
+                var tattr: tuple[key, val: string]
+                tattr.key = key
+                tattr.val = val
+                attrs.add tattr
             result.attrs = attrs.toXmlAttributes
             for child in children.qVal:
                 result.add i.newXml(child)

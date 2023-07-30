@@ -23,6 +23,7 @@ sigils size :total-sigils
 'math    load
 'http    load
 'net     load
+'xml     load
 "=" 70 repeat puts!
 "Total Failures: $1" (failures) => % puts!
 failures exit
