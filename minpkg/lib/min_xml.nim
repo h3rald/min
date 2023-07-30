@@ -75,7 +75,7 @@ proc xml_module*(i: In) =
 
     let def = i.define()
 
-    i.scope.symbols["xml-node"] = MinOperator(kind: minValOp, val: xmltypes.newVal, sealed: false, quotation: false)
+    i.scope.symbols["typealias:xml-node"] = MinOperator(kind: minValOp, val: xmltypes.newVal, sealed: false, quotation: false)
 
     def.symbol("from-xml") do (i: In):
         let vals = i.expect("str")
@@ -112,7 +112,7 @@ proc xml_module*(i: In) =
         i.push i.newXDict(newElement(vals[0].getString))
 
     def.symbol("to-xml") do (i: In):
-        let vals = i.expect("dict:xml-node")
+        let vals = i.expect("xml-node")
         let xdict = vals[0]
         let xml = i.newXml(xdict)
         i.push ($xml).newVal
