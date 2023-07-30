@@ -1,0 +1,27 @@
+'test require :test
+;;;
+
+
+"xml" *test/describe
+
+  ("test" xentity /text "test" ==) *test/assert
+
+  ("test" xcomment /text "test" ==) *test/assert
+
+  ("test" xtext /text "test" ==) *test/assert
+
+  ("test" xcdata /text "test" ==) *test/assert
+
+  ("test" xelement /tag "test" ==) *test/assert
+
+  (
+   "test" xelement :xnode
+   xnode {"a" :attr1} %attributes @xnode
+   "a1" xelement :child
+   "text..." xtext :text
+   xnode (child text) => %children @xnode
+   xnode to-xml 
+   "<test attr1=\"a\"><a1 />text...</test>" == ) *test/assert
+
+  *test/report
+  clear-stack
