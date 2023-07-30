@@ -1,6 +1,6 @@
 import 
   os, 
-  noise
+  ../packages/nimline/nimline
   
 var HOME*: string
 if defined(windows):
@@ -14,9 +14,8 @@ var MINSYMBOLS* {.threadvar.}: string
 MINSYMBOLS = HOME / ".min_symbols"
 var MINHISTORY* {.threadvar.}: string
 MINHISTORY = HOME / ".min_history"
-var EDITOR* {.threadvar.}: Noise
-EDITOR = Noise.init()
-EDITOR.historyLoad(MINHISTORY)
+var EDITOR* {.threadvar.}: LineEditor
+EDITOR = initEditor(historyFile = MINHISTORY)
 var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false
 var DEV* {.threadvar.}: bool

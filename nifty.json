@@ -51,9 +51,10 @@
       "name": "zippy",
       "nimble": true
     },
-    "nim-noise": {
-      "name": "nim-noise",
-      "nimble": true
+    "nimline": {
+      "name": "nimline",
+      "src": "https://github.com/h3rald/nimline.git",
+      "git": true
     },
     "niftylogger.nim": {
       "name": "niftylogger.nim",
