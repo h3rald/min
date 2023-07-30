@@ -59,6 +59,12 @@
 {{sock1 => [dict:socket<sub>1</sub>](class:kwd)}}
 {{sock2 => [dict:socket<sub>2</sub>](class:kwd)}}
 {{m => _min_}}
+{{xelement => [dict:xml-element](class:kwd)}}
+{{xcomment => [dict:xml-comment](class:kwd)}}
+{{xentity => [dict:xml-entity](class:kwd)}}
+{{xtext => [dict:xml-cdata](class:kwd)}}
+{{xentity => [dict:xml-entity](class:kwd)}}
+{{xnode => [xml-node](class:kwd)}}
 
 {{pcre => [Perl Compatible Regular Expression](https://www.pcre.org/)}}
 
