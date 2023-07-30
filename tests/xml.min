@@ -23,5 +23,16 @@
    xnode to-xml 
    "<test attr1=\"a\"><a1 />text...</test>" == ) *test/assert
 
+   (
+    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
+    xnode "li.test" xquery 
+    /children first /text "yes" ==
+   ) *test/assert
+
+   (
+    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
+    xnode "li.test" xqueryall 
+    size 2 ==
+   ) *test/assert
   *test/report
   clear-stack

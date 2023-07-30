@@ -116,16 +116,16 @@ proc xml_module*(i: In) =
         i.push ($xml).newVal
 
     def.symbol("xquery") do (i: In):
-        let vals = i.expect("dict:xml-element", "'sym")
-        let xdict = vals[0]
-        let query = vals[1].getString
+        let vals = i.expect("'sym", "dict:xml-element")
+        let xdict = vals[1]
+        let query = vals[0].getString
         let root = i.newXml(xdict)
         i.push i.newXDict(root.querySelector(query))
 
     def.symbol("xqueryall") do (i: In):
-        let vals = i.expect("dict:xml-element", "'sym")
-        let xdict = vals[0]
-        let query = vals[1].getString
+        let vals = i.expect("'sym", "dict:xml-element")
+        let xdict = vals[1]
+        let query = vals[0].getString
         let root = i.newXml(xdict)
         let xresults = root.querySelectorAll(query)
         var results = newSeq[MinValue](0)
