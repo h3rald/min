@@ -34,5 +34,6 @@
     xnode "li.test" xqueryall 
     size 2 ==
    ) *test/assert
+
   *test/report
   clear-stack
