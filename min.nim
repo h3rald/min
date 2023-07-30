@@ -304,6 +304,7 @@ when isMainModule:
         i.printResult(r)
 
   proc minRepl*(i: var MinInterpreter) =
+    DEV = true
     i.stdLib()
     var s = newStringStream("")
     i.open(s, "<repl>")
