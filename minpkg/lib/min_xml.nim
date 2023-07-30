@@ -13,7 +13,7 @@ import
     ../core/utils
 
 
-let xmltypes = "dict:xml-text|dict:xml-verbatim-text|xml-element|xml-cdata|xml-comment"
+let xmltypes = "dict:xml-text|dict:xml-verbatim-text|dict:xml-element|dict:xml-cdata|dict:xml-comment|dict:xml-entity"
 
 proc newXDict(i: In, xml: XmlNode): MinValue =
     result = newDict(i.scope)
@@ -123,5 +123,16 @@ proc xml_module*(i: In) =
         let query = vals[1].getString
         let root = i.newXml(xdict)
         i.push i.newXDict(root.querySelector(query))
+
+    def.symbol("xqueryall") do (i: In):
+        let vals = i.expect("dict:xml-element", "'sym")
+        let xdict = vals[0]
+        let query = vals[1].getString
+        let root = i.newXml(xdict)
+        let xresults = root.querySelectorAll(query)
+        var results = newSeq[MinValue](0)
+        for e in xresults:
+          results.add i.newXDict(e)
+        i.push results.newVal
 
     def.finalize("xml")

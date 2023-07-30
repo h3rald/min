@@ -6,13 +6,14 @@
 'seq       import
 'dict      import
 'time      import
-'io     import
-'fs     import
-'sys    import
-'dstore import
-'crypto import
-'math   import
-'net    import
-'http   import
+'io        import
+'fs        import
+'sys       import
+'dstore    import
+'crypto    import
+'math      import
+'net       import
+'http      import
+'xml       import
 ; Unseal prompt symbol
 'prompt    unseal-symbol

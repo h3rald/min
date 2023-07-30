@@ -28,6 +28,7 @@ import
   minpkg/lib/min_io,
   minpkg/lib/min_dstore,
   minpkg/lib/min_fs,
+  minpkg/lib/min_xml,
   minpkg/lib/min_http,
   minpkg/lib/min_net,
   minpkg/lib/min_crypto,
@@ -149,6 +150,7 @@ proc stdLib*(i: In) =
   i.net_module
   i.math_module
   i.http_module
+  i.xml_module
   if customPrelude == "":
     i.eval PRELUDE, "<prelude>"
   else:
