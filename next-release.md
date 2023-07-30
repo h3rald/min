@@ -1,6 +1,6 @@
 ### New Features
 
-* Significantly improved the min shell prompt by leveraging the nim-noise library
+* Fixed month index in `timeinfo` and `to-timestamp` symbols (each month number was increased by 1). Fixes #186.
 
 ### Fixes and Improvements
 

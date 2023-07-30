@@ -27,7 +27,7 @@ proc time_module*(i: In)=
     var info = newDict(i.scope)
     info.objType = "timeinfo"
     i.dset info, "year", tinfo.year.newVal
-    i.dset info, "month", (tinfo.month.int+1).newVal
+    i.dset info, "month", (tinfo.month.int).newVal
     i.dset info, "day", tinfo.monthday.newVal
     i.dset info, "weekday", (tinfo.weekday.int+1).newVal
     i.dset info, "yearday", tinfo.yearday.newVal
@@ -43,7 +43,7 @@ proc time_module*(i: In)=
     let dict = vals[0]
     try:
       let year = i.dget(dict, "year").intVal.int
-      let month = Month(i.dget(dict, "month").intVal.int - 1)
+      let month = Month(i.dget(dict, "month").intVal.int)
       let monthday = MonthdayRange(i.dget(dict, "day").intVal.int)
       let hour: HourRange = i.dget(dict, "hour").intVal.int
       let minute: MinuteRange = i.dget(dict, "minute").intVal.int
