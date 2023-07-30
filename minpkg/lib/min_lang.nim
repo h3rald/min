@@ -10,7 +10,7 @@ import
   logging,
   ../core/baseutils,
   ../packages/niftylogger,
-  noise
+  ../packages/nimline/nimline
 import 
   ../core/env,
   ../core/meta,
@@ -340,9 +340,8 @@ proc lang_module*(i: In) =
     echo $$a
   
   def.symbol("gets") do (i: In) {.gcsafe.}:
-    var ed = Noise.init()
-    discard ed.readLine()
-    i.push ed.getLine.newVal
+    var ed = initEditor()
+    i.push ed.readLine().newVal
     
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot")

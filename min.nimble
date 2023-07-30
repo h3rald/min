@@ -14,7 +14,7 @@ installDirs   = @["minpkg"]
 
 # Dependencies
 
-requires "nim >= 1.6.12, zippy >= 0.5.6, https://github.com/h3rald/nim-noise"
+requires "nim >= 1.6.12, zippy >= 0.5.6, nim-noise >= 0.1.8"
 
 before install:
   exec "nimble install -y nifty"

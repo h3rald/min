@@ -63,8 +63,14 @@ proc getExecs(): seq[string] =
     getFiles(dir)
   res.sort(system.cmp)
   return res
- 
-proc getCompletions*(ed: Noise, word: string, symbols: seq[string]): seq[string] =
+
+proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
+  var words = ed.lineText.split(" ")
+  var word: string
+  if words.len == 0:
+    word = ed.lineText
+  else:
+    word = words[words.len-1]
   if word.startsWith("'"):
     return symbols.mapIt("'" & $it)
   if word.startsWith("~"):
@@ -305,21 +311,15 @@ when isMainModule:
     echo "$# shell v$#" % [exeName, pkgVersion]
     while true:
       let symbols = toSeq(i.scope.symbols.keys)
-      let completionCallback = proc(ed: var Noise, text: string): int =
-        let list = ed.getCompletions(text, symbols).filterIt(it.startsWith(text))
-        for item in list:
-          ed.addCompletion(item)
-      EDITOR.setCompletionHook(completionCallback)
+      EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
+        return ed.getCompletions(symbols)
       # evaluate prompt
       i.push(i.newSym("prompt"))
       let vals = i.expect("str")
       let v = vals[0] 
       let prompt = v.getString()
-      EDITOR.setPrompt(prompt)
-      let res = EDITOR.readLine()
-      if res == false:
-        quit(0)
-      let r = i.interpret(EDITOR.getLine())
+      line = EDITOR.readLine(prompt)
+      let r = i.interpret($line)
       if $line != "":
         i.printResult(r)
 
