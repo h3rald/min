@@ -23,14 +23,14 @@ jobs:
         steps:
             # Cancel other actions of the same type that might be already running
             - name: "Cancel similar actions in progress"
-              uses: styfle/cancel-workflow-action@0.6.0
+              uses: styfle/cancel-workflow-action@0.9.1
               with:
                   access_token: ${{ github.token }}
                   
             # Detects OS and provide Nim-friendly OS identifiers
             - name: Detect current OS
               id: os
-              run: echo "::set-output name=id::${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'macosx' || matrix.os == 'windows-latest' && 'windows'}}"
+              run:  echo "os=${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'macosx' || matrix.os == 'windows-latest' && 'windows'}}" >> $GITHUB_OUTPUT
 
             # Checks out the repository
             - uses: actions/checkout@v2
