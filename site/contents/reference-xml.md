@@ -1,61 +1,96 @@
 -----
 content-type: "page"
-title: "dict Module"
+title: "xml Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||/||dget#}
-
-{#sig||%||dset#}
-
-{#op||ddup||{{d1}}||{{d2}}||
-Returns a copy of {{d1}}. #}
-
-{#op||ddel||{{d}} {{sl}}||{{d}}||
-Removes {{sl}} from {{d1}} and returns {{d1}}. #}
-
-{#op||dget||{{d}} {{sl}}||{{any}}||
-Returns the value of key {{sl}} from dictionary {{d}}. #}
-
-{#op||dget-raw||{{d}} {{sl}}||{{rawval}}||
-Returns the value of key {{sl}} from dictionary {{d}}, wrapped in a {{rawval}}. #}
-
-{#op||dhas?||{{d}} {{sl}}||{{b}}||
-> Returns {{t}} if dictionary {{d}} contains the key {{sl}}, {{f}} otherwise.
+{#op||from-xml||{{sl}}||{{xnode}}||
+> Returns an {{xnode}} representing an XML string representing an element or fragment.
 > 
 > > %sidebar%
 > > Example
 > >  
-> > The following program returns {{t}}:
+> > The following program:
+> >
+> >     "<a href='https://min-lang.org'>min web site</a>" from-xml  
+> > returns the following:
 > > 
-> >     {true :a1 "aaa" :a2 false :a3} 'a2 dhas?
+> >     {
+> >       {"https://min-lang.org" :href} :attributes
+> >      ({"min web site" :text ;xml-text}) :children
+> >      "a" :tag
+> >      ;xml-element
+> >     }
  #}
 
-{#op||dkeys||{{d}}||({{s}}{{0p}})||
-Returns a quotation containing all the keys of dictionary {{d}}. #}
+{#op||to-xml||{{xnode}}||{{s}}||
+Returns a {{s}} representing an XML node. #}
 
-{#op||dpick||{{d1}} {{q}}||{{d2}}||
-> Returns a new dictionary {{d2}} containing the elements of {{d1}} whose keys are included in {{q}}.
+{#op||xcdata||{{sl}}||{{xcdata}}||
+Returns a {{xcdata}} representing an XML CDATA section. #}
+
+{#op||xcomment||{{sl}}||{{xcomment}}||
+Returns a {{xcomment}} representing an XML comment. #}
+
+{#op||xelement||{{sl}}||{{xelement}}||
+Returns a {{xelement}} representing an XML element (it will be an empty element with no attributes or children). #}
+
+{#op||xentity||{{sl}}||{{xentity}}||
+Returns a {{xentity}} representing an XML entity. #}
+
+{#op||xquery||{{xelement}} {{sl}}||{{xelement}}||
+> Returns an {{xelement}} representing the first element matching CSS the selector {{sl}}.
 > 
 > > %sidebar%
 > > Example
 > >  
-> > The following program returns `{4 :a 7 :d}`:
-> > 
-> >     {5 :q 4 :a 6 :c 7 :d "d" :a} ("a" "d") dpick
+> > The following program:
+> >
+> >     "<ul>
+> >        <li class='test'>first</li>
+> >        <li class='other'>second</li>
+> >        <li class='test'>third</li>
+> >     </ul>" 
+> >     from-xml ".test" xquery
+> > Returns the following:
+> >
+> >     {
+> >       {"test" :class} :attributes 
+> >       ({"first" :text ;xml-text}) :children 
+> >       "li" :tag 
+> >       ;xml-element
+> >     }
  #}
 
-{#op||dpairs||{{d}}||({{a0p}})||
-Returns a quotation containing all the keys (odd items) and values (even items) of dictionary {{d}}. #}
+{#op||xqueryall||{{xelement}} {{sl}}||{{xelement}}||
+> Returns a list of {{xelement}} dictionaries representing all the elements matching CSS the selector {{sl}}.
+> 
+> > %sidebar%
+> > Example
+> >  
+> > The following program:
+> >
+> >     "<ul>
+> >        <li class='test'>first</li>
+> >        <li class='other'>second</li>
+> >        <li class='test'>third</li>
+> >     </ul>" 
+> >     from-xml ".test" xqueryall
+> > Returns the following:
+> >
+> >     ({
+> >       {"test" :class} :attributes 
+> >       ({"first" :text ;xml-text}) :children 
+> >       "li" :tag 
+> >       ;xml-element
+> >     }
+> >     {
+> >       {"test" :class} :attributes 
+> >       ({"third" :text ;xml-text}) :children 
+> >       "li" :tag 
+> >       ;xml-element
+> >     })
+ #}
 
-{#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
-Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
-
-{#op||dset-sym||{{d}} {{sl}} {{sl}}||{{d}}||
-Sets the value of the {{sl}} of {{d1}}  to {{sl}} (treating it as a symbol), and returns the modified dictionary {{d}}. #}
-
-{#op||dtype||{{d}}||{{s}}||
-Returns a string set to the type of {{d}} (empty if the dictionary has no type). #}
-
-{#op||dvalues||{{d}}||({{a0p}})||
-Returns a quotation containing all the values of dictionary {{d}}. #}
+{#op||xtext||{{sl}}||{{xtext}}||
+Returns a {{xtext}} representing an XML text node. #}

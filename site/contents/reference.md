@@ -38,7 +38,8 @@ min includes a small but powerful standard library organized into the following 
 : Provides basic supports for sockets (some features are not supported on Windows systems).
 {#link-module||http#}
 : Provides operators to perform HTTP requests, download files and create basic HTTP servers.
-
+{#link-module||xml#}
+: Provides operators for parsing, creating and querying XML/HTML code using CSS selectors.
 
 ## Notation
 
@@ -159,6 +160,7 @@ The following notation is used in the signature of all min operators:
         "httpbin.org" :Host
        } :headers             ;optional
        "test body" :body      ;optional
+       ;{{req}}
       }
 {{res}}
 : A response dictionary, representing an HTTP response returned by some of the operators exposed by the {#link-module||http#}:
@@ -170,7 +172,49 @@ The following notation is used in the signature of all min operators:
           "application/json" :Content-Type
         } :headers     ;optional
         "{\"test\": \"This is a test\"}" :body
+        ;{{res}}
       }
+{{xelement}}
+: A dictionary representing an XML or HTML element, exposed by the {#link-module||xml#}
+
+      {
+        {"https://min-lang.org" :href} :attributes
+        ({"min web site" :text ;xml-text}) :children
+        "a" :tag
+        ;xml-element
+      }
+{{xcomment}}
+: A dictionary representing an XML comment.
+
+      {
+        "This is a comment" :text
+        ;{{xcomment}}
+      }
+{{xcdata}}
+: A dictionary representing XML CDATA text.
+
+      {
+        "This is some text" :text
+        ;{{xcdata}}
+      }
+{{xentity}}
+: A dictionary representing an XML entity.
+
+      {
+        "amp" :text
+        ;{{xentity}}
+      }
+{{xtext}}
+: A dictionary representing XML text.
+
+      {
+        "This is some text" :text
+        ;{{xtext}}
+      }
+{{xnode}}
+: A typealias to identify all XML dictionary types.
+
+      "{{xelement}}|{{xtext}}|{{xcomment}}|{{xentity}}|{{xcdata}}"
 
 ### Suffixes
 

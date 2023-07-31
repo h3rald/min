@@ -83,7 +83,10 @@
 
 ;Main
 
-download-latest-min-exes
+((('wget "" !=) ('zip which "" !=)) &&)
+  (download-latest-min-exes)
+when
+
 
 "Processing contents..." notice!
 contents (
