@@ -7,7 +7,7 @@ on:
 
 jobs:
     release:
-        name: "Build and upload artifacts"
+        name: "Run all tests"
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
@@ -57,7 +57,7 @@ jobs:
                   sh init.sh -y
                   nimble install -y nifty
                   nifty install
-
+            
             # Build for Linux
             - name: Build (Linux)
               run: nimble build -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl -d:useOpenSsl3 --opt:size
@@ -86,33 +86,12 @@ jobs:
                 args: --best --force
               if: matrix.os == 'windows-latest'
 
-            # Retrieve ID and Name of the current (draft) release
-            - name: "Get current release"
-              id: current-release
-              uses: InsonusK/get-latest-release@v1.0.1
-              with:
-                  myToken: ${{ github.token }}
-                  exclude_types: "release"
-                  view_top: 1
+            # Test (*nix)
+            - name: Test
+              run: ./min tests/all.min
+              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
 
-            # Package the resulting Linux/macOS binary
-            - name: Create artifact (Linux, macOS)
-              run: zip min_${{steps.current-release.outputs.tag_name}}_${{steps.os.outputs.id}}_x64.zip min
-              if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
-              
-            # Package the resulting Windows binary
-            - name: Create artifact (Windows)
-              run: Compress-Archive -Path min.exe -DestinationPath min_${{steps.current-release.outputs.tag_name}}_windows_x64.zip
+            # Test (*Windows)
+            - name: Test
+              run: min tests/all.min
               if: matrix.os == 'windows-latest'
-
-            # Upload artifacts to current draft release
-            - name: "Upload to current release"
-              uses: xresloader/upload-to-github-release@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  file: "min_v*.zip"
-                  overwrite: true
-                  tag_name: ${{steps.current-release.outputs.tag_name}}
-                  release_id: ${{steps.current-release.outputs.id }}
-                  verbose: true

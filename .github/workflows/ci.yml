@@ -18,7 +18,7 @@ jobs:
   # This workflow contains a single job called "ci"
   ci:
     # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       CHOOSENIM_CHOOSE_VERSION: stable
       CHOOSENIM_NO_ANALYTICS: 1
@@ -42,14 +42,18 @@ jobs:
       - name: Install nifty
         run: nimble install -y nifty
         
-      - name: Install zippy
-        run: nimble install zippy
-        
       - name: Install deps
         run: nifty install
       
       - name: Build
         run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
-      
+
+      - name: UPX
+        uses: svenstaro/upx-action@v2
+        with:
+          files: |
+            min
+          args: --best --force
+
       - name: Test
         run: ./min tests/all.min
