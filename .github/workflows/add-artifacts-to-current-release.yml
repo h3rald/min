@@ -74,7 +74,7 @@ jobs:
               with:
                 files: |
                   min
-                args: --best
+                args: --best --force
               if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
 
             # UPX compress (Windows) 
@@ -83,7 +83,7 @@ jobs:
               with:
                 files: |
                   min.exe
-                args: --best
+                args: --best --force
               if: matrix.os == 'windows-latest'
 
             # Retrieve ID and Name of the current (draft) release
