@@ -97,7 +97,7 @@ jobs:
 
             # Package the resulting Linux/macOS binary
             - name: Create artifact (Linux, macOS)
-              run: zip min_${{steps.current-release.outputs.tag_name}}_${{steps.os.outputs.id}}_x64.zip min
+              run: zip min_${{steps.current-release.outputs.tag_name}}_${{steps.os.outputs.os}}_x64.zip min
               if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
               
             # Package the resulting Windows binary
