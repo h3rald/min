@@ -21,7 +21,7 @@ Although not as advanced, the min REPL is not dissimilar from an OS system shell
 
 ## Autocompletion and shortcuts
 
-The min shell features smart tab autocompletion and keyboard shortcut implemented using the [nimline](https://github.com/h3rald/nimline) library.
+The min shell features smart tab autocompletion and keyboard shortcut implemented using the [minline](https://github.com/h3rald/minline) library.
 
 The following behaviors are implemented when pressing the `TAB` key within:
 

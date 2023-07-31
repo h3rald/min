@@ -6,11 +6,11 @@ import
   parseopt,
   algorithm,
   nre,
+  minline,
   os,
   logging,
   ../core/baseutils,
-  ../packages/niftylogger,
-  ../packages/nimline/nimline
+  ../packages/niftylogger
 import 
   ../core/env,
   ../core/meta,

@@ -55,7 +55,7 @@ Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class
 > > %note%
 > > Notes
 > >
-> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
+> > * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.
 > > * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.
 > 
 > > %sidebar%
@@ -93,8 +93,8 @@ Puts the data type of {{any}} on the stack. In cased of typed dictionaries, the 
 > > %note%
 > > Notes
 > >
-> > * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.
-> > * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.
+> > * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.
+> > * At present, all the default mappings of min are those provided by the [minline](https://h3rald.com/minline/minline.html) library.
  #}
 
 {#op||warn||{{any}}||{{any}}||

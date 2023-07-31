@@ -1,6 +1,6 @@
 import 
   os, 
-  ../packages/nimline/nimline
+  minline
   
 var HOME*: string
 if defined(windows):

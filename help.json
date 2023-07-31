@@ -1224,7 +1224,7 @@
       "signature": "quot1 quot2 quot3 ==> int"
     },
     "mapkey": {
-      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\r\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     (clear) 'ctrl+l mapkey \r\n \r\n causes the CTRL+L key to clear the screen.",
+      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\r\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     (clear) 'ctrl+l mapkey \r\n \r\n causes the CTRL+L key to clear the screen.",
       "kind": "symbol",
       "name": "mapkey",
       "signature": "quot 'sym ==> "
@@ -2200,7 +2200,7 @@
       "signature": "quot1 quot2 ==> a*"
     },
     "unmapkey": {
-      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [nimline](https://h3rald.com/nimline/nimline.html) library are supported.\r\n * At present, all the default mappings of min are those provided by the [nimline](https://h3rald.com/nimline/nimline.html) library.",
+      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\r\n * At present, all the default mappings of min are those provided by the [minline](https://h3rald.com/minline/minline.html) library.",
       "kind": "symbol",
       "name": "unmapkey",
       "signature": "'sym ==> "

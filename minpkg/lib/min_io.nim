@@ -3,9 +3,9 @@ import
   logging,
   nre,
   critbits,
+  minline,
   terminal
 import 
-  ../packages/nimline/nimline,
   ../core/parser, 
   ../core/value, 
   ../core/env,
