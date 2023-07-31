@@ -65,7 +65,7 @@ jobs:
 
             # Build for macOS/Windows
             - name: Build (macOS, Windows)
-              run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size
+              run: echo $pwd; nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
 
             # UPX compress (*nix) 
@@ -91,7 +91,12 @@ jobs:
               run: ./min tests/all.min
               if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
 
-            # Test (*Windows)
+            # Print PWD (Windows)
+            - name: Print PWD
+              run: echo $pwd
+              if: matrix.os == 'windows-latest'
+
+            # Test (Windows)
             - name: Test
-              run: pwd; min.exe tests/all.min
+              run: .\min.exe tests/all.min
               if: matrix.os == 'windows-latest'
