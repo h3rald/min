@@ -93,5 +93,5 @@ jobs:
 
             # Test (*Windows)
             - name: Test
-              run: min tests/all.min
+              run: min\\min.exe tests/all.min
               if: matrix.os == 'windows-latest'
