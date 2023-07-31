@@ -1,4 +1,4 @@
-name: Add artifacts to current release
+name: Run automated tests
 
 # Controls when the action will run.
 on:
