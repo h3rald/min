@@ -58,6 +58,12 @@
   "sock1": "dict:socket1",
   "sock2": "dict:socket2",
   "rawval": "dict:rawval",
+  "xelement": "dict:xml-element",
+  "xcomment": "dict:xml-comment",
+  "xcdata": "dict:xml-cdata",
+  "xtext": "dict:xml-text",
+  "xentity": "dict:xml-entity",
+  "xnode": "xml-node",
   "m": "min",
   "no-win": "(not supported on Windows systems)",
   "pcre": "Perl-compatible regular expression"

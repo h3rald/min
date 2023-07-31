@@ -64,7 +64,6 @@
 {{xentity => [dict:xml-entity](class:kwd)}}
 {{xcdata => [dict:xml-cdata](class:kwd)}}
 {{xtext => [dict:xml-text](class:kwd)}}
-{{xentity => [dict:xml-entity](class:kwd)}}
 {{xnode => [xml-node](class:kwd)}}
 
 {{pcre => [Perl Compatible Regular Expression](https://www.pcre.org/)}}

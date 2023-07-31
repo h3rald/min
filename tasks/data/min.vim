@@ -31,7 +31,7 @@ syntax region           minQuotedSymbol       start=;\<[']; end=;\>; contains=mi
 syntax region           minBoundSymbol        start=;@; end=;\>; contains=minBinding
 syntax match            minSymbol             ;[a-zA-Z._][a-zA-Z0-9/!?+*._-]*;
 
-syntax match            minParen              ;(\|)\|{\|}; 
+syntax match            minParen              ;(\|)\|{\|}[\|]; 
 
 syntax match            minSharpBang          /\%^#!.*/
 
