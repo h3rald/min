@@ -40,11 +40,11 @@ proc crypto_module*(i: In)=
 
   when defined(ssl):
 
-    when defined(windows): 
+    when defined(windows) and defined(amd64): 
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lbcrypt".}
-    elif defined(linux):
+    elif defined(linux) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
-    elif defined(macosx):
+    elif defined(macosx) and defined(amd64):
       {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
     proc hash(s: string, kind: EVP_MD, size: int): string =

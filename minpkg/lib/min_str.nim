@@ -14,12 +14,78 @@ import
 proc str_module*(i: In) = 
   let def = i.define()
 
-  when defined(windows): 
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
-  elif defined(linux):
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux -lpcre".}
-  elif defined(macosx):
-    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
+  when not defined(nopcre):
+    when defined(windows) and defined(amd64): 
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
+    elif defined(linux) and defined(amd64):
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux -lpcre".}
+    elif defined(macosx) and defined(amd64):
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
+
+    def.symbol("search") do (i: In):
+      let vals = i.expect("str", "str")
+      let reg = re(vals[0].strVal)
+      let str = vals[1]
+      let m = str.strVal.find(reg)
+      var res = newSeq[MinValue](0)
+      if m.isNone:
+        res.add "".newVal
+        for i in 0..reg.captureCount-1:
+          res.add "".newVal
+        i.push res.newVal
+        return
+      let matches = m.get.captures
+      res.add m.get.match.newVal
+      for i in 0..reg.captureCount-1:
+        res.add matches[i].newVal
+      i.push res.newVal
+
+    def.symbol("match?") do (i: In):
+      let vals = i.expect("str", "str")
+      let reg = re(vals[0].strVal)
+      let str = vals[1].strVal
+      i.push str.find(reg).isSome.newVal
+
+    def.symbol("search-all") do (i: In):
+      let vals = i.expect("str", "str")
+      var res = newSeq[MinValue](0)
+      let reg = re(vals[0].strVal)
+      let str = vals[1].strVal
+      for m in str.findIter(reg):
+        let matches = m.captures
+        var mres = newSeq[MinValue](0)
+        mres.add m.match.newVal
+        for i in 0..reg.captureCount-1:
+          mres.add matches[i].newVal
+        res.add mres.newval
+      i.push res.newVal
+
+    def.symbol("replace-apply") do (i: In):
+      let vals = i.expect("quot", "str", "str")
+      let q = vals[0]
+      let reg = re(vals[1].strVal)
+      let s_find = vals[2].strVal
+      var i2 = i.copy(i.filename)
+      let repFn = proc(match: RegexMatch): string =
+        var ss = newSeq[MinValue](0)
+        ss.add match.match.newVal
+        for s in match.captures:
+          if s.isNone:
+            ss.add "".newVal
+          else: 
+            ss.add s.get.newVal
+        i2.push ss.newVal
+        i2.push q
+        i2.pushSym "dequote"
+        return i2.pop.getString
+      i.push s_find.replace(reg, repFn).newVal
+
+    def.symbol("replace") do (i: In):
+      let vals = i.expect("str", "str", "str")
+      let s_replace = vals[0].strVal
+      let reg = re(vals[1].strVal)
+      let s_find = vals[2].strVal
+      i.push s_find.replace(reg, s_replace).newVal
 
   def.symbol("interpolate") do (i: In):
     let vals = i.expect("quot", "str")
@@ -145,71 +211,6 @@ proc str_module*(i: In) =
     i.dset(d, "query", u.query.newVal)
     i.dset(d, "anchor", u.anchor.newVal)
     i.push d
-
-  def.symbol("search") do (i: In):
-    let vals = i.expect("str", "str")
-    let reg = re(vals[0].strVal)
-    let str = vals[1]
-    let m = str.strVal.find(reg)
-    var res = newSeq[MinValue](0)
-    if m.isNone:
-      res.add "".newVal
-      for i in 0..reg.captureCount-1:
-        res.add "".newVal
-      i.push res.newVal
-      return
-    let matches = m.get.captures
-    res.add m.get.match.newVal
-    for i in 0..reg.captureCount-1:
-      res.add matches[i].newVal
-    i.push res.newVal
-
-  def.symbol("match?") do (i: In):
-    let vals = i.expect("str", "str")
-    let reg = re(vals[0].strVal)
-    let str = vals[1].strVal
-    i.push str.find(reg).isSome.newVal
-
-  def.symbol("search-all") do (i: In):
-    let vals = i.expect("str", "str")
-    var res = newSeq[MinValue](0)
-    let reg = re(vals[0].strVal)
-    let str = vals[1].strVal
-    for m in str.findIter(reg):
-      let matches = m.captures
-      var mres = newSeq[MinValue](0)
-      mres.add m.match.newVal
-      for i in 0..reg.captureCount-1:
-        mres.add matches[i].newVal
-      res.add mres.newval
-    i.push res.newVal
-
-  def.symbol("replace-apply") do (i: In):
-    let vals = i.expect("quot", "str", "str")
-    let q = vals[0]
-    let reg = re(vals[1].strVal)
-    let s_find = vals[2].strVal
-    var i2 = i.copy(i.filename)
-    let repFn = proc(match: RegexMatch): string =
-      var ss = newSeq[MinValue](0)
-      ss.add match.match.newVal
-      for s in match.captures:
-        if s.isNone:
-          ss.add "".newVal
-        else: 
-          ss.add s.get.newVal
-      i2.push ss.newVal
-      i2.push q
-      i2.pushSym "dequote"
-      return i2.pop.getString
-    i.push s_find.replace(reg, repFn).newVal
-
-  def.symbol("replace") do (i: In):
-    let vals = i.expect("str", "str", "str")
-    let s_replace = vals[0].strVal
-    let reg = re(vals[1].strVal)
-    let s_find = vals[2].strVal
-    i.push s_find.replace(reg, s_replace).newVal
 
   def.symbol("semver?") do (i: In):
     let vals = i.expect("str")

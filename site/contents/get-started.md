@@ -34,6 +34,29 @@ If that's the case, simply run **nimble install min**. This will actually instal
 5. Run **nifty install** to download min’s dependencies.
 7. Run **nim c -d:release min.nim**.
 
+### Building from source for additional platforms
+
+By default, min is released as a pre-built binary executable for Windows x64, macOS x64 and Linux x64. However, it should run without issues on any [platform supported by the Nim programming language](https://github.com/nim-lang/Nim/blob/devel/lib/system/platforms.nim).
+
+To build on a different operating system and architecture from the default ones, you also need to get or build the following static libraries:
+
+* libssl (OpenSSL)
+* libcrypto (OpenSSL)
+* libpcre (PCRE)
+
+and also specify the following additional flag when compiling:
+
+`--passL:"-static -L<dir> -lpcre -lssl -lcrypto"`
+
+Where `<dir>` is the directory containing the `*.a` files for the static libraries listed above.
+
+> %tip%
+> 
+> Alternatively, if you can also opt out from OpenSSL and PCRE support by:
+>
+> * _Not_ specifying `-d:ssl`
+> * Specifying `-d:nopcre`
+
 ### Additional build options
 
 #### -d:ssl
@@ -53,6 +76,16 @@ If this flag is not specified:
   * {#link-operator||crypto||encode#} 
   * {#link-operator||crypto||decode#} 
   * {#link-operator||crypto||aes#} 
+
+#### -d:nopcre
+
+If the **-d:nopcre** is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||str#}:
+
+* {#link-operator||str||search#}
+* {#link-operator||str||match?#}
+* {#link-operator||str||search-all#}
+* {#link-operator||str||replace#}
+* {#link-operator||str||replace-apply#}
 
 ## Building a Docker image
 
