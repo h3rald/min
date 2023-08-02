@@ -17,13 +17,13 @@ proc define*(i: In): ref MinScope =
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
   scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
 proc symbol*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.symbols[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) =
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
   scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
 proc sigil*(scope: ref MinScope, sym: string, v: MinValue) =
@@ -176,9 +176,9 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 
 # Validators
 
-proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool {.gcsafe.}
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool 
 
-proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue, generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool {.gcsafe.} =
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue, generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool  =
   vTypes.add value.typeName
   let ors = element.split("|")
   for to in ors:
@@ -203,7 +203,7 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
       result = true 
       break
 
-proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool {.gcsafe.} =
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool  =
   var g: CritBitTree[string]
   var s = newSeq[string](0)
   var c = 0
@@ -297,7 +297,7 @@ proc validType*(i: In, s: string): bool =
   
 
 # The following is used in operator signatures
-proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] {.gcsafe.}=
+proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
   if not DEV:
     # Ignore validation, just return elements
     result = newSeq[MinValue](0)

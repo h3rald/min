@@ -9,6 +9,8 @@ switch("amd64.linux.gcc.exe", "x86_64-linux-musl-gcc")
 switch("amd64.linux.gcc.linkerexe", "x86_64-linux-musl-gcc")
 
 switch("opt", "size")
+switch("deepcopy", "on")
+switch("threadAnalysis", "off")
 
 when not defined(dev):
   switch("define", "release")
@@ -23,7 +25,6 @@ else:
   switch("dynlibOverride", "pcre")
 
 when defined(ssl):
-  switch("threads", "on")
   when defined(windows): 
     # TODO",  change once issue nim#15220 is resolved
     switch("define", "noOpenSSLHacks")

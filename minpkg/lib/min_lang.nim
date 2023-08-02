@@ -26,7 +26,7 @@ proc lang_module*(i: In) =
   const HELPFILE = "../../help.json".slurp
   let HELP = HELPFILE.parseJson
 
-  def.symbol("from-json") do (i: In) {.gcsafe.}:
+  def.symbol("from-json") do (i: In) :
     let vals = i.expect("str")
     let s = vals[0]
     i.push i.fromJson(s.getString.parseJson)
@@ -38,7 +38,7 @@ proc lang_module*(i: In) =
 
   # Save/load symbols
 
-  def.symbol("save-symbol") do (i: In) {.gcsafe.}:
+  def.symbol("save-symbol") do (i: In) :
     let vals = i.expect("'sym")
     let s = vals[0]
     let sym = s.getString
@@ -339,7 +339,7 @@ proc lang_module*(i: In) =
     let a = i.peek
     echo $$a
   
-  def.symbol("gets") do (i: In) {.gcsafe.}:
+  def.symbol("gets") do (i: In) :
     var ed = initEditor()
     i.push ed.readLine().newVal
     

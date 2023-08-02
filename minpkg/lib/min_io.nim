@@ -41,8 +41,9 @@ proc io_module*(i: In) =
     if not KEYNAMES.contains(key) and not KEYSEQS.contains(key):
       raiseInvalid("Unrecognized key: " & key)
     var ic = i.copy(i.filename)
-    KEYMAP[key] = proc (ed: var LineEditor) {.gcsafe.} =
+    let action = proc (ed: var LineEditor) {.closure.} =
       ic.apply(q)
+    KEYMAP[key] = action
   
   def.symbol("newline") do (i: In):
     echo ""
@@ -93,17 +94,17 @@ proc io_module*(i: In) =
       raiseInvalid("Symbol putch requires a string containing a single character.")
     putchr(ch[0].getString[0].cint)
 
-  def.symbol("password") do (i: In) {.gcsafe.}:
+  def.symbol("password") do (i: In) :
     var ed = initEditor()
     i.push ed.password("Enter Password: ").newVal
 
-  def.symbol("ask") do (i: In) {.gcsafe.}:
+  def.symbol("ask") do (i: In) :
     var ed = initEditor()
     let vals = i.expect("str")
     let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
-  def.symbol("confirm") do (i: In) {.gcsafe.}:
+  def.symbol("confirm") do (i: In) :
     var ed = initEditor()
     let vals = i.expect("str")
     let s = vals[0]
@@ -119,7 +120,7 @@ proc io_module*(i: In) =
         return confirm()
     i.push confirm().newVal
 
-  def.symbol("choose") do (i: In) {.gcsafe.}:
+  def.symbol("choose") do (i: In) :
     var ed = initEditor()
     let vals = i.expect("'sym", "quot")
     let s = vals[0]

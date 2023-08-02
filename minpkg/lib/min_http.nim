@@ -37,7 +37,7 @@ type MinServerExit = ref object of CatchableError
 proc http_module*(i: In)=
   let def = i.define()
 
-  def.symbol("request") do (i: In) {.gcsafe.}:
+  def.symbol("request") do (i: In) :
     let vals = i.expect "dict"
     let req = vals[0]
     let cli = newCli()
@@ -83,7 +83,7 @@ proc http_module*(i: In)=
     let cli = newCli()
     cli.downloadFile(url.getString, file.getString)
 
-  def.symbol("start-server") do (ii: In) {.gcsafe.}:
+  def.symbol("start-server") do (ii: In) :
     let vals = ii.expect "dict"
     let cfg = vals[0]
     if not cfg.dhas("port"):

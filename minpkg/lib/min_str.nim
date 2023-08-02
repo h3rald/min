@@ -66,7 +66,7 @@ proc str_module*(i: In) =
       let reg = re(vals[1].strVal)
       let s_find = vals[2].strVal
       var i2 = i.copy(i.filename)
-      let repFn = proc(match: RegexMatch): string =
+      let repFn = proc(match: RegexMatch): string {.closure.} =
         var ss = newSeq[MinValue](0)
         ss.add match.match.newVal
         for s in match.captures:

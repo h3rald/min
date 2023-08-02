@@ -103,7 +103,7 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     kind*: MinScopeKind
-  MinOperatorProc* = proc (i: In) {.closure, gcsafe.}
+  MinOperatorProc* = proc (i: In) {.closure.} 
   MinOperatorKind* = enum
     minProcOp
     minValOp

@@ -147,9 +147,9 @@ proc open*(i: In, stream:Stream, filename: string) =
 proc close*(i: In) = 
   i.parser.close();
 
-proc push*(i: In, val: MinValue) {.gcsafe.} 
+proc push*(i: In, val: MinValue)  
 
-proc call*(i: In, q: var MinValue): MinValue {.gcsafe.}=
+proc call*(i: In, q: var MinValue): MinValue =
   var i2 = newMinInterpreter("<call>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -163,7 +163,7 @@ proc call*(i: In, q: var MinValue): MinValue {.gcsafe.}=
     raise
   return i2.stack.newVal
 
-proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe.}=
+proc callValue*(i: In, v: var MinValue): MinValue =
   var i2 = newMinInterpreter("<call-value>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -176,7 +176,7 @@ proc callValue*(i: In, v: var MinValue): MinValue {.gcsafe.}=
     raise
   return i2.stack[0]
 
-proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe.}=
+proc copyDict*(i: In, val: MinValue): MinValue =
    # Assuming val is a dictionary
    var v = newDict(i.scope)
    v.scope.symbols = val.scope.symbols
@@ -187,7 +187,7 @@ proc copyDict*(i: In, val: MinValue): MinValue {.gcsafe.}=
      v.obj = val.obj
    return v
 
-proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe.}=
+proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
     op.prc(i)
   else:
@@ -211,7 +211,7 @@ proc dequote*(i: In, q: var MinValue) =
   else:
     i.push(q)
 
-proc apply*(i: In, q: var MinValue) {.gcsafe.}=
+proc apply*(i: In, q: var MinValue) =
   var i2 = newMinInterpreter("<apply>")
   i2.trace = i.trace
   i2.scope = i.scope
@@ -246,7 +246,7 @@ proc pushSym*(i: In, s: string) =
     outerSym: i.currSym.symVal, 
     docComment: i.currSym.docComment)
 
-proc push*(i: In, val: MinValue) {.gcsafe.}= 
+proc push*(i: In, val: MinValue) = 
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
@@ -349,7 +349,7 @@ proc rawCompile*(i: In, indent = ""): seq[string] {.discardable.} =
 proc compileFile*(i: In, main: bool): seq[string] {.discardable.} =
   result = newSeq[string](0)
   if not main:
-    result.add "COMPILEDMINFILES[\"$#\"] = proc(i: In) {.gcsafe.}=" % i.filename
+    result.add "COMPILEDMINFILES[\"$#\"] = proc(i: In) =" % i.filename
     result = result.concat(i.rawCompile("  "))
   else:
     result = i.rawCompile("")
