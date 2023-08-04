@@ -230,8 +230,9 @@ proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
     i.interpret(s)
     discard newSeq[string](0)
   elif op == "bytecode-compile":
-    var vm = newVM()
-    let code = vm.compileToBytecode("")
+    i.open(s, i.filename)
+    discard i.parser.getToken()
+    let code = i.parser.compileToBytecode()
     vm.printBytecode(code)
   else:
     discard i.compile(s, main)
