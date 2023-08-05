@@ -21,3 +21,4 @@ mintool
 mintool.nim
 test.min
 .DS_Store
+*.bmin

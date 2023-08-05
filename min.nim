@@ -190,7 +190,7 @@ proc interpret*(i: In, s: string): MinValue =
 proc minFile*(filename: string, op = "interpret", main = true): seq[
     string] {.discardable.}
 
-proc compile*(i: In, s: Stream, main = true): seq[string] =
+proc compile*(i: In, s: Stream, main = true): seq[string] {.discardable.} =
   if "nim".findExe == "":
     logging.error "Nim compiler not found, unable to compile."
     quit(7)
@@ -222,20 +222,24 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
     discard
   i.close()
 
-proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
-    string] {.discardable.} =
+proc compileToBytecode*(i: In, s: Stream) =
+  let dotindex = i.filename.rfind(".")
+  let bminFile = i.filename[0..dotindex-1] & ".bnim"
+  try:
+    let bcode = i.rawBytecodeCompile()
+    writeFile(bminFile, bcode)
+  except CatchableError:
+    echo getCurrentExceptionMsg()
+
+proc minStream(s: Stream, filename: string, op = "interpret", main = true) =
   var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDirEx
   if op == "interpret":
     i.interpret(s)
-    discard newSeq[string](0)
   elif op == "bytecode-compile":
-    i.open(s, i.filename)
-    discard i.parser.getToken()
-    let code = i.parser.compileToBytecode()
-    vm.printBytecode(code)
+    i.compileToBytecode(s)
   else:
-    discard i.compile(s, main)
+    i.compile(s, main)
 
 proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
