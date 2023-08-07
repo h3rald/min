@@ -154,6 +154,10 @@
 
 {@ site/contents/reference-http.md || 1 @}
 
+### `xml` Module
+
+{@ site/contents/reference-xml.md || 1 @}
+
 {#op => 
 <a id="min-operator-id-$1"></a>
 [$1](class:reference-title)
