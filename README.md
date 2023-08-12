@@ -1,5 +1,5 @@
 
-<p align="center"><img align="center" width="350" src="logo.svg"/></p>
+<p align="center"><img align="center" width="350" src="https://min-lang.org/images/logo.svg"/></p>
 <p align="center">
   <b>A  small but practical<br>concatenative programming language and shell</b>
   <br><br>
