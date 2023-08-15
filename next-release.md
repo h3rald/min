@@ -1,4 +1,4 @@
 ### Fixes and Improvements
 
-* Fixed compilation errors with Nim 2.0.
-
+* Removed depentency unnecessary dependency on  nifty.
+* Now compiling using `--mm:refc` to decrease memory usage.
