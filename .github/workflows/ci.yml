@@ -37,12 +37,6 @@ jobs:
           curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
           sh init.sh -y
 
-      - name: Install nifty
-        run: nimble install -y nifty
-        
-      - name: Install deps
-        run: nifty install
-      
       - name: Build
         run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
 
