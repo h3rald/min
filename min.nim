@@ -7,7 +7,7 @@ import
   algorithm,
   minline,
   logging,
-  minpkg/niftylogger,
+  minpkg/core/niftylogger,
   minpkg/core/baseutils,
   minpkg/core/env,
   minpkg/core/parser, 
