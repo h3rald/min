@@ -38,7 +38,7 @@ jobs:
           sh init.sh -y
 
       - name: Build
-        run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
+        run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --cpu:amd64 --os:linux
 
       - name: UPX
         uses: svenstaro/upx-action@v2

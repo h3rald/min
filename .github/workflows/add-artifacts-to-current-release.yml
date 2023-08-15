@@ -58,12 +58,12 @@ jobs:
 
             # Build for Linux
             - name: Build (Linux)
-              run: nimble build -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl -d:useOpenSsl3 --opt:size
+              run: nimble build -y -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'ubuntu-latest'
 
             # Build for macOS/Windows
             - name: Build (macOS, Windows)
-              run: nimble build -d:release -d:ssl -d:useOpenSsl3 --opt:size
+              run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
 
             # UPX compress (*nix) 
