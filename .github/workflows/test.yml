@@ -55,7 +55,6 @@ jobs:
               run: |
                   curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
                   sh init.sh -y
-                  nimble install -y
             
             # Build for Linux
             - name: Build (Linux)

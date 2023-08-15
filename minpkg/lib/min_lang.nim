@@ -10,7 +10,7 @@ import
   os,
   logging,
   ../core/baseutils,
-  ../packages/niftylogger
+  ../core/niftylogger
 import 
   ../core/env,
   ../core/meta,
