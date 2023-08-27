@@ -4,10 +4,10 @@ title: "Learn: Shell"
 -----
 {@ _defs_.md || 0 @}
 
-The min executable also provide an interactive REPL (Read-Eval-Print Loop) when launched with the `-i` flag:
+The min executable also provide an interactive REPL (Read-Eval-Print Loop) when launched with no arguments:
 
 > %min-terminal%
-> [$](class:prompt) min -i
+> [$](class:prompt) min
 > <span class="prompt">&#91;/Users/h3rald/Development/min&#93;$</span>
 
 Although not as advanced, the min REPL is not dissimilar from an OS system shell like Bash, and as a matter of fact, it provides many functionalities that are found in other shells or command prompts, such as:
