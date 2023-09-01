@@ -160,7 +160,7 @@ The following notation is used in the signature of all min operators:
         "httpbin.org" :Host
        } :headers             ;optional
        "test body" :body      ;optional
-       ;{{req}}
+       ;http-request
       }
 {{res}}
 : A response dictionary, representing an HTTP response returned by some of the operators exposed by the {#link-module||http#}:
@@ -172,7 +172,7 @@ The following notation is used in the signature of all min operators:
           "application/json" :Content-Type
         } :headers     ;optional
         "{\"test\": \"This is a test\"}" :body
-        ;{{res}}
+        ;http-response
       }
 {{xelement}}
 : A dictionary representing an XML or HTML element, exposed by the {#link-module||xml#}
@@ -188,33 +188,33 @@ The following notation is used in the signature of all min operators:
 
       {
         "This is a comment" :text
-        ;{{xcomment}}
+        ;xml-comment
       }
 {{xcdata}}
 : A dictionary representing XML CDATA text.
 
       {
         "This is some text" :text
-        ;{{xcdata}}
+        ;xml-cdata
       }
 {{xentity}}
 : A dictionary representing an XML entity.
 
       {
         "amp" :text
-        ;{{xentity}}
+        ;xml-entity
       }
 {{xtext}}
 : A dictionary representing XML text.
 
       {
         "This is some text" :text
-        ;{{xtext}}
+        ;xml-text
       }
 {{xnode}}
 : A typealias to identify all XML dictionary types.
 
-      "{{xelement}}|{{xtext}}|{{xcomment}}|{{xentity}}|{{xcdata}}"
+      dict:xml-element||dict:xml-text||dict:xml-comment||dict:xml-entity||dict:xml-cdata
 
 ### Suffixes
 

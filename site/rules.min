@@ -75,7 +75,7 @@
     cmd system 
     "assets/downloads/$#/" (opsys) =% :dir
     "assets/downloads/" mkdir
-    "unzip $# -d $#" (local dir) =% @cmd
+    "unzip $# -o -d $#" (local dir) =% @cmd
     cmd system!
     local rm
   ) foreach
