@@ -135,8 +135,14 @@ type
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
+  MinNumBase* = enum
+    baseDec = "dec"
+    baseOct = "oct"
+    baseBin = "bin"
+    baseHex = "hex"
 
 var CVARCOUNT = 0
+var NUMBASE*: MinNumBase = baseDec
 
 # Helpers
 
@@ -256,32 +262,53 @@ proc raiseUndefined*(p: MinParser, msg: string) {.noinline, noreturn,
 proc parseNumber(my: var MinParser) =
   var pos = my.bufpos
   var buf = my.buf
+  var base = 'd'
   if buf[pos] == '-':
     add(my.a, '-')
     inc(pos)
-  if buf[pos] == '.':
-    add(my.a, "0.")
+  if buf[pos] == '0':
+    add(my.a, buf[pos])
     inc(pos)
+    if buf[pos] in {'o', 'b', 'x'}:
+      base = buf[pos]
+      add(my.a, buf[pos])
+      inc(pos)
+      if base == 'b':
+        while buf[pos] in {'0', '1'}:
+          add(my.a, buf[pos])
+          inc(pos)
+      elif base == 'o':
+        while buf[pos] in {'0', '1', '2', '3', '4', '5', '6', '7'}:
+          add(my.a, buf[pos])
+          inc(pos)
+      elif base == 'x':
+        while buf[pos] in HexDigits:
+          add(my.a, buf[pos])
+          inc(pos)
   else:
-    while buf[pos] in Digits:
-      add(my.a, buf[pos])
-      inc(pos)
     if buf[pos] == '.':
-      add(my.a, '.')
+      add(my.a, "0.")
       inc(pos)
-  # digits after the dot:
-  while buf[pos] in Digits:
-    add(my.a, buf[pos])
-    inc(pos)
-  if buf[pos] in {'E', 'e'}:
-    add(my.a, buf[pos])
-    inc(pos)
-    if buf[pos] in {'+', '-'}:
-      add(my.a, buf[pos])
-      inc(pos)
+    else:
+      while buf[pos] in Digits:
+        add(my.a, buf[pos])
+        inc(pos)
+      if buf[pos] == '.':
+        add(my.a, '.')
+        inc(pos)
+    # digits after the dot:
     while buf[pos] in Digits:
       add(my.a, buf[pos])
       inc(pos)
+    if buf[pos] in {'E', 'e'}:
+      add(my.a, buf[pos])
+      inc(pos)
+      if buf[pos] in {'+', '-'}:
+        add(my.a, buf[pos])
+        inc(pos)
+      while buf[pos] in Digits:
+        add(my.a, buf[pos])
+        inc(pos)
   my.bufpos = pos
 
 proc handleHexChar(c: char, x: var int): bool =
@@ -652,7 +679,15 @@ proc `$`*(a: MinValue): string {.inline, extern: "min_exported_symbol_$1".} =
     of minString:
       return "\""&a.strVal.escapeJsonUnquoted&"\""
     of minInt:
-      return $a.intVal
+      case NUMBASE
+      of baseDec:
+        return $a.intVal
+      of baseOct:
+        return "0o" & a.intVal.toOct(sizeof(a))
+      of baseBin:
+        return "0b" & a.intVal.toBin(sizeof(a))
+      of baseHex:
+        return "0x" & a.intVal.toHex(sizeof(a))
     of minFloat:
       return $a.floatVal
     of minQuotation:
@@ -691,7 +726,15 @@ proc `$$`*(a: MinValue): string {.inline, extern: "min_exported_symbol_$1".} =
     of minString:
       return a.strVal
     of minInt:
-      return $a.intVal
+      case NUMBASE
+      of baseDec:
+        return $a.intVal
+      of baseOct:
+        return "0o" & a.intVal.toOct(sizeof(a))
+      of baseBin:
+        return "0b" & a.intVal.toBin(sizeof(a))
+      of baseHex:
+        return "0x" & a.intVal.toHex(sizeof(a))
     of minFloat:
       return $a.floatVal
     of minQuotation:
@@ -739,7 +782,23 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     p.a = ""
     discard getToken(p)
   of tkInt:
-    result = MinValue(kind: minInt, intVal: parseint(p.a))
+    var baseIndex = 1
+    var minLen = 2
+    if p.a[0] == '-':
+      baseIndex = 2
+      minLen = 3
+    if p.a.len > minLen and p.a[baseIndex] in {'b', 'o', 'x'}:
+      case p.a[baseIndex]
+      of 'o':
+        result = MinValue(kind: minInt, intVal: parseOctInt(p.a))
+      of 'b':
+        result = MinValue(kind: minInt, intVal: parseBinInt(p.a))
+      of 'x':
+        result = MinValue(kind: minInt, intVal: parseHexInt(p.a))
+      else:
+        result = MinValue(kind: minInt, intVal: parseInt(p.a))
+    else:
+      result = MinValue(kind: minInt, intVal: parseInt(p.a))
     discard getToken(p)
   of tkFloat:
     result = MinValue(kind: minFloat, floatVal: parseFloat(p.a))

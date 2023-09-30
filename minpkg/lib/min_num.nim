@@ -1,5 +1,6 @@
 import
-  std/random
+  std/[random,
+  strutils]
 import
   ../core/parser,
   ../core/value,
@@ -238,5 +239,32 @@ proc num_module*(i: In) =
         res.add j
         j = (j.intVal - step.intVal).newVal
     i.push res.newVal
+
+  def.symbol("base") do (i: In):
+    let vals = i.expect("'sym")
+    let base = vals[0].getString
+    if not ["dec", "hex", "oct", "bin"].contains(base):
+      raiseInvalid("[base] Invalid base '$#'. Expected one of: 'dec', 'oct', 'hex', 'bin'" %
+          [base])
+    case base:
+    of "dec":
+      NUMBASE = baseDec
+    of "oct":
+      NUMBASE = baseOct
+    of "hex":
+      NUMBASE = baseHex
+    of "bin":
+      NUMBASE = baseBin
+
+  def.symbol("base?") do (i: In):
+    case NUMBASE:
+    of baseDec:
+      i.push "dec".newVal
+    of baseOct:
+      i.push "oct".newVal
+    of baseHex:
+      i.push "hex".newVal
+    of baseBin:
+      i.push "bin".newVal
 
   def.finalize("num")
