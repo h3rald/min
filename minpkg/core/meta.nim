@@ -1,5 +1,5 @@
-import 
-  strutils
+import
+  std/strutils
 
 const ymlconfig = "../../min.yml".slurp
 

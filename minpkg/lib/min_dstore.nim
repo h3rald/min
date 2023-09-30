@@ -1,14 +1,14 @@
 import
-  json,
+  std/[json,
   strutils,
-  oids
+  oids]
 import
   ../core/parser,
   ../core/value,
   ../core/interpreter,
   ../core/utils
 
-proc dstore_module*(i: In)=
+proc dstore_module*(i: In) =
   let def = i.define()
 
   def.symbol("dsinit") do (i: In):
@@ -19,18 +19,18 @@ proc dstore_module*(i: In)=
     i.dset(d, "data", newDict(i.scope))
     i.dset(d, "path", p.newVal)
     d.objType = "datastore"
-    i.push d 
+    i.push d
 
   def.symbol("dsread") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString
-    var j = p.readFile.parseJson 
+    var j = p.readFile.parseJson
     var d = newDict(i.scope)
     i.dset(d, "data", i.fromJson(j))
     i.dset(d, "path", p.newVal)
     d.objType = "datastore"
-    i.push d 
-  
+    i.push d
+
   def.symbol("dswrite") do (i: In):
     let vals = i.expect("dict:datastore")
     let ds = vals[0]
@@ -38,7 +38,7 @@ proc dstore_module*(i: In)=
     let data = i%(i.dget(ds, "data".newVal))
     p.writeFile(data.pretty)
     i.push ds
- 
+
   def.symbol("dshas?") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
@@ -55,7 +55,7 @@ proc dstore_module*(i: In)=
         i.push true.newVal
       else:
         i.push false.newVal
-      
+
   def.symbol("dsget") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
@@ -68,9 +68,9 @@ proc dstore_module*(i: In)=
       raiseInvalid("Collection '$#' does not exist" % collection)
     let cll = i.dget(data, collection)
     i.push i.dget(cll, id.newVal)
-    
+
   def.symbol("dsquery") do (i: In):
-    let vals = i.expect("quot", "'sym",  "dict:datastore")
+    let vals = i.expect("quot", "'sym", "dict:datastore")
     var filter = vals[0]
     let collection = vals[1]
     let ds = vals[2]
@@ -90,7 +90,7 @@ proc dstore_module*(i: In)=
       except CatchableError:
         discard
     i.push res.newVal
-      
+
   def.symbol("dspost") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
     var d = vals[0]
@@ -104,7 +104,7 @@ proc dstore_module*(i: In)=
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
     i.push ds
-    
+
   def.symbol("dsput") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
     var d = vals[0]
@@ -121,7 +121,7 @@ proc dstore_module*(i: In)=
     var cll = i.dget(data, collection)
     i.dset(cll, id, d)
     i.push ds
-    
+
   def.symbol("dsdelete") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
@@ -135,7 +135,7 @@ proc dstore_module*(i: In)=
     if not dhas(data, collection):
       raiseInvalid("Collection '$#' does not exist" % collection)
     var cll = i.dget(data, collection)
-    i.ddel(cll, id) 
+    i.ddel(cll, id)
     i.push ds
-    
+
   def.finalize("dstore")

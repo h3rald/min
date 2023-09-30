@@ -1,12 +1,12 @@
 import
-  times
+  std/times
 import
   ../core/parser,
   ../core/value,
   ../core/interpreter,
   ../core/utils
 
-proc time_module*(i: In)=
+proc time_module*(i: In) =
   let def = i.define()
 
   def.symbol("timestamp") do (i: In):

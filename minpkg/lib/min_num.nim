@@ -1,24 +1,24 @@
-import 
-  random
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  std/random
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
-proc num_module*(i: In)=
+proc num_module*(i: In) =
 
   let def = i.define()
 
   def.symbol("nan") do (i: In):
     i.push newVal(NaN)
-  
+
   def.symbol("inf") do (i: In):
     i.push newVal(Inf)
-  
+
   def.symbol("-inf") do (i: In):
     i.push newVal(NegInf)
-  
+
   def.symbol("+") do (i: In):
     let vals = i.expect("num", "num")
     let a = vals[0]
@@ -33,7 +33,7 @@ proc num_module*(i: In)=
         i.push newVal(a.floatVal + b.floatVal)
       else:
         i.push newVal(a.floatVal + b.intVal.float)
-  
+
   def.symbol("-") do (i: In):
     let vals = i.expect("num", "num")
     let a = vals[0]
@@ -47,8 +47,8 @@ proc num_module*(i: In)=
       if b.isFloat:
         i.push newVal(b.floatVal - a.floatVal)
       else:
-        i.push newVal(b.intVal.float - a.floatVal) 
-  
+        i.push newVal(b.intVal.float - a.floatVal)
+
   def.symbol("*") do (i: In):
     let vals = i.expect("num", "num")
     let a = vals[0]
@@ -63,7 +63,7 @@ proc num_module*(i: In)=
         i.push newVal(a.floatVal * b.floatVal)
       else:
         i.push newVal(a.floatVal * b.intVal.float)
-  
+
   def.symbol("/") do (i: In):
     let vals = i.expect("num", "num")
     let a = vals[0]
@@ -77,8 +77,8 @@ proc num_module*(i: In)=
       if b.isFloat:
         i.push newVal(b.floatVal / a.floatVal)
       else:
-        i.push newVal(b.intVal.float / a.floatVal) 
-  
+        i.push newVal(b.intVal.float / a.floatVal)
+
   def.symbol("randomize") do (i: In):
     randomize()
 
@@ -92,7 +92,7 @@ proc num_module*(i: In)=
     let b = vals[0]
     let a = vals[1]
     i.push(newVal(a.intVal div b.intVal))
-  
+
   def.symbol("mod") do (i: In):
     let vals = i.expect("int", "int")
     let b = vals[0]
@@ -108,7 +108,7 @@ proc num_module*(i: In)=
     let vals = i.expect("int")
     let n = vals[0]
     i.push newVal(n.intVal - 1)
-  
+
   def.symbol("even?") do (i: In):
     let vals = i.expect("int")
     let n = vals[0]
@@ -118,9 +118,9 @@ proc num_module*(i: In)=
     let vals = i.expect("int")
     let n = vals[0]
     i.push newVal(n.intVal mod 2 != 0)
-    
+
   def.symbol("bitand") do (i: In):
-    let vals = i.expect("int","int")
+    let vals = i.expect("int", "int")
     let b = vals[0]
     let a = vals[1]
     i.push newVal(a.intVal and b.intVal)
@@ -131,25 +131,25 @@ proc num_module*(i: In)=
     i.push newVal(not a.intVal)
 
   def.symbol("bitor") do (i: In):
-    let vals = i.expect("int","int")
+    let vals = i.expect("int", "int")
     let b = vals[0]
     let a = vals[1]
     i.push newVal(a.intVal or b.intVal)
 
   def.symbol("bitxor") do (i: In):
-    let vals = i.expect("int","int")
+    let vals = i.expect("int", "int")
     let b = vals[0]
     let a = vals[1]
     i.push newVal(a.intVal xor b.intVal)
 
   def.symbol("shl") do (i: In):
-    let vals = i.expect("int","int")
+    let vals = i.expect("int", "int")
     let b = vals[0]
     let a = vals[1]
     i.push newVal(a.intVal shl b.intVal)
 
   def.symbol("shr") do (i: In):
-    let vals = i.expect("int","int")
+    let vals = i.expect("int", "int")
     let b = vals[0]
     let a = vals[1]
     i.push newVal(a.intVal shr b.intVal)
@@ -197,7 +197,7 @@ proc num_module*(i: In)=
         c = c + n.intVal.float
     c = c / len(s.qVal).float
     i.push c.newVal
- 
+
   def.symbol("med") do (i: In):
     var s: MinValue
     i.reqQuotationOfNumbers s
@@ -216,7 +216,7 @@ proc num_module*(i: In)=
           i.push ((first.intVal.float+second.floatVal)/2).newVal
         else:
           i.push ((first.intVal+second.intVal).float/2).newVal
-    
+
   def.symbol("range") do (i: In):
     var s: MinValue
     i.reqQuotationOfIntegers s
@@ -224,7 +224,7 @@ proc num_module*(i: In)=
     var b = s.qVal[1]
     var step = 1.newVal
     var res = newSeq[MinValue](0)
-    if len(s.qVal)==3:
+    if len(s.qVal) == 3:
       a = s.qVal[0]
       b = s.qVal[1]
       step = s.qVal[2]

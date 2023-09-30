@@ -1,10 +1,11 @@
 
-import 
-    std/xmlparser,
-    std/xmltree,
-    std/parsexml,
-    std/strtabs,
-    std/critbits,
+import
+    std/[xmlparser,
+    xmltree,
+    parsexml,
+    strtabs,
+    critbits]
+import
     nimquery
 import
     ../core/parser,
@@ -47,7 +48,7 @@ proc newXDict(i: In, xml: XmlNode): MinValue =
             i.dset(result, "text", xml.text.newVal)
 
 proc newXml(i: In, xdict: MinValue): XmlNode =
-     case xdict.objType:
+    case xdict.objType:
         of "xml-text":
             result = newText(i.dget(xdict, "text").getString)
         of "xml-element":
@@ -77,13 +78,15 @@ proc xml_module*(i: In) =
 
     let def = i.define()
 
-    i.scope.symbols["typealias:xml-node"] = MinOperator(kind: minValOp, val: xmltypes.newVal, sealed: false, quotation: false)
+    i.scope.symbols["typealias:xml-node"] = MinOperator(kind: minValOp,
+            val: xmltypes.newVal, sealed: false, quotation: false)
 
     def.symbol("from-xml") do (i: In):
         let vals = i.expect("str")
-        let s = vals[0].getString() 
+        let s = vals[0].getString()
         try:
-            let xml = parseXml(s, {reportComments, allowUnquotedAttribs, allowEmptyAttribs})
+            let xml = parseXml(s, {reportComments, allowUnquotedAttribs,
+                    allowEmptyAttribs})
             i.push(i.newXDict(xml))
         except CatchableError:
             let msg = getCurrentExceptionMsg()
@@ -91,19 +94,19 @@ proc xml_module*(i: In) =
 
     def.symbol("xcomment") do (i: In):
         let vals = i.expect("'sym")
-        i.push i.newXDict(newComment(vals[0].getString))   
-    
+        i.push i.newXDict(newComment(vals[0].getString))
+
     def.symbol("xcdata") do (i: In):
         let vals = i.expect("'sym")
-        i.push i.newXDict(newCData(vals[0].getString))  
+        i.push i.newXDict(newCData(vals[0].getString))
 
     def.symbol("xtext") do (i: In):
         let vals = i.expect("'sym")
-        i.push i.newXDict(newText(vals[0].getString))  
+        i.push i.newXDict(newText(vals[0].getString))
 
     def.symbol("xentity") do (i: In):
         let vals = i.expect("'sym")
-        i.push i.newXDict(newEntity(vals[0].getString)) 
+        i.push i.newXDict(newEntity(vals[0].getString))
 
     def.symbol("xelement") do (i: In):
         let vals = i.expect("'sym")
@@ -130,7 +133,7 @@ proc xml_module*(i: In) =
         let xresults = root.querySelectorAll(query)
         var results = newSeq[MinValue](0)
         for e in xresults:
-          results.add i.newXDict(e)
+            results.add i.newXDict(e)
         i.push results.newVal
 
     def.finalize("xml")

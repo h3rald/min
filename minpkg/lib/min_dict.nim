@@ -1,12 +1,12 @@
-import 
-  critbits 
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  std/critbits
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
-  
-proc dict_module*(i: In)=
+
+proc dict_module*(i: In) =
 
   let def = i.define()
 
@@ -33,20 +33,20 @@ proc dict_module*(i: In)=
     i.dset(rv, "val", v)
     i.dset(rv, "str", newVal($v))
     i.push rv
-    
+
   def.symbol("dset") do (i: In):
     let vals = i.expect("'sym", "a", "dict")
     let k = vals[0]
     let m = vals[1]
     var d = vals[2]
-    i.push i.dset(d, k, m) 
+    i.push i.dset(d, k, m)
 
   def.symbol("dset-sym") do (i: In):
     let vals = i.expect("'sym", "'sym", "dict")
     let k = vals[0]
     let m = newSym(vals[1].getString)
     var d = vals[2]
-    i.push i.dset(d, k, m) 
+    i.push i.dset(d, k, m)
 
   def.symbol("ddel") do (i: In):
     let vals = i.expect("'sym", "dict")
@@ -63,7 +63,7 @@ proc dict_module*(i: In)=
     let vals = i.expect("dict")
     let d = vals[0]
     i.push i.values(d)
-    
+
   def.symbol("dpairs") do (i: In):
     let vals = i.expect("dict")
     let d = vals[0]

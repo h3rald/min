@@ -1,35 +1,35 @@
-import 
-  os, 
-  osproc, 
+import
+  std/[os,
+  osproc,
   strutils,
   logging,
-  tables
-import 
-  ../core/parser, 
+  tables]
+import
+  ../core/parser,
   ../core/baseutils,
-  ../core/value, 
-  ../core/interpreter, 
+  ../core/value,
+  ../core/interpreter,
   ../core/utils,
   ../core/fileutils
 
 import zippy/ziparchives
 
-proc sys_module*(i: In)=
+proc sys_module*(i: In) =
   let def = i.define()
-  
+
   def.symbol(".") do (i: In):
     i.push newVal(getCurrentDir().unix)
-    
+
   def.symbol("..") do (i: In):
     i.push newVal(getCurrentDir().parentDir.unix)
-  
+
   def.symbol("cd") do (i: In):
     let vals = i.expect("'sym")
     let f = vals[0].getString
     i.pwd = joinPath(getCurrentDir(), f)
     info("Current directory changed to: ", i.pwd)
     f.setCurrentDir
-  
+
   def.symbol("ls") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0]
@@ -37,7 +37,7 @@ proc sys_module*(i: In)=
     for i in walkDir(a.getString):
       list.add newVal(i.path.unix)
     i.push list.newVal
-  
+
   def.symbol("ls-r") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0]
@@ -59,18 +59,18 @@ proc sys_module*(i: In)=
     i.dset(d, "output", res.output.strip.newVal)
     i.dset(d, "code", res.exitCode.newVal)
     i.push(d)
-  
+
   def.symbol("get-env") do (i: In):
     let vals = i.expect("'sym")
     let a = vals[0]
     i.push a.getString.getEnv.newVal
-  
+
   def.symbol("put-env") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let key = vals[0]
     let value = vals[1]
     key.getString.putEnv value.getString
-    
+
   def.symbol("env?") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -83,10 +83,10 @@ proc sys_module*(i: In)=
 
   def.symbol("os") do (i: In):
     i.push hostOS.newVal
-  
+
   def.symbol("cpu") do (i: In):
     i.push hostCPU.newVal
-    
+
   def.symbol("rm") do (i: In):
     let vals = i.expect("'sym")
     let v = vals[0]
@@ -95,7 +95,7 @@ proc sys_module*(i: In)=
       f.removeFile
     else:
       raiseInvalid("File '$1' does not exist." % f)
-    
+
   def.symbol("cp") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let a = vals[0]
@@ -108,10 +108,10 @@ proc sys_module*(i: In)=
       if src.dirExists:
         copyDirWithPermissions src, dest
       else:
-        copyFileWithPermissions src, dest / src.extractFilename 
+        copyFileWithPermissions src, dest / src.extractFilename
     else:
-      copyFileWithPermissions src, dest 
-    
+      copyFileWithPermissions src, dest
+
   def.symbol("mv") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let a = vals[0]
@@ -119,14 +119,14 @@ proc sys_module*(i: In)=
     let src = b.getString
     var dest = a.getString
     if dest.dirExists:
-      dest = dest / src.extractFilename 
+      dest = dest / src.extractFilename
     moveFile src, dest
-  
+
   def.symbol("rmdir") do (i: In):
     let vals = i.expect("'sym")
     let f = vals[0]
     f.getString.removeDir
-  
+
   def.symbol("mkdir") do (i: In):
     let vals = i.expect("'sym")
     let f = vals[0]
@@ -199,4 +199,4 @@ proc sys_module*(i: In)=
     i.push isAdmin().newVal
 
   def.finalize("sys")
-    
+

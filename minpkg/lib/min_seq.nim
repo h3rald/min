@@ -1,15 +1,15 @@
-import 
-  tables,
+import
+  std/[tables,
   algorithm,
   sets,
-  sequtils
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+  sequtils]
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
-  
-proc seq_module*(i: In)=
+
+proc seq_module*(i: In) =
 
   let def = i.define()
 
@@ -17,25 +17,25 @@ proc seq_module*(i: In)=
     let vals = i.expect("quot", "quot")
     let q1 = toHashSet(vals[0].qVal)
     let q2 = toHashSet(vals[1].qVal)
-    i.push toSeq(items(q2.intersection(q1))).newVal 
+    i.push toSeq(items(q2.intersection(q1))).newVal
 
   def.symbol("union") do (i: In):
     let vals = i.expect("quot", "quot")
     let q1 = toHashSet(vals[0].qVal)
     let q2 = toHashSet(vals[1].qVal)
-    i.push toSeq(items(q2.union(q1))).newVal 
+    i.push toSeq(items(q2.union(q1))).newVal
 
   def.symbol("difference") do (i: In):
     let vals = i.expect("quot", "quot")
     let q1 = toHashSet(vals[0].qVal)
     let q2 = toHashSet(vals[1].qVal)
-    i.push toSeq(items(q2.difference(q1))).newVal 
+    i.push toSeq(items(q2.difference(q1))).newVal
 
   def.symbol("symmetric-difference") do (i: In):
     let vals = i.expect("quot", "quot")
     let q1 = toHashSet(vals[0].qVal)
     let q2 = toHashSet(vals[1].qVal)
-    i.push toSeq(items(q2.symmetricDifference(q1))).newVal 
+    i.push toSeq(items(q2.symmetricDifference(q1))).newVal
 
   def.symbol("concat") do (i: In):
     let vals = i.expect("quot", "quot")
@@ -43,40 +43,40 @@ proc seq_module*(i: In)=
     let q2 = vals[1]
     let q = q2.qVal & q1.qVal
     i.push q.newVal
-  
+
   def.symbol("first") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[0]
-  
+
   def.symbol("last") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[q.qVal.len - 1]
-  
+
   def.symbol("rest") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
     if q.qVal.len == 0:
       raiseOutOfBounds("Quotation is empty")
     i.push q.qVal[1..q.qVal.len-1].newVal
-  
+
   def.symbol("append") do (i: In):
     let vals = i.expect("quot", "a")
     let q = vals[0]
     let v = vals[1]
     i.push newVal(q.qVal & v)
-  
+
   def.symbol("prepend") do (i: In):
     let vals = i.expect("quot", "a")
     let q = vals[0]
     let v = vals[1]
     i.push newVal(v & q.qVal)
-  
+
   def.symbol("get") do (i: In):
     let vals = i.expect("int", "quot")
     let index = vals[0]
@@ -100,7 +100,7 @@ proc seq_module*(i: In)=
     i.dset(rv, "val", v)
     i.dset(rv, "str", newVal($v))
     i.push rv
-    
+
   def.symbol("set") do (i: In):
     let vals = i.expect("int", "a", "quot")
     let index = vals[0]
@@ -122,7 +122,7 @@ proc seq_module*(i: In)=
       raiseOutOfBounds("Index out of bounds")
     q.qVal[ix.int] = val
     i.push q
-  
+
   def.symbol("remove") do (i: In):
     let vals = i.expect("int", "quot")
     let index = vals[0]
@@ -136,7 +136,7 @@ proc seq_module*(i: In)=
         continue
       res.add q.qVal[x]
     i.push res.newVal
-  
+
   def.symbol("insert") do (i: In):
     let vals = i.expect("int", "a", "quot")
     let index = vals[0]
@@ -156,13 +156,13 @@ proc seq_module*(i: In)=
     let vals = i.expect("quot")
     let q = vals[0]
     i.push q.qVal.len.newVal
-  
+
   def.symbol("in?") do (i: In):
     let vals = i.expect("a", "quot")
     let v = vals[0]
     let q = vals[1]
-    i.push q.qVal.contains(v).newVal 
-  
+    i.push q.qVal.contains(v).newVal
+
   def.symbol("map") do (i: In):
     let vals = i.expect("quot", "quot")
     var prog = vals[0]
@@ -227,7 +227,7 @@ proc seq_module*(i: In)=
       var check = i.pop
       if check.isBool and check.boolVal == true:
         res = true.newVal
-        break 
+        break
     i.push res
 
   def.symbol("one?") do (i: In):
@@ -265,7 +265,7 @@ proc seq_module*(i: In)=
     var cmp = vals[0]
     let list = vals[1]
     var i2 = i
-    var minCmp = proc(a, b: MinValue): int {.closure.}=
+    var minCmp = proc(a, b: MinValue): int {.closure.} =
       i2.push a
       i2.push b
       i2.dequote(cmp)
@@ -280,7 +280,7 @@ proc seq_module*(i: In)=
     var qList = list.qVal
     sort[MinValue](qList, minCmp)
     i.push qList.newVal
-  
+
   def.symbol("shorten") do (i: In):
     let vals = i.expect("int", "quot")
     let n = vals[0]

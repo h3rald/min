@@ -1,6 +1,6 @@
 import
   parser,
-  hashes
+  std/hashes
 
 proc typeName*(v: MinValue): string =
   case v.kind:
@@ -8,12 +8,12 @@ proc typeName*(v: MinValue): string =
       return "int"
     of minFloat:
       return "flt"
-    of minCommand: 
+    of minCommand:
       return "cmd"
-    of minDictionary: 
+    of minDictionary:
       if v.isTypedDictionary:
         return "dict:" & v.objType
-      else: 
+      else:
         return "dict"
     of minQuotation:
       return "quot"

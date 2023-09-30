@@ -1,5 +1,5 @@
 import
-  os
+  std/os
 
 # Filetype and permissions
 

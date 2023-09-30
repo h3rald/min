@@ -1,14 +1,16 @@
 # Adapted from: https://github.com/Araq/Nimrod/blob/v0.9.6/lib/pure/json.nim
-import 
-  lexbase, 
-  strutils, 
+import
+  std/[lexbase,
+  strutils,
   sequtils,
-  streams, 
+  streams,
   critbits,
-  json,
+  json]
+
+import
   baseutils
 
-import unicode except strip
+import std/unicode except strip
 
 type
   MinTokenKind* = enum
@@ -38,32 +40,32 @@ type
     minSymbol,
     minNull,
     minBool
-  MinEventKind* = enum     ## enumeration of all events that may occur when parsing
-    eMinError,             ## an error ocurred during parsing
-    eMinEof,               ## end of file reached
-    eMinString,            ## a string literal
-    eMinInt,               ## an integer literal
-    eMinFloat,             ## a float literal
-    eMinQuotationStart,    ## start of an array: the ``(`` token
-    eMinQuotationEnd,      ## start of an array: the ``)`` token
-    eMinDictionaryStart,   ## start of a dictionary: the ``{`` token
-    eMinDictionaryEnd      ## start of a dictionary: the ``}`` token
-  MinParserError* = enum        ## enumeration that lists all errors that can occur
-    errNone,               ## no error
-    errInvalidToken,       ## invalid token
-    errStringExpected,     ## string expected
-    errBracketRiExpected,  ## ``)`` expected
-    errBraceRiExpected,    ## ``}`` expected
-    errQuoteExpected,      ## ``"`` or ``'`` expected
-    errSqBracketRiExpected,## ``]`` expected
-    errEOC_Expected,       ## ``*/`` expected
-    errEofExpected,        ## EOF expected
+  MinEventKind* = enum   ## enumeration of all events that may occur when parsing
+    eMinError,           ## an error ocurred during parsing
+    eMinEof,             ## end of file reached
+    eMinString,          ## a string literal
+    eMinInt,             ## an integer literal
+    eMinFloat,           ## a float literal
+    eMinQuotationStart,  ## start of an array: the ``(`` token
+    eMinQuotationEnd,    ## start of an array: the ``)`` token
+    eMinDictionaryStart, ## start of a dictionary: the ``{`` token
+    eMinDictionaryEnd    ## start of a dictionary: the ``}`` token
+  MinParserError* = enum    ## enumeration that lists all errors that can occur
+    errNone,                ## no error
+    errInvalidToken,        ## invalid token
+    errStringExpected,      ## string expected
+    errBracketRiExpected,   ## ``)`` expected
+    errBraceRiExpected,     ## ``}`` expected
+    errQuoteExpected,       ## ``"`` or ``'`` expected
+    errSqBracketRiExpected, ## ``]`` expected
+    errEOC_Expected,        ## ``*/`` expected
+    errEofExpected,         ## EOF expected
     errExprExpected
-  MinParserState* = enum 
-    stateEof, 
-    stateStart, 
-    stateQuotation, 
-    stateDictionary, 
+  MinParserState* = enum
+    stateEof,
+    stateStart,
+    stateQuotation,
+    stateDictionary,
     stateExpectValue
   MinParser* = object of BaseLexer
     a*: string
@@ -74,7 +76,7 @@ type
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
-  MinValue* = ref MinValueObject 
+  MinValue* = ref MinValueObject
   MinValueObject* {.acyclic, final.} = object
     line*: int
     column*: int
@@ -87,9 +89,9 @@ type
       of minFloat: floatVal*: BiggestFloat
       of minCommand: cmdVal*: string
       of minDictionary:
-        scope*: ref MinScope 
-        obj*: pointer 
-        objType*: string 
+        scope*: ref MinScope
+        obj*: pointer
+        objType*: string
       of minQuotation:
         qVal*: seq[MinValue]
       of minString: strVal*: string
@@ -103,7 +105,7 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     kind*: MinScopeKind
-  MinOperatorProc* = proc (i: In) {.closure.} 
+  MinOperatorProc* = proc (i: In) {.closure.}
   MinOperatorKind* = enum
     minProcOp
     minValOp
@@ -127,13 +129,13 @@ type
     parser*: MinParser
     currSym*: MinValue
     filename*: string
-    evaluating*: bool 
-  MinParsingError* = ref object of ValueError 
+    evaluating*: bool
+  MinParsingError* = ref object of ValueError
   MinUndefinedError* = ref object of ValueError
   MinEmptyStackError* = ref object of ValueError
   MinInvalidError* = ref object of ValueError
   MinOutOfBoundsError* = ref object of ValueError
-  
+
 var CVARCOUNT = 0
 
 # Helpers
@@ -150,7 +152,8 @@ proc raiseOutOfBounds*(msg: string) =
 proc raiseEmptyStack*() =
   raise MinEmptyStackError(msg: "Insufficient items on the stack")
 
-proc dVal*(v: MinValue): CritBitTree[MinOperator]  {.inline, extern:"min_exported_symbol_$1".}=
+proc dVal*(v: MinValue): CritBitTree[MinOperator] {.inline,
+    extern: "min_exported_symbol_$1".} =
   if v.kind != minDictionary:
     raiseInvalid("dVal - Dictionary expected, got " & $v.kind)
   if v.scope.isNil:
@@ -177,7 +180,7 @@ const
     "command literal",
     "int literal",
     "float literal",
-    "(", 
+    "(",
     ")",
     "[",
     "]",
@@ -203,54 +206,60 @@ proc open*(my: var MinParser, input: Stream, filename: string) =
   my.kind = eMinError
   my.a = ""
 
-proc close*(my: var MinParser) {.inline, extern:"min_exported_symbol_$1".}= 
+proc close*(my: var MinParser) {.inline, extern: "min_exported_symbol_$1".} =
   lexbase.close(my)
 
-proc getInt*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
+proc getInt*(my: MinParser): int {.inline, extern: "min_exported_symbol_$1".} =
   assert(my.kind == eMinInt)
   return parseint(my.a)
 
-proc getFloat*(my: MinParser): float {.inline, extern:"min_exported_symbol_$1".}= 
+proc getFloat*(my: MinParser): float {.inline,
+    extern: "min_exported_symbol_$1".} =
   assert(my.kind == eMinFloat)
   return parseFloat(my.a)
 
-proc kind*(my: MinParser): MinEventKind {.inline, extern:"min_exported_symbol_$1".}= 
+proc kind*(my: MinParser): MinEventKind {.inline,
+    extern: "min_exported_symbol_$1".} =
   return my.kind
 
-proc getColumn*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
+proc getColumn*(my: MinParser): int {.inline,
+    extern: "min_exported_symbol_$1".} =
   result = getColNumber(my, my.bufpos)
 
-proc getLine*(my: MinParser): int {.inline, extern:"min_exported_symbol_$1".}= 
+proc getLine*(my: MinParser): int {.inline, extern: "min_exported_symbol_$1".} =
   result = my.lineNumber
 
-proc getFilename*(my: MinParser): string {.inline, extern:"min_exported_symbol_$1".}= 
+proc getFilename*(my: MinParser): string {.inline,
+    extern: "min_exported_symbol_$1".} =
   result = my.filename
-  
-proc errorMsg*(my: MinParser, msg: string): string = 
+
+proc errorMsg*(my: MinParser, msg: string): string =
   assert(my.kind == eMinError)
   result = "$1 [l:$2, c:$3] ERROR - $4" % [
     my.filename, $getLine(my), $getColumn(my), msg]
 
-proc errorMsg*(my: MinParser): string = 
+proc errorMsg*(my: MinParser): string =
   assert(my.kind == eMinError)
   result = errorMsg(my, errorMessages[my.err])
-  
-proc errorMsgExpected*(my: MinParser, e: string): string = 
+
+proc errorMsgExpected*(my: MinParser, e: string): string =
   result = errorMsg(my, e & " expected")
 
-proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1".}=
+proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn,
+    extern: "min_exported_symbol_$1".} =
   raise MinParsingError(msg: errorMsgExpected(p, msg))
 
-proc raiseUndefined*(p:MinParser, msg: string) {.noinline, noreturn, extern:"min_exported_symbol_$1_2".}=
+proc raiseUndefined*(p: MinParser, msg: string) {.noinline, noreturn,
+    extern: "min_exported_symbol_$1_2".} =
   raise MinUndefinedError(msg: errorMsg(p, msg))
 
-proc parseNumber(my: var MinParser) = 
+proc parseNumber(my: var MinParser) =
   var pos = my.bufpos
   var buf = my.buf
-  if buf[pos] == '-': 
+  if buf[pos] == '-':
     add(my.a, '-')
     inc(pos)
-  if buf[pos] == '.': 
+  if buf[pos] == '.':
     add(my.a, "0.")
     inc(pos)
   else:
@@ -275,7 +284,7 @@ proc parseNumber(my: var MinParser) =
       inc(pos)
   my.bufpos = pos
 
-proc handleHexChar(c: char, x: var int): bool = 
+proc handleHexChar(c: char, x: var int): bool =
   result = true # Success
   case c
   of '0'..'9': x = (x shl 4) or (ord(c) - ord('0'))
@@ -288,8 +297,8 @@ proc parseString(my: var MinParser): MinTokenKind =
   var pos = my.bufpos + 1
   var buf = my.buf
   while true:
-    case buf[pos] 
-    of '\0': 
+    case buf[pos]
+    of '\0':
       my.err = errQuoteExpected
       result = tkError
       break
@@ -298,21 +307,21 @@ proc parseString(my: var MinParser): MinTokenKind =
       break
     of '\\':
       case buf[pos+1]
-      of '\\', '"', '\'', '/': 
+      of '\\', '"', '\'', '/':
         add(my.a, buf[pos+1])
         inc(pos, 2)
       of 'b':
         add(my.a, '\b')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'f':
         add(my.a, '\f')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'n':
         add(my.a, '\L')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'r':
         add(my.a, '\C')
-        inc(pos, 2)    
+        inc(pos, 2)
       of 't':
         add(my.a, '\t')
         inc(pos, 2)
@@ -324,15 +333,15 @@ proc parseString(my: var MinParser): MinTokenKind =
         if handleHexChar(buf[pos], r): inc(pos)
         if handleHexChar(buf[pos], r): inc(pos)
         add(my.a, toUTF8(Rune(r)))
-      else: 
+      else:
         # don't bother with the error
         add(my.a, buf[pos])
         inc(pos)
-    of '\c': 
+    of '\c':
       pos = lexbase.handleCR(my, pos)
       buf = my.buf
       add(my.a, '\c')
-    of '\L': 
+    of '\L':
       pos = lexbase.handleLF(my, pos)
       buf = my.buf
       add(my.a, '\L')
@@ -346,8 +355,8 @@ proc parseCommand(my: var MinParser): MinTokenKind =
   var pos = my.bufpos + 1
   var buf = my.buf
   while true:
-    case buf[pos] 
-    of '\0': 
+    case buf[pos]
+    of '\0':
       my.err = errSqBracketRiExpected
       result = tkError
       break
@@ -356,21 +365,21 @@ proc parseCommand(my: var MinParser): MinTokenKind =
       break
     of '\\':
       case buf[pos+1]
-      of '\\', '"', '\'', '/': 
+      of '\\', '"', '\'', '/':
         add(my.a, buf[pos+1])
         inc(pos, 2)
       of 'b':
         add(my.a, '\b')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'f':
         add(my.a, '\f')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'n':
         add(my.a, '\L')
-        inc(pos, 2)      
+        inc(pos, 2)
       of 'r':
         add(my.a, '\C')
-        inc(pos, 2)    
+        inc(pos, 2)
       of 't':
         add(my.a, '\t')
         inc(pos, 2)
@@ -382,15 +391,15 @@ proc parseCommand(my: var MinParser): MinTokenKind =
         if handleHexChar(buf[pos], r): inc(pos)
         if handleHexChar(buf[pos], r): inc(pos)
         add(my.a, toUTF8(Rune(r)))
-      else: 
+      else:
         # don't bother with the error
         add(my.a, buf[pos])
         inc(pos)
-    of '\c': 
+    of '\c':
       pos = lexbase.handleCR(my, pos)
       buf = my.buf
       add(my.a, '\c')
-    of '\L': 
+    of '\L':
       pos = lexbase.handleLF(my, pos)
       buf = my.buf
       add(my.a, '\L')
@@ -399,55 +408,57 @@ proc parseCommand(my: var MinParser): MinTokenKind =
       inc(pos)
   my.bufpos = pos # store back
 
-proc parseSymbol(my: var MinParser): MinTokenKind = 
+proc parseSymbol(my: var MinParser): MinTokenKind =
   result = tkSymbol
   var pos = my.bufpos
   var buf = my.buf
   if not(buf[pos] in Whitespace):
-    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}', '{', '[', ']']):
-        if buf[pos] == '"':
-          add(my.a, buf[pos])
-          my.bufpos = pos
-          let r = parseString(my)
-          if r == tkError:
-            result = tkError
-            return
-          add(my.a, buf[pos])
+    while not(buf[pos] in WhiteSpace) and not(buf[pos] in ['\0', ')', '(', '}',
+        '{', '[', ']']):
+      if buf[pos] == '"':
+        add(my.a, buf[pos])
+        my.bufpos = pos
+        let r = parseString(my)
+        if r == tkError:
+          result = tkError
           return
-        else:
-          add(my.a, buf[pos])
-          inc(pos)
+        add(my.a, buf[pos])
+        return
+      else:
+        add(my.a, buf[pos])
+        inc(pos)
   my.bufpos = pos
 
 proc addDoc(my: var MinParser, docComment: string, reset = true) =
   if my.doc and not my.currSym.isNil and my.currSym.kind == minSymbol:
     if reset:
       my.doc = false
-    if my.currSym.docComment.len == 0 or my.currSym.docComment.len > 0 and my.currSym.docComment[my.currSym.docComment.len-1] == '\n':
+    if my.currSym.docComment.len == 0 or my.currSym.docComment.len > 0 and
+        my.currSym.docComment[my.currSym.docComment.len-1] == '\n':
       my.currSym.docComment &= docComment.strip(true, false)
     else:
       my.currSym.docComment &= docComment
 
-proc skip(my: var MinParser) = 
+proc skip(my: var MinParser) =
   var pos = my.bufpos
   var buf = my.buf
-  while true: 
+  while true:
     case buf[pos]
     of ';':
       # skip line comment:
-      if  buf[pos+1] == ';':
-        my.doc = true 
+      if buf[pos+1] == ';':
+        my.doc = true
       inc(pos, 2)
       while true:
-        case buf[pos] 
-        of '\0': 
+        case buf[pos]
+        of '\0':
           break
-        of '\c': 
+        of '\c':
           pos = lexbase.handleCR(my, pos)
           buf = my.buf
           my.addDoc "\n"
           break
-        of '\L': 
+        of '\L':
           pos = lexbase.handleLF(my, pos)
           buf = my.buf
           my.addDoc "\n"
@@ -455,7 +466,7 @@ proc skip(my: var MinParser) =
         else:
           my.addDoc $my.buf[pos], false
           inc(pos)
-    of '#': 
+    of '#':
       if buf[pos+1] == '|':
         # skip long comment:
         if buf[pos+2] == '|':
@@ -463,15 +474,15 @@ proc skip(my: var MinParser) =
           my.doc = true
         inc(pos, 2)
         while true:
-          case buf[pos] 
-          of '\0': 
+          case buf[pos]
+          of '\0':
             my.err = errEOC_Expected
             break
-          of '\c': 
+          of '\c':
             pos = lexbase.handleCR(my, pos)
             my.addDoc "\n", false
             buf = my.buf
-          of '\L': 
+          of '\L':
             pos = lexbase.handleLF(my, pos)
             my.addDoc "\n", false
             buf = my.buf
@@ -479,21 +490,21 @@ proc skip(my: var MinParser) =
             inc(pos)
             if buf[pos] == '|':
               inc(pos)
-            if buf[pos] == '#': 
+            if buf[pos] == '#':
               inc(pos)
               break
             my.addDoc $buf[pos], false
           else:
             my.addDoc $my.buf[pos], false
             inc(pos)
-      else: 
+      else:
         break
-    of ' ', '\t': 
+    of ' ', '\t':
       inc(pos)
-    of '\c':  
+    of '\c':
       pos = lexbase.handleCR(my, pos)
       buf = my.buf
-    of '\L': 
+    of '\L':
       pos = lexbase.handleLF(my, pos)
       buf = my.buf
     else:
@@ -502,7 +513,7 @@ proc skip(my: var MinParser) =
 
 proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
-  skip(my) 
+  skip(my)
   case my.buf[my.bufpos]
   of '-', '.':
     if my.bufpos+1 <= my.buf.len and my.buf[my.bufpos+1] in '0'..'9':
@@ -513,7 +524,7 @@ proc getToken*(my: var MinParser): MinTokenKind =
         result = tkInt
     else:
       result = parseSymbol(my)
-  of '0'..'9': 
+  of '0'..'9':
     parseNumber(my)
     if {'.', 'e', 'E'} in my.a:
       result = tkFloat
@@ -539,16 +550,16 @@ proc getToken*(my: var MinParser): MinTokenKind =
     result = tkEof
   else:
     result = parseSymbol(my)
-    case my.a 
+    case my.a
     of "null": result = tkNull
     of "true": result = tkTrue
     of "false": result = tkFalse
-    else: 
+    else:
       discard
   my.token = result
 
 
-proc next*(my: var MinParser) = 
+proc next*(my: var MinParser) =
   var tk = getToken(my)
   var i = my.state.len-1
   case my.state[i]
@@ -558,15 +569,15 @@ proc next*(my: var MinParser) =
     else:
       my.kind = eMinError
       my.err = errEofExpected
-  of stateStart: 
+  of stateStart:
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.state[i] = stateEof # expect EOF next!
       my.kind = MinEventKind(ord(tk))
-    of tkBracketLe: 
+    of tkBracketLe:
       my.state.add(stateQuotation) # we expect any
       my.kind = eMinQuotationStart
-    of tkBraceLe: 
+    of tkBraceLe:
       my.state.add(stateDictionary) # we expect any
       my.kind = eMinDictionaryStart
     of tkEof:
@@ -578,10 +589,10 @@ proc next*(my: var MinParser) =
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
-    of tkBracketLe: 
+    of tkBracketLe:
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
-    of tkBraceLe: 
+    of tkBraceLe:
       my.state.add(stateDictionary)
       my.kind = eMinDictionaryStart
     of tkBracketRi:
@@ -597,10 +608,10 @@ proc next*(my: var MinParser) =
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
-    of tkBracketLe: 
+    of tkBracketLe:
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
-    of tkBraceLe: 
+    of tkBraceLe:
       my.state.add(stateDictionary)
       my.kind = eMinDictionaryStart
     of tkBracketRi:
@@ -616,21 +627,21 @@ proc next*(my: var MinParser) =
     case tk
     of tkString, tkInt, tkFloat, tkTrue, tkFalse:
       my.kind = MinEventKind(ord(tk))
-    of tkBracketLe: 
+    of tkBracketLe:
       my.state.add(stateQuotation)
       my.kind = eMinQuotationStart
-    of tkBraceLe: 
+    of tkBraceLe:
       my.state.add(stateDictionary)
       my.kind = eMinDictionaryStart
     else:
       my.kind = eMinError
       my.err = errExprExpected
 
-proc eat(p: var MinParser, token: MinTokenKind) = 
+proc eat(p: var MinParser, token: MinTokenKind) =
   if p.token == token: discard getToken(p)
   else: raiseParsing(p, tokToStr[token])
 
-proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
+proc `$`*(a: MinValue): string {.inline, extern: "min_exported_symbol_$1".} =
   case a.kind:
     of minNull:
       return "null"
@@ -662,14 +673,14 @@ proc `$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         if k.contains(" "):
           k = "\"$1\"" % k
         d = d & v & " :" & k & " "
-      if a.objType != "": 
+      if a.objType != "":
         d = d & ";" & a.objType
       d = d.strip & "}"
       return d
     of minCommand:
       return "[" & a.cmdVal & "]"
 
-proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
+proc `$$`*(a: MinValue): string {.inline, extern: "min_exported_symbol_$1".} =
   case a.kind:
     of minNull:
       return "null"
@@ -703,7 +714,7 @@ proc `$$`*(a: MinValue): string {.inline, extern:"min_exported_symbol_$1".}=
         if k.contains(" "):
           k = "\"$1\"" % k
         d = d & v & " :" & k & " "
-      if a.objType != "": 
+      if a.objType != "":
         d = d & ";" & a.objType
       d = d.strip & "}"
       return d
@@ -736,7 +747,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   of tkBracketLe:
     var q = newSeq[MinValue](0)
     discard getToken(p)
-    while p.token != tkBracketRi: 
+    while p.token != tkBracketRi:
       q.add p.parseMinValue(i)
     eat(p, tkBracketRi)
     result = MinValue(kind: minQuotation, qVal: q)
@@ -745,7 +756,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     var val: MinValue
     discard getToken(p)
     var c = 0
-    while p.token != tkBraceRi: 
+    while p.token != tkBraceRi:
       c = c+1
       let v = p.parseMinValue(i)
       if val.isNil:
@@ -756,7 +767,8 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
           var offset = 0
           if key[1] == '"':
             offset = 1
-          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false)
+          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(
+              kind: minValOp, val: val, sealed: false)
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -767,15 +779,16 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
       raiseInvalid("Invalid dictionary")
     result = MinValue(kind: minDictionary, scope: scope)
   of tkSymbol:
-    result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn, line: p.lineNumber, filename: p.filename)
+    result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn,
+        line: p.lineNumber, filename: p.filename)
     p.a = ""
     p.currSym = result
     discard getToken(p)
   else:
-     let err = "Undefined or invalid value: "&p.a
-     raiseUndefined(p, err)
+    let err = "Undefined or invalid value: "&p.a
+    raiseUndefined(p, err)
   result.filename = p.filename
-  
+
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =
   var op = indent
   if push:
@@ -806,13 +819,13 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     var qvar = "q" & $CVARCOUNT
     result.add indent&"var "&qvar&" = newSeq[MinValue](0)"
     discard getToken(p)
-    while p.token != tkBracketRi: 
+    while p.token != tkBracketRi:
       var instructions = p.compileMinValue(i, false, indent)
       let v = instructions.pop
       result = result.concat(instructions)
       result.add indent&qvar&".add "&v
     eat(p, tkBracketRi)
-    result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")" 
+    result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")"
   of tkSqBracketLe, tkSqBracketRi:
     discard getToken(p)
   of tkCommand:
@@ -828,7 +841,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     var scopevar = "scope" & $CVARCOUNT
     CVARCOUNT.inc
     var valvar = "val" & $CVARCOUNT
-    while p.token != tkBraceRi: 
+    while p.token != tkBraceRi:
       c = c+1
       var instructions = p.compileMinValue(i, false, indent)
       let v = p.parseMinValue(i)
@@ -842,7 +855,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
-          result.add indent&scopevar&".symbols["&key[1 .. key.len-1]&"] = MinOperator(kind: minValOp, val: "&valvar&", sealed: false)"
+          result.add indent&scopevar&".symbols["&key[1 ..
+              key.len-1]&"] = MinOperator(kind: minValOp, val: "&valvar&", sealed: false)"
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -872,13 +886,13 @@ proc isNull*(s: MinValue): bool =
 proc isSymbol*(s: MinValue): bool =
   return s.kind == minSymbol
 
-proc isQuotation*(s: MinValue): bool = 
+proc isQuotation*(s: MinValue): bool =
   return s.kind == minQuotation
 
-proc isCommand*(s: MinValue): bool = 
+proc isCommand*(s: MinValue): bool =
   return s.kind == minCommand
 
-proc isString*(s: MinValue): bool = 
+proc isString*(s: MinValue): bool =
   return s.kind == minString
 
 proc isFloat*(s: MinValue): bool =
@@ -894,7 +908,8 @@ proc isBool*(s: MinValue): bool =
   return s.kind == minBool
 
 proc isStringLike*(s: MinValue): bool =
-  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and s.qVal[0].isSymbol)
+  return s.isSymbol or s.isString or (s.isQuotation and s.qVal.len == 1 and
+      s.qVal[0].isSymbol)
 
 proc isDictionary*(q: MinValue): bool =
   return q.kind == minDictionary
@@ -909,7 +924,8 @@ proc isTypedDictionary*(q: MinValue, t: string): bool =
     return q.objType == t
   return false
 
-proc `==`*(a: MinValue, b: MinValue): bool {.inline, extern:"min_exported_symbol_eqeq".}=
+proc `==`*(a: MinValue, b: MinValue): bool {.inline,
+    extern: "min_exported_symbol_eqeq".} =
   if not (a.kind == b.kind or (a.isNumber and b.isNumber)):
     return false
   if a.kind == minSymbol and b.kind == minSymbol:

@@ -1,15 +1,15 @@
-import 
-  strutils, 
-  critbits
-import 
+import
+  std/[strutils,
+  critbits]
+import
   baseutils,
-  parser, 
+  parser,
   value,
   json,
   scope,
   env,
   interpreter
-  
+
 # Library methods
 
 proc define*(i: In): ref MinScope =
@@ -17,13 +17,15 @@ proc define*(i: In): ref MinScope =
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
+proc symbol*(scope: ref MinScope, sym: string,
+    p: MinOperatorProc) {.effectsOf: p.} =
   scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
 proc symbol*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.symbols[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
+proc sigil*(scope: ref MinScope, sym: string,
+    p: MinOperatorProc) {.effectsOf: p.} =
   scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
 
 proc sigil*(scope: ref MinScope, sym: string, v: MinValue) =
@@ -39,14 +41,15 @@ proc finalize*(scope: ref MinScope, name: string = "") =
     i.evaluating = false
   if name != "":
     scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
-    
+
 # Dictionary Methods
 
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
   if q.dVal[s.getString].kind == minProcOp:
-    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." % [s.getString])
+    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." %
+        [s.getString])
   result = q.dVal[s.getString].val
 
 proc dget*(i: In, q: MinValue, s: string): MinValue =
@@ -66,26 +69,30 @@ proc dhas*(q: MinValue, s: string): bool =
     raiseInvalid("Value is not a dictionary")
   return q.dVal.contains(s)
 
-proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".} =
+proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable,
+    extern: "min_exported_symbol_$1".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   excl(p.scope.symbols, s.getString)
   return p
-      
-proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable, extern:"min_exported_symbol_$1_2".} =
+
+proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable,
+    extern: "min_exported_symbol_$1_2".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   excl(p.scope.symbols, s)
   return p
-      
-proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+
+proc dset*(i: In, p: var MinValue, s: MinValue,
+    m: MinValue): MinValue {.discardable, extern: "min_exported_symbol_$1".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
   p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
   return p
 
-proc dset*(i: In, p: var MinValue, s: string, m: MinValue): MinValue {.discardable, extern:"min_exported_symbol_$1_2".}=
+proc dset*(i: In, p: var MinValue, s: string,
+    m: MinValue): MinValue {.discardable, extern: "min_exported_symbol_$1_2".} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
@@ -107,7 +114,7 @@ proc values*(i: In, q: MinValue): MinValue =
       raiseInvalid("Dictionary contains operators that cannot be accessed.")
     r.add item.val
   return r.newVal
-  
+
 proc pairs*(i: In, q: MinValue): MinValue =
   # Assumes q is a dictionary
   var r = newSeq[MinValue](0)
@@ -142,14 +149,14 @@ proc `%`*(i: In, a: MinValue): JsonNode =
         result.add(i%it)
     of minDictionary:
       result = newJObject()
-      for it in a.dVal.pairs: 
+      for it in a.dVal.pairs:
         result[it.key] = i%i.dget(a, it.key)
 
-proc fromJson*(i: In, json: JsonNode): MinValue = 
+proc fromJson*(i: In, json: JsonNode): MinValue =
   case json.kind:
     of JNull:
       result = newNull()
-    of JBool: 
+    of JBool:
       result = json.getBool.newVal
     of JInt:
       result = json.getBiggestInt.newVal
@@ -176,9 +183,10 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 
 # Validators
 
-proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool 
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool
 
-proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue, generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool  =
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
+    generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool =
   vTypes.add value.typeName
   let ors = element.split("|")
   for to in ors:
@@ -200,10 +208,11 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
           vTypes[c] = value.typeName
           break
     if andr:
-      result = true 
+      result = true
       break
 
-proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool  =
+proc validateValueType*(i: var MinInterpreter, element: string,
+    value: MinValue): bool =
   var g: CritBitTree[string]
   var s = newSeq[string](0)
   var c = 0
@@ -240,7 +249,7 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       let ta = "typealias:$#" % t
       if t.contains(":"):
         var split = t.split(":")
-        # Typed dictionaries 
+        # Typed dictionaries
         if split[0] == "dict":
           if value.isTypedDictionary(split[1]):
             return true
@@ -257,12 +266,14 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
           i2.pushSym("typeclass:$#" % t)
           let res = i2.pop
           if not res.isBool:
-            raiseInvalid("Type class '$#' does not evaluate to a boolean value ($# was returned instead)" % [t, $res])
+            raiseInvalid("Type class '$#' does not evaluate to a boolean value ($# was returned instead)" %
+                [t, $res])
           return res.boolVal
       else:
         raiseInvalid("Unknown type '$#'" % t)
 
-proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool =
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[
+    string]): bool =
   if generics.hasKey(t):
     let ts = generics[t].split("|")
     for tp in ts:
@@ -271,12 +282,13 @@ proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[stri
         return true
     return false
   return i.basicValidate(value, t)
-    
+
 proc validate*(i: In, value: MinValue, t: string): bool =
   return i.basicValidate(value, t)
-  
+
 proc validType*(i: In, s: string): bool =
-  const ts = ["bool", "null", "int", "num", "flt", "quot", "dict", "'sym", "sym", "str", "a"]
+  const ts = ["bool", "null", "int", "num", "flt", "quot", "dict", "'sym",
+      "sym", "str", "a"]
   if ts.contains(s):
     return true
   if i.scope.hasSymbol("typeclass:$#" % s):
@@ -288,16 +300,18 @@ proc validType*(i: In, s: string): bool =
         return false
       if to[0] == '!':
         tt = to[1..to.len-1]
-      if not ts.contains(tt) and not tt.startsWith("dict:") and not i.scope.hasSymbol("typeclass:$#" % tt):
+      if not ts.contains(tt) and not tt.startsWith("dict:") and
+          not i.scope.hasSymbol("typeclass:$#" % tt):
         let ta = "typealias:$#" % tt
         if i.scope.hasSymbol(ta):
           return i.validType(i.scope.getSymbol(ta).val.getString)
         return false
   return true
-  
+
 
 # The following is used in operator signatures
-proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var CritBitTree[string]): seq[MinValue] =
+proc expect*(i: var MinInterpreter, elements: varargs[string],
+    generics: var CritBitTree[string]): seq[MinValue] =
   if not DEV:
     # Ignore validation, just return elements
     result = newSeq[MinValue](0)
@@ -307,7 +321,8 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
   let sym = i.currSym.getString
   var valid = newSeq[string](0)
   result = newSeq[MinValue](0)
-  let message = proc(invalid: string, elements: varargs[string], generics: CritBitTree[string]): string =
+  let message = proc(invalid: string, elements: varargs[string],
+      generics: CritBitTree[string]): string =
     var pelements = newSeq[string](0)
     for e in elements.reverse:
       if generics.hasKey(e):
@@ -340,7 +355,7 @@ proc expect*(i: var MinInterpreter, elements: varargs[string], generics: var Cri
 proc expect*(i: var MinInterpreter, elements: varargs[string]): seq[MinValue] =
   var c: CritBitTree[string]
   return i.expect(elements, c)
-        
+
 proc reqQuotationOfQuotations*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:
@@ -356,7 +371,7 @@ proc reqQuotationOfNumbers*(i: var MinInterpreter, a: var MinValue) =
   for s in a.qVal:
     if not s.isNumber:
       raiseInvalid("A quotation of numbers is required on the stack")
-      
+
 proc reqQuotationOfIntegers*(i: var MinInterpreter, a: var MinValue) =
   a = i.pop
   if not a.isQuotation:

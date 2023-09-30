@@ -1,29 +1,29 @@
-import 
-  math,
+import
+  std/[math,
   strformat,
-  strutils
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+  strutils]
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
-proc math_module*(i: In)=
+proc math_module*(i: In) =
 
   let def = i.define()
 
   def.symbol("floor") do (i: In):
     let vals = i.expect("num")
     i.push BiggestInt(vals[0].getFloat.floor).newVal
- 
+
   def.symbol("ceil") do (i: In):
     let vals = i.expect("num")
     i.push BiggestInt(vals[0].getFloat.ceil).newVal
- 
+
   def.symbol("trunc") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.trunc.newVal
-    
+
   def.symbol("abs") do (i: In):
     let vals = i.expect("num")
     let n = vals[0]
@@ -31,7 +31,7 @@ proc math_module*(i: In)=
       i.push n.floatVal.abs.newVal
     else:
       i.push n.intVal.abs.newVal
- 
+
   def.symbol("round") do (i: In):
     let vals = i.expect("int", "num")
     let places = vals[0].intVal.int
@@ -39,42 +39,42 @@ proc math_module*(i: In)=
     var res = ""
     formatValue(res, n, "." & $places & "f")
     i.push parseFloat(res).newVal
- 
+
   def.symbol("e") do (i: In):
     i.push E.newVal
-  
+
   def.symbol("pi") do (i: In):
     i.push PI.newVal
-  
+
   def.symbol("tau") do (i: In):
     i.push TAU.newVal
-  
+
   def.symbol("ln") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.ln.newVal
- 
+
   def.symbol("log2") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.log2.newVal
- 
+
   def.symbol("log10") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.log10.newVal
- 
+
   def.symbol("pow") do (i: In):
     let vals = i.expect("num", "num")
     let y = vals[0].getFloat
     let x = vals[1].getFloat
     i.push x.pow(y).newVal
- 
+
   def.symbol("sqrt") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.sqrt.newVal
- 
+
   def.symbol("sin") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.sin.newVal
- 
+
   def.symbol("cos") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.cos.newVal

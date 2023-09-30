@@ -1,20 +1,22 @@
-import net, nativesockets
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  std/[net,
+  nativesockets]
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
 proc toSocket(q: MinValue): Socket =
   return cast[Socket](q.obj)
 
-proc net_module*(i: In)=
+proc net_module*(i: In) =
   let def = i.define()
-  
+
   def.symbol("socket") do (i: In):
     let vals = i.expect "dict"
     var q = vals[0]
-    var 
+    var
       domain = AF_INET
       sockettype = SOCK_STREAM
       protocol = IPPROTO_TCP
@@ -59,7 +61,7 @@ proc net_module*(i: In)=
   def.symbol("close") do (i: In):
     let vals = i.expect("dict:socket")
     vals[0].toSocket.close()
- 
+
   def.symbol("listen") do (i: In):
     let vals = i.expect("dict", "dict:socket")
     let params = vals[0]

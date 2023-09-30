@@ -1,43 +1,43 @@
-import 
-  std/macros,
-  httpclient, 
-  asynchttpserver, 
-  asyncdispatch, 
-  strutils, 
-  uri, 
-  critbits
-import 
-  ../core/parser, 
+import
+  std/[macros,
+  httpclient,
+  asynchttpserver,
+  asyncdispatch,
+  strutils,
+  uri,
+  critbits]
+import
+  ../core/parser,
   ../core/meta,
-  ../core/value, 
-  ../core/interpreter, 
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
 when defined(ssl) and defined(amd64):
-  when defined(windows): 
+  when defined(windows):
     {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
   elif defined(linux):
     {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
   elif defined(macosx):
     {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
-var minUserAgent {.threadvar.} : string
+var minUserAgent {.threadvar.}: string
 minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]
 
 proc newCli(): HttpClient =
   return newHttpClient(userAgent = minUseragent)
 
-proc newVal(i: In, headers: HttpHeaders): MinValue = 
+proc newVal(i: In, headers: HttpHeaders): MinValue =
   result = newDict(i.scope)
   for k, v in headers:
     result = i.dset(result, k, v.newVal)
 
-type MinServerExit = ref object of CatchableError 
+type MinServerExit = ref object of CatchableError
 
-proc http_module*(i: In)=
+proc http_module*(i: In) =
   let def = i.define()
 
-  def.symbol("request") do (i: In) :
+  def.symbol("request") do (i: In):
     let vals = i.expect "dict"
     let req = vals[0]
     let cli = newCli()
@@ -58,7 +58,8 @@ proc http_module*(i: In)=
       body = i.dget(req, "body")
     meth = i.dget(req, "method")
     url = i.dget(req, "url")
-    let resp = cli.request(url = url.getString, httpMethod = parseEnum[HttpMethod](meth.getString), body = body.getString, headers = headers)
+    let resp = cli.request(url = url.getString, httpMethod = parseEnum[
+        HttpMethod](meth.getString), body = body.getString, headers = headers)
     var res = newDict(i.scope)
     res.objType = "http-response"
     res = i.dset(res, "version", resp.version.newVal)
@@ -69,7 +70,7 @@ proc http_module*(i: In)=
       b = resp.body
     res = i.dset(res, "body", b.newVal)
     i.push res
-  
+
   def.symbol("get-content") do (i: In):
     let vals = i.expect "str"
     let url = vals[0]
@@ -83,7 +84,7 @@ proc http_module*(i: In)=
     let cli = newCli()
     cli.downloadFile(url.getString, file.getString)
 
-  def.symbol("start-server") do (ii: In) :
+  def.symbol("start-server") do (ii: In):
     let vals = ii.expect "dict"
     let cfg = vals[0]
     if not cfg.dhas("port"):
@@ -109,7 +110,8 @@ proc http_module*(i: In)=
       qreq = i.dset(qreq, "headers", i.newVal(req.headers))
       qreq = i.dset(qreq, "method", newVal($req.reqMethod))
       qreq = i.dset(qreq, "hostname", newVal($req.hostname))
-      qreq = i.dset(qreq, "version", newVal("$1.$2" % [$req.protocol.major, $req.protocol.minor]))
+      qreq = i.dset(qreq, "version", newVal("$1.$2" % [$req.protocol.major,
+          $req.protocol.minor]))
       qreq = i.dset(qreq, "body", newVal($req.body))
       i.handleErrors do:
         i.push qreq
@@ -143,7 +145,8 @@ proc http_module*(i: In)=
         discard i.pop
       await req.respond(status.intVal.HttpCode, body.getString, headers)
     try:
-      waitFor server.serve(port = port.intVal.Port, callback = handler, address = address.getString)
+      waitFor server.serve(port = port.intVal.Port, callback = handler,
+          address = address.getString)
     except MinServerExit:
       server.close()
 

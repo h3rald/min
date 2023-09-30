@@ -1,15 +1,15 @@
-import 
-  math
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  std/math
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
 proc floatCompare(n1, n2: MinValue): bool =
   let
-    a:float = if n1.kind != minFloat: n1.intVal.float else: n1.floatVal
-    b:float = if n2.kind != minFloat: n2.intVal.float else: n2.floatVal
+    a: float = if n1.kind != minFloat: n1.intVal.float else: n1.floatVal
+    b: float = if n2.kind != minFloat: n2.intVal.float else: n2.floatVal
   if a.classify == fcNan and b.classify == fcNan:
     return true
   else:
@@ -29,9 +29,9 @@ proc floatCompare(n1, n2: MinValue): bool =
     else:
       return diff / min((absA + absB), FLOAT_MAX_VALUE) < epsilon
 
-proc logic_module*(i: In)=
+proc logic_module*(i: In) =
   let def = i.define()
-  
+
   def.symbol(">") do (i: In):
     var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n2, n1
@@ -45,8 +45,8 @@ proc logic_module*(i: In)=
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float)
     else:
-        i.push newVal(n1.strVal > n2.strVal)
-  
+      i.push newVal(n1.strVal > n2.strVal)
+
   def.symbol(">=") do (i: In):
     var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n2, n1
@@ -61,7 +61,7 @@ proc logic_module*(i: In)=
         i.push newVal(n1.floatVal > n2.intVal.float or floatCompare(n1, n2))
     else:
       i.push newVal(n1.strVal >= n2.strVal)
-  
+
   def.symbol("<") do (i: In):
     var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n1, n2
@@ -75,8 +75,8 @@ proc logic_module*(i: In)=
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float)
     else:
-        i.push newVal(n1.strVal > n2.strVal)
-  
+      i.push newVal(n1.strVal > n2.strVal)
+
   def.symbol("<=") do (i: In):
     var n1, n2: MinValue
     i.reqTwoNumbersOrStrings n1, n2
@@ -90,8 +90,8 @@ proc logic_module*(i: In)=
       elif n1.isFloat and n2.isInt:
         i.push newVal(n1.floatVal > n2.intVal.float or floatCompare(n1, n2))
     else:
-        i.push newVal(n1.strVal >= n2.strVal)
-  
+      i.push newVal(n1.strVal >= n2.strVal)
+
   def.symbol("==") do (i: In):
     var n1, n2: MinValue
     let vals = i.expect("a", "a")
@@ -101,7 +101,7 @@ proc logic_module*(i: In)=
       i.push newVal(floatCompare(n1, n2))
     else:
       i.push newVal(n1 == n2)
-  
+
   def.symbol("!=") do (i: In):
     var n1, n2: MinValue
     let vals = i.expect("a", "a")
@@ -110,18 +110,18 @@ proc logic_module*(i: In)=
     if (n1.kind == minFloat or n2.kind == minFloat) and n1.isNumber and n2.isNumber:
       i.push newVal(not floatCompare(n1, n2))
     i.push newVal(not (n1 == n2))
-  
+
   def.symbol("not") do (i: In):
     let vals = i.expect("bool")
     let b = vals[0]
     i.push newVal(not b.boolVal)
-  
+
   def.symbol("and") do (i: In):
     let vals = i.expect("bool", "bool")
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal and b.boolVal)
-      
+
   def.symbol("expect-all") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
@@ -139,13 +139,13 @@ proc logic_module*(i: In)=
         i.push r
         return
     i.push true.newVal
-  
+
   def.symbol("or") do (i: In):
     let vals = i.expect("bool", "bool")
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal or b.boolVal)
-      
+
   def.symbol("expect-any") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
@@ -169,50 +169,50 @@ proc logic_module*(i: In)=
     let a = vals[0]
     let b = vals[1]
     i.push newVal(a.boolVal xor b.boolVal)
-  
+
   def.symbol("string?") do (i: In):
     if i.pop.kind == minString:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("integer?") do (i: In):
     if i.pop.kind == minInt:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("float?") do (i: In):
     if i.pop.kind == minFloat:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("null?") do (i: In):
     if i.pop.kind == minNull:
       i.push true.newVal
     else:
       i.push false.newVal
-      
+
   def.symbol("number?") do (i: In):
     let a = i.pop
     if a.kind == minFloat or a.kind == minInt:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("boolean?") do (i: In):
     if i.pop.kind == minBool:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("quotation?") do (i: In):
     if i.pop.kind == minQuotation:
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("quoted-symbol?") do (i: In):
     let item = i.pop
     if item.kind == minQuotation and item.qVal.len == 1 and item.qVal[0].kind == minSymbol:
@@ -225,7 +225,7 @@ proc logic_module*(i: In)=
       i.push true.newVal
     else:
       i.push false.newVal
-  
+
   def.symbol("dictionary?") do (i: In):
     if i.pop.isDictionary:
       i.push true.newVal
@@ -238,10 +238,10 @@ proc logic_module*(i: In)=
     let v = vals[1]
     let res = i.validateValueType(t, v)
     i.push res.newVal
-      
+
   def.symbol("&&") do (i: In):
     i.pushSym("expect-all")
-    
+
   def.symbol("||") do (i: In):
     i.pushSym("expect-any")
 

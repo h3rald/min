@@ -1,21 +1,21 @@
-import 
-  strutils, 
+import
+  std/[strutils,
   sequtils,
   nre,
-  std/macros,
-  uri
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+  macros,
+  uri]
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/baseutils,
   ../core/utils
 
-proc str_module*(i: In) = 
+proc str_module*(i: In) =
   let def = i.define()
 
   when not defined(nopcre):
-    when defined(windows) and defined(amd64): 
+    when defined(windows) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
     elif defined(linux) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux -lpcre".}
@@ -72,7 +72,7 @@ proc str_module*(i: In) =
         for s in match.captures:
           if s.isNone:
             ss.add "".newVal
-          else: 
+          else:
             ss.add s.get.newVal
         i2.push ss.newVal
         i2.push q
@@ -105,13 +105,13 @@ proc str_module*(i: In) =
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.strip.newVal
-    
+
   def.symbol("substr") do (i: In):
     let vals = i.expect("int", "int", "'sym")
     let length = vals[0].intVal
     let start = vals[1].intVal
     let s = vals[2].getString
-    let index = min(start+length-1, s.len-1) 
+    let index = min(start+length-1, s.len-1)
     i.push s[start..index].newVal
 
   def.symbol("split") do (i: In):
@@ -127,13 +127,13 @@ proc str_module*(i: In) =
     let vals = i.expect("'sym", "quot")
     let s = vals[0]
     let q = vals[1]
-    i.push q.qVal.mapIt($$it).join(s.getString).newVal 
+    i.push q.qVal.mapIt($$it).join(s.getString).newVal
 
   def.symbol("length") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.len.newVal
-  
+
   def.symbol("lowercase") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -155,7 +155,7 @@ proc str_module*(i: In) =
     if s.getString.len != 1:
       raiseInvalid("Symbol ord requires a string containing a single character.")
     i.push s.getString[0].ord.newVal
-  
+
   def.symbol("chr") do (i: In):
     let vals = i.expect("int")
     let n = vals[0]
@@ -190,12 +190,12 @@ proc str_module*(i: In) =
     let vals = i.expect("str")
     let s = vals[0].strVal
     i.push s.encodeUrl.newVal
-    
+
   def.symbol("decode-url") do (i: In):
     let vals = i.expect("str")
     let s = vals[0].strVal
     i.push s.decodeUrl.newVal
-    
+
   def.symbol("parse-url") do (i: In):
     let vals = i.expect("str")
     let s = vals[0].strVal
@@ -217,11 +217,11 @@ proc str_module*(i: In) =
     let v = vals[0].strVal
     let m = v.match(re"^\d+\.\d+\.\d+$")
     i.push m.isSome.newVal
-    
+
   def.symbol("from-semver") do (i: In):
     let vals = i.expect("str")
     let v = vals[0].strVal
-    let reg = re"^(\d+)\.(\d+)\.(\d+)$" 
+    let reg = re"^(\d+)\.(\d+)\.(\d+)$"
     let rawMatch = v.match(reg)
     if rawMatch.isNone:
       raiseInvalid("String '$1' is not a basic semver" % v)
@@ -231,7 +231,7 @@ proc str_module*(i: In) =
     i.dset(d, "minor", parts[1].parseInt.newVal)
     i.dset(d, "patch", parts[2].parseInt.newVal)
     i.push d
-    
+
   def.symbol("to-semver") do (i: In):
     let vals = i.expect("dict")
     let v = vals[0]
@@ -239,7 +239,7 @@ proc str_module*(i: In) =
       raiseInvalid("Dictionary does not contain major, minor and patch keys")
     let major = i.dget(v, "major")
     let minor = i.dget(v, "minor")
-    let patch = i.dget(v, "patch") 
+    let patch = i.dget(v, "patch")
     if major.kind != minInt or minor.kind != minInt or patch.kind != minInt:
       raiseInvalid("major, minor, and patch values are not integers")
     i.push(newVal("$#.$#.$#" % [$major, $minor, $patch]))
@@ -278,14 +278,14 @@ proc str_module*(i: In) =
     let vals = i.expect("'sym")
     let a = vals[0].getString
     i.push a.escapeEx(true).newVal
-    
+
   def.symbol("prefix") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let a = vals[1].getString
     let b = vals[0].getString
     var s = b & a
     i.push s.newVal
-    
+
   def.symbol("suffix") do (i: In):
     let vals = i.expect("'sym", "'sym")
     let a = vals[1].getString

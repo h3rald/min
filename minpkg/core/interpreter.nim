@@ -1,15 +1,15 @@
-import 
-  streams, 
-  strutils, 
+import
+  std/[streams,
+  strutils,
   sequtils,
   os,
-  std/osproc,
+  osproc,
   critbits,
   json,
   algorithm,
   base64,
-  logging
-import 
+  logging]
+import
   baseutils,
   value,
   scope,
@@ -36,10 +36,14 @@ proc diff*(a, b: seq[MinValue]): seq[MinValue] =
       result.add it
 
 proc newSym*(i: In, s: string): MinValue =
- return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename, line: i.currSym.line, column: i.currSym.column, outerSym: i.currSym.symVal)
+  return MinValue(kind: minSymbol, symVal: s, filename: i.currSym.filename,
+      line: i.currSym.line, column: i.currSym.column,
+      outerSym: i.currSym.symVal)
 
 proc copySym*(i: In, sym: MinValue): MinValue =
-  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename, line: sym.line, column: sym.column, outerSym: "", docComment: sym.docComment)
+  return MinValue(kind: minSymbol, symVal: sym.outerSym, filename: sym.filename,
+      line: sym.line, column: sym.column, outerSym: "",
+      docComment: sym.docComment)
 
 proc raiseRuntime*(msg: string, data: MinValue) =
   data.objType = "error"
@@ -57,7 +61,7 @@ proc debug*(i: In, value: MinValue) =
 proc debug*(i: In, value: string) =
   debug(value)
 
-template withScope*(i: In, res:ref MinScope, body: untyped): untyped =
+template withScope*(i: In, res: ref MinScope, body: untyped): untyped =
   let origScope = i.scope
   try:
     i.scope = newScopeRef(origScope)
@@ -86,15 +90,15 @@ proc newMinInterpreter*(filename = "input", pwd = ""): MinInterpreter =
   var path = pwd
   if not pwd.isAbsolute:
     path = joinPath(getCurrentDir(), pwd)
-  var stack:MinStack = newSeq[MinValue](0)
-  var trace:MinStack = newSeq[MinValue](0)
-  var stackcopy:MinStack = newSeq[MinValue](0)
-  var pr:MinParser
+  var stack: MinStack = newSeq[MinValue](0)
+  var trace: MinStack = newSeq[MinValue](0)
+  var stackcopy: MinStack = newSeq[MinValue](0)
+  var pr: MinParser
   var scope = newScopeRef(nil)
-  var i:MinInterpreter = MinInterpreter(
-    filename: filename, 
+  var i: MinInterpreter = MinInterpreter(
+    filename: filename,
     pwd: path,
-    parser: pr, 
+    parser: pr,
     stack: stack,
     trace: trace,
     stackcopy: stackcopy,
@@ -109,7 +113,7 @@ proc copy*(i: MinInterpreter, filename: string): MinInterpreter =
     path = joinPath(getCurrentDir(), filename)
   result = newMinInterpreter()
   result.filename = filename
-  result.pwd =  path.parentDirEx
+  result.pwd = path.parentDirEx
   result.stack = i.stack
   result.trace = i.trace
   result.stackcopy = i.stackcopy
@@ -140,21 +144,21 @@ proc stackTrace*(i: In) =
 proc error(i: In, message: string) =
   error(i.currSym.formatError(message))
 
-proc open*(i: In, stream:Stream, filename: string) =
+proc open*(i: In, stream: Stream, filename: string) =
   i.filename = filename
   i.parser.open(stream, filename)
 
-proc close*(i: In) = 
+proc close*(i: In) =
   i.parser.close();
 
-proc push*(i: In, val: MinValue)  
+proc push*(i: In, val: MinValue)
 
 proc call*(i: In, q: var MinValue): MinValue =
   var i2 = newMinInterpreter("<call>")
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(): 
+    i2.withScope():
       for v in q.qVal:
         i2.push v
   except CatchableError:
@@ -168,7 +172,7 @@ proc callValue*(i: In, v: var MinValue): MinValue =
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(): 
+    i2.withScope():
       i2.push v
   except CatchableError:
     i.currSym = i2.currSym
@@ -177,15 +181,15 @@ proc callValue*(i: In, v: var MinValue): MinValue =
   return i2.stack[0]
 
 proc copyDict*(i: In, val: MinValue): MinValue =
-   # Assuming val is a dictionary
-   var v = newDict(i.scope)
-   v.scope.symbols = val.scope.symbols
-   v.scope.sigils = val.scope.sigils
-   if val.objType != "":
-     v.objType = val.objType
-   if not val.obj.isNil:
-     v.obj = val.obj
-   return v
+  # Assuming val is a dictionary
+  var v = newDict(i.scope)
+  v.scope.symbols = val.scope.symbols
+  v.scope.sigils = val.scope.sigils
+  if val.objType != "":
+    v.objType = val.objType
+  if not val.obj.isNil:
+    v.obj = val.obj
+  return v
 
 proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
@@ -203,7 +207,7 @@ proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
 
 proc dequote*(i: In, q: var MinValue) =
   if q.kind == minQuotation:
-    i.withScope(): 
+    i.withScope():
       let qqval = deepCopy(q.qVal)
       for v in q.qVal:
         i.push v
@@ -216,7 +220,7 @@ proc apply*(i: In, q: var MinValue) =
   i2.trace = i.trace
   i2.scope = i.scope
   try:
-    i2.withScope(): 
+    i2.withScope():
       for v in q.qVal:
         if (v.kind == minQuotation):
           var v2 = v
@@ -238,15 +242,15 @@ proc pop*(i: In): MinValue =
 # Inherit file/line/column from current symbol
 proc pushSym*(i: In, s: string) =
   i.push MinValue(
-    kind: minSymbol, 
-    symVal: s, 
-    filename: i.currSym.filename, 
-    line: i.currSym.line, 
-    column: i.currSym.column, 
-    outerSym: i.currSym.symVal, 
+    kind: minSymbol,
+    symVal: s,
+    filename: i.currSym.filename,
+    line: i.currSym.line,
+    column: i.currSym.column,
+    outerSym: i.currSym.symVal,
     docComment: i.currSym.docComment)
 
-proc push*(i: In, val: MinValue) = 
+proc push*(i: In, val: MinValue) =
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:
@@ -260,25 +264,27 @@ proc push*(i: In, val: MinValue) =
       raise MinReturnException(msg: "return symbol found")
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol), symbol
-    else: 
+    else:
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':
         let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)
-          discard i.pop 
+          discard i.pop
       else:
         var qIndex = symbol.find('"')
         if qIndex > 0:
           let sigil = symbol[0..qIndex-1]
           if not i.scope.hasSigil(sigil):
             raiseUndefined("Undefined sigil '$1'"%sigil)
-          i.stack.add(MinValue(kind: minString, strVal: symbol[qIndex+1..symbol.len-2]))
+          i.stack.add(MinValue(kind: minString, strVal: symbol[
+              qIndex+1..symbol.len-2]))
           i.apply(i.scope.getSigil(sigil))
         else:
           let sigil = "" & symbol[0]
           if symbol.len > 1 and i.scope.hasSigil(sigil):
-            i.stack.add(MinValue(kind: minString, strVal: symbol[1..symbol.len-1]))
+            i.stack.add(MinValue(kind: minString, strVal: symbol[
+                1..symbol.len-1]))
             i.apply(i.scope.getSigil(sigil))
           else:
             raiseUndefined("Undefined symbol '$1'" % [val.symVal])
@@ -294,7 +300,7 @@ proc push*(i: In, val: MinValue) =
   else:
     i.stack.add(val)
 
-proc peek*(i: MinInterpreter): MinValue = 
+proc peek*(i: MinInterpreter): MinValue =
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
@@ -306,7 +312,8 @@ template handleErrors*(i: In, body: untyped) =
   except MinRuntimeError:
     let msg = getCurrentExceptionMsg()
     i.stack = i.stackcopy
-    i.error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line, $i.currSym.column, msg])
+    i.error("$1:$2,$3 $4" % [i.currSym.filename, $i.currSym.line,
+        $i.currSym.column, msg])
     i.stackTrace()
     i.trace = @[]
     raise MinTrappedException(msg: msg)
@@ -320,12 +327,12 @@ template handleErrors*(i: In, body: untyped) =
     i.trace = @[]
     raise MinTrappedException(msg: msg)
 
-proc interpret*(i: In, parseOnly=false): MinValue {.discardable.} =
+proc interpret*(i: In, parseOnly = false): MinValue {.discardable.} =
   var val: MinValue
   var q: MinValue
   if parseOnly:
     q = newSeq[MinValue](0).newVal
-  while i.parser.token != tkEof: 
+  while i.parser.token != tkEof:
     if i.trace.len == 0:
       i.stackcopy = i.stack
     handleErrors(i) do:
@@ -340,12 +347,12 @@ proc interpret*(i: In, parseOnly=false): MinValue {.discardable.} =
     return i.stack[i.stack.len - 1]
 
 proc rawCompile*(i: In, indent = ""): seq[string] {.discardable.} =
-  while i.parser.token != tkEof: 
+  while i.parser.token != tkEof:
     if i.trace.len == 0:
       i.stackcopy = i.stack
     handleErrors(i) do:
       result.add i.parser.compileMinValue(i, push = true, indent)
-    
+
 proc compileFile*(i: In, main: bool): seq[string] {.discardable.} =
   result = newSeq[string](0)
   if not main:
@@ -372,17 +379,18 @@ proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable.} =
       let asset = "COMPILEDASSETS[\"$#\"] = \"$#\".decode" % [file, ef]
       result.add asset
 
-proc eval*(i: In, s: string, name="<eval>", parseOnly=false): MinValue {.discardable.}=
+proc eval*(i: In, s: string, name = "<eval>",
+    parseOnly = false): MinValue {.discardable.} =
   var i2 = i.copy(name)
   i2.open(newStringStream(s), name)
-  discard i2.parser.getToken() 
+  discard i2.parser.getToken()
   result = i2.interpret(parseOnly)
   i.trace = i2.trace
   i.stackcopy = i2.stackcopy
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable.}=
+proc load*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
@@ -395,14 +403,15 @@ proc load*(i: In, s: string, parseOnly=false): MinValue {.discardable.}=
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
   i2.open(newStringStream(contents), s)
-  discard i2.parser.getToken() 
+  discard i2.parser.getToken()
   result = i2.interpret(parseOnly)
   i.trace = i2.trace
   i.stackcopy = i2.stackcopy
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern:"min_exported_symbol_$1".}=
+proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable,
+    extern: "min_exported_symbol_$1".} =
   if CACHEDMODULES.hasKey(s):
     return CACHEDMODULES[s]
   var fileLines = newSeq[string](0)
@@ -419,7 +428,7 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
   let snapshot = deepCopy(i.stack)
   i2.withScope:
     i2.open(newStringStream(contents), s)
-    discard i2.parser.getToken() 
+    discard i2.parser.getToken()
     discard i2.interpret(parseOnly)
     let d = snapshot.diff(i2.stack)
     if d.len > 0:
@@ -430,7 +439,7 @@ proc require*(i: In, s: string, parseOnly=false): MinValue {.discardable, extern
       result.scope.symbols[key] = value
     CACHEDMODULES[s] = result
 
-proc parse*(i: In, s: string, name="<parse>"): MinValue =
+proc parse*(i: In, s: string, name = "<parse>"): MinValue =
   return i.eval(s, name, true)
 
 proc read*(i: In, s: string): MinValue =

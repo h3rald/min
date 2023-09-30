@@ -1,14 +1,14 @@
-import 
-  os,
+import
+  std/[os,
   times,
   strutils,
-  critbits
-import 
+  critbits]
+import
   ../core/env,
-  ../core/parser, 
-  ../core/baseutils, 
-  ../core/value, 
-  ../core/interpreter, 
+  ../core/parser,
+  ../core/baseutils,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils,
   ../core/fileutils
 
@@ -74,26 +74,26 @@ proc fs_module*(i: In) =
     var found = false
     if MINCOMPILED:
       let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
-      
+
       found = COMPILEDASSETS.hasKey(cf)
     if found:
       i.push true.newVal
     else:
       i.push newVal(f.fileExists or f.dirExists)
-    
+
   def.symbol("file?") do (i: In):
     let vals = i.expect("'sym")
     let f = vals[0].getString
     var found = false
     if MINCOMPILED:
       let cf = strutils.replace(strutils.replace(f, "\\", "/"), "./", "")
-      
+
       found = COMPILEDASSETS.hasKey(cf)
     if found:
       i.push true.newVal
     else:
       i.push f.fileExists.newVal
-    
+
   def.symbol("dir?") do (i: In):
     let vals = i.expect("'sym")
     let f = vals[0]
@@ -122,7 +122,7 @@ proc fs_module*(i: In) =
         raiseInvalid("A quotation of strings is required")
       fragments.add(p.getString)
     i.push fragments.joinPath.unix.newVal
-  
+
   def.symbol("expand-filename") do (i: In):
     let vals = i.expect("'sym")
     i.push vals[0].getString.expandFilename.unix.newVal
@@ -150,7 +150,7 @@ proc fs_module*(i: In) =
   def.symbol("windows-path") do (i: In):
     let vals = i.expect("'sym")
     i.push vals[0].getString.replace("/", "\\").newVal
-  
+
   def.symbol("unix-path") do (i: In):
     let vals = i.expect("'sym")
     i.push vals[0].getString.replace("\\", "/").newVal

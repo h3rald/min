@@ -1,19 +1,20 @@
 import
-  base64,
+  std/[base64,
   strutils,
-  std/macros,
-  times,
+  macros,
+  times]
+import
   ../vendor/aes/aes
 import
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
 {.compile: "../vendor/aes/libaes.c".}
 
 when defined(ssl):
-  import 
+  import
     openssl
 
   proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
@@ -21,18 +22,18 @@ when defined(ssl):
   proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
 else:
   import
-      std/sha1,
-      md5
+    checksums/sha1,
+    checksums/md5
 
-proc crypto_module*(i: In)=
+proc crypto_module*(i: In) =
   let def = i.define()
 
-  
+
   def.symbol("encode") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.encode.newVal
-    
+
   def.symbol("decode") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -40,7 +41,7 @@ proc crypto_module*(i: In)=
 
   when defined(ssl):
 
-    when defined(windows) and defined(amd64): 
+    when defined(windows) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lbcrypt".}
     elif defined(linux) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
@@ -106,7 +107,8 @@ proc crypto_module*(i: In)=
       var key = hash(k.getString, EVP_sha1(), 40)
       var iv = hash((key & $getTime().toUnix), EVP_sha1(), 40)
       var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
-      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[0].addr));
+      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[
+          0].addr));
       var input = cast[ptr uint8](text[0].addr)
       AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
       i.push text.newVal
@@ -131,9 +133,10 @@ proc crypto_module*(i: In)=
       var key = ($secureHash(k.getString)).toLowerAscii
       var iv = ($secureHash((key & $getTime().toUnix))).toLowerAscii
       var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
-      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[0].addr));
+      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[
+          0].addr));
       var input = cast[ptr uint8](text[0].addr)
       AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
       i.push text.newVal
-      
+
   def.finalize("crypto")

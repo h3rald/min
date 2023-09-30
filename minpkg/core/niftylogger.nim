@@ -1,13 +1,13 @@
-import 
-  logging,
+import
+  std/[logging,
   strutils,
   terminal,
-  std/exitprocs
+  exitprocs]
 
 if isatty(stdin):
   addExitProc(resetAttributes)
 
-type  
+type
   NiftyLogger* = ref object of Logger
 
 proc logPrefix*(level: Level): tuple[msg: string, color: ForegroundColor] =
@@ -30,7 +30,7 @@ proc logPrefix*(level: Level): tuple[msg: string, color: ForegroundColor] =
 method log*(logger: NiftyLogger; level: Level; args: varargs[string, `$`]) =
   var f = stdout
   if level >= getLogFilter() and level >= logger.levelThreshold:
-    if level >= lvlWarn: 
+    if level >= lvlWarn:
       f = stderr
     let ln = substituteLog(logger.fmtStr, level, args)
     let prefix = level.logPrefix()

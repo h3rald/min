@@ -1,18 +1,19 @@
-import 
-  strutils,
+import
+  std/[strutils,
   logging,
   nre,
   critbits,
-  minline,
-  terminal
-import 
-  ../core/parser, 
-  ../core/value, 
+  terminal]
+import
+  minline
+import
+  ../core/parser,
+  ../core/value,
   ../core/env,
-  ../core/interpreter, 
+  ../core/interpreter,
   ../core/utils
 
-var ORIGKEYMAP {.threadvar.}: CritBitTree[KeyCallback] 
+var ORIGKEYMAP {.threadvar.}: CritBitTree[KeyCallback]
 for key, value in KEYMAP.pairs:
   ORIGKEYMAP[key] = value
 
@@ -44,10 +45,10 @@ proc io_module*(i: In) =
     let action = proc (ed: var LineEditor) {.closure.} =
       ic.apply(q)
     KEYMAP[key] = action
-  
+
   def.symbol("newline") do (i: In):
     echo ""
-  
+
   def.symbol("notice") do (i: In):
     let a = i.peek
     notice $$a
@@ -72,7 +73,7 @@ proc io_module*(i: In) =
     let a = i.peek
     fatal $$a
     quit(100)
-    
+
   def.symbol("column-print") do (i: In):
     let vals = i.expect("int", "quot")
     let n = vals[0]
@@ -94,17 +95,17 @@ proc io_module*(i: In) =
       raiseInvalid("Symbol putch requires a string containing a single character.")
     putchr(ch[0].getString[0].cint)
 
-  def.symbol("password") do (i: In) :
+  def.symbol("password") do (i: In):
     var ed = initEditor()
     i.push ed.password("Enter Password: ").newVal
 
-  def.symbol("ask") do (i: In) :
+  def.symbol("ask") do (i: In):
     var ed = initEditor()
     let vals = i.expect("str")
     let s = vals[0]
     i.push ed.readLine(s.getString & ": ").newVal
 
-  def.symbol("confirm") do (i: In) :
+  def.symbol("confirm") do (i: In):
     var ed = initEditor()
     let vals = i.expect("str")
     let s = vals[0]
@@ -120,7 +121,7 @@ proc io_module*(i: In) =
         return confirm()
     i.push confirm().newVal
 
-  def.symbol("choose") do (i: In) :
+  def.symbol("choose") do (i: In):
     var ed = initEditor()
     let vals = i.expect("'sym", "quot")
     let s = vals[0]
@@ -132,7 +133,8 @@ proc io_module*(i: In) =
     proc choose(): int =
       var c = 0
       for item in q.qVal:
-        if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[0].isString or not item.qVal[1].isQuotation:
+        if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[
+            0].isString or not item.qVal[1].isQuotation:
           raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
         c.inc
         echo "$1 - $2" % [$c, item.qVal[0].getString]
@@ -153,30 +155,31 @@ proc io_module*(i: In) =
   def.symbol("print") do (i: In):
     let a = i.peek
     a.print
-  
+
   def.symbol("fread") do (i: In):
     let vals = i.expect("str")
     let file = vals[0].strVal
     var contents = ""
     if MINCOMPILED:
-      var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"), "./", "")
+      var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"),
+          "./", "")
       if COMPILEDASSETS.hasKey(compiledFile):
         contents = COMPILEDASSETS[compiledFile]
     if contents == "":
       contents = file.readFile
     i.push newVal(contents)
-  
+
   def.symbol("fwrite") do (i: In):
     let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]
     a.strVal.writeFile(b.strVal)
-  
+
   def.symbol("fappend") do (i: In):
     let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]
-    var f:File
+    var f: File
     discard f.open(a.strVal, fmAppend)
     f.write(b.strVal)
     f.close()

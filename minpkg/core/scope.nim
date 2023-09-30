@@ -1,6 +1,6 @@
 import
-  strutils,
-  critbits
+  std/[strutils,
+  critbits]
 import
   parser
 
@@ -10,8 +10,8 @@ proc copy*(s: ref MinScope): ref MinScope =
   scope.sigils = s.sigils
   new(result)
   result[] = scope
-  
-proc getSymbol*(scope: ref MinScope, key: string, acc=0): MinOperator =
+
+proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   else:
@@ -29,20 +29,21 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
-proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.}=
+proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
   if scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed." % key) 
+      raiseInvalid("Symbol '$1' is sealed." % key)
     scope.symbols.excl(key)
     return true
   return false
 
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.discardable.}=
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
+    override = false): bool {.discardable.} =
   result = false
   # check if a symbol already exists in current scope
   if not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed ." % key) 
+      raiseInvalid("Symbol '$1' is sealed ." % key)
     scope.symbols[key] = value
     result = true
   else:
@@ -68,20 +69,21 @@ proc hasSigil*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
-proc delSigil*(scope: ref MinScope, key: string): bool {.discardable.}=
+proc delSigil*(scope: ref MinScope, key: string): bool {.discardable.} =
   if scope.sigils.hasKey(key):
     if scope.sigils[key].sealed:
-      raiseInvalid("Sigil '$1' is sealed." % key) 
+      raiseInvalid("Sigil '$1' is sealed." % key)
     scope.sigils.excl(key)
     return true
   return false
 
-proc setSigil*(scope: ref MinScope, key: string, value: MinOperator, override = false): bool {.discardable.}=
+proc setSigil*(scope: ref MinScope, key: string, value: MinOperator,
+    override = false): bool {.discardable.} =
   result = false
   # check if a sigil already exists in current scope
   if not scope.isNil and scope.sigils.hasKey(key):
     if not override and scope.sigils[key].sealed:
-      raiseInvalid("Sigil '$1' is sealed." % key) 
+      raiseInvalid("Sigil '$1' is sealed." % key)
     scope.sigils[key] = value
     result = true
   else:
@@ -91,6 +93,6 @@ proc setSigil*(scope: ref MinScope, key: string, value: MinOperator, override = 
 
 proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
-    return scope 
+    return scope
   else:
     return scope.parent
