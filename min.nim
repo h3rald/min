@@ -1,38 +1,39 @@
 import 
-  streams, 
+  std/[streams, 
   strutils, 
   sequtils, 
   json,
   os,
   algorithm,
-  minline,
-  logging,
-  minpkg/core/niftylogger,
-  minpkg/core/baseutils,
-  minpkg/core/env,
-  minpkg/core/parser, 
-  minpkg/core/value, 
-  minpkg/core/scope,
-  minpkg/core/interpreter, 
-  minpkg/core/utils
+  logging],
+  minline
+import
+  minpkg/core/[niftylogger,
+  baseutils,
+  env,
+  parser, 
+  value, 
+  scope,
+  interpreter, 
+  utils]
 import 
-  minpkg/lib/min_lang, 
-  minpkg/lib/min_stack, 
-  minpkg/lib/min_seq, 
-  minpkg/lib/min_dict, 
-  minpkg/lib/min_num,
-  minpkg/lib/min_str,
-  minpkg/lib/min_logic,
-  minpkg/lib/min_time,
-  minpkg/lib/min_sys,
-  minpkg/lib/min_io,
-  minpkg/lib/min_dstore,
-  minpkg/lib/min_fs,
-  minpkg/lib/min_xml,
-  minpkg/lib/min_http,
-  minpkg/lib/min_net,
-  minpkg/lib/min_crypto,
-  minpkg/lib/min_math
+  minpkg/lib/[min_lang, 
+  min_stack, 
+  min_seq, 
+  min_dict, 
+  min_num,
+  min_str,
+  min_logic,
+  min_time,
+  min_sys,
+  min_io,
+  min_dstore,
+  min_fs,
+  min_xml,
+  min_http,
+  min_net,
+  min_crypto,
+  min_math]
 
 export 
   env,
@@ -257,7 +258,6 @@ when isMainModule:
   var COMPILE = false
   var MODULEPATH = ""
   var exeName = "min"
-  var iOpt = "\n    -i, --interactive         Start $1 shell (with advanced prompt, default if no file specidied)\n"
 
   proc printResult(i: In, res: MinValue) =
     if res.isNil:
@@ -336,7 +336,7 @@ when isMainModule:
       
 
   let usage* = """  $exe v$version - a small but practical concatenative programming language
-  (c) 2014-2021 Fabio Cevasco
+  (c) 2014-2023 Fabio Cevasco
   
   Usage:
     $exe [options] [filename]
@@ -349,7 +349,8 @@ when isMainModule:
     -c, --compile             Compile the specified file
     -e, --evaluate            Evaluate a $exe program inline
     -d, --dev                 Enable "development mode" (runtime checks)
-    -h, --help                Print this help$iOpt
+    -h, --help                Print this help
+    -i, --interactive         Start $exe shell (with advanced prompt, default if no file specidied)"
     -j, --interactive-simple  Start $exe shell (without advanced prompt)
     -l, --log                 Set log level (debug|info|notice|warn|error|fatal)
                               Default: notice
@@ -359,8 +360,7 @@ when isMainModule:
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
     -v, —-version             Print the program version""" % [
       "exe", exeName, 
-      "version", pkgVersion, 
-      "iOpt", iOpt
+      "version", pkgVersion
   ]
 
   var file, s: string = ""
