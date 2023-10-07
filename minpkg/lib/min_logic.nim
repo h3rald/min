@@ -21,7 +21,6 @@ proc floatCompare(n1, n2: MinValue): bool =
       absA = abs(a)
       absB = abs(b)
       diff = abs(a - b)
-
     if a == b:
       return true
     elif a == 0 or b == 0 or diff < FLOAT_MIN_NORMAL:

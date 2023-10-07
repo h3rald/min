@@ -73,5 +73,15 @@
 
   ((2 4 6 8) (even?) all?) *test/assert
 
+  (base? "dec" ==) *test/assert
+
+  ('bin base "bin" base? == 'dec base) *test/assert
+
+  (0b10010 18 ==) *test/assert
+
+  (0b101010 0b100110 bitand 0b100010 ==) *test/assert
+  
+  (0b101010 0b010101 bitor 0b111111 ==) *test/assert
+
   *test/report
   clear-stack

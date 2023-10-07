@@ -285,30 +285,29 @@ proc parseNumber(my: var MinParser) =
         while buf[pos] in HexDigits:
           add(my.a, buf[pos])
           inc(pos)
+  if buf[pos] == '.':
+    add(my.a, ".")
+    inc(pos)
   else:
-    if buf[pos] == '.':
-      add(my.a, "0.")
-      inc(pos)
-    else:
-      while buf[pos] in Digits:
-        add(my.a, buf[pos])
-        inc(pos)
-      if buf[pos] == '.':
-        add(my.a, '.')
-        inc(pos)
-    # digits after the dot:
     while buf[pos] in Digits:
       add(my.a, buf[pos])
       inc(pos)
-    if buf[pos] in {'E', 'e'}:
+    if buf[pos] == '.':
+      add(my.a, '.')
+      inc(pos)
+  # digits after the dot:
+  while buf[pos] in Digits:
+    add(my.a, buf[pos])
+    inc(pos)
+  if buf[pos] in {'E', 'e'}:
+    add(my.a, buf[pos])
+    inc(pos)
+    if buf[pos] in {'+', '-'}:
       add(my.a, buf[pos])
       inc(pos)
-      if buf[pos] in {'+', '-'}:
-        add(my.a, buf[pos])
-        inc(pos)
-      while buf[pos] in Digits:
-        add(my.a, buf[pos])
-        inc(pos)
+    while buf[pos] in Digits:
+      add(my.a, buf[pos])
+      inc(pos)
   my.bufpos = pos
 
 proc handleHexChar(c: char, x: var int): bool =
