@@ -78,7 +78,7 @@ If the **-d:nopcre** is specified when compiling, min will be built _without_ PC
 * {#link-operator||str||replace#}
 * {#link-operator||str||replace-apply#}
 
-## Building a Docker image
+## Building a docker image
 
 [Yanis Zafirópulos](https://github.com/drkameleon) contributed a Dockerfile that you can use to create your own Docker image for min based on Alpine Linux.
 
@@ -92,7 +92,7 @@ To run it, execute:
 > %terminal%
 > docker run \-it mindocker
 
-## Running the min Shell
+## Running the min shell
 
 To start the min shell, run [min](class:cmd) with no arguments. You will be presented with a prompt displaying the path to the current directory:
 
@@ -121,11 +121,11 @@ To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and pre
 > 
 > By default, the min shell provides advanced features like tab-completion, history, etc. If however, you run into problems, you can disable these features by running [min -j](class:cmd) instead, and run min shell with a bare-bones REPL. 
 
-## Executing a min Program
+## Executing a min program
 
 To execute a min script, you can:
 
-* Run `min -e:"... program ..."` to execute a program inline.
+* Run `min eval "... program..."` to execute a program inline.
 * Run `min myfile.min` to execute a program contained in a file.
 
 min also supports running programs from standard input, so the following command can also be used (on Unix-like system) to run a program saved in [myfile.min](class:file):
@@ -138,13 +138,13 @@ min also supports running programs from standard input, so the following command
 > 
 > You can enable _development mode_ (runtime checks and validations) by specifying `-d` (`--dev`) when running a min program. If development mode is not enabled, min programs run faster.
 
-## Compiling a min Program
+## Compiling a min program
 
-min programs can be compiled to a single executable simply by specifying the `-c` (or `--compile`) flag when executing a min file:
+min programs can be compiled to a single executable simply by using the built-in `compile` command:
 
 > %min-terminal%
 > 
-> [$](class:prompt) min -c myfile.min
+> [$](class:prompt) min cimpile myfile.min
 
 Essentially, this will:
 
@@ -155,7 +155,7 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 
 > %min-terminal%
 > 
-> [$](class:prompt) min -c myfile.min -n:-d:release
+> [$](class:prompt) min compile myfile.min -n:"-d:release --threadAnalysis:off --mm:refc"
 
 Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} or a {#link-operator||lang||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
 
@@ -163,7 +163,7 @@ For example, the following command executed in the root folder of the min projec
 
 > %min-terminal%
 > 
-> [$](class:prompt) min -c run.min -m:tasks
+> [$](class:prompt) min compile run.min -m:tasks
 
 Similarly, you can also bundle additional files in the executable by specifying the `-a:<path>` (or `--asset-path`) option. At runtime, the compiled min program will attempt to lookup bundled asset files before checking the filesystem.
 
@@ -172,7 +172,15 @@ Similarly, you can also bundle additional files in the executable by specifying 
 > 
 > In order to successfully compile [.min](class.ext) files, Nim must be installed on your system and min must be installed via nimble.
 
-## Syntax Highlighting
+## Getting help on a min symbol
+
+min comes with a built-in `help` command that can be used to print information on a specific symbol. Essentially, this is equivalent to use the {#link-operator||lang||help#} symbol within the min REPL.
+
+> %min-terminal%
+> 
+> [$](class:prompt) min help dup
+
+## Syntax highlighting
 
 * If you are using [Visual Studio Code](https://code.visualstudio.com/), you can install the official [min extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) which provides syntax highlighting support, code folding, and auto-indentation.
 * If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
