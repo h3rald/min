@@ -1,6 +1,7 @@
 import
   std/[random,
-  strutils]
+  strutils,
+  bitops]
 import
   ../core/parser,
   ../core/value,
@@ -266,5 +267,55 @@ proc num_module*(i: In) =
       i.push "hex".newVal
     of baseBin:
       i.push "bin".newVal
+
+  def.symbol("bitand") do (i: In):
+    let args = i.expect("int", "int")
+    i.push (bitand(args[0].intVal, args[1].intVal)).newVal
+
+  def.symbol("bitor") do (i: In):
+    let args = i.expect("int", "int")
+    i.push (bitor(args[0].intVal, args[1].intVal)).newVal
+
+  def.symbol("bitxor") do (i: In):
+    let args = i.expect("int", "int")
+    i.push (bitxor(args[0].intVal, args[1].intVal)).newVal
+
+  def.symbol("bitclear") do (i: In):
+    var args = i.expect("int", "quot")
+    i.reqQuotationOfIntegers(args[1])
+    var val = args[0].intVal
+    for n in args[1].qVal:
+      val.clearBits(n.intVal)
+    i.push val.newVal
+
+  def.symbol("bitset") do (i: In):
+    var args = i.expect("int", "quot")
+    i.reqQuotationOfIntegers(args[1])
+    var val = args[0].intVal
+    for n in args[1].qVal:
+      val.setBits(n.intVal)
+    i.push val.newVal
+
+  def.symbol("bitflip") do (i: In):
+    var args = i.expect("int", "quot")
+    i.reqQuotationOfIntegers(args[1])
+    var val = args[0].intVal
+    for n in args[1].qVal:
+      val.flipBits(n.intVal)
+    i.push val.newVal
+
+  def.symbol("bitparity") do (i: In):
+    let args = i.expect("int")
+    i.push (args[0].intVal.parityBits).newVal
+
+  def.symbol("bitreverse") do (i: In):
+    let args = i.expect("int")
+    i.push (args[0].intVal.uint.reverseBits.int).newVal
+
+  def.symbol("bitmask") do (i: In):
+    let args = i.expect("int", "int")
+    var val = args[0].intVal
+    val.mask(args[1].intVal)
+    i.push val.newVal
 
   def.finalize("num")

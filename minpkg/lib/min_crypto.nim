@@ -1,7 +1,6 @@
 import
   std/[base64,
   strutils,
-  macros,
   times]
 import
   ../vendor/aes/aes

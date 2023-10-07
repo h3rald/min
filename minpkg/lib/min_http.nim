@@ -1,6 +1,5 @@
 import
-  std/[macros,
-  httpclient,
+  std/[httpclient,
   asynchttpserver,
   asyncdispatch,
   strutils,
