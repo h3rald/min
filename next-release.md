@@ -15,3 +15,4 @@
 
 * Now requiring `checksums` unless OpenSSL is used.
 * Prepended `std/` to standard library modules.
+* REPL tab-completions are now sorted alphabetically.

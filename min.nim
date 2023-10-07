@@ -319,7 +319,9 @@ when isMainModule:
     while true:
       let symbols = toSeq(i.scope.symbols.keys)
       EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
-        return ed.getCompletions(symbols)
+        var completions = ed.getCompletions(symbols)
+        completions.sort()
+        return completions
       # evaluate prompt
       i.push(i.newSym("prompt"))
       let vals = i.expect("str")
