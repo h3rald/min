@@ -188,7 +188,7 @@ proc interpret*(i: In, s: string): MinValue =
     discard
     i.close()
 
-proc minFile*(filename: string, op = "interpret", main = true): seq[
+proc minFile*(fn: string, op = "interpret", main = true): seq[
     string] {.discardable.}
 
 proc compile*(i: In, s: Stream, main = true): seq[string] =
@@ -236,11 +236,8 @@ proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
 proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
-proc minFile*(filename: string, op = "interpret", main = true): seq[
+proc minFile*(fn: string, op = "interpret", main = true): seq[
     string] {.discardable.} =
-  var fn = filename
-  if not filename.endsWith(".min"):
-    fn &= ".min"
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
@@ -263,7 +260,6 @@ when isMainModule:
 
   var REPL = false
   var SIMPLEREPL = false
-  var COMPILE = false
   var MODULEPATH = ""
   var exeName = "min"
 
@@ -342,20 +338,31 @@ when isMainModule:
     var i = newMinInterpreter(filename = "<repl>")
     i.minSimpleRepl()
 
+  proc resolveFile(file: string): string =
+    if (file.endsWith(".min") or file.endsWith(".mn")) and fileExists(file):
+      return file
+    elif fileExists(file&".min"):
+      return file&".min"
+    elif fileExists(file&".mn"):
+      return file&".mn"
+    return ""
 
   let usage* = """  $exe v$version - a small but practical concatenative programming language
   (c) 2014-$year Fabio Cevasco
   
   Usage:
-    $exe [options] [filename]
+    $exe [options] [filename | command] [...comamand-arguments]
 
   Arguments:
     filename  A $exe file to interpret or compile 
+    command   A command to execute
+  Commands:
+    compile <file>.min   Compile <file>.min.
+    eval <string>        Evaluate <string> as a min program.
+    help <symbol>        Print the help contents related to <symbol>.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
-    -c, --compile             Compile the specified file
-    -e, --evaluate            Evaluate a $exe program inline
     -d, --dev                 Enable "development mode" (runtime checks)
     -h, --help                Print this help
     -i, --interactive         Start $exe shell (with advanced prompt, default if no file specidied)"
@@ -372,7 +379,7 @@ when isMainModule:
       "year", $(now().year)
   ]
 
-  var file, s: string = ""
+  var file = ""
   var args = newSeq[string](0)
   logging.setLogFilter(logging.lvlNotice)
   var p = initOptParser()
@@ -385,8 +392,6 @@ when isMainModule:
           file = key
       of cmdLongOption, cmdShortOption:
         case key:
-          of "compile", "c":
-            COMPILE = true
           of "module-path", "m":
             MODULEPATH = val
           of "asset-path", "a":
@@ -401,9 +406,6 @@ when isMainModule:
               niftylogger.setLogLevel(val)
           of "passN", "n":
             NIMOPTIONS = val
-          of "evaluate", "e":
-            if file == "":
-              s = val
           of "help", "h":
             if file == "":
               echo usage
@@ -423,8 +425,6 @@ when isMainModule:
       else:
         discard
   var op = "interpret"
-  if COMPILE:
-    op = "compile"
   if MODULEPATH.len > 0:
     for f in walkDirRec(MODULEPATH):
       if f.endsWith(".min"):
@@ -432,10 +432,31 @@ when isMainModule:
   elif REPL:
     minRepl()
     quit(0)
-  if s != "":
-    minStr(s)
-  elif file != "":
-    minFile file, op
+  if file != "":
+    var fn = resolveFile(file)
+    if fn == "":
+      if file == "compile":
+        op = "compile"
+        if args.len < 2:
+          logging.error "[compile] No file was specified."
+          quit(8)
+        fn = resolveFile(args[1])
+        if fn == "":
+          logging.error "[compile] File '$#' does not exist." % [args[1]]
+          quit(9)
+      elif file == "eval":
+        if args.len < 2:
+          logging.error "[eval] No string to evaluate was specified."
+          quit(9)
+        minStr args[1]
+        quit(0)
+      elif file == "help":
+        if args.len < 2:
+          logging.error "[help] No symbol to lookup was specified."
+          quit(9)
+        minStr("\"$#\" help" % [args[1]])
+        quit(0)
+    minFile fn, op
   elif SIMPLEREPL:
     minSimpleRepl()
     quit(0)
