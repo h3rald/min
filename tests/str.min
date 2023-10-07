@@ -82,6 +82,11 @@
   ("http%3A%2F%2Ftest.com%3F%E2%82%AC%25%2C%2C%21%7B%7D" decode-url "http://test.com?€%,,!{}" ==) *test/assert
   
   ("http://h3rald.com/a/b/c?test=1#123" parse-url {"123" :anchor "h3rald.com" :hostname "" :password "/a/b/c" :path "" :port "test=1" :query "http" :scheme "" :username} ==) *test/assert
+
+  ("0b00101101" dup from-bin to-bin ==) *test/assert
+  ("0x00FF0000" dup from-hex to-hex ==) *test/assert
+  ("0o00007473" dup from-oct to-oct ==) *test/assert
+  ("123" dup from-dec to-dec ==) *test/assert
   
   *test/report
   clear-stack
