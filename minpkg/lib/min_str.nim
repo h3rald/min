@@ -293,6 +293,42 @@ proc str_module*(i: In) =
     var s = a & b
     i.push s.newVal
 
+  def.symbol("to-hex") do (i: In):
+    let vals = i.expect("int")
+    let v = vals[0].intVal
+    i.push (v.toHex(sizeof(v)).newVal)
+
+  def.symbol("to-oct") do (i: In):
+    let vals = i.expect("int")
+    let v = vals[0].intVal
+    i.push (v.toOct(sizeof(v)).newVal)
+
+  def.symbol("to-dec") do (i: In):
+    let vals = i.expect("int")
+    let v = vals[0].intVal
+    i.push ($v).newVal
+
+  def.symbol("to-bin") do (i: In):
+    let vals = i.expect("int")
+    let v = vals[0].intVal
+    i.push (v.toBin(sizeof(v)).newVal)
+
+  def.symbol("from-hex") do (i: In):
+    let vals = i.expect("'sym")
+    i.push fromHex[BiggestInt](vals[0].getString).newVal
+
+  def.symbol("from-oct") do (i: In):
+    let vals = i.expect("'sym")
+    i.push fromOct[BiggestInt](vals[0].getString).newVal
+
+  def.symbol("from-bin") do (i: In):
+    let vals = i.expect("'sym")
+    i.push fromBin[BiggestInt](vals[0].getString).newVal
+
+  def.symbol("from-dec") do (i: In):
+    let vals = i.expect("'sym")
+    i.push parseInt(vals[0].getString).newVal
+
   def.symbol("%") do (i: In):
     i.pushSym("interpolate")
 
