@@ -23,16 +23,16 @@ Divides {{n1}} by {{n2}}. #}
 Returns the average of the items of {{q}}. #}
 
 {#op||bitand||{{i1}} {{i2}}||{{i3}}||
-Computes the bitwise *and* of numbers {{i1}} and {{i2}}.#}
+Computes the bitwise *and* of integer {{i1}} and {{i2}}.#}
 
 {#op||bitnot||{{i1}}||{{i2}}||
 Computes the bitwise *complement* of {{i1}}.#}
 
 {#op||bitor||{{i1}} {{i2}}||{{i3}}||
-Computes the bitwise *or* of numbers {{i1}} and {{i2}}.#}
+Computes the bitwise *or* of integers {{i1}} and {{i2}}.#}
 
 {#op||bitxor||{{i1}} {{i2}}||{{i3}}||
-Computes the bitwise *xor* of numbers {{i1}} and {{i2}}.#}
+Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
 
 {#op||even?||{{i}}||{{b}}||
 Returns {{t}} if {{i}} is even, {{f}} otherwise. #}

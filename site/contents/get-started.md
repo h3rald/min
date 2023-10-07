@@ -144,7 +144,7 @@ min programs can be compiled to a single executable simply by using the built-in
 
 > %min-terminal%
 > 
-> [$](class:prompt) min cimpile myfile.min
+> [$](class:prompt) min compile myfile.min
 
 Essentially, this will:
 
@@ -155,7 +155,7 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 
 > %min-terminal%
 > 
-> [$](class:prompt) min compile myfile.min -n:"-d:release --threadAnalysis:off --mm:refc"
+> [$](class:prompt) min compile myfile.min -n:&quot;-d:release --threadAnalysis:off --mm:refc&quot;
 
 Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||lang||load#} or a {#link-operator||lang||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
 
