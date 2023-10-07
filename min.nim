@@ -1,7 +1,8 @@
-import 
-  std/[streams, 
-  strutils, 
-  sequtils, 
+import
+  std/[streams,
+  strutils,
+  sequtils,
+  times,
   json,
   os,
   algorithm,
@@ -11,16 +12,16 @@ import
   minpkg/core/[niftylogger,
   baseutils,
   env,
-  parser, 
-  value, 
+  parser,
+  value,
   scope,
-  interpreter, 
+  interpreter,
   utils]
-import 
-  minpkg/lib/[min_lang, 
-  min_stack, 
-  min_seq, 
-  min_dict, 
+import
+  minpkg/lib/[min_lang,
+  min_stack,
+  min_seq,
+  min_dict,
   min_num,
   min_str,
   min_logic,
@@ -35,7 +36,7 @@ import
   min_crypto,
   min_math]
 
-export 
+export
   env,
   parser,
   interpreter,
@@ -48,7 +49,7 @@ export
 const PRELUDE* = "prelude.min".slurp.strip
 var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
-var customPrelude {.threadvar.} : string
+var customPrelude {.threadvar.}: string
 customPrelude = ""
 
 if logging.getHandlers().len == 0:
@@ -108,7 +109,7 @@ proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
   if word.startsWith("\""):
     var f = word[1..^1]
     if f == "":
-      f = getCurrentDir().replace("\\", "/")  
+      f = getCurrentDir().replace("\\", "/")
       return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
     elif f.dirExists:
       f = f.replace("\\", "/")
@@ -120,10 +121,14 @@ proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
       if f.contains("/") or dir.contains("\\"):
         dir = f.parentDir
         let file = f.extractFileName
-        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt("\"$1/$2" % [dir, it.path.replace("\\", "/")])
+        return toSeq(walkDir(dir, true)).filterIt(
+            it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt(
+            "\"$1/$2" % [dir, it.path.replace("\\", "/")])
       else:
         dir = getCurrentDir()
-        return toSeq(walkDir(dir, true)).filterIt(it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [it.path.replace("\\", "/")])
+        return toSeq(walkDir(dir, true)).filterIt(
+            it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [
+            it.path.replace("\\", "/")])
   return symbols
 
 
@@ -167,31 +172,32 @@ proc stdLib*(i: In) =
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
   i.open(s, i.filename)
-  discard i.parser.getToken() 
+  discard i.parser.getToken()
   try:
     i.interpret()
   except CatchableError:
     discard
   i.close()
 
-proc interpret*(i: In, s: string): MinValue = 
+proc interpret*(i: In, s: string): MinValue =
   i.open(newStringStream(s), i.filename)
-  discard i.parser.getToken() 
+  discard i.parser.getToken()
   try:
     result = i.interpret()
   except CatchableError:
     discard
     i.close()
-    
-proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.}
 
-proc compile*(i: In, s: Stream, main = true): seq[string] = 
+proc minFile*(filename: string, op = "interpret", main = true): seq[
+    string] {.discardable.}
+
+proc compile*(i: In, s: Stream, main = true): seq[string] =
   if "nim".findExe == "":
     logging.error "Nim compiler not found, unable to compile."
     quit(7)
   result = newSeq[string](0)
   i.open(s, i.filename)
-  discard i.parser.getToken() 
+  discard i.parser.getToken()
   try:
     MINCOMPILED = true
     let dotindex = i.filename.rfind(".")
@@ -217,7 +223,8 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
     discard
   i.close()
 
-proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[string] {.discardable.}= 
+proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
+    string] {.discardable.} =
   var i = newMinInterpreter(filename = filename)
   i.pwd = filename.parentDirEx
   if op == "interpret":
@@ -229,7 +236,8 @@ proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
 proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
-proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.discardable.} =
+proc minFile*(filename: string, op = "interpret", main = true): seq[
+    string] {.discardable.} =
   var fn = filename
   if not filename.endsWith(".min"):
     fn &= ".min"
@@ -247,7 +255,7 @@ proc minFile*(filename: string, op = "interpret", main = true): seq[string] {.di
   minStream(newStringStream(contents), fn, op, main)
 
 when isMainModule:
-  import 
+  import
     terminal,
     parseopt,
     critbits,
@@ -267,7 +275,7 @@ when isMainModule:
       if res.isQuotation and res.qVal.len > 1:
         echo " ("
         for item in res.qVal:
-          echo  "   " & $item
+          echo "   " & $item
         echo " ".repeat(n.len) & ")"
       elif res.isCommand:
         echo " [" & res.cmdVal & "]"
@@ -279,7 +287,7 @@ when isMainModule:
             v = "<native>"
           else:
             v = $item.val.val
-          echo  "   " & v & " :" & $item.key
+          echo "   " & v & " :" & $item.key
         if res.objType == "":
           echo " ".repeat(n.len) & "}"
         else:
@@ -296,7 +304,7 @@ when isMainModule:
     while true:
       i.push(i.newSym("prompt"))
       let vals = i.expect("str")
-      let v = vals[0] 
+      let v = vals[0]
       let prompt = v.getString()
       stdout.write(prompt)
       stdout.flushFile()
@@ -319,24 +327,24 @@ when isMainModule:
       # evaluate prompt
       i.push(i.newSym("prompt"))
       let vals = i.expect("str")
-      let v = vals[0] 
+      let v = vals[0]
       let prompt = v.getString()
       line = EDITOR.readLine(prompt)
       let r = i.interpret($line)
       if $line != "":
         i.printResult(r)
 
-  proc minRepl*() = 
+  proc minRepl*() =
     var i = newMinInterpreter(filename = "<repl>")
     i.minRepl()
 
-  proc minSimpleRepl*() = 
+  proc minSimpleRepl*() =
     var i = newMinInterpreter(filename = "<repl>")
     i.minSimpleRepl()
-      
+
 
   let usage* = """  $exe v$version - a small but practical concatenative programming language
-  (c) 2014-2023 Fabio Cevasco
+  (c) 2014-$year Fabio Cevasco
   
   Usage:
     $exe [options] [filename]
@@ -359,21 +367,22 @@ when isMainModule:
     -n, --passN               Pass options to the nim compiler (if -c is set)
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
     -v, —-version             Print the program version""" % [
-      "exe", exeName, 
-      "version", pkgVersion
+      "exe", exeName,
+      "version", pkgVersion,
+      "year", $(now().year)
   ]
 
   var file, s: string = ""
   var args = newSeq[string](0)
   logging.setLogFilter(logging.lvlNotice)
   var p = initOptParser()
-  
+
   for kind, key, val in getopt(p):
     case kind:
       of cmdArgument:
         args.add key
         if file == "":
-          file = key 
+          file = key
       of cmdLongOption, cmdShortOption:
         case key:
           of "compile", "c":
@@ -391,7 +400,7 @@ when isMainModule:
               var val = val
               niftylogger.setLogLevel(val)
           of "passN", "n":
-              NIMOPTIONS = val
+            NIMOPTIONS = val
           of "evaluate", "e":
             if file == "":
               s = val
@@ -404,7 +413,7 @@ when isMainModule:
               echo pkgVersion
               quit(0)
           of "interactive", "i":
-            if file == "": 
+            if file == "":
               REPL = true
           of "interactive-simple", "j":
             if file == "":
