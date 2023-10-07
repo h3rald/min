@@ -278,39 +278,38 @@ proc num_module*(i: In) =
 
   def.symbol("bitxor") do (i: In):
     let args = i.expect("int", "int")
-    i.push (bitxor(args[0].intVal, args[1].intVal)).newVal
+    i.push (bitxor(args[1].intVal, args[0].intVal)).newVal
 
   def.symbol("bitclear") do (i: In):
-    var args = i.expect("int", "quot")
-    i.reqQuotationOfIntegers(args[1])
-    var val = args[0].intVal
-    for n in args[1].qVal:
+    var q: MinValue
+    i.reqQuotationOfIntegers(q)
+    var vals = i.expect("int")
+    var val = vals[0].intVal
+    for n in q.qVal:
       val.clearBits(n.intVal)
     i.push val.newVal
 
   def.symbol("bitset") do (i: In):
-    var args = i.expect("int", "quot")
-    i.reqQuotationOfIntegers(args[1])
-    var val = args[0].intVal
-    for n in args[1].qVal:
+    var q: MinValue
+    i.reqQuotationOfIntegers(q)
+    var vals = i.expect("int")
+    var val = vals[0].intVal
+    for n in q.qVal:
       val.setBits(n.intVal)
     i.push val.newVal
 
   def.symbol("bitflip") do (i: In):
-    var args = i.expect("int", "quot")
-    i.reqQuotationOfIntegers(args[1])
-    var val = args[0].intVal
-    for n in args[1].qVal:
+    var q: MinValue
+    i.reqQuotationOfIntegers(q)
+    var vals = i.expect("int")
+    var val = vals[0].intVal
+    for n in q.qVal:
       val.flipBits(n.intVal)
     i.push val.newVal
 
   def.symbol("bitparity") do (i: In):
     let args = i.expect("int")
     i.push (args[0].intVal.parityBits).newVal
-
-  def.symbol("bitreverse") do (i: In):
-    let args = i.expect("int")
-    i.push (args[0].intVal.uint.reverseBits.int).newVal
 
   def.symbol("bitmask") do (i: In):
     let args = i.expect("int", "int")

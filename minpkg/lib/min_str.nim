@@ -296,12 +296,12 @@ proc str_module*(i: In) =
   def.symbol("to-hex") do (i: In):
     let vals = i.expect("int")
     let v = vals[0].intVal
-    i.push (v.toHex(sizeof(v)).newVal)
+    i.push (("0x"&v.toHex(sizeof(v))).newVal)
 
   def.symbol("to-oct") do (i: In):
     let vals = i.expect("int")
     let v = vals[0].intVal
-    i.push (v.toOct(sizeof(v)).newVal)
+    i.push (("0o"&v.toOct(sizeof(v))).newVal)
 
   def.symbol("to-dec") do (i: In):
     let vals = i.expect("int")
@@ -311,7 +311,7 @@ proc str_module*(i: In) =
   def.symbol("to-bin") do (i: In):
     let vals = i.expect("int")
     let v = vals[0].intVal
-    i.push (v.toBin(sizeof(v)).newVal)
+    i.push (("0b"&v.toBin(sizeof(v))).newVal)
 
   def.symbol("from-hex") do (i: In):
     let vals = i.expect("'sym")
