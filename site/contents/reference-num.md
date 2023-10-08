@@ -22,6 +22,12 @@ Divides {{n1}} by {{n2}}. #}
 {#op||avg||{{q}}||{{n}}||
 Returns the average of the items of {{q}}. #}
 
+{#op||base||[&quot;dec&quot;&#124;&quot;hex&quot;&#124;&quot;oct&quot;&#124;&quot;bin&quot;](class:kwd)||{{none}}||
+Sets the numeric base used to represent integers. #}
+
+{#op||base?||{{none}}||[&quot;dec&quot;&#124;&quot;hex&quot;&#124;&quot;oct&quot;&#124;&quot;bin&quot;](class:kwd)||
+Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)). #}
+
 {#op||bitand||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *and* of integer {{i1}} and {{i2}}.#}
 

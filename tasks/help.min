@@ -15,6 +15,11 @@
   (
     s
       "&excl;" (pop "!") replace-apply
+      "&quot;" (pop "\"") replace-apply
+      "&#124;" (pop "|") replace-apply
+      "\[" (pop "") replace-apply
+      "\]" (pop "") replace-apply
+      "\(class:kwd\)" (pop "") replace-apply
       "&gt;" (pop ">") replace-apply
       "&lt;" (pop "<") replace-apply
       "&apos;" (pop "'") replace-apply
@@ -64,8 +69,8 @@
     (
         {}
             matches 1 get process fix-name %name
-            matches 2 get process :input
-            matches 3 get process :output
+            matches 2 get process fix-name :input
+            matches 3 get process fix-name :output
             "$# ==> $#" (input output) =% %signature
             matches 4 get process %description
             "symbol" %kind

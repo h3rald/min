@@ -361,7 +361,7 @@ when isMainModule:
   Commands:
     compile <file>.min   Compile <file>.min.
     eval <string>        Evaluate <string> as a min program.
-    help <symbol>        Print the help contents related to <symbol>.
+    help <symbol|sigil>        Print the help contents related to <symbol|sigil>.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)

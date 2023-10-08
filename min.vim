@@ -1,7 +1,7 @@
 " Vim syntax file
 " Language: min
 " Maintainer: Fabio Cevasco
-" Last Change: 07 Oct 2023
+" Last Change: 08 Oct 2023
 " Version: 0.40.0
 
 if exists("b:current_syntax")

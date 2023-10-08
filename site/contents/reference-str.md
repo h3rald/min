@@ -20,6 +20,18 @@ Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII co
 {#op||escape||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with quotes and backslashes escaped with a backslash.#}
 
+{#op||from-bin||{{sl}}||{{i}}||
+Parses {{sl}} as a binary number. #}
+
+{#op||from-dec||{{sl}}||{{i}}||
+Parses {{sl}} as a decimal number. #}
+
+{#op||from-hex||{{sl}}||{{i}}||
+Parses {{sl}} as a hexadecimal number. #}
+
+{#op||from-oct||{{sl}}||{{i}}||
+Parses {{sl}} as a octal number. #}
+
 {#op||from-semver||{{s}}||{{d}}||
 Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}}, 
 it pushes a dictionary {{d}} on the stack containing a **major**, **minor**, and **patch** key/value pairs.#}
@@ -170,6 +182,18 @@ Appends {{sl2}} to {{sl1}}.#}
 
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
+
+{#op||to-bin||{{i}}||{{s}}||
+Converts {{i}} to its binary representation. #}
+
+{#op||to-dec||{{i}}||{{s}}||
+Converts {{i}} to its decimal representation. #}
+
+{#op||to-hex||{{i}}||{{s}}||
+Converts {{i}} to its hexadecimal representation. #}
+
+{#op||to-oct||{{i}}||{{s}}||
+Converts {{i}} to its octal representation. #}
 
 {#op||to-semver||{{d}}||{{s}}||
 Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}} on the stack.#}
