@@ -293,10 +293,4 @@ proc num_module*(i: In) =
     let args = i.expect("int")
     i.push (args[0].intVal.parityBits).newVal
 
-  def.symbol("bitmask") do (i: In):
-    let args = i.expect("int", "int")
-    var val = args[0].intVal
-    val.mask(args[1].intVal)
-    i.push val.newVal
-
   def.finalize("num")

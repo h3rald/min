@@ -25,11 +25,23 @@ Returns the average of the items of {{q}}. #}
 {#op||bitand||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *and* of integer {{i1}} and {{i2}}.#}
 
+{#op||bitclear||{{i1}} {{q}}||{{i2}}||
+Sets the bytes specified via their position in {{i1}} through {{q}} to 0. #}
+
+{#op||bitflip||{{i1}} {{q}}||{{i2}}||
+Flips the bytes specified via their position in {{i1}} through {{q}}. #}
+
 {#op||bitnot||{{i1}}||{{i2}}||
 Computes the bitwise *complement* of {{i1}}.#}
 
 {#op||bitor||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *or* of integers {{i1}} and {{i2}}.#}
+
+{#op||bitparity||{{i1}}||{{i2}}||
+Calculate the bit parity in {{i1}}. If the number of 1-bits is odd, the parity is 1, otherwise 0.#}
+
+{#op||bitset||{{i1}} {{q}}||{{i2}}||
+Sets the bytes specified via their position in {{i1}} through {{q}} to 0. #}
 
 {#op||bitxor||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
