@@ -1,6 +1,7 @@
 import
   std/[base64,
   strutils,
+  macros, # Needed only for getProjectPath
   times]
 import
   ../vendor/aes/aes
@@ -39,8 +40,6 @@ proc crypto_module*(i: In) =
     i.push s.getString.decode.newVal
 
   when defined(ssl):
-
-    import std/macros
 
     when defined(windows) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lbcrypt".}
