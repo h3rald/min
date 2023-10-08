@@ -40,6 +40,8 @@ proc crypto_module*(i: In) =
 
   when defined(ssl):
 
+    import std/macros
+
     when defined(windows) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lbcrypt".}
     elif defined(linux) and defined(amd64):

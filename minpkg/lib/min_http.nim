@@ -13,6 +13,8 @@ import
   ../core/utils
 
 when defined(ssl) and defined(amd64):
+  import std/macros
+
   when defined(windows):
     {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
   elif defined(linux):

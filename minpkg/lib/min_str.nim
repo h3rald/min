@@ -15,6 +15,8 @@ proc str_module*(i: In) =
   let def = i.define()
 
   when not defined(nopcre):
+    import std/macros
+
     when defined(windows) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
     elif defined(linux) and defined(amd64):
