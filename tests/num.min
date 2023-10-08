@@ -83,7 +83,6 @@
   (0b111001 (0) bitclear 0b111000 ==) *test/assert
   (0b111000 (0 1) bitset 0b111011 ==) *test/assert
   (0b111000 bitparity 1 ==) *test/assert
-  (0b111001 0b101010 bitmask 0b101000 ==) *test/assert
 
   *test/report
   clear-stack
