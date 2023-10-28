@@ -45,7 +45,7 @@ Where `<dir>` is the directory containing the `*.a` files for the static librari
 > 
 > Alternatively, if you can also opt out from OpenSSL and PCRE support by:
 >
-> * _Not_ specifying `-d:ssl`
+> * Specifying `-d:nossl`
 > * Specifying `-d:nopcre`
 
 ### Additional build options

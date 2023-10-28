@@ -12,6 +12,9 @@ switch("opt", "size")
 switch("mm", "refc")
 switch("threadAnalysis", "off")
 
+when not defined(nossl):
+  switch("define", "ssl")
+
 when not defined(dev):
   switch("define", "release")
 
@@ -19,13 +22,14 @@ if findExe("musl-gcc") != "":
   switch("gcc.exe", "musl-gcc")
   switch("gcc.linkerexe", "musl-gcc")
 
-when defined(windows): 
+when defined(windows):
   switch("dynlibOverride", "pcre64")
 else:
   switch("dynlibOverride", "pcre")
 
 when defined(ssl):
-  when defined(windows): 
+  switch("define", "useOpenSsl3")
+  when defined(windows):
     # TODO",  change once issue nim#15220 is resolved
     switch("define", "noOpenSSLHacks")
     switch("define", "sslVersion:(")
