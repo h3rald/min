@@ -28,7 +28,6 @@ The following behaviors are implemented when pressing the `TAB` key within:
 Context                                                        | Result
 ---------------------------------------------------------------|--------------
 ...a string                                                    | Auto-completes the current word using file and directory names.
-...a word starting with `!`, `!!`, `!"` `!!"`, `&`, `&"`       | Auto-completes the current word using executable file names.
 ...a word starting with `$`                                    | Auto-completes the current word using environment variable names.
 ...a word starting with `'`, `@`, `#`, `>`, `<`, `*`, `(`, `?` | Auto-completes the current word using symbol names.
 

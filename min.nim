@@ -55,18 +55,6 @@ customPrelude = ""
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
 
-proc getExecs(): seq[string] =
-  var res = newSeq[string](0)
-  let getFiles = proc(dir: string) =
-    for c, s in walkDir(dir, true):
-      if (c == pcFile or c == pcLinkToFile) and not res.contains(s):
-        res.add s
-  getFiles(getCurrentDir())
-  for dir in "PATH".getEnv.split(PathSep):
-    getFiles(dir)
-  res.sort(system.cmp)
-  return res
-
 proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
   var words = ed.lineText.split(" ")
   var word: string
@@ -94,18 +82,6 @@ proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
     return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
-  if word.startsWith("!"):
-    return getExecs().mapIt("!" & $it)
-  if word.startsWith("!!"):
-    return getExecs().mapIt("!!" & $it)
-  if word.startsWith("!\""):
-    return getExecs().mapIt("!\"" & $it)
-  if word.startsWith("!!\""):
-    return getExecs().mapIt("!!\"" & $it)
-  if word.startsWith("&\""):
-    return getExecs().mapIt("&\"" & $it)
-  if word.startsWith("&"):
-    return getExecs().mapIt("&" & $it)
   if word.startsWith("\""):
     var f = word[1..^1]
     if f == "":
