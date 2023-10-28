@@ -410,8 +410,7 @@ proc load*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable,
-    extern: "min_exported_symbol_$1".} =
+proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
   if CACHEDMODULES.hasKey(s):
     return CACHEDMODULES[s]
   var fileLines = newSeq[string](0)

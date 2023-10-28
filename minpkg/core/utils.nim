@@ -69,8 +69,7 @@ proc dhas*(q: MinValue, s: string): bool =
     raiseInvalid("Value is not a dictionary")
   return q.dVal.contains(s)
 
-proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable,
-    extern: "min_exported_symbol_$1".} =
+proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   excl(p.scope.symbols, s.getString)
@@ -84,7 +83,7 @@ proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable,
   return p
 
 proc dset*(i: In, p: var MinValue, s: MinValue,
-    m: MinValue): MinValue {.discardable, extern: "min_exported_symbol_$1".} =
+    m: MinValue): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
