@@ -119,7 +119,6 @@ when isMainModule:
     minpkg/core/meta
 
   var REPL = false
-  var SIMPLEREPL = false
   var MODULEPATH = ""
 
   proc resolveFile(file: string): string =

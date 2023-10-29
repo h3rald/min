@@ -7,6 +7,7 @@ import
     critbits,
     algorithm,
     streams,
+    terminal,
     os
   ]
 
@@ -21,6 +22,8 @@ import
 
 import
   minline
+
+var SIMPLEREPL* = false
 
 proc interpret*(i: In, s: string): MinValue =
   i.open(newStringStream(s), i.filename)
@@ -83,34 +86,70 @@ proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
             it.path.replace("\\", "/")])
   return symbols
 
+proc p(s: string, color = fgWhite) =
+  if SIMPLEREPL:
+    stdout.write(s)
+  else:
+    stdout.styledWrite(color, s)
+
+proc pv(item: MinValue) =
+  case item.kind
+  of minNull, minBool:
+    p($item, fgGreen)
+  of minSymbol:
+    p($item, fgCyan)
+  of minString:
+    p($item, fgYellow)
+  of minFloat, minInt:
+    p($item, fgMagenta)
+  of minQuotation:
+    p("( ", fgRed)
+    for val in item.qVal:
+      pv(val); stdout.write(" ")
+    p(")", fgRed)
+  of minCommand:
+    p("[ ", fgRed)
+    p(item.cmdVal, fgRed)
+    p(" ]", fgRed)
+  of minDictionary:
+    p("{ ", fgRed)
+    for val in item.dVal.pairs:
+      var v: MinValue
+      if val.val.kind == minProcOp:
+        v = "<native>".newSym
+      else:
+        v = val.val.val
+      pv(v); p(" :" & $val.key & " ", fgCyan)
+    p("}", fgRed)
+
 proc printResult(i: In, res: MinValue) =
   if res.isNil:
     return
   if i.stack.len > 0:
     let n = $i.stack.len
     if res.isQuotation and res.qVal.len > 1:
-      echo " ("
+      p(" (\n", fgRed)
       for item in res.qVal:
-        echo "   " & $item
-      echo " ".repeat(n.len) & ")"
+        p("   "); pv(item); stdout.write("\n")
+      stdout.write(" ".repeat(n.len)); p(")\n", fgRed)
     elif res.isCommand:
-      echo " [" & res.cmdVal & "]"
+      p(" [", fgRed); p(res.cmdVal, fgYellow); p("]\n")
     elif res.isDictionary and res.dVal.len > 1:
-      echo " {"
+      p(" {\n", fgRed)
       for item in res.dVal.pairs:
-        var v = ""
+        var v: MinValue
         if item.val.kind == minProcOp:
-          v = "<native>"
+          v = "<native>".newSym
         else:
-          v = $item.val.val
-        echo "   " & v & " :" & $item.key
+          v = item.val.val
+        p("   "); pv(v); p(" :" & $item.key & "\n", fgCyan)
       if res.objType == "":
-        echo " ".repeat(n.len) & "}"
+        stdout.write " ".repeat(n.len); p("}\n", fgRed)
       else:
-        echo " ".repeat(n.len) & "  ;" & res.objType
-        echo " ".repeat(n.len) & "}"
+        stdout.write " ".repeat(n.len); p("  ;" & res.objType & "\n", fgBlue)
+        stdout.write " ".repeat(n.len); p("}\n", fgRed)
     else:
-      echo " $1" % [$i.stack[i.stack.len - 1]]
+      stdout.write " "; pv(i.stack[i.stack.len - 1]); stdout.write("\n")
 
 proc minSimpleRepl*(i: var MinInterpreter) =
   i.stdLib()
