@@ -106,7 +106,7 @@ The following notation is used in the signature of all min operators:
        16 :minute
        25 :second
        true :dst
-       -3600 :timezone
+       -3600 :timezone ;UTC offset
        ;timeinfo
       }
 {{e}}
