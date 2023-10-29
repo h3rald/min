@@ -34,7 +34,8 @@ proc interpret*(i: In, s: string): MinValue =
     discard
     i.close()
 
-proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
+proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
+  let symbols = toSeq(i.scope.symbols.keys)
   var words = ed.lineText.split(" ")
   var word: string
   if words.len == 0:
@@ -53,8 +54,36 @@ proc getCompletions*(ed: LineEditor, symbols: seq[string]): seq[string] =
     return symbols.mapIt("#" & $it)
   if word.startsWith(">"):
     return symbols.mapIt(">" & $it)
+  if word.startsWith("*") and word.contains("/"):
+    let dicts = word.substr(1).split("/")
+    var op: MinOperator
+    var dict: MinValue
+    var path = "*"
+    for d in dicts:
+      if dict.isNil:
+        if i.scope.symbols.hasKey(d):
+          op = i.scope.symbols[d]
+          if op.kind == minProcOp and not op.mdl.isNil:
+            dict = op.mdl
+          elif op.kind == minValOp and op.val.kind == minDictionary:
+            dict = op.val
+        path &= d & "/"
+      elif dict.dVal.hasKey(d):
+        op = dict.dVal[d]
+        if op.kind == minProcOp and not op.mdl.isNil:
+          dict = op.mdl
+        elif op.kind == minValOp and op.val.kind == minDictionary:
+          dict = op.val
+        path &= d & "/"
+    return dict.dVal.keys.toSeq.mapIt(path & it)
   if word.startsWith("*"):
-    return symbols.mapIt("*" & $it)
+    let filterProc = proc (it: string): bool =
+      let op = i.scope.symbols[it]
+      if op.kind == minProcOp and not op.mdl.isNil:
+        return true
+      else:
+        return op.kind == minValOp and op.val.kind == minDictionary
+    return symbols.filter(filterProc).mapIt("*" & $it)
   if word.startsWith("("):
     return symbols.mapIt("(" & $it)
   if word.startsWith("<"):
@@ -176,9 +205,9 @@ proc minRepl*(i: var MinInterpreter) =
   var line: string
   echo "$# shell v$#" % [pkgName, pkgVersion]
   while true:
-    let symbols = toSeq(i.scope.symbols.keys)
+    let iref = i
     EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
-      var completions = ed.getCompletions(symbols)
+      var completions = ed.getCompletions(iref)
       completions.sort()
       return completions
     # evaluate prompt

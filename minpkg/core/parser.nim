@@ -115,6 +115,7 @@ type
     case kind*: MinOperatorKind
     of minProcOp:
       prc*: MinOperatorProc
+      mdl*: MinValue # Only set in case of modules
     of minValOp:
       quotation*: bool
       val*: MinValue

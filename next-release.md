@@ -6,6 +6,7 @@
 ### New Features
 
 * min shell now supports syntax highlighting for entered values.
+* Implemented smart completion for invocations in min shell.
 
 ### Fixes and Improvements
 

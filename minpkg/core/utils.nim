@@ -40,7 +40,7 @@ proc finalize*(scope: ref MinScope, name: string = "") =
     i.push mdl
     i.evaluating = false
   if name != "":
-    scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op)
+    scope.previous.symbols[name] = MinOperator(kind: minProcOp, prc: op, mdl: mdl)
 
 # Dictionary Methods
 
