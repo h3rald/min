@@ -29,7 +29,12 @@ type
     tkSymbol,
     tkNull,
     tkTrue,
-    tkFalse
+    tkFalse,
+    tkLineComment,
+    tkBlockComment,
+    tkLineDocComment,
+    tkBlockDocComment,
+    tkSpace
   MinKind* = enum
     minInt,
     minFloat,
@@ -195,7 +200,12 @@ const
     "symbol",
     "null",
     "true",
-    "false"
+    "false",
+    "line comment",
+    "block comment",
+    "line documentation comment",
+    "block documentation comment",
+    "space"
   ]
 
 proc newScope*(parent: ref MinScope, kind = minLangScope): MinScope =
@@ -460,82 +470,96 @@ proc addDoc(my: var MinParser, docComment: string, reset = true) =
     else:
       my.currSym.docComment &= docComment
 
-proc skip(my: var MinParser) =
-  var pos = my.bufpos
-  var buf = my.buf
-  while true:
-    case buf[pos]
-    of ';':
-      # skip line comment:
-      if buf[pos+1] == ';':
-        my.doc = true
-      inc(pos, 2)
-      while true:
-        case buf[pos]
-        of '\0':
-          break
-        of '\c':
-          pos = lexbase.handleCR(my, pos)
-          buf = my.buf
-          my.addDoc "\n"
-          break
-        of '\L':
-          pos = lexbase.handleLF(my, pos)
-          buf = my.buf
-          my.addDoc "\n"
-          break
-        else:
-          my.addDoc $my.buf[pos], false
-          inc(pos)
-    of '#':
-      if buf[pos+1] == '|':
-        # skip long comment:
-        if buf[pos+2] == '|':
-          inc(pos)
-          my.doc = true
-        inc(pos, 2)
-        while true:
-          case buf[pos]
-          of '\0':
-            my.err = errEOC_Expected
-            break
-          of '\c':
-            pos = lexbase.handleCR(my, pos)
-            my.addDoc "\n", false
-            buf = my.buf
-          of '\L':
-            pos = lexbase.handleLF(my, pos)
-            my.addDoc "\n", false
-            buf = my.buf
-          of '|':
-            inc(pos)
-            if buf[pos] == '|':
-              inc(pos)
-            if buf[pos] == '#':
-              inc(pos)
-              break
-            my.addDoc $buf[pos], false
-          else:
-            my.addDoc $my.buf[pos], false
-            inc(pos)
-      else:
-        break
-    of ' ', '\t':
-      inc(pos)
-    of '\c':
-      pos = lexbase.handleCR(my, pos)
-      buf = my.buf
-    of '\L':
-      pos = lexbase.handleLF(my, pos)
-      buf = my.buf
-    else:
-      break
-  my.bufpos = pos
-
 proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
-  skip(my)
   case my.buf[my.bufpos]
+  of ';':
+    #add(my.a, my.buf[my.bufpos])
+    # skip line comment:
+    if my.buf[my.bufpos+1] == ';':
+      my.doc = true
+      inc(my.bufpos, 1)
+      #add(my.a, my.buf[my.bufpos])
+    inc(my.bufpos, 1)
+    while true:
+      case my.buf[my.bufpos]
+      of '\0':
+        break
+      of '\c':
+        add(my.a, my.buf[my.bufpos])
+        my.bufpos = lexbase.handleCR(my, my.bufpos)
+        if my.doc:
+          result = tkLineDocComment
+        else:
+          result = tkLineComment
+        my.addDoc "\n"
+        break
+      of '\L':
+        add(my.a, my.buf[my.bufpos])
+        my.bufpos = lexbase.handleLF(my, my.bufpos)
+        if my.doc:
+          result = tkLineDocComment
+        else:
+          result = tkLineComment
+        my.addDoc "\n"
+        break
+      else:
+        add(my.a, my.buf[my.bufpos])
+        my.addDoc $my.buf[my.bufpos], false
+        inc(my.bufpos)
+  of '#':
+    if my.buf[my.bufpos+1] == '|':
+      inc(my.bufpos, 1)
+      if my.buf[my.bufpos+1] == '|':
+        inc(my.bufpos, 1)
+        my.doc = true
+      inc(my.bufpos, 1)
+      while true:
+        case my.buf[my.bufpos]
+        of '\0':
+          my.err = errEOC_Expected
+          break
+        of '\c':
+          add(my.a, my.buf[my.bufpos])
+          my.bufpos = lexbase.handleCR(my, my.bufpos)
+          my.addDoc "\n", false
+        of '\L':
+          add(my.a, my.buf[my.bufpos])
+          my.bufpos = lexbase.handleLF(my, my.bufpos)
+          my.addDoc "\n", false
+        of '|':
+          inc(my.bufpos)
+          if my.buf[my.bufpos] == '|':
+            inc(my.bufpos)
+          if my.buf[my.bufpos] == '#':
+            inc(my.bufpos)
+            break
+          my.addDoc $my.buf[my.bufpos], false
+        else:
+          add(my.a, my.buf[my.bufpos])
+          my.addDoc $my.buf[my.bufpos], false
+          inc(my.bufpos)
+      if my.doc:
+        result = tkBlockDocComment
+      else:
+        result = tkBlockComment
+    else:
+      result = parseSymbol(my)
+  of ' ', '\t', '\c', '\L':
+    while true:
+      case my.buf[my.bufpos]:
+      of ' ', '\t':
+        add(my.a, my.buf[my.bufpos])
+        inc(my.bufpos)
+      of '\c':
+        add(my.a, my.buf[my.bufpos])
+        my.bufpos = lexbase.handleCR(my, my.bufpos)
+      of '\L':
+        add(my.a, my.buf[my.bufpos])
+        my.bufpos = lexbase.handleLF(my, my.bufpos)
+      else:
+        break
+    result = tkSpace
   of '-', '.':
     if my.bufpos+1 <= my.buf.len and my.buf[my.bufpos+1] in '0'..'9':
       parseNumber(my)
@@ -757,6 +781,7 @@ proc `$$`*(a: MinValue): string {.inline.} =
       return d
 
 proc parseMinValue*(p: var MinParser, i: In): MinValue =
+  echo p.token, "-->", p.a, "<--"
   case p.token
   of tkNull:
     result = MinValue(kind: minNull)
@@ -837,8 +862,11 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     p.a = ""
     p.currSym = result
     discard getToken(p)
+  of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
+    discard getToken(p)
+    result = p.parseMinValue(i)
   else:
-    let err = "Undefined or invalid value: "&p.a
+    let err = "Undefined or invalid value (" & $p.token & "): " & p.a
     raiseUndefined(p, err)
   result.filename = p.filename
 
@@ -924,6 +952,9 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&")"]
     p.a = ""
     discard getToken(p)
+  of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
+    discard getToken(p)
+    result = p.compileMinValue(i, push, indent)
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
