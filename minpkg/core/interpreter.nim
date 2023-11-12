@@ -337,10 +337,11 @@ proc interpret*(i: In, parseOnly = false): MinValue {.discardable.} =
       i.stackcopy = i.stack
     handleErrors(i) do:
       val = i.parser.parseMinValue(i)
-      if parseOnly:
-        q.qVal.add val
-      else:
-        i.push val
+      if not val.isNil:
+        if parseOnly:
+          q.qVal.add val
+        else:
+          i.push val
   if parseOnly:
     return q
   if i.stack.len > 0:

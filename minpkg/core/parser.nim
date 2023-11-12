@@ -550,16 +550,18 @@ proc getToken*(my: var MinParser): MinTokenKind =
       case my.buf[my.bufpos]:
       of ' ', '\t':
         add(my.a, my.buf[my.bufpos])
+        result = tkSpace
         inc(my.bufpos)
       of '\c':
         add(my.a, my.buf[my.bufpos])
+        result = tkSpace
         my.bufpos = lexbase.handleCR(my, my.bufpos)
       of '\L':
         add(my.a, my.buf[my.bufpos])
+        result = tkSpace
         my.bufpos = lexbase.handleLF(my, my.bufpos)
       else:
         break
-    result = tkSpace
   of '-', '.':
     if my.bufpos+1 <= my.buf.len and my.buf[my.bufpos+1] in '0'..'9':
       parseNumber(my)
@@ -863,12 +865,14 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     p.currSym = result
     discard getToken(p)
   of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
-    discard getToken(p)
-    result = p.parseMinValue(i)
+    eat(p, p.token)
+    result = nil #p.parseMinValue(i)
+    #discard getToken(p)
   else:
     let err = "Undefined or invalid value (" & $p.token & "): " & p.a
     raiseUndefined(p, err)
-  result.filename = p.filename
+  if not result.isNil:
+    result.filename = p.filename
 
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =
   var op = indent
