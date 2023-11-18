@@ -122,7 +122,7 @@ dt {
   margin-top: 1em;
 }
 
-code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal {
+code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal, .min-codeblock {
   font-family: 'Source Code Pro',  monospace;
   font-size: 90%;
 }
@@ -265,3 +265,52 @@ footer {
   margin: auto;
   padding: 5px;
 }
+
+.min-codeblock {
+  white-space: pre-wrap;
+  font-size: 80%;
+  background: #1a1c1a;
+  border: 1px solid #313631;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+.min-codeblock .min-tkLineComment,
+.min-codeblock .min-tkLineDocComment,
+.min-codeblock .min-tkBlockComment,
+.min-codeblock .min-tkBlockDocComment {
+  color: #04873f;
+}
+
+.min-codeblock .min-tkBraceRi,
+.min-codeblock .min-tkBracketRi,
+.min-codeblock .min-tkSqBracketRi,
+.min-codeblock .min-tkBraceLe,
+.min-codeblock .min-tkBracketLe,
+.min-codeblock .min-tkSqBracketLe {
+  color: #9c080f;
+}
+
+.min-codeblock .min-tkInt,
+.min-codeblock .min-tkFloat {
+  color: #f381f7;
+}
+
+.min-codeblock .min-tkString {
+  color: #c7830e;
+}
+
+.min-codeblock .min-tkCommand {
+  color: #c7830e;
+}
+
+.min-codeblock .min-tkSymbol {
+  color: #9de9fa;
+}
+
+.min-codeblock .min-tkNull,
+.min-codeblock .min-tkTrue,
+.min-codeblock .min-tkFalse {
+  color: #0cc9a0;
+}
+

@@ -466,12 +466,10 @@ proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
   case my.buf[my.bufpos]
   of ';':
-    add(my.a, my.buf[my.bufpos])
     # skip line comment:
     if my.buf[my.bufpos+1] == ';':
       my.doc = true
       inc(my.bufpos, 1)
-      add(my.a, my.buf[my.bufpos])
     inc(my.bufpos, 1)
     while true:
       case my.buf[my.bufpos]

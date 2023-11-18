@@ -21,6 +21,59 @@
   ) case
 ) ^set-destination
 
+; Syntax highlighter
+(
+  symbol span
+  (str :class str :value ==> str :result)
+  (
+      "min-$#" (class) =% @class
+      {} :attributes
+      attributes class %class @attributes
+      "span" xelement :sp
+      sp attributes %attributes @sp
+      value xtext :text
+      sp (text) => %children @sp
+      sp to-xml @result
+  )
+) ::
+
+(
+  symbol highlight
+  (dict :token ==> str :result)
+  (
+      token /value :value
+      token /type :type
+      (
+          ((type "tkEof" ==) ("" @result))
+          ((type "tkSpace" ==) (value @result))
+          ((type "tkBlockComment" ==) (type "#|$#|#" (value) =% span @result))
+          ((type "tkBlockDocComment" ==) (type "#||$#||#" (value) =% span @result))
+          ((type "tkLineComment" ==) (type ";$#" (value) =% span @result))
+          ((type "tkLineDocComment" ==) (type ";;$#" (value) =% span @result))
+          ((type "tkString" ==) (type "\"$#\"" (value) =% span @result))
+          ((true) (type value span @result))
+      ) case
+  )
+) ::
+
+(
+  symbol min-highlight
+  (str :code ==> str :result)
+  (
+    code tokenize 'highlight map "" join :code
+    "<div class='min-codeblock'>$#</div>" (code) =% @result
+  )
+) ::
+
+(
+  symbol highlight-min-codeblocks
+  (str :markdown ==> str :result)
+  (
+    markdown "```min\n([^`]+)\n```" 
+    (1 get min-highlight) replace-apply @result
+  )
+) ::
+
 ;Processing operators
 (
   ('sym dict) expect -> :tpl :meta
@@ -30,7 +83,7 @@
     (input-fread @contents meta)
     (settings /title %site)
     (settings /version %version)
-    (:temp contents temp markdown @contents temp)
+    (:temp contents highlight-min-codeblocks temp markdown @contents temp)
     (contents %contents)
     (:temp tpl temp mustache @page temp)
     (page %contents)
