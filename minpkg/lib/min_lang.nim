@@ -5,6 +5,7 @@ import
   json,
   parseopt,
   algorithm,
+  streams,
   nre,
   os,
   logging]
@@ -1095,6 +1096,26 @@ proc lang_module*(i: In) =
     let vals = i.expect("str")
     let s = vals[0]
     i.push(@[newCmd(s.strVal)].newVal)
+
+  def.symbol("tokenize") do (i: In):
+    let vals = i.expect("str")
+    let s = vals[0].getString
+    var i2 = i.copy("string")
+    i2.open(newStringStream(s), "string")
+    var p = i2.parser
+    var t = p.getToken()
+    var q = newSeq[MinValue](0)
+    var dict = newDict(i.scope)
+    i.dset(dict, "type", newVal($t))
+    i.dset(dict, "value", p.a.newVal)
+    q.add dict
+    while t != tkEof:
+      t = p.getToken()
+      var dict = newDict(i.scope)
+      i.dset(dict, "type", newVal($t))
+      i.dset(dict, "value", p.a.newVal)
+      q.add dict
+    i.push q.newVal
 
   # Sigils
 
