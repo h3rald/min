@@ -474,12 +474,12 @@ proc getToken*(my: var MinParser): MinTokenKind =
   setLen(my.a, 0)
   case my.buf[my.bufpos]
   of ';':
-    #add(my.a, my.buf[my.bufpos])
+    add(my.a, my.buf[my.bufpos])
     # skip line comment:
     if my.buf[my.bufpos+1] == ';':
       my.doc = true
       inc(my.bufpos, 1)
-      #add(my.a, my.buf[my.bufpos])
+      add(my.a, my.buf[my.bufpos])
     inc(my.bufpos, 1)
     while true:
       case my.buf[my.bufpos]
@@ -580,17 +580,21 @@ proc getToken*(my: var MinParser): MinTokenKind =
   of '"':
     result = parseString(my)
   of '(':
+    add(my.a, my.buf[my.bufpos])
     inc(my.bufpos)
     result = tkBracketLe
   of ')':
+    add(my.a, my.buf[my.bufpos])
     inc(my.bufpos)
     result = tkBracketRi
   of '[':
     result = parseCommand(my)
   of '{':
+    add(my.a, my.buf[my.bufpos])
     inc(my.bufpos)
     result = tkBraceLe
   of '}':
+    add(my.a, my.buf[my.bufpos])
     inc(my.bufpos)
     result = tkBraceRi
   of '\0':
@@ -783,7 +787,6 @@ proc `$$`*(a: MinValue): string {.inline.} =
       return d
 
 proc parseMinValue*(p: var MinParser, i: In): MinValue =
-  echo p.token, "-->", p.a, "<--"
   case p.token
   of tkNull:
     result = MinValue(kind: minNull)
@@ -828,7 +831,9 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     var q = newSeq[MinValue](0)
     discard getToken(p)
     while p.token != tkBracketRi:
-      q.add p.parseMinValue(i)
+      let v = p.parseMinValue(i)
+      if not v.isNil:
+        q.add v
     eat(p, tkBracketRi)
     result = MinValue(kind: minQuotation, qVal: q)
   of tkBraceLe:
@@ -837,8 +842,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     discard getToken(p)
     var c = 0
     while p.token != tkBraceRi:
-      c = c+1
       let v = p.parseMinValue(i)
+      if v.isNil:
+        continue
+      c = c+1
       if val.isNil:
         val = v
       elif v.kind == minSymbol:
@@ -930,6 +937,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       c = c+1
       var instructions = p.compileMinValue(i, false, indent)
       let v = p.parseMinValue(i)
+      if v.isNil:
+        continue
       let vs = instructions.pop
       result = result.concat(instructions)
       if val.isNil:
