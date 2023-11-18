@@ -66,18 +66,11 @@ type
     errEOC_Expected,        ## ``*/`` expected
     errEofExpected,         ## EOF expected
     errExprExpected
-  MinParserState* = enum
-    stateEof,
-    stateStart,
-    stateQuotation,
-    stateDictionary,
-    stateExpectValue
   MinParser* = object of BaseLexer
     a*: string
     doc*: bool
     currSym*: MinValue
     token*: MinTokenKind
-    state*: seq[MinParserState]
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
@@ -218,7 +211,6 @@ proc newScopeRef*(parent: ref MinScope, kind = minLangScope): ref MinScope =
 proc open*(my: var MinParser, input: Stream, filename: string) =
   lexbase.open(my, input)
   my.filename = filename
-  my.state = @[stateStart]
   my.kind = eMinError
   my.a = ""
 
@@ -608,85 +600,6 @@ proc getToken*(my: var MinParser): MinTokenKind =
     else:
       discard
   my.token = result
-
-
-proc next*(my: var MinParser) =
-  var tk = getToken(my)
-  var i = my.state.len-1
-  case my.state[i]
-  of stateEof:
-    if tk == tkEof:
-      my.kind = eMinEof
-    else:
-      my.kind = eMinError
-      my.err = errEofExpected
-  of stateStart:
-    case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.state[i] = stateEof # expect EOF next!
-      my.kind = MinEventKind(ord(tk))
-    of tkBracketLe:
-      my.state.add(stateQuotation) # we expect any
-      my.kind = eMinQuotationStart
-    of tkBraceLe:
-      my.state.add(stateDictionary) # we expect any
-      my.kind = eMinDictionaryStart
-    of tkEof:
-      my.kind = eMinEof
-    else:
-      my.kind = eMinError
-      my.err = errEofExpected
-  of stateQuotation:
-    case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.kind = MinEventKind(ord(tk))
-    of tkBracketLe:
-      my.state.add(stateQuotation)
-      my.kind = eMinQuotationStart
-    of tkBraceLe:
-      my.state.add(stateDictionary)
-      my.kind = eMinDictionaryStart
-    of tkBracketRi:
-      my.kind = eMinQuotationEnd
-      discard my.state.pop()
-    of tkBraceRi:
-      my.kind = eMinDictionaryEnd
-      discard my.state.pop()
-    else:
-      my.kind = eMinError
-      my.err = errBracketRiExpected
-  of stateDictionary:
-    case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.kind = MinEventKind(ord(tk))
-    of tkBracketLe:
-      my.state.add(stateQuotation)
-      my.kind = eMinQuotationStart
-    of tkBraceLe:
-      my.state.add(stateDictionary)
-      my.kind = eMinDictionaryStart
-    of tkBracketRi:
-      my.kind = eMinQuotationEnd
-      discard my.state.pop()
-    of tkBraceRi:
-      my.kind = eMinDictionaryEnd
-      discard my.state.pop()
-    else:
-      my.kind = eMinError
-      my.err = errBraceRiExpected
-  of stateExpectValue:
-    case tk
-    of tkString, tkInt, tkFloat, tkTrue, tkFalse:
-      my.kind = MinEventKind(ord(tk))
-    of tkBracketLe:
-      my.state.add(stateQuotation)
-      my.kind = eMinQuotationStart
-    of tkBraceLe:
-      my.state.add(stateDictionary)
-      my.kind = eMinDictionaryStart
-    else:
-      my.kind = eMinError
-      my.err = errExprExpected
 
 proc eat(p: var MinParser, token: MinTokenKind) =
   if p.token == token: discard getToken(p)
