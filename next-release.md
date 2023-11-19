@@ -7,6 +7,8 @@
 
 * min shell now supports syntax highlighting for entered values.
 * Implemented smart completion for invocations in min shell.
+* Implemented new `tokenize` symbol.
+* Added syntax highlighting to code examples on min site.
 
 ### Fixes and Improvements
 
