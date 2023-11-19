@@ -31,7 +31,7 @@
       attributes class %class @attributes
       "span" xelement :sp
       sp attributes %attributes @sp
-      value xtext :text
+      value xtext puts :text
       sp (text) => %children @sp
       sp to-xml @result
   )
@@ -78,7 +78,7 @@
   symbol highlight-min-codeblocks
   (str :html ==> str :result)
   (
-    html "<pre>(?:\n|\r\n|\s)*<code>((?:.|\n)*?)<\/code>(?:\n|\r\n|\s)*<\/pre>" 
+    html "<pre>\s*<code>((?:.|\n)*?)<\/code>\s*<\/pre>" 
     (1 get min-block-highlight) replace-apply @result
   )
 ) ::
@@ -87,7 +87,7 @@
   symbol highlight-min-codes
   (str :html ==> str :result)
   (
-    html "<code>((?:.|\n)*?)<\/code>" 
+    html "<code>(.*?)<\/code>" 
     (1 get min-inline-highlight) replace-apply @result
   )
 ) ::
@@ -103,7 +103,7 @@
     (settings /version %version)
     (
       :temp contents temp markdown 
-      highlight-min-codes highlight-min-codeblocks @contents temp
+      highlight-min-codeblocks highlight-min-codes @contents temp
     )
     (contents %contents)
     (:temp tpl temp mustache @page temp)
