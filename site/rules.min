@@ -57,7 +57,7 @@
 ) ::
 
 (
-  symbol min-highlight
+  symbol min-block-highlight
   (str :code ==> str :result)
   (
     code tokenize 'highlight map "" join :code
@@ -66,11 +66,29 @@
 ) ::
 
 (
-  symbol highlight-min-codeblocks
-  (str :markdown ==> str :result)
+  symbol min-inline-highlight
+  (str :code ==> str :result)
   (
-    markdown "```min\n([^`]+)\n```" 
-    (1 get min-highlight) replace-apply @result
+    code tokenize 'highlight map "" join :code
+    "<span class='min-code'>$#</span>" (code) =% @result
+  )
+) ::
+
+(
+  symbol highlight-min-codeblocks
+  (str :html ==> str :result)
+  (
+    html "<pre>(?:\n|\r\n|\s)*<code>((?:.|\n)*?)<\/code>(?:\n|\r\n|\s)*<\/pre>" 
+    (1 get min-block-highlight) replace-apply @result
+  )
+) ::
+
+(
+  symbol highlight-min-codes
+  (str :html ==> str :result)
+  (
+    html "<code>((?:.|\n)*?)<\/code>" 
+    (1 get min-inline-highlight) replace-apply @result
   )
 ) ::
 
@@ -83,7 +101,10 @@
     (input-fread @contents meta)
     (settings /title %site)
     (settings /version %version)
-    (:temp contents highlight-min-codeblocks temp markdown @contents temp)
+    (
+      :temp contents temp markdown 
+      highlight-min-codes highlight-min-codeblocks @contents temp
+    )
     (contents %contents)
     (:temp tpl temp mustache @page temp)
     (page %contents)
