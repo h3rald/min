@@ -17,7 +17,7 @@ title: "xml Module"
 > > 
 > >     {
 > >       {"https://min-lang.org" :href} :attributes
-> >      ({"min web site" :text ;xml-text}) :children
+> >      ({"min web site" :text}) :children
 > >      "a" :tag
 > >      ;xml-element
 > >     }
@@ -56,7 +56,7 @@ Returns a {{xentity}} representing an XML entity. #}
 > >
 > >     {
 > >       {"test" :class} :attributes 
-> >       ({"first" :text ;xml-text}) :children 
+> >       ({"first" :text}) :children 
 > >       "li" :tag 
 > >       ;xml-element
 > >     }
@@ -80,13 +80,13 @@ Returns a {{xentity}} representing an XML entity. #}
 > >
 > >     ({
 > >       {"test" :class} :attributes 
-> >       ({"first" :text ;xml-text}) :children 
+> >       ({"first" :text}) :children 
 > >       "li" :tag 
 > >       ;xml-element
 > >     }
 > >     {
 > >       {"test" :class} :attributes 
-> >       ({"third" :text ;xml-text}) :children 
+> >       ({"third" :text}) :children 
 > >       "li" :tag 
 > >       ;xml-element
 > >     })

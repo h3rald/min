@@ -287,7 +287,7 @@ footer {
 .min-tkLineDocComment,
 .min-tkBlockComment,
 .min-tkBlockDocComment {
-  color: #04873f;
+  color: #22ad61;
 }
 
 .min-tkBraceRi,
@@ -296,7 +296,7 @@ footer {
 .min-tkBraceLe,
 .min-tkBracketLe,
 .min-tkSqBracketLe {
-  color: #9c080f;
+  color: #cf111b;
 }
 
 .min-tkInt,
@@ -313,7 +313,7 @@ footer {
 }
 
 .min-tkSymbol {
-  color: #9de9fa;
+  color: #f5fcfd;
 }
 
 .min-tkNull,

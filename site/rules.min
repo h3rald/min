@@ -26,14 +26,7 @@
   symbol span
   (str :class str :value ==> str :result)
   (
-      "min-$#" (class) =% @class
-      {} :attributes
-      attributes class %class @attributes
-      "span" xelement :sp
-      sp attributes %attributes @sp
-      value xtext puts :text
-      sp (text) => %children @sp
-      sp to-xml @result
+      "<span class=\"min-$#\">$#</span>" (class value) =% @result
   )
 ) ::
 

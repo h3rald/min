@@ -179,7 +179,7 @@ The following notation is used in the signature of all min operators:
 
       {
         {"https://min-lang.org" :href} :attributes
-        ({"min web site" :text ;xml-text}) :children
+        ({"min web site" :text}) :children
         "a" :tag
         ;xml-element
       }
