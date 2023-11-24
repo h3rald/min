@@ -94,12 +94,12 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     var f = word[1..^1]
     if f == "":
       f = getCurrentDir().replace("\\", "/")
-      return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/"))
+      return toSeq(walkDir(f, true)).mapIt("\"$1" % it.path.replace("\\", "/")&"\"")
     elif f.dirExists:
       f = f.replace("\\", "/")
       if f[f.len-1] != '/':
         f = f & "/"
-      return toSeq(walkDir(f, true)).mapIt("\"$1$2" % [f, it.path.replace("\\", "/")])
+      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace("\\", "/")])
     else:
       var dir: string
       if f.contains("/") or dir.contains("\\"):
@@ -107,11 +107,11 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
         let file = f.extractFileName
         return toSeq(walkDir(dir, true)).filterIt(
             it.path.toLowerAscii.startsWith(file.toLowerAscii)).mapIt(
-            "\"$1/$2" % [dir, it.path.replace("\\", "/")])
+            "\"$1/$2\"" % [dir, it.path.replace("\\", "/")])
       else:
         dir = getCurrentDir()
         return toSeq(walkDir(dir, true)).filterIt(
-            it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1" % [
+            it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1\"" % [
             it.path.replace("\\", "/")])
   return symbols
 
