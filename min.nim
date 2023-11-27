@@ -15,7 +15,8 @@ import
   interpreter,
   stdlib,
   shell,
-  utils]
+  utils,
+  mmm]
 import
   minpkg/lib/[
     min_lang
@@ -35,6 +36,7 @@ export
 
 var NIMOPTIONS* = ""
 var MINMODULES* = newSeq[string](0)
+var MMM*: MinModuleManager
 
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
@@ -156,6 +158,7 @@ when isMainModule:
                               compiled executable (if -c is set)
     -n, --passN               Pass options to the nim compiler (if -c is set)
     -p, --prelude:<file.min>  If specified, it loads <file.min> instead of the default prelude code
+    -r, --registry:<url>      If specified, uses the specified url as MMM registry
     -v, —-version             Print the program version""" % [
       "exe", pkgName,
       "version", pkgVersion,
@@ -203,6 +206,8 @@ when isMainModule:
           of "interactive-simple", "j":
             if file == "":
               SIMPLEREPL = true
+          of "registry", "r":
+            MMMREGISTRY = val
           else:
             discard
       else:
@@ -239,6 +244,22 @@ when isMainModule:
           quit(9)
         minStr("\"$#\" help" % [args[1]])
         quit(0)
+      elif file == "install":
+        MMM.init()
+        logging.error "[install] Not implemented."
+        quit(100)
+      elif file == "remote":
+        logging.error "[install] Not implemented."
+        quit(100)
+      elif file == "update":
+        logging.error "[install] Not implemented."
+        quit(100)
+      elif file == "info":
+        logging.error "[install] Not implemented."
+        quit(100)
+      elif file == "search":
+        logging.error "[install] Not implemented."
+        quit(100)
     minFile fn, op
   elif SIMPLEREPL:
     minSimpleRepl()

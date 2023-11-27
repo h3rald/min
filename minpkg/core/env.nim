@@ -8,6 +8,8 @@ if defined(windows):
 if not defined(windows):
   HOME = getenv("HOME")
 
+var MMMREGISTRY* {.threadvar.}: string
+MMMREGISTRY = "https://min-lang.org"
 var MINRC* {.threadvar.}: string
 MINRC = HOME / ".minrc"
 var MINSYMBOLS* {.threadvar.}: string

@@ -2,24 +2,28 @@
 
 ;Routing
 (
-  (dict) expect -> :meta
-  meta /id :id
-  meta /ext :ext
+  symbol set-destination
+  (dict :meta ==> dict :result)
   (
-    ((id "home" ==) (
-      meta (
-        ("index" %id)
-        (".html" %ext)
-      ) tap
-    ))
-    ((ext ".md" ==) (
-      meta (
-        (".html" %ext)
-        ("$1/index" (id) => % %id)
-      ) tap
-    ))
-  ) case
-) ^set-destination
+    meta /id :id
+    meta /ext :ext
+    (
+      ((id "home" ==) (
+        meta (
+          ("index" %id)
+          (".html" %ext)
+        ) tap
+      ))
+      ((ext ".md" ==) (
+        meta (
+          (".html" %ext)
+          ("$1/index" (id) => % %id)
+        ) tap
+      ))
+    ) case
+    @result
+  )
+) ::
 
 ; Syntax highlighter
 (
@@ -87,66 +91,107 @@
 
 ;Processing operators
 (
-  ('sym dict) expect -> :tpl :meta
-  "" :page
-  "" :contents
-  meta (
-    (input-fread @contents meta)
-    (settings /title %site)
-    (settings /version %version)
+  symbol process-md-with-template
+  (dict :meta 'sym :tpl ==> dict :result)
+  (
+    "" :page
+    "" :contents
+    meta (
+      (input-fread @contents meta)
+      (settings /title %site)
+      (settings /version %version)
+      (
+        :temp contents temp markdown 
+        highlight-min-codeblocks highlight-min-codes @contents temp
+      )
+      (contents %contents)
+      (:temp tpl temp mustache @page temp)
+      (page %contents)
+    ) tap @result
+  )
+) ::
+
+(
+  symbol process-md-content
+  (dict :meta ==> dict :result)
+  (
+    meta /content-type :ct
+    meta ct process-md-with-template
+    @result
+  )
+) ::
+
+(
+  symbol process-content
+  (dict :meta ==> dict :result)
+  (
+    meta /ext :ext
+    meta /id :id
+    meta
     (
-      :temp contents temp markdown 
-      highlight-min-codeblocks highlight-min-codes @contents temp
-    )
-    (contents %contents)
-    (:temp tpl temp mustache @page temp)
-    (page %contents)
-  ) tap
-) ^process-md-with-template
+      ((".md" ext ==) (process-md-content))
+    ) case
+    @result
+  )
+) ::
 
 (
-  (dict) expect -> :meta
-  meta /content-type :ct
-  meta ct process-md-with-template
-) ^process-md-content
-
-(
-  (dict) expect -> :meta
-  meta /ext :ext
-  meta
+  symbol process-css-asset
+  (dict :meta ==>)
   (
-    ((".md" ext ==) (process-md-content))
-  ) case
-) ^process-content
+    "" :contents
+    meta (
+      (input-fread @contents meta)
+      (:temp contents preprocess-css @contents temp)
+      (contents %contents)
+    ) tap
+    output-fwrite
+  )
+) ::
 
 (
-  (dict) expect -> :meta
-  "" :contents
-  meta (
-    (input-fread @contents meta)
-    (:temp contents preprocess-css @contents temp)
-    (contents %contents)
-  ) tap
-  output-fwrite
-) ^process-css-asset
-
-(
-  "Downloading latest min executables..." notice!
-  settings /version :version
-  ("windows" "macosx" "linux")
+  symbol process-mmm-json
+  (dict :data ==>)
   (
-    :opsys
-    "https://github.com/h3rald/min/releases/download/v$1/min_v$1_$2_x64.zip" (version opsys) =% :remote
-    "min_$#.zip" (opsys) =% :local
-    "wget $# -O $#" (remote local) =% :cmd
-    cmd system 
-    "assets/downloads/$#/" (opsys) =% :dir
-    "assets/downloads/" mkdir
-    "unzip $# -o -d $#" (local dir) =% @cmd
-    cmd system!
-    local rm
-  ) foreach
-) ^download-latest-min-exes
+    timestamp :ts
+    data input-fread from-json :contents
+    ; Update timestamp
+    contents ts %updated @contents
+    data contents to-json %contents
+    output-fwrite
+    ; Add timesyamp file
+    {
+      "mmm.timestamp" :path
+      "mmm" :id
+      ".timestamp"    :ext
+      "asset"         :type
+    } 
+    ts string %contents
+    output-fwrite
+  ) 
+) ::
+
+(
+  symbol download-latest-min-exes
+  (==>)
+  (
+    "Downloading latest min executables..." notice!
+    settings /version :version
+    ("windows" "macosx" "linux")
+    (
+      :opsys
+      "https://github.com/h3rald/min/releases/download/v$1/min_v$1_$2_x64.zip" (version opsys) =% :remote
+      "min_$#.zip" (opsys) =% :local
+      "wget $# -O $#" (remote local) =% :cmd
+      cmd system 
+      "assets/downloads/$#/" (opsys) =% :dir
+      "assets/downloads/" mkdir
+      "unzip $# -o -d $#" (local dir) =% @cmd
+      cmd system!
+      local rm
+    ) foreach
+  )
+) ::
 
 ;Main
 
@@ -154,23 +199,21 @@
   (download-latest-min-exes)
 when
 
-
 "Processing contents..." notice!
 contents (
-  (dict) expect -> 
-  dup
+  (dict) expect -> :meta
   (
-    ((/id "^_" match?) ()) ;Ignore files starting with underscore.
-    ((true) (process-content set-destination output-fwrite)) 
+    ((meta /id "^_" match?) ()) ;Ignore files starting with underscore.
+    ((true) (meta process-content set-destination output-fwrite)) 
   ) case
 ) foreach
 
 "Processing assets..." notice!
 assets (
-  (dict) expect -> 
-  dup
+  (dict) expect -> :meta
   (
-    ((/ext ".css" match?) (process-css-asset))
-    ((true) (output-cp))
+    ((meta /ext ".css" ==) (meta process-css-asset))
+    ((meta /path "mmm.json" ==) (meta process-mmm-json))
+    ((true) (meta output-cp))
   ) case
 ) foreach
