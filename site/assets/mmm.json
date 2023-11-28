@@ -4,9 +4,9 @@
         {
             "name": "min-highlight",
             "method": "git",
-            "url": "https://github.com/h3rald/min-highlight",
+            "url": "https://git.sr.ht/~h3rald/min-highlight",
             "author": "Fabio Cevasco",
-            "description": "HTML syntax highlighter for min code.",
+            "description": "HTML syntax highlighter for min code",
             "license": "MIT",
             "deps": {}
         }
