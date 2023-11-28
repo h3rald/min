@@ -244,21 +244,24 @@ when isMainModule:
           quit(9)
         minStr("\"$#\" help" % [args[1]])
         quit(0)
-      elif file == "install":
+      elif file == "init":
+        MMM.setup()
         MMM.init()
+        quit(0)
+      elif file == "install":
         logging.error "[install] Not implemented."
         quit(100)
-      elif file == "remote":
-        logging.error "[install] Not implemented."
+      elif file == "remove":
+        logging.error "[remove] Not implemented."
         quit(100)
       elif file == "update":
-        logging.error "[install] Not implemented."
+        logging.error "[update] Not implemented."
         quit(100)
       elif file == "info":
-        logging.error "[install] Not implemented."
+        logging.error "[info] Not implemented."
         quit(100)
       elif file == "search":
-        logging.error "[install] Not implemented."
+        logging.error "[search] Not implemented."
         quit(100)
     minFile fn, op
   elif SIMPLEREPL:
