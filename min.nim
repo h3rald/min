@@ -122,6 +122,7 @@ when isMainModule:
 
   var REPL = false
   var MODULEPATH = ""
+  var GLOBAL = false
 
   proc resolveFile(file: string): string =
     if (file.endsWith(".min") or file.endsWith(".mn")) and fileExists(file):
@@ -149,6 +150,7 @@ when isMainModule:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
     -d, --dev                 Enable "development mode" (runtime checks)
+    -g, --global              Execute the specified command (install or remove) globally.
     -h, --help                Print this help
     -i, --interactive         Start $exe shell (with advanced prompt, default if no file specidied)"
     -j, --interactive-simple  Start $exe shell (without advanced prompt)
@@ -182,6 +184,8 @@ when isMainModule:
             MODULEPATH = val
           of "asset-path", "a":
             ASSETPATH = val
+          of "global", "g":
+            GLOBAL = true
           of "prelude", "p":
             customPrelude = val
           of "dev", "d":
@@ -226,34 +230,66 @@ when isMainModule:
       if file == "compile":
         op = "compile"
         if args.len < 2:
-          logging.error "[compile] No file was specified."
+          logging.error "No file was specified."
           quit(8)
         fn = resolveFile(args[1])
         if fn == "":
-          logging.error "[compile] File '$#' does not exist." % [args[1]]
+          logging.error "File '$#' does not exist." % [args[1]]
           quit(9)
       elif file == "eval":
         if args.len < 2:
-          logging.error "[eval] No string to evaluate was specified."
+          logging.error "No string to evaluate was specified."
           quit(9)
         minStr args[1]
         quit(0)
       elif file == "help":
         if args.len < 2:
-          logging.error "[help] No symbol to lookup was specified."
+          logging.error "No symbol to lookup was specified."
           quit(9)
         minStr("\"$#\" help" % [args[1]])
         quit(0)
       elif file == "init":
-        MMM.setup()
-        MMM.init()
-        quit(0)
+        try:
+          MMM.setup()
+          MMM.init()
+          quit(0)
+        except CatchableError:
+          error getCurrentExceptionMsg()
+          quit(10)
       elif file == "install":
-        logging.error "[install] Not implemented."
-        quit(100)
+        if args.len < 2:
+          logging.error "Module name not specified."
+          quit(10)
+        if args.len < 3:
+          logging.error "Module version not specified."
+          debug getCurrentException().getStackTrace()
+          quit(11)
+        let name = args[1]
+        let version = args[2]
+        try:
+          MMM.setup()
+          MMM.install(name, version, GLOBAL)
+          quit(0)
+        except CatchableError:
+          error getCurrentExceptionMsg()
+          debug getCurrentException().getStackTrace()
+          quit(10)
       elif file == "remove":
-        logging.error "[remove] Not implemented."
-        quit(100)
+        if args.len < 2:
+          logging.error "Module name not specified."
+          quit(10)
+        let name = args[1]
+        var version = ""
+        if args.len > 2:
+          version = args[2]
+        try:
+          MMM.setup()
+          MMM.remove(name, version, GLOBAL)
+          quit(0)
+        except CatchableError:
+          error getCurrentExceptionMsg()
+          debug getCurrentException().getStackTrace()
+          quit(10)
       elif file == "update":
         logging.error "[update] Not implemented."
         quit(100)
