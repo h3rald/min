@@ -143,14 +143,17 @@ when isMainModule:
     filename  A $exe file to interpret or compile 
     command   A command to execute
   Commands:
-    compile <file>.min   Compile <file>.min.
-    eval <string>        Evaluate <string> as a min program.
-    help <symbol|sigil>        Print the help contents related to <symbol|sigil>.
+    compile <file>.min             Compile <file>.min.
+    eval <string>                  Evaluate <string> as a min program.
+    help <symbol|sigil>            Print the help contents related to <symbol|sigil>.
+    init                           Sets up the current directory as a managed min module.
+    install <module> <version>     Install the specified managed min module.
+    uninstall <module> [<version>] Uninstall the specified managed min module.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
     -d, --dev                 Enable "development mode" (runtime checks)
-    -g, --global              Execute the specified command (install or remove) globally.
+    -g, --global              Execute the specified command (install or uninstall) globally.
     -h, --help                Print this help
     -i, --interactive         Start $exe shell (with advanced prompt, default if no file specidied)"
     -j, --interactive-simple  Start $exe shell (without advanced prompt)
@@ -274,7 +277,7 @@ when isMainModule:
           error getCurrentExceptionMsg()
           debug getCurrentException().getStackTrace()
           quit(10)
-      elif file == "remove":
+      elif file == "uninstall":
         if args.len < 2:
           logging.error "Module name not specified."
           quit(10)
@@ -284,7 +287,7 @@ when isMainModule:
           version = args[2]
         try:
           MMM.setup()
-          MMM.remove(name, version, GLOBAL)
+          MMM.uninstall(name, version, GLOBAL)
           quit(0)
         except CatchableError:
           error getCurrentExceptionMsg()
@@ -292,9 +295,6 @@ when isMainModule:
           quit(10)
       elif file == "update":
         logging.error "[update] Not implemented."
-        quit(100)
-      elif file == "info":
-        logging.error "[info] Not implemented."
         quit(100)
       elif file == "search":
         logging.error "[search] Not implemented."

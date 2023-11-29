@@ -89,7 +89,7 @@ proc init*(MMM: var MinModuleManager) =
         debug "Creating mmm directory"
         createDir(pwd / "mmm")
     
-proc remove*(MMM: var MinModuleManager, name, version: string, global = false) =
+proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false) =
     var dir: string
     var versionLabel = version
     if version == "":
@@ -105,7 +105,7 @@ proc remove*(MMM: var MinModuleManager, name, version: string, global = false) =
             dir = MMM.localDir / name / version
     if not dir.dirExists():
         raiseError "Module '$#' (version: $#) is not installed." % [name, versionLabel]
-    notice "Removing module $#@$#..." % [name, versionLabel]
+    notice "Uninstalling module $#@$#..." % [name, versionLabel]
     try:
         dir.removeDir()
         if version != "" and dir.parentDir().walkDir().toSeq().len == 0:
@@ -113,8 +113,8 @@ proc remove*(MMM: var MinModuleManager, name, version: string, global = false) =
             dir.parentDir().removeDir()
     except CatchableError:
         debug getCurrentExceptionMsg()
-        raiseError "Unable to remove module $#@$#" % [name, versionLabel]
-    notice "Removal complete."
+        raiseError "Unable to uninstall module $#@$#" % [name, versionLabel]
+    notice "Uninstall complete."
 
 proc install*(MMM: var MinModuleManager, name, version: string, global = false) =
     var dir: string
@@ -163,7 +163,7 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
         warn "Installation failed - Rolling back..."
         try:
             MMM.setup(false)
-            MMM.remove(name, version, global)
+            MMM.uninstall(name, version, global)
             notice "Rollback completed."
         except:
             debug getCurrentExceptionMsg()
