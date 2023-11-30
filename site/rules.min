@@ -1,4 +1,7 @@
+'min-highlight require :min-highlight
+
 'hastysite import
+'min-highlight import
 
 ;Routing
 (
@@ -25,70 +28,6 @@
   )
 ) ::
 
-; Syntax highlighter
-(
-  symbol span
-  (str :class str :value ==> str :result)
-  (
-      "<span class=\"min-$#\">$#</span>" (class value) =% @result
-  )
-) ::
-
-(
-  symbol highlight
-  (dict :token ==> str :result)
-  (
-      token /value :value
-      token /type :type
-      (
-          ((type "tkEof" ==) ("" @result))
-          ((type "tkSpace" ==) (value @result))
-          ((type "tkBlockComment" ==) (type "#|$#|#" (value) =% span @result))
-          ((type "tkBlockDocComment" ==) (type "#||$#||#" (value) =% span @result))
-          ((type "tkLineComment" ==) (type ";$#" (value) =% span @result))
-          ((type "tkLineDocComment" ==) (type ";;$#" (value) =% span @result))
-          ((type "tkString" ==) (type "\"$#\"" (value) =% span @result))
-          ((true) (type value span @result))
-      ) case
-  )
-) ::
-
-(
-  symbol min-block-highlight
-  (str :code ==> str :result)
-  (
-    code tokenize 'highlight map "" join :code
-    "<div class='min-codeblock'>$#</div>" (code) =% @result
-  )
-) ::
-
-(
-  symbol min-inline-highlight
-  (str :code ==> str :result)
-  (
-    code tokenize 'highlight map "" join :code
-    "<span class='min-code'>$#</span>" (code) =% @result
-  )
-) ::
-
-(
-  symbol highlight-min-codeblocks
-  (str :html ==> str :result)
-  (
-    html "<pre>\s*<code>((?:.|\n)*?)<\/code>\s*<\/pre>" 
-    (1 get min-block-highlight) replace-apply @result
-  )
-) ::
-
-(
-  symbol highlight-min-codes
-  (str :html ==> str :result)
-  (
-    html "<code>(.*?)<\/code>" 
-    (1 get min-inline-highlight) replace-apply @result
-  )
-) ::
-
 ;Processing operators
 (
   symbol process-md-with-template
@@ -102,7 +41,7 @@
       (settings /version %version)
       (
         :temp contents temp markdown 
-        highlight-min-codeblocks highlight-min-codes @contents temp
+        highlight-codeblocks highlight-codes @contents temp
       )
       (contents %contents)
       (:temp tpl temp mustache @page temp)

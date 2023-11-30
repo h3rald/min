@@ -102,10 +102,36 @@ proc lang_module*(i: In) =
     let vals = i.expect("'sym")
     let s = vals[0]
     var file = s.getString
+    var m = s.getString
     if not file.endsWith(".min"):
       file = file & ".min"
     info("[require] File: ", file)
-    let f = simplifyPath(i.filename, file)
+    let lookup = proc (filename: string): string = 
+      # First check in current folder
+      result = simplifyPath(filename, file)
+      if result.fileExists:
+        return
+      # then check for a mmm...
+      let localDir = result.parentDir
+      # ...locally...
+      let localModuleDir = localDir/"mmm"/m
+      if localModuleDir.dirExists:
+        let versions = localModuleDir.walkDir.toSeq.filterIt(it.kind == pcDir or it.kind == pcLinkToDir)
+        if versions.len > 0:
+          let localModuleVersion = versions[0].path
+          result = localModuleVersion/"index.min"
+          if result.fileExists:
+            return
+      # ...and then globally.
+      let globalModuleDir = HOME/"mmm"/m
+      if globalModuleDir.dirExists:
+        let versions = globalModuleDir.walkDir.toSeq.filterIt(it.kind == pcDir or it.kind == pcLinkToDir)
+        if versions.len > 0:
+          let globalModuleVersion = versions[0].path
+          result = globalModuleVersion/"index.min"
+          if result.fileExists:
+            return
+    let f = lookup(i.filename)
     if MINCOMPILED and COMPILEDMINFILES.hasKey(f):
       var i2 = i.copy(f)
       i2.withScope():
@@ -120,7 +146,7 @@ proc lang_module*(i: In) =
         i.push(mdl)
     else:
       if not f.fileExists:
-        raiseInvalid("File '$1' does not exist." % file)
+        raiseInvalid("Unable to resolve module '$1'." % m)
       i.push i.require(f)
 
   def.symbol("raw-args") do (i: In):
