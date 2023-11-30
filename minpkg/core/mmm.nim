@@ -18,10 +18,15 @@ type
         globalDir: string
         localDir: string
     MMMError = ref object of CatchableError
+    MMMAlreadyInstalledError = ref object of MMMError
 
 
 proc raiseError(msg: string) = 
     raise MMMError(msg: msg)
+
+proc raiseAlreadyInstalledError(msg: string) = 
+    raise MMMAlreadyInstalledError(msg: msg)
+
 
 proc setup*(MMM: var MinModuleManager, check = true) =
     MMM.registry = MMMREGISTRY
@@ -76,11 +81,10 @@ proc init*(MMM: var MinModuleManager) =
     let json = """
 {
     "name": "$#",
-    "method": "git",
-    "url": "TBD",
     "author": "TBD",
     "description": "TBD",
     "license": "MIT",
+    "private": true,
     "deps": {}
 }
     """ % [pwd.lastPathPart]
@@ -88,6 +92,7 @@ proc init*(MMM: var MinModuleManager) =
     if not dirExists(pwd / "mmm"):
         debug "Creating mmm directory"
         createDir(pwd / "mmm")
+    notice "Created a mmm.json file in the current directory"
     
 proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false) =
     var dir: string
@@ -116,6 +121,14 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
         raiseError "Unable to uninstall module $#@$#" % [name, versionLabel]
     notice "Uninstall complete."
 
+proc uninstall*(MMM: var MinModuleManager) =
+    try:
+        notice "Uninstalling all local managed modules..."
+        MMM.localDir.removeDir()
+        notice "Done."
+    except CatchableError:
+        raiseError "Unable to uninstall local managed modules."
+
 proc install*(MMM: var MinModuleManager, name, version: string, global = false) =
     var dir: string
     if global:
@@ -123,7 +136,7 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
     else:
         dir = MMM.localDir / name / version
     if dir.dirExists():
-        raiseError "Module '$#' (version: $#) is already installed." % [name, version]
+        raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." % [name, version]
     dir.createDir()
     let results = MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)
     if results.len == 0:
@@ -170,6 +183,35 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
             warn "Rollback failed."
         finally:
             raiseError "Installation failed."
+
+proc install*(MMM: var MinModuleManager) =
+    let mmmJson = getCurrentDir() / "mmm.json"
+    if not mmmJson.fileExists:
+        raiseError "No mmm.json file found in the current directory."
+    let data = mmmJson.parseFile
+    if not data.hasKey "deps":
+        raiseError "No 'deps' key present in the mmm.json file."
+    for name, v in data["deps"].pairs:
+        let version = v.getStr
+        try:
+            MMM.install name, version
+        except MMMAlreadyInstalledError:
+            warn getCurrentExceptionMsg()
+            continue
+        except CatchableError:
+            debug getCurrentExceptionMsg()
+            warn "Installation of '$#@$#' failed - Rolling back..." % [name, version]
+            try:
+                MMM.setup(false)
+                MMM.uninstall(name, version)
+                notice "Rollback completed."
+            except:
+                debug getCurrentExceptionMsg()
+                warn "Rollback failed."
+            finally:
+                raiseError "Installation failed."
+
+
 
 
 

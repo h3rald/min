@@ -133,6 +133,16 @@ when isMainModule:
       return file&".mn"
     return ""
 
+  proc executeMmmCmd(cmd: proc (): void) =
+    try:
+      MMM.setup()
+      cmd()
+      quit(0)
+    except CatchableError:
+      error getCurrentExceptionMsg()
+      debug getCurrentException().getStackTrace()
+      quit(10)
+
   let usage* = """  $exe v$version - a small but practical concatenative programming language
   (c) 2014-$year Fabio Cevasco
   
@@ -147,8 +157,8 @@ when isMainModule:
     eval <string>                  Evaluate <string> as a min program.
     help <symbol|sigil>            Print the help contents related to <symbol|sigil>.
     init                           Sets up the current directory as a managed min module.
-    install <module> <version>     Install the specified managed min module.
-    uninstall <module> [<version>] Uninstall the specified managed min module.
+    install [<module> <version>]   Install the specified managed min module.
+    uninstall [<module> <version>] Uninstall the specified managed min module.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
@@ -252,47 +262,24 @@ when isMainModule:
         minStr("\"$#\" help" % [args[1]])
         quit(0)
       elif file == "init":
-        try:
-          MMM.setup()
-          MMM.init()
-          quit(0)
-        except CatchableError:
-          error getCurrentExceptionMsg()
-          quit(10)
+        executeMmmCmd(proc () = MMM.init())
       elif file == "install":
         if args.len < 2:
-          logging.error "Module name not specified."
-          quit(10)
+          executeMmmCmd(proc () = MMM.install())
         if args.len < 3:
           logging.error "Module version not specified."
-          debug getCurrentException().getStackTrace()
           quit(11)
         let name = args[1]
         let version = args[2]
-        try:
-          MMM.setup()
-          MMM.install(name, version, GLOBAL)
-          quit(0)
-        except CatchableError:
-          error getCurrentExceptionMsg()
-          debug getCurrentException().getStackTrace()
-          quit(10)
+        executeMmmCmd(proc () = MMM.install(name, version, GLOBAL))
       elif file == "uninstall":
         if args.len < 2:
-          logging.error "Module name not specified."
-          quit(10)
+          executeMmmCmd(proc () = MMM.uninstall())
         let name = args[1]
         var version = ""
         if args.len > 2:
           version = args[2]
-        try:
-          MMM.setup()
-          MMM.uninstall(name, version, GLOBAL)
-          quit(0)
-        except CatchableError:
-          error getCurrentExceptionMsg()
-          debug getCurrentException().getStackTrace()
-          quit(10)
+        executeMmmCmd(proc () = MMM.uninstall(name, version, GLOBAL))
       elif file == "update":
         logging.error "[update] Not implemented."
         quit(100)
