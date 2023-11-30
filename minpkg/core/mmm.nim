@@ -16,8 +16,8 @@ type
     MinModuleManager* = object
         registry: string
         modules = %[]
-        globalDir: string
-        localDir: string
+        globalDir*: string
+        localDir*: string
     MMMError = ref object of CatchableError
     MMMAlreadyInstalledError = ref object of MMMError
 
@@ -302,3 +302,17 @@ proc search*(MMM: var MinModuleManager, search="") =
        notice "   Author: $#" % [m["author"].getStr] 
        notice "   License: $#" % [m["license"].getStr] 
        notice "   Dependencies: $#" % [m["deps"].formatDeps] 
+
+proc list*(MMM: var MinModuleManager, dir: string, level = 0) =
+    debug "Directory: " & dir
+    if not dir.dirExists:
+        return
+    for name in dir.walkDir:
+        debug "Module directory: " & name.path
+        if name.kind == pcDir or name.kind == pcLinkToDir:
+            for version in (name.path).walkDir:
+                debug "Module version directory: " & version.path
+                if name.kind == pcDir or name.kind == pcLinkToDir:
+                    notice " ".repeat(level) & "$#@$#" % [name.path.lastPathPart, version.path.lastPathPart]
+                    MMM.list version.path/"mmm", level+1
+

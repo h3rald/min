@@ -160,7 +160,8 @@ when isMainModule:
     install [<module> <version>]   Install the specified managed min module or all dependent modules.
     uninstall [<module> <version>] Uninstall the specified managed min module or all dependent modules.
     update [<module> <version>]    Update the specified managed min module or all dependent modules.
-    search [...terms...]           Search for a module matching the specified terms.  
+    search [...terms...]           Search for a managed min module matching the specified terms.  
+    list                           List all managed min modules installed in the local directory or globally.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
@@ -296,6 +297,11 @@ when isMainModule:
         if args.len > 1:
           str = args[1 .. ^1].join(" ")
         executeMmmCmd(proc () = MMM.search(str))
+      elif file == "list":
+        if GLOBAL:
+          executeMmmCmd(proc () = MMM.list(MMM.globalDir))
+        else:
+          executeMmmCmd(proc () = MMM.list(MMM.localDir))
     minFile fn, op
   elif SIMPLEREPL:
     minSimpleRepl()
