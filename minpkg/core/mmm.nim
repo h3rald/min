@@ -4,7 +4,8 @@ import
     httpclient,
     strutils,
     sequtils,
-    logging
+    logging,
+    algorithm
 ]
 import
     env
@@ -270,4 +271,34 @@ proc update*(MMM: var MinModuleManager) =
             debug getCurrentExceptionMsg()
             warn "Update of module '$#@$#' failed." % [name, version]
 
-
+proc search*(MMM: var MinModuleManager, search="") = 
+    let rateModule = proc(it: JsonNode): JsonNode =
+        var score = 0
+        if it["name"].getStr.contains(search):
+            score += 4
+        if it["description"].getStr.contains(search):
+            score += 2
+        if it["author"].getStr.contains(search):
+            score += 1
+        it["score"] = %score
+        return it
+    let sortModules = proc(x, y: JsonNode): int = 
+        cmp(x["score"].getInt, y["score"].getInt)
+    let formatDeps = proc(deps: JsonNode): string =
+        result = deps.pairs.toSeq().mapIt("$#@$#" % [it.key, it.val.getStr]).join(", ")
+        if result == "":
+            result = "n/a"
+    var results = MMM.modules.getElems().map(rateModule).filterIt(it["score"].getInt > 0)
+    results.sort(sortModules)
+    var msg = "$# results found:"
+    if results.len == 1:
+        msg = "$# result found:"
+    elif results.len == 0:
+        msg = "No results found."
+    notice msg % [$results.len]
+    for m in results:
+       notice "-> $#" % [m["name"].getStr] 
+       notice "   Description: $#" % [m["description"].getStr] 
+       notice "   Author: $#" % [m["author"].getStr] 
+       notice "   License: $#" % [m["license"].getStr] 
+       notice "   Dependencies: $#" % [m["deps"].formatDeps] 
