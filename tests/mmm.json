@@ -1,0 +1,10 @@
+{
+    "name": "tests",
+    "author": "Fabio Cevasco",
+    "description": "Unit tests for the min programming language.",
+    "license": "MIT",
+    "private": true,
+    "deps": {
+        "min-test": "master"
+    }
+}

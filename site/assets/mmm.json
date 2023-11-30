@@ -1,14 +1,23 @@
 {
-    "updated": null,
-    "modules": [
-        {
-            "name": "min-highlight",
-            "method": "git",
-            "url": "https://git.sr.ht/~h3rald/min-highlight",
-            "author": "Fabio Cevasco",
-            "description": "HTML syntax highlighter for min code",
-            "license": "MIT",
-            "deps": {}
-        }
-    ]
+  "modules": [
+    {
+      "author": "Fabio Cevasco",
+      "deps": {},
+      "description": "HTML syntax highlighter for min code",
+      "license": "MIT",
+      "method": "git",
+      "name": "min-highlight",
+      "url": "https://git.sr.ht/~h3rald/min-highlight"
+    },
+    {
+      "name": "min-test",
+      "method": "git",
+      "url": "https://git.sr.ht/~h3rald/min-test",
+      "author": "Fabio Cevasco",
+      "description": "A minimal testing library for the min programming language.",
+      "license": "MIT",
+      "deps": {}
+    }
+  ],
+  "updated": null
 }

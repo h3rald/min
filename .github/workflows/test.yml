@@ -84,6 +84,10 @@ jobs:
                 args: --best --force
               if: matrix.os == 'windows-latest'
 
+            # Install tests deps
+            - name: Install tests deps
+              run: cd ./tests && ../min install
+
             # Test (*nix)
             - name: Test
               run: ./min tests/all.min

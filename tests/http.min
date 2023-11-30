@@ -1,4 +1,4 @@
-'test require :test
+'min-test require :test
 ;;;
 
 "http" *test/describe
