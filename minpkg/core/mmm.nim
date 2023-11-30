@@ -190,7 +190,7 @@ proc install*(MMM: var MinModuleManager) =
         raiseError "No mmm.json file found in the current directory."
     let data = mmmJson.parseFile
     if not data.hasKey "deps":
-        raiseError "No 'deps' key present in the mmm.json file."
+        raiseError "No 'deps' key present in the mmm.json file in the current directory."
     for name, v in data["deps"].pairs:
         let version = v.getStr
         try:
@@ -200,7 +200,7 @@ proc install*(MMM: var MinModuleManager) =
             continue
         except CatchableError:
             debug getCurrentExceptionMsg()
-            warn "Installation of '$#@$#' failed - Rolling back..." % [name, version]
+            warn "Installation of module $#@$# failed - Rolling back..." % [name, version]
             try:
                 MMM.setup(false)
                 MMM.uninstall(name, version)
@@ -211,7 +211,63 @@ proc install*(MMM: var MinModuleManager) =
             finally:
                 raiseError "Installation failed."
 
+proc update*(MMM: var MinModuleManager, name, version: string, global = false) =
+    var dir: string
+    if global:
+        dir = MMM.globalDir / name / version
+    else:
+        dir = MMM.localDir / name / version
+    if not dir.dirExists():
+        raiseError "Module '$#' (version: $#) is not installed." % [name, version]
+    # Read local mmm.json
+    let mmmJson = dir / "mmm.json"
+    if not mmmJson.fileExists:
+        raiseError "No mmm.json file found for managed module $#@$#" % [name, version]
+    var data: JsonNode
+    try:
+        data = mmmJson.parseFile
+    except CatchableError:
+        raiseError "Unable to parse mmm.json file for managed module $#@$#" % [name, version]
+    if not data.hasKey("method"):
+        raiseError "Installation method not specified for module '$#'" % [name]
+    let meth = data["method"].getStr 
+    if meth != "git":
+        raiseError "Unable to install module '$#': Installation method '$#' is not supported" % [name, meth]
+    if not data.hasKey("url"):
+        raiseError "URL not specified for module '$#'" % [name]
+    let url = data["url"].getStr
+    let cmd = "git -C \"$#\" pull" % [dir.replace("\\", "/"), url, version]
+    debug cmd
+    notice "Updating module $#@$#..." % [name, version]
+    if not data.hasKey("deps"):
+        raiseError "Dependencies not specified for module '$#'" % [name]
+    var result = execShellCmd(cmd)
+    if (result == 0):
+        # Go to directory and install dependencies
+        dir.setCurrentDir()
+        MMM.setup(false)
+        if data["deps"].pairs.toSeq().len > 0:
+            notice "Updating dependencies..."
+        for depName, depVersion in data["deps"].pairs:
+            try:
+                MMM.update depName, depVersion.getStr, global
+            except CatchableError:
+                warn getCurrentExceptionMsg()
+                raiseError "Update of module '$#@$#' failed." % [name, version]
 
-
+proc update*(MMM: var MinModuleManager) =
+    let mmmJson = getCurrentDir() / "mmm.json"
+    if not mmmJson.fileExists:
+        raiseError "No mmm.json file found in the current directory."
+    let data = mmmJson.parseFile
+    if not data.hasKey "deps":
+        raiseError "No 'deps' key present in the mmm.json file in the current directory."
+    for name, v in data["deps"].pairs:
+        let version = v.getStr
+        try:
+            MMM.update name, version
+        except CatchableError:
+            debug getCurrentExceptionMsg()
+            warn "Update of module '$#@$#' failed." % [name, version]
 
 

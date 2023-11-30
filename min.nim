@@ -157,8 +157,9 @@ when isMainModule:
     eval <string>                  Evaluate <string> as a min program.
     help <symbol|sigil>            Print the help contents related to <symbol|sigil>.
     init                           Sets up the current directory as a managed min module.
-    install [<module> <version>]   Install the specified managed min module.
-    uninstall [<module> <version>] Uninstall the specified managed min module.
+    install [<module> <version>]   Install the specified managed min module or all dependent modules.
+    uninstall [<module> <version>] Uninstall the specified managed min module or all dependent modules.
+    update [<module> <version>]    Update the specified managed min module or all dependent modules.
   Options:
     -a, --asset-path          Specify a directory containing the asset files to include in the
                               compiled executable (if -c is set)
@@ -281,8 +282,14 @@ when isMainModule:
           version = args[2]
         executeMmmCmd(proc () = MMM.uninstall(name, version, GLOBAL))
       elif file == "update":
-        logging.error "[update] Not implemented."
-        quit(100)
+        if args.len < 2:
+          executeMmmCmd(proc () = MMM.update())
+        if args.len < 3:
+          logging.error "Module version not specified."
+          quit(11)
+        let name = args[1]
+        let version = args[2]
+        executeMmmCmd(proc () = MMM.update(name, version, GLOBAL))
       elif file == "search":
         logging.error "[search] Not implemented."
         quit(100)
