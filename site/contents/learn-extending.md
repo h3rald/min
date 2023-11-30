@@ -113,3 +113,4 @@ proc interpret(hs: HastySite, file: string) =
 > 
 > For more information on how to create new modules with Nim, have a look in the [lib folder](https://github.com/h3rald/min/tree/master/minpkg/lib) of the min repository, which contains all the min modules included in the standard library.
 
+{#link-learn||mmm||min Module Management#}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  {{> _head}}
+  <body>
+    {{> _menu}}
+    <main class="pure-g">
+      <article class="pure-u-5-5">
+        <h1>mmm</h1>
+        <p>This page lists all existing public <em>managed min modules</em> that can be installed using the <a href="/learn-mmm/">min module management (mmm)</a> 
+        commands that are built-in into the min executable.</p>
+        <ul>
+        {{#modules}}
+          <li><a href="#module-{{name}}">{{name}}</a></li>
+        {{/modules}}
+        </ul>
+        {{#modules}}
+          {{> _module}}
+        {{/modules}}
+      </article>
+    </main>
+    {{> _footer}}
+  </body>
+</html>

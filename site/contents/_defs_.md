@@ -116,6 +116,7 @@
 > * [Control Flow](/learn-control-flow)
 > * [Shell](/learn-shell)
 > * [Extending min](/learn-extending)
+> * [Module Management](/learn-mmm)
 }}
 
 {{guide-download => 

@@ -3,6 +3,8 @@
 'hastysite import
 'min-highlight import
 
+() :modules
+
 ;Routing
 (
   symbol set-destination
@@ -94,6 +96,8 @@
   (
     timestamp :ts
     data input-fread from-json :contents
+    ; Save modules
+    contents /modules @modules
     ; Update timestamp
     contents ts %updated @contents
     data contents to-json %contents
@@ -156,3 +160,31 @@ assets (
     ((true) (meta output-cp))
   ) case
 ) foreach
+
+"Generating mmm index..." notice!
+; Process deps of each module -> name@version
+modules (
+  :module
+  module /deps dkeys (
+    :name
+    module /deps name dget :version
+    "$#@$#" (name version) =%
+  ) map ", " join :dependencies
+  (dependencies "" ==)
+    ("n/a" @dependencies)
+  when
+  module dependencies %dependencies
+) map @modules
+
+{}
+  "mmm/index"         %id
+  "mmm.html"          %path
+  ".html"             %ext
+  "mmm"               %title
+  "min language"      %site
+  "page"              %content-type
+  modules             %modules 
+dup
+"mmm" swap mustache %contents output-fwrite
+
+
