@@ -3,7 +3,7 @@
     {
       "author": "Fabio Cevasco",
       "deps": {},
-      "description": "HTML syntax highlighter for min code",
+      "description": "HTML syntax highlighter for min code.",
       "license": "MIT",
       "method": "git",
       "name": "min-highlight",

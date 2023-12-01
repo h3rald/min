@@ -136,6 +136,18 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--secondary-foreground);
 }
 
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+}
+
 .pitch {
   font-size: 1.2em;  
 }
@@ -322,3 +334,36 @@ footer {
   color: #0cc9a0;
 }
 
+.mmm-module {
+  border: 1px solid #313631;
+  border-radius: 3px;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.mmm-module p {
+  margin: 0.5rem 0;
+}
+
+.mmm-module h3{
+  margin: 0;
+}
+
+.mmm-meta dl {
+  margin: 0;
+}
+
+.mmm-meta dd {
+  margin: 0;
+  display: inline;
+}
+
+.mmm-meta dt {
+  display: inline-block;
+  margin: 0 5px 5px 0;
+}
+
+.mmm-meta dd:after {
+  content: '\a';
+  white-space: pre;
+}

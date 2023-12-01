@@ -76,9 +76,9 @@ Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
 > > 
 > > The following program prints "Smaller than 3":
 > > 
-> >     2 (
-> >        ((> 3) ("Greater than 3" put!))
-> >        ((< 3) ("Smaller than 3" put!))
+> >     (
+> >        ((2 > 3) ("Greater than 3" put!))
+> >        ((2 < 3) ("Smaller than 3" put!))
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
