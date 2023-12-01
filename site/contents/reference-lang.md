@@ -393,7 +393,15 @@ Returns a list of all arguments and (non-parsed) options passed to the current p
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
 {#op||require||{{sl}}||{{d}}||
-Parses and interprets (in a separater interpreter) the specified {{m}} file {{sl}}, adding [.min](class:ext) if not specified, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. #}
+Parses and interprets (in a separated interpreter) the specified {{m}} module, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. 
+
+This symbol will attempt to locate the specified module in this way. Given the following {{m}} program:
+
+     'my-module require :my-module
+
+1. Check for a file named `my-module` in the same folder as the current file (with our without a `.min` extension).
+2. Check for a file named `index.min` in the `mmm/my-module/*/index.min` folder relative to the current file (locally-installed [managed-module](/learn-mmm)).
+3. Check for a file named `index.min` in the `$HOME/mmm/my-module/*/index.min` folder (globally-installed [managed-module](/learn-mmm)). If multiple versions of the same module are present, the first one will be loaded. #}
 
 {#op||return||{{none}}||{{none}}||
 If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. 
