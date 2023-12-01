@@ -2413,6 +2413,11 @@
       "kind": "symbol",
       "name": "zip",
       "signature": "quot 'sym ==> "
+    },
+    "~": {
+      "description": "See lambda-bind",
+      "kind": "symbol",
+      "name": "~"
     }
   },
   "sigils": {
@@ -2480,6 +2485,11 @@
       "description": "See lambda",
       "kind": "sigil",
       "name": "^"
+    },
+    "~": {
+      "description": "See lambda-bind",
+      "kind": "sigil",
+      "name": "~"
     }
   }
 }

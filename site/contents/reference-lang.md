@@ -18,6 +18,10 @@ title: "lang Module"
 
 {#alias||?||help#}
 
+{#sig||~||lambda-bind#}
+
+{#alias||~||lambda-bind#}
+
 {#sig||&ast;||invoke#}
 
 {#sig||@||bind#}
