@@ -112,6 +112,9 @@ Deletes the specified user-defined sigil {{sl}}.#}
 >
 > Each element is pushed on the stack one by one. If any error occurs, {{q}} is restored on the stack.#}
 
+{#op||dev||{{none}}||{{none}}||
+Toggles development mode.#}
+
 {#op||dev?||{{none}}||{{b}}||
 Returns {{t}} if the current program is being executed in development mode.#}
 

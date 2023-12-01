@@ -1046,6 +1046,10 @@ proc lang_module*(i: In) =
   def.symbol("compiled?") do (i: In):
     i.push MINCOMPILED.newVal
 
+  def.symbol("dev") do (i: In):
+    DEV = not DEV
+    notice "Development Mode: ", DEV
+
   def.symbol("dev?") do (i: In):
     i.push DEV.newVal
 
