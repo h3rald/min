@@ -8,22 +8,23 @@ sigils size :total-sigils
 "Total Symbols: $1" (total-symbols) => % puts! 
 "Total Sigils: $1" (total-sigils) => % puts!
 "=" 70 repeat puts!
-'lang    load
-'stack   load
-'seq     load
+'crypto  load
+'dict    load
+'dstore  load
+'fs      load
 'io      load
+'lang    load
 'logic   load
+'math    load
 'num     load
+'seq     load
+'stack   load
 'str     load
 'sys     load
 'time    load
-'dstore  load
-'fs      load
-'crypto  load
-'math    load
+'xml     load
 'http    load
 'net     load
-'xml     load
 "=" 70 repeat puts!
 "Total Failures: $1" (failures) => % puts!
 failures exit

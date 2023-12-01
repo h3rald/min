@@ -25,24 +25,13 @@
 
   ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) *test/assert
 
-  (2 2 {+ :plus} ^plus 4 ==) *test/assert
+  (2 2 {+ :plus} /plus 4 ==) *test/assert
 
   (2 {(2 3 +) :sum} /sum -> + 7 ==) *test/assert
 
   ({a :test} "test" dget-raw /str "a" ==) *test/assert
 
-  ({} 'test 'aaa dset-sym {aaa :test} ==) *test/assert
-
-  (
-    {} :archives
-    ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
-    (
-      :article
-      article /a :code
-      {code :code} =>  
-      archives swap code dset @archives 
-    ) foreach
-    archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) *test/assert
+  ({} 'aaa 'test dset-sym {aaa :test} ==) *test/assert
 
   (
     {} :archives
@@ -56,6 +45,10 @@
       archives archive code dset @archives 
     ) foreach
     archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) *test/assert
+
+  (
+    {1 :a 2 :b 3 :c} dpairs ((1 "a") (2 "b") (3 "c")) ==
+  ) *test/assert
 
   *test/report
   clear-stack

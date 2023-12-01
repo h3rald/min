@@ -120,8 +120,10 @@ proc pairs*(i: In, q: MinValue): MinValue =
   for key, value in q.dVal.pairs:
     if value.kind == minProcOp:
       raiseInvalid("Dictionary contains operators that cannot be accessed.")
-    r.add key.newVal
-    r.add value.val
+    var p = newSeq[MinValue](0) 
+    p.add value.val
+    p.add key.newVal
+    r.add p.newVal
   return r.newVal
 
   # JSON interop

@@ -46,7 +46,14 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
  #}
 
 {#op||dpairs||{{d}}||({{a0p}})||
-Returns a quotation containing all the keys (odd items) and values (even items) of dictionary {{d}}. #}
+> Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary {{d}}. 
+> 
+> > %sidebar%
+> > Example
+> >
+> > A The following program returns `((1 "a") (2 "b"))`:
+> >     {1 :a 2 :b} dpairs
+#}
 
 {#op||dset||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}
