@@ -134,7 +134,7 @@
                 @op-dict
             ) foreach
             contents sig-regex search-all (
-                process-alias :sig
+                process-sig :sig
                 sig /name :sig-name
                 sig-dict 
                   sig sig-name dset

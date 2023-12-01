@@ -8,4 +8,5 @@
 
 ### Fixes and Improvements
 
+* Fixed `help` symbol and `min help` command to correctly report sigil documentation.
 
