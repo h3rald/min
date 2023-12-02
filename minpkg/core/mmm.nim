@@ -123,6 +123,12 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
     except CatchableError:
         debug getCurrentExceptionMsg()
         raiseError "Unable to uninstall module $#@$#" % [name, versionLabel]
+    if not global:
+        let mmmJson = pwd/"mmm.json"
+        var data = mmmJson.parseFile
+        if data["deps"].hasKey name:
+            data["deps"].delete(name)
+        mmmJson.writeFile(data.pretty)
     notice "Uninstall complete."
 
 proc uninstall*(MMM: var MinModuleManager) =
@@ -138,11 +144,11 @@ proc uninstall*(MMM: var MinModuleManager) =
 
 proc install*(MMM: var MinModuleManager, name, version: string, global = false) =
     var dir: string
+    let pwd = getCurrentDir()
     if global:
         dir = MMM.globalDir / name / version
     else:
         dir = MMM.localDir / name / version
-        let pwd = getCurrentDir()
         if not fileExists(pwd / "mmm.json"):
              raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     if dir.dirExists():
@@ -181,7 +187,12 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
                 originalDir.setCurrentDir()
                 result = 1
                 break
-    if result != 0:
+    if result == 0:
+        let mmmJson = pwd/"mmm.json"
+        var data = mmmJson.parseFile
+        data["deps"][name] = %($version)
+        mmmJson.writeFile(data.pretty)
+    else:
         # Rollback
         warn "Installation failed - Rolling back..."
         try:
