@@ -1,10 +1,10 @@
 {
-    "name": "min-site",
-    "author": "Fabio Cevasco",
-    "description": "The web site of the min programming language.",
-    "license": "MIT",
-    "private": true,
-    "deps": {
-        "min-highlight": "master"
-    }
+  "name": "min-site",
+  "author": "Fabio Cevasco",
+  "description": "The web site of the min programming language.",
+  "license": "MIT",
+  "private": true,
+  "deps": {
+    "min-highlight": "master"
+  }
 }
