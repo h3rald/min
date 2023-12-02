@@ -76,7 +76,7 @@ proc setup*(MMM: var MinModuleManager, check = true) =
 
 proc init*(MMM: var MinModuleManager) =
     let pwd = getCurrentDir()
-    if dirExists(pwd / "mmm.json"):
+    if fileExists(pwd / "mmm.json"):
         raiseError "The current directory already contains a managed module (mmm.json already exists)"
     debug "Creating mmm.json file"
     let json = """
@@ -109,6 +109,9 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
             dir = MMM.globalDir / name / version
         else:
             dir = MMM.localDir / name / version
+    let pwd = getCurrentDir()
+    if not global and not fileExists(pwd / "mmm.json"):
+          raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     if not dir.dirExists():
         raiseError "Module '$#' (version: $#) is not installed." % [name, versionLabel]
     notice "Uninstalling module $#@$#..." % [name, versionLabel]
@@ -123,6 +126,9 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
     notice "Uninstall complete."
 
 proc uninstall*(MMM: var MinModuleManager) =
+    let pwd = getCurrentDir()
+    if not fileExists(pwd / "mmm.json"):
+        raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     try:
         notice "Uninstalling all local managed modules..."
         MMM.localDir.removeDir()
@@ -136,6 +142,9 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
         dir = MMM.globalDir / name / version
     else:
         dir = MMM.localDir / name / version
+        let pwd = getCurrentDir()
+        if not fileExists(pwd / "mmm.json"):
+             raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     if dir.dirExists():
         raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." % [name, version]
     dir.createDir()
