@@ -84,6 +84,10 @@
 
 {@ site/contents/learn-extending.md || 1 @}
 
+## Module Management
+
+{@ site/contents/learn-mmm.md || 1 @}
+
 ## Reference
 
 {@ site/contents/reference.md || 1 @}
