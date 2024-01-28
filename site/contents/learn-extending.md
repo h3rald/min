@@ -30,7 +30,7 @@ Save your code to a file (e.g. *quickpows.min*) and you can use it in other Nim 
 ```
 'quickpows require :qp
 
-2 \*qp/pow3 \*qp/pow2 puts ;prints 64
+2 *qp/pow3 *qp/pow2 puts ;prints 64
 ```
 
 ## Specifying your custom prelude program
