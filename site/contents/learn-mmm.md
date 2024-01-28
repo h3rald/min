@@ -96,7 +96,5 @@ The `mmm.json` file of a managed min module must contain at least the following 
 
 ### Publishing
 
-If you want to publish your module, just create a PR on the [min git repository](https://github.com/h3rald/min) and modify this file by adding the metadata for your module:
-
-<https://github.com/h3rald/min/blob/master/site/assets/mmm.json>
+If you want to publish your module, just create a PR on the [min git repository](https://github.com/h3rald/min) and modify [this file](https://github.com/h3rald/min/blob/master/site/assets/mmm.json) by adding the metadata for your module.
 
