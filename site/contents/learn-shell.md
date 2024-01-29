@@ -64,6 +64,6 @@ This file is used to persist all commands entered in the min shell, and it is lo
 
 ### .min\_symbols
 
-This files contains all symbol definitions in JSON format that were previously-saved using the {#link-operator||lang||save-symbol#} symbol. Symbols can be loaded using the {#link-operator||lang||load-symbol#} symbol.
+This files contains all symbol definitions in JSON format that were previously-saved using the {#link-operator||global||save-symbol#} symbol. Symbols can be loaded using the {#link-operator||global||load-symbol#} symbol.
 
 {#link-learn||extending||Extending min#}

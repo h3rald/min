@@ -164,12 +164,6 @@
       "kind": "symbol",
       "name": "@"
     },
-    "ROOT": {
-      "description": "Returns a module holding a reference to the [ROOT](class:kwd) scope.\r\n\r\n \r\n Tip\r\n \r\n This symbol is very useful in conjunction with the **with** operator.",
-      "kind": "symbol",
-      "name": "ROOT",
-      "signature": " ==> dict"
-    },
     "^": {
       "description": "See lambda",
       "kind": "symbol",
@@ -1446,7 +1440,7 @@
       "signature": "a1 a2 ==> a1 a2 a1"
     },
     "parent-scope": {
-      "description": "Returns a dictionary dict2 holding a reference to the parent scope of dict1 or null if dict1 is ROOT.",
+      "description": "Returns a dictionary dict2 holding a reference to the parent scope of dict1 or null if dict1 is global.",
       "kind": "symbol",
       "name": "parent-scope",
       "signature": "dict1 ==> dict2"
@@ -1542,7 +1536,7 @@
       "signature": " ==> str"
     },
     "publish": {
-      "description": "Publishes symbol 'sym to the scope of dict.\r\n \r\n \r\n Example\r\n \r\n Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:\r\n 'my-local-symbol ROOT publish",
+      "description": "Publishes symbol 'sym to the scope of dict.\r\n \r\n \r\n Example\r\n \r\n Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:\r\n 'my-local-symbol global publish",
       "kind": "symbol",
       "name": "publish",
       "signature": "'sym dict ==> "
@@ -1948,7 +1942,7 @@
       "signature": "int1 int2 ==> int3"
     },
     "sigils": {
-      "description": "Returns a list of all sigils defined in the [ROOT](class:kwd) scope.",
+      "description": "Returns a list of all sigils defined in the [global](class:kwd) scope.",
       "kind": "symbol",
       "name": "sigils",
       "signature": " ==> (str*)"
@@ -2098,7 +2092,7 @@
       "signature": "(a*) a1 ==> (a1 a*)"
     },
     "symbols": {
-      "description": "Returns a list of all symbols defined in the [ROOT](class:kwd) scope.",
+      "description": "Returns a list of all symbols defined in the [global](class:kwd) scope.",
       "kind": "symbol",
       "name": "symbols",
       "signature": " ==> (str*)"
@@ -2254,7 +2248,7 @@
       "signature": "(quot1 quot2? quot3?) ==> a*"
     },
     "type": {
-      "description": "Returns the type of a.",
+      "description": "Puts the data type of a on the stack. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
       "kind": "symbol",
       "name": "type",
       "signature": "a ==> str"

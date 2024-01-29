@@ -6,7 +6,7 @@ title: "Reference"
 
 min includes a small but powerful standard library organized into the following _modules_:
 
-{#link-module||lang#}
+{#link-module||global#}
 : Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc.
 {#link-module||stack#}
 : Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.

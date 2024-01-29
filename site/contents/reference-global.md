@@ -1,6 +1,6 @@
 -----
 content-type: "page"
-title: "lang Module"
+title: "global Module"
 -----
 {@ _defs_.md || 0 @}
 
@@ -335,7 +335,7 @@ Returns the current log level (debug, info, notice, warn, error or fatal). #}
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
 {#op||parent-scope||{{d1}}||{{d2}}||
-Returns a dictionary {{d2}} holding a reference to the parent scope of {{d1}} or {{null}} if {{d1}} is ROOT.#}
+Returns a dictionary {{d2}} holding a reference to the parent scope of {{d1}} or {{null}} if {{d1}} is global.#}
 
 {#op||parse||{{s}}||{{q}}||
 Parses {{s}} and returns a quoted program {{q}}. #}
@@ -364,8 +364,8 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > > %sidebar%
 > > Example
 > > 
-> Publish symbol [my-local-symbol](class:kwd) to [ROOT](class:kwd) scope:
-> > `'my-local-symbol ROOT publish` #}
+> Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:
+> > `'my-local-symbol global publish` #}
 
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
@@ -408,15 +408,6 @@ If used within the body quotation of an operator definition, causes the interpre
 
 If used outside of the body quotation of an operator definition, it raises an exception.#}
 
-{#op||ROOT||{{none}}||{{d}}||
-Returns a module holding a reference to the [ROOT](class:kwd) scope.
-
-> > %tip%
-> > Tip
-> > 
-> > This symbol is very useful in conjunction with the **with** operator.
- #}
-
 {#op||save-symbol||{{sl}}||{{none}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 
@@ -458,7 +449,7 @@ Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
 Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
 
 {#op||sigils||{{none}}||({{s0p}})||
-Returns a list of all sigils defined in the [ROOT](class:kwd) scope.#}
+Returns a list of all sigils defined in the [global](class:kwd) scope.#}
 
 {#op||source||{{sl}}||{{q}}||
 Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
@@ -467,7 +458,7 @@ Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quo
 Converts {{any}} to its string representation.#}
 
 {#op||symbols||{{none}}||({{s0p}})||
-Returns a list of all symbols defined in the [ROOT](class:kwd) scope.#}
+Returns a list of all symbols defined in the [global](class:kwd) scope.#}
 
 {#op||symbol-help||{{sl}}||{{help}}|{{null}}||
 Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherwise. #}

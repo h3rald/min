@@ -19,7 +19,7 @@ _Symbols_ are the most common type of operator. A min symbol is a single word th
 * Start with a letter or an underscore (\_).
 * Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * . _ -`
 
-It is possible to define operator symbols using the {#link-operator||lang||operator#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
+It is possible to define operator symbols using the {#link-operator||global||operator#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
      (
        symbol square
@@ -28,23 +28,23 @@ It is possible to define operator symbols using the {#link-operator||lang||opera
      ) operator
      ;; Calculates the square of n.
 
- The {#link-operator||lang||operator#} symbol provides way to:
+ The {#link-operator||global||operator#} symbol provides way to:
  
  * Specify the name of the symbol operator (**square** in this case)
  * Specify a signature to identify the type of the input and output values (in this case, the operator takes a numeric input value and produces a numeric output value). Also, note how inputs and outputs are captured into the `n` and `result` symbols in the signature quotation and then referenced in the body quotation.
  * Specify a quotation containing the code that the operator will execute.
 
-Also, symbol operator definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, symbol operator definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`)) so that a help text can be displayed using the {#link-operator||global||help#} symbol.
 
 ### Using the lambda operator
 
-Sometimes you just want to bind a piece of code to a symbol to reuse it later, typically something simple and easy-to-read. In these cases, you can use the {#link-operator||lang||lambda#} operator (or the `^` sigil). For example, the previous `square` operator definition could be rewritten simply as the following.
+Sometimes you just want to bind a piece of code to a symbol to reuse it later, typically something simple and easy-to-read. In these cases, you can use the {#link-operator||global||lambda#} operator (or the `^` sigil). For example, the previous `square` operator definition could be rewritten simply as the following.
 
      (dup *) ^square
      
-Note that this feels like using {#link-operator||lang||define#}, but the main difference between {#link-operator||lang||lambda#} and {#link-operator||lang||define#} is that `lambda` only works on quotations doesn't auto-quote them, so that they are immediately evaluated when the corresponding symbol is pushed on the stack.
+Note that this feels like using {#link-operator||global||define#}, but the main difference between {#link-operator||global||lambda#} and {#link-operator||global||define#} is that `lambda` only works on quotations doesn't auto-quote them, so that they are immediately evaluated when the corresponding symbol is pushed on the stack.
 
-Also note that unlike with {#link-operator||lang||operator#}, symbols defined with {#link-operator||lang||lambda#}:
+Also note that unlike with {#link-operator||global||operator#}, symbols defined with {#link-operator||global||lambda#}:
 
 * have no built-in validation of input and output values.
 * do not support the `return` symbol to immediately end their execution.
@@ -53,7 +53,7 @@ Also note that unlike with {#link-operator||lang||operator#}, symbols defined wi
 > %tip%
 > Tip
 > 
-> You can use {#link-operator||lang||lambda-bind#} to re-set a previously set lambda.
+> You can use {#link-operator||global||lambda-bind#} to re-set a previously set lambda.
 
 ## Sigils
 
@@ -68,25 +68,25 @@ For example, the following executes the command `ls -al` and pushes the command 
 Currently min provides the following sigils:
 
 '
-: Alias for {#link-operator||lang||quote#}.
+: Alias for {#link-operator||global||quote#}.
 \:
-: Alias for {#link-operator||lang||define#}. 
+: Alias for {#link-operator||global||define#}. 
 *
-: Alias for {#link-operator||lang||invoke#}. 
+: Alias for {#link-operator||global||invoke#}. 
 @
-: Alias for {#link-operator||lang||bind#}. 
+: Alias for {#link-operator||global||bind#}. 
 ^
-: Alias for {#link-operator||lang||lambda#}. 
+: Alias for {#link-operator||global||lambda#}. 
 >
-: Alias for {#link-operator||lang||save-symbol#}. 
+: Alias for {#link-operator||global||save-symbol#}. 
 <
-: Alias for {#link-operator||lang||load-symbol#}.  
+: Alias for {#link-operator||global||load-symbol#}.  
 /
 : Alias for {#link-operator||dict||dget#}. 
 %
 : Alias for {#link-operator||dict||dset#}. 
 ?
-: Alias for {#link-operator||lang||help#}.
+: Alias for {#link-operator||global||help#}.
 !
 : Alias for {#link-operator||sys||system#}.
 &
@@ -102,7 +102,7 @@ Besides system sigils, you can also create your own sigils. Unlike system sigils
 
 Sigils can be a very powerful construct and a way to reduce boilerplate code: you can define a sigil to use as you would use any symbol which requires a single string or quoted symbol on the stack.
 
-Like symbols, sigils can be defined with the {#link-operator||lang||operator#} operator, like this:
+Like symbols, sigils can be defined with the {#link-operator||global||operator#} operator, like this:
 
      (
        sigil j
@@ -118,18 +118,18 @@ This definition will add a `j` sigil that will process the following string as J
 
     {true :test}
 
-Also, sigil definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`) so that a help text can be displayed using the {#link-operator||lang||help#} symbol.
+Also, sigil definitions can be annotated with documentation comments (starting with `;;` or wrapped in `#|| ... ||#`) so that a help text can be displayed using the {#link-operator||global||help#} symbol.
 
 ## Auto-popping
 
-Typically, but not always, operators push one or more value to the stack. While this is typically the desired behavior, in some cases you may want to keep the stack clear so in these cases you can append a `!` character to any symbol to cause the symbol {#link-operator||lang||pop#} to be pushed on the stack immediately afterwards.
+Typically, but not always, operators push one or more value to the stack. While this is typically the desired behavior, in some cases you may want to keep the stack clear so in these cases you can append a `!` character to any symbol to cause the symbol {#link-operator||global||pop#} to be pushed on the stack immediately afterwards.
 
      "test" puts  ;Prints "test" and pushes "test" on the stack.
      "test" puts! ;Prints "test" without pushing anything on the stack.
 
 ## Operator signatures
 
-When defining symbols and sigils with the {#link-operator||lang||operator#} operator, you must specify a *signature* that will be used to validate and capture input and output values:
+When defining symbols and sigils with the {#link-operator||global||operator#} operator, you must specify a *signature* that will be used to validate and capture input and output values:
 
      (
        symbol square
@@ -149,7 +149,7 @@ In a signature, a type expression must precede the capturing symbol. Such type e
 > %note%
 > Note
 > 
-> If the operator you are defining doesn't require any input value or doesn't leave ang output value on the stack, simply don't put anything before or after the `==>` separator, respectively. For example, the signature of the {#link-operator||lang||puts!#} operator could be written like `(a ==>)`.
+> If the operator you are defining doesn't require any input value or doesn't leave ang output value on the stack, simply don't put anything before or after the `==>` separator, respectively. For example, the signature of the {#link-operator||global||puts!#} operator could be written like `(a ==>)`.
 
 ### Type classes
 
@@ -163,7 +163,7 @@ Consider the following type class definition validating a quotation containing s
        (q (string?) all? @o)
      ) ::
 
-The {#link-operator||lang||operator#} operator can be used to define a symbol prefixed with `typeclass:` (`typeclass:strquot` in this case) corresponding to a type class that can be used in operator signatures in place of a type, like this:
+The {#link-operator||global||operator#} operator can be used to define a symbol prefixed with `typeclass:` (`typeclass:strquot` in this case) corresponding to a type class that can be used in operator signatures in place of a type, like this:
 
      (
        symbol join-strings
@@ -196,13 +196,13 @@ Essentially, this allows you to push a lambda on the stack from an operator.
 
 Note that:
 
-* Lambdas must be captured using the `^` sigil in signatures and bound using {#link-operator||lang||lambda-bind#} in the operator body.
+* Lambdas must be captured using the `^` sigil in signatures and bound using {#link-operator||global||lambda-bind#} in the operator body.
 * Lambdas cannot be captured in input values (they have already been pushed on the stack).
 * Requiring a lambda as an output value effectively bypasses stack pollution checks. While this can be useful at times, use with caution!
 
 ### Type expressions
 
-When specifying types in operator signatures or through the {#link-operator||lang||expect#} operator, you can specify a logical expression containing types and type classes joined with one of the following operators:
+When specifying types in operator signatures or through the {#link-operator||global||expect#} operator, you can specify a logical expression containing types and type classes joined with one of the following operators:
 
 * `|` (or)
 * `&` (and)
@@ -249,7 +249,7 @@ You can combine them in a type expression as following:
 
 ### Type aliases
 
-As you can see, type expressions can quickly become quite long and complex. To avoid this, you can define *type aliases* using the {#link-operator||lang||typealias#} operator. 
+As you can see, type expressions can quickly become quite long and complex. To avoid this, you can define *type aliases* using the {#link-operator||global||typealias#} operator. 
 
 For example, you can create an alias of part of the type expression used in the previous example, like this:
 
@@ -268,7 +268,7 @@ Note that:
 
 * Type aliases be used to create an alias for any type expression.
 * Aliased type expressions can contain standard {{m}} types, dictionary types, type classes, and even other type aliases.
-* The {#link-operator||lang||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.
+* The {#link-operator||global||typealias#} operator actually creates lexically-scoped, `typealias:`-prefixed symbols that can be sealed, unsealed, and deleted exactly like other symbols.
 
 ### Generics
 
@@ -312,7 +312,7 @@ while the following will raise an error, because the value of `t` from `num` to 
 
 ### Constructors
 
-The {#link-operator||lang||operator#} operator can also be used to create *constructor* symbols. A constructor is a particular type of operator that is used to create a new typed dictionary.
+The {#link-operator||global||operator#} operator can also be used to create *constructor* symbols. A constructor is a particular type of operator that is used to create a new typed dictionary.
 
 Consider the following example:
 

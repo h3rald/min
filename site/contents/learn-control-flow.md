@@ -5,17 +5,17 @@ title: "Learn: Control Flow"
 {@ _defs_.md || 0 @}
 
 
-The {#link-module||lang#} provide some symbols that can be used for the most common control flow statements. Unlike most programming languages, min does not differentiate between functions and statements -- control flow statements are just ordinary symbols that manipulate the main stack.
+The {#link-module||global#} provide some symbols that can be used for the most common control flow statements. Unlike most programming languages, min does not differentiate between functions and statements -- control flow statements are just ordinary symbols that manipulate the main stack.
 
 
 ## Conditionals
 
 The following symbols provide ways to implement common conditional statements:
 
-* {#link-operator||lang||case#}
-* {#link-operator||lang||if#}
-* {#link-operator||lang||unless#}
-* {#link-operator||lang||when#}
+* {#link-operator||global||case#}
+* {#link-operator||global||if#}
+* {#link-operator||global||unless#}
+* {#link-operator||global||when#}
 
 For example, consider the following program:
 
@@ -38,9 +38,9 @@ This program defines a symbol `display-file-info` that takes a file name and out
 
 The following symbols provide ways to implement common loops:
 
-* {#link-operator||lang||foreach#}
-* {#link-operator||lang||times#}
-* {#link-operator||lang||while#}
+* {#link-operator||global||foreach#}
+* {#link-operator||global||times#}
+* {#link-operator||global||while#}
 
 
 For example, consider the following program:
@@ -57,15 +57,15 @@ For example, consider the following program:
        f
      ) ^factorial
 
-This program defines a symbol `factorial` that calculates the factorial of an integer iteratively using the symbol {#link-operator||lang||while#}.
+This program defines a symbol `factorial` that calculates the factorial of an integer iteratively using the symbol {#link-operator||global||while#}.
 
 ## Error handling
 
 The following symbols provide ways to manage errors in min:
 
-* {#link-operator||lang||format-error#}
-* {#link-operator||lang||raise#}
-* {#link-operator||lang||try#}
+* {#link-operator||global||format-error#}
+* {#link-operator||global||raise#}
+* {#link-operator||global||try#}
 
 For example, consider the following program:
 

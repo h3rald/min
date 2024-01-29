@@ -10,10 +10,10 @@ As explained in [Definitions](/learn-definitions), min uses lexical scoping to r
 * is destroyed after a quotation has been dequoted.
 * is attached to a dictionary.
 
-The main, root-level scope in min can be accessed using the {#link-operator||lang||ROOT#} symbol and it typically contains all symbols and sigils imported from all the standard library modules. The ROOT symbol pushes a module on the stack that references the ROOT scope:
+The main, root-level scope in min can be accessed using the {#link-module||global#} symbol and it typically contains all symbols and sigils imported from all the standard library modules. The global symbol pushes a module on the stack that references the global scope:
 
 > %min-terminal%
-> [[/Users/h3rald/test]$](class:prompt) ROOT
+> [[/Users/h3rald/test]$](class:prompt) global
 >   {
 >    &lt;native&gt; :!
 >    &lt;native&gt; :!=
@@ -30,7 +30,7 @@ The main, root-level scope in min can be accessed using the {#link-operator||lan
 
 ## Accessing the current scope
 
-You can access the current scope using the {#link-operator||lang||scope#} operator, which pushes a module on the stack that references the current scope.
+You can access the current scope using the {#link-operator||global||scope#} operator, which pushes a module on the stack that references the current scope.
 
 Consider the following program:
 
@@ -38,15 +38,15 @@ Consider the following program:
 
 In this case:
 
-1. A new variable called `innerscope` is defined on the ROOT scope.
+1. A new variable called `innerscope` is defined on the global scope.
 2. A quotation is dequoted, but its scope is retrieved using the `scope` operator and bound to `innerscope`.
-3. After the quotation is dequoted, myscope is accessed and its symbols (`test` in this case) are pushed on the stack using the {#link-operator||lang||scope-symbols#} operator.
+3. After the quotation is dequoted, myscope is accessed and its symbols (`test` in this case) are pushed on the stack using the {#link-operator||global||scope-symbols#} operator.
 
-Note that scopes can only be accessed if they are bound to a dictionary, hence the `ROOT` and `scope` operators push a module on the stack, and a module is nothing but a typed dictionary.
+Note that scopes can only be accessed if they are bound to a dictionary, hence the `global` and `scope` operators push a module on the stack, and a module is nothing but a typed dictionary.
 
 ## Dequoting a quotation within the context of a specific scope
 
-The {#link-operator||lang||with#} operator can be used to dequote a quotation within a specific scope instead of the current one.
+The {#link-operator||global||with#} operator can be used to dequote a quotation within a specific scope instead of the current one.
 
 Consider the following program, which leaves `2` on the stack:
 
@@ -56,6 +56,6 @@ In this case, when `with` is pushed on the stack, it will dequote `(4 2 minus)`.
 
      4 2 (-)
 
-At this point, the {#link-operator||lang||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
+At this point, the {#link-operator||global||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
 
 {#link-learn||control-flow||Control Flow#}

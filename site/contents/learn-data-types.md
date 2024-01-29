@@ -54,7 +54,7 @@ Additionally, dictionaries can also be typed to denote complex objects like sock
 
 The {#link-module||logic#} provides predicate operators to check if an element belongs to a particular data type or pseudo-type (`boolean?`, `number?`, `integer?`, `float?`, ...).
 
-Additionally, the {#link-module||lang#} provides operators to convert values from a data type to another (e.g. {#link-operator||lang||integer#}, {#link-operator||lang||string#}, and so on).
+Additionally, the {#link-module||global#} provides operators to convert values from a data type to another (e.g. {#link-operator||global||integer#}, {#link-operator||global||string#}, and so on).
 
 > %note%
 > Note

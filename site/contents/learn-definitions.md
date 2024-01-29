@@ -14,7 +14,7 @@ Being a concatenative language, min does not really need named parameters or var
 
 This program takes a single string corresponding to a file path and returns true if it's a .zip file bigger than 1MB that was modified in the last hour. Sure, it is remarkable that no variables are needed for such a program, but it is not very readable: because no variables are used, it is often necessary to make copies of elements and push them to the end of the stack -- that's what the {#link-operator||stack||dup#} and {#link-operator||stack||swap#} are used for.
 
-The good news is that you can use the {#link-operator||lang||define#} operator and the `:` sigil to define new symbols, and symbols can also be set to fixed values (literals).
+The good news is that you can use the {#link-operator||global||define#} operator and the `:` sigil to define new symbols, and symbols can also be set to fixed values (literals).
 
 Consider the following program:
 
@@ -47,7 +47,7 @@ Consider the following program:
 
 Simple: `4`. Every quotation defines its own scope, and in each scope, a new variable called `a` is defined. In the innermost scope containing the quotation `(a dup * :a)` the value of `a` is set to `64`, but this value is not propagated to the outer scopes. Note also that the value of `a` in the innermost scope is first retrieved from the outer scope (8).
 
-If we want to change the value of the original `a` symbol defined in the outermost scope, we have to use the {#link-operator||lang||bind#} or its shorthand sigil `@`, so that the program becomes the following:
+If we want to change the value of the original `a` symbol defined in the outermost scope, we have to use the {#link-operator||global||bind#} or its shorthand sigil `@`, so that the program becomes the following:
 
      4 :a ;First definition of the symbol a
      (
@@ -70,12 +70,12 @@ Finally, symbols can be sealed to prevent accidental updates or deletions. By de
 
 ...because the `quote` symbol is only defined in the root scope and can therefore be redefined in child scopes.
 
-If you want, you can {#link-operator||lang||seal#} your own symbols so that they may not be redefined using the {#link-operator||lang||bind#} operator or deleted using the {#link-operator||lang||delete#}.
+If you want, you can {#link-operator||global||seal#} your own symbols so that they may not be redefined using the {#link-operator||global||bind#} operator or deleted using the {#link-operator||global||delete#}.
 
 > %note%
 > Note
 > 
-> The {#link-operator||lang||unseal-symbol#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
+> The {#link-operator||global||unseal-symbol#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
 
 
 {#link-learn||scopes||Scopes#}

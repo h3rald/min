@@ -93,9 +93,9 @@
 {@ site/contents/reference.md || 1 @}
 
 
-### `lang` Module
+### `global` Module
 
-{@ site/contents/reference-lang.md || 1 @}
+{@ site/contents/reference-global.md || 1 @}
 
 ### `stack` Module
 

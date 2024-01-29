@@ -16,7 +16,7 @@ In such situations, you basically have the following options:
 
 When you just want to create more high-level min operator using functionalities that are already available in min, the easiest way is to create your own reusable min modules.
 
-To create a new module, simply create a file containing your operator definitions implemented using either the {#link-operator||lang||operator#} operator or the {#link-operator||lang||lambda#} operator
+To create a new module, simply create a file containing your operator definitions implemented using either the {#link-operator||global||operator#} operator or the {#link-operator||global||lambda#} operator
 
 ```
 (dup *)       ^pow2
@@ -25,7 +25,7 @@ To create a new module, simply create a file containing your operator definition
 
 ```
 
-Save your code to a file (e.g. *quickpows.min*) and you can use it in other Nim files using the {#link-operator||lang||require#} operator and the {#link-operator||lang||import#} (if you want to import the operators in the current scope):
+Save your code to a file (e.g. *quickpows.min*) and you can use it in other Nim files using the {#link-operator||global||require#} operator and the {#link-operator||global||import#} (if you want to import the operators in the current scope):
 
 ```
 'quickpows require :qp
@@ -57,7 +57,7 @@ By default, when min is started it loads the following *prelude.min* program:
 'prompt    unseal-symbol
 ```
 
-Essentially, this causes min to import *all* the modules and unseals the {#link-operator||lang||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
+Essentially, this causes min to import *all* the modules and unseals the {#link-operator||global||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
 
 > %min-terminal%
 > [$](class:prompt) min -i -p:myfile.min

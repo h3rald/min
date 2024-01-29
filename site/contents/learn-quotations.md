@@ -42,13 +42,13 @@ This program returns a new quotation containing all odd numbers contained in quo
 
 In this case, the second quotation is used to _quote_ the symbol `odd?` so that instead of being executed immediately, it will be executed by the symbol `filter` on each element of the first quotation. In this way, we may say that `(odd?)` is _dequoted_ by the symbol `filter`.
 
-The symbol {#link-operator||lang||dequote#} or its alias `->` can be used to dequote a quotation by pushing all its elements on the main stack. Essentially, this *executes* the quotation in the current context.
+The symbol {#link-operator||global||dequote#} or its alias `->` can be used to dequote a quotation by pushing all its elements on the main stack. Essentially, this *executes* the quotation in the current context.
 
 For example, the following program leaves the elements `1` and `-1` on the stack:
 
      (1 2 3 -) ->
 
-Alternatively, the symbol {#link-operator||lang||apply#} or its alias `=>` can also be used to dequote a quotation but in this case it will not push its elements on the main stack, instead it will:
+Alternatively, the symbol {#link-operator||global||apply#} or its alias `=>` can also be used to dequote a quotation but in this case it will not push its elements on the main stack, instead it will:
 
 1. Create a temporary empty stack.
 2. Push all elements on it, one by one.

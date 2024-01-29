@@ -28,7 +28,7 @@ The registry contains the metadata of all public managed modules and it is queri
 
 ### Module lookup
 
-When requiring a module in your min file using the {{#link-operator||lang||require}} symbol, min will attempt to lookup the module (for example **module1**) checking the following files (in order):
+When requiring a module in your min file using the {{#link-operator||global||require}} symbol, min will attempt to lookup the module (for example **module1**) checking the following files (in order):
 
 - module1.min
 - mmm/module1/*/index.min
