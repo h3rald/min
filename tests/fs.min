@@ -31,9 +31,9 @@
 
   ("./../tests" normalized-path unix-path "../tests" ==) *test/assert
 
-  ((. "tests/lang.min") => join-path . relative-path unix-path "tests/lang.min" ==) *test/assert
+  ((. "tests/global.min") => join-path . relative-path unix-path "tests/global.min" ==) *test/assert
 
-  ("tests/lang.min" absolute-path unix-path (. "tests/lang.min") => join-path unix-path ==) *test/assert
+  ("tests/global.min" absolute-path unix-path (. "tests/global.min") => join-path unix-path ==) *test/assert
 
   ("./test" absolute-path? not) *test/assert
 

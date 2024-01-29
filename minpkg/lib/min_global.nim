@@ -22,7 +22,7 @@ import
   ../core/utils,
   ../core/scope
 
-proc lang_module*(i: In) =
+proc global_module*(i: In) =
   let def = i.scope
 
   const HELPFILE = "../../help.json".slurp
@@ -1223,4 +1223,4 @@ proc lang_module*(i: In) =
   def.symbol("lambdabind") do (i: In):
     i.pushSym("lambda-bind")
 
-  def.finalize("ROOT")
+  def.finalize("global")

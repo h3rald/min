@@ -11,7 +11,7 @@ import
   interpreter
 
 import
-  ../lib/[min_lang,
+  ../lib/[min_global,
   min_stack,
   min_seq,
   min_dict,
@@ -41,7 +41,7 @@ proc stdLib*(i: In) =
     MINHISTORY.writeFile("")
   if not MINRC.fileExists:
     MINRC.writeFile("")
-  i.lang_module
+  i.global_module
   i.stack_module
   i.seq_module
   i.dict_module

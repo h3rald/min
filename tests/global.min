@@ -1,7 +1,7 @@
 'min-test require :test
 ;;;
 
-"lang" *test/describe
+"global" *test/describe
 
   (2 'a define
     (3 a + (5 'a define a) -> +) -> a + 12 ==) *test/assert

@@ -13,7 +13,7 @@ sigils size :total-sigils
 'dstore  load
 'fs      load
 'io      load
-'lang    load
+'global    load
 'logic   load
 'math    load
 'num     load

@@ -571,6 +571,12 @@
       "name": "dequote",
       "signature": "quot ==> a*"
     },
+    "dev": {
+      "description": "Toggles development mode.",
+      "kind": "symbol",
+      "name": "dev",
+      "signature": " ==> "
+    },
     "dev?": {
       "description": "Returns true if the current program is being executed in development mode.",
       "kind": "symbol",
@@ -1715,7 +1721,7 @@
       "signature": "dict ==> dict:http-response"
     },
     "require": {
-      "description": "Parses and interprets (in a separater interpreter) the specified min file 'sym, adding [.min](class:ext) if not specified, and returns a module dictionary dict containing all the symbols defined in 'sym.",
+      "description": "Parses and interprets (in a separated interpreter) the specified min module, and returns a module dictionary dict containing all the symbols defined in 'sym. \r\n\r\nThis symbol will attempt to locate the specified module in this way. Given the following min program:\r\n\r\n     'my-module require :my-module\r\n\r\n1. Check for a file named my-module in the same folder as the current file (with our without a .min extension).\r\n2. Check for a file named index.min in the mmm/my-module/*/index.min folder relative to the current file (locally-installed [managed-module](/learn-mmm)).\r\n3. Check for a file named index.min in the $HOME/mmm/my-module/*/index.min folder (globally-installed [managed-module](/learn-mmm)). If multiple versions of the same module are present, the first one will be loaded.",
       "kind": "symbol",
       "name": "require",
       "signature": "'sym ==> dict"
