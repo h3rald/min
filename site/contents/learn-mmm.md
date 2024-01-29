@@ -42,7 +42,7 @@ The following sections explain how to use the mmm-related commands that are buil
 
 Initializes a new managed min module in tbe current directory by creating a sample `mmm.json` file in the current folder.
 
-### min install [name version] [-g]
+### min install [name version | name@version] [-g]
 
 Install the specified managed module by specifying its name and version. By default, the module is installed in the `mmm/<name>/<version>` folder; if `-g` is specified, it is installed in `$HOME/mmm/<name>/<version>`.
 
@@ -50,7 +50,7 @@ If no name and no version are specified, all the managed modules (and their depe
 
 If the installation of one dependency fails, the installation of the module will be rolled back.
 
-### min uninstall [name version] [-g]
+### min uninstall [name version | name@version] [-g]
 
 Uninstall the module specified by name and version either locally or globally (if `-g` is specified).
 
@@ -58,7 +58,7 @@ If no version is specified, all version of the module will be uninstalled (if th
 
 If no name and no version are specified, all dependencies of the current managed module (and their dependencies) will be uninstalled.
 
-### min update [name version] [-g]
+### min update [name version | name@version] [-g]
 
 Update the module specified by name and version either locally or globally (if `-g` is specified).
 
