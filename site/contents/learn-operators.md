@@ -77,6 +77,8 @@ Currently min provides the following sigils:
 : Alias for {#link-operator||global||bind#}. 
 ^
 : Alias for {#link-operator||global||lambda#}. 
+~
+: Alias for {#link-operator||global||lambda-bind#}. 
 >
 : Alias for {#link-operator||global||save-symbol#}. 
 <
