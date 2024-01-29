@@ -163,7 +163,7 @@ dl {
 .min-terminal {
   border: 1px solid var(--secondary-accent);
   padding: 5px;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .min-terminal p {
