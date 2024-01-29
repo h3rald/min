@@ -157,9 +157,9 @@ when isMainModule:
     eval <string>                  Evaluate <string> as a min program.
     help <symbol|sigil>            Print the help contents related to <symbol|sigil>.
     init                           Sets up the current directory as a managed min module.
-    install [<module> <version>]   Install the specified managed min module or all dependent modules.
-    uninstall [<module> <version>] Uninstall the specified managed min module or all dependent modules.
-    update [<module> <version>]    Update the specified managed min module or all dependent modules.
+    install [<module>@<version>]   Install the specified managed min module or all dependent modules.
+    uninstall [<module>@<version>] Uninstall the specified managed min module or all dependent modules.
+    update [<module>@<version>]    Update the specified managed min module or all dependent modules.
     search [...terms...]           Search for a managed min module matching the specified terms.  
     list                           List all managed min modules installed in the local directory or globally.
   Options:
