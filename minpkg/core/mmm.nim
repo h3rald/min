@@ -131,6 +131,14 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
         mmmJson.writeFile(data.pretty)
     notice "Uninstall complete."
 
+proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
+    let   parts = nameAndVersion.split("@")
+    if parts.len != 2:
+        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+    let name = parts[0]
+    let version = parts[1]
+    MMM.uninstall name, version, global
+
 proc uninstall*(MMM: var MinModuleManager) =
     let pwd = getCurrentDir()
     if not fileExists(pwd / "mmm.json"):
@@ -205,6 +213,14 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
         finally:
             raiseError "Installation failed."
 
+proc install*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
+    let   parts = nameAndVersion.split("@")
+    if parts.len != 2:
+        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+    let name = parts[0]
+    let version = parts[1]
+    MMM.install name, version, global
+
 proc install*(MMM: var MinModuleManager) =
     let mmmJson = getCurrentDir() / "mmm.json"
     if not mmmJson.fileExists:
@@ -275,6 +291,14 @@ proc update*(MMM: var MinModuleManager, name, version: string, global = false) =
             except CatchableError:
                 warn getCurrentExceptionMsg()
                 raiseError "Update of module '$#@$#' failed." % [name, version]
+
+proc update*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
+    let   parts = nameAndVersion.split("@")
+    if parts.len != 2:
+        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+    let name = parts[0]
+    let version = parts[1]
+    MMM.update name, version, global
 
 proc update*(MMM: var MinModuleManager) =
     let mmmJson = getCurrentDir() / "mmm.json"

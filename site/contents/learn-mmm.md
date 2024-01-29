@@ -66,7 +66,7 @@ If no name and no version are specified, all dependencies of the current managed
 
 ### min list
 
-List all the installed dependencies of tbe current module, and their dependencies, recursively.
+List all the installed dependencies of the current module, and their dependencies, recursively.
 
 ### min search [arg1 arg2 ... argN]
 

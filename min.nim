@@ -269,26 +269,24 @@ when isMainModule:
       elif file == "install":
         if args.len < 2:
           executeMmmCmd(proc () = MMM.install())
-        if args.len < 3:
-          logging.error "Module version not specified."
-          quit(11)
+        if args.len == 2:
+          executeMmmCmd(proc () = MMM.install(args[1], GLOBAL))
         let name = args[1]
         let version = args[2]
         executeMmmCmd(proc () = MMM.install(name, version, GLOBAL))
       elif file == "uninstall":
         if args.len < 2:
           executeMmmCmd(proc () = MMM.uninstall())
+        if args.len == 2:
+          executeMmmCmd(proc () = MMM.uninstall(args[1], GLOBAL))
         let name = args[1]
-        var version = ""
-        if args.len > 2:
-          version = args[2]
+        let version = args[2]
         executeMmmCmd(proc () = MMM.uninstall(name, version, GLOBAL))
       elif file == "update":
         if args.len < 2:
           executeMmmCmd(proc () = MMM.update())
-        if args.len < 3:
-          logging.error "Module version not specified."
-          quit(11)
+        if args.len == 2:
+          executeMmmCmd(proc () = MMM.update(args[1], GLOBAL))
         let name = args[1]
         let version = args[2]
         executeMmmCmd(proc () = MMM.update(name, version, GLOBAL))
