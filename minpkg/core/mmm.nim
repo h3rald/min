@@ -180,7 +180,7 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
     if not data.hasKey("deps"):
         raiseError "Dependencies not specified for module '$#'" % [name]
     var result = execShellCmd(cmd)
-    if (result == 0):
+    if result == 0:
         # Go to directory and install dependencies
         let originalDir = getCurrentDir()
         dir.setCurrentDir()
@@ -195,11 +195,14 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
                 originalDir.setCurrentDir()
                 result = 1
                 break
+    # re-check if dependency installation failed.
     if result == 0:
-        let mmmJson = pwd/"mmm.json"
-        var data = mmmJson.parseFile
-        data["deps"][name] = %($version)
-        mmmJson.writeFile(data.pretty)
+            if not global:
+                # Add dependency to current dir's mmm.json file.
+                let mmmJson = dir/"mmm.json"
+                var data = mmmJson.parseFile
+                data["deps"][name] = %($version)
+                mmmJson.writeFile(data.pretty)
     else:
         # Rollback
         warn "Installation failed - Rolling back..."
@@ -279,7 +282,7 @@ proc update*(MMM: var MinModuleManager, name, version: string, global = false) =
     if not data.hasKey("deps"):
         raiseError "Dependencies not specified for module '$#'" % [name]
     var result = execShellCmd(cmd)
-    if (result == 0):
+    if result == 0:
         # Go to directory and install dependencies
         dir.setCurrentDir()
         MMM.setup(false)
