@@ -237,9 +237,9 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
  #}
  
  {#op||lambda||{{q}} {{sl}}||{{none}}||
-Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
-
-Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
+> Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
+> 
+> Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
 
 {#alias||lambdabind||lambda-bind#}
 
