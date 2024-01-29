@@ -19,7 +19,7 @@
 
   ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) *test/assert
 
-  (ROOT dtype "module" ==) *test/assert
+  (global dtype "module" ==) *test/assert
   
   ({} dtype "" ==) *test/assert 
 

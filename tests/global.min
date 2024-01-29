@@ -20,7 +20,7 @@
       :item
       "_$1" (item) => % :namesym
       item (dup *) cons namesym define
-      namesym ROOT publish
+      namesym global publish
     ) :def
 
     test-data def foreach
@@ -62,7 +62,7 @@
 
   (1 type "int" ==) *test/assert
   ({} type "dict" ==) *test/assert
-  (ROOT type "dict:module" ==) *test/assert
+  (global type "dict:module" ==) *test/assert
 
   (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) *test/assert ;factorial of 5
 

@@ -146,7 +146,7 @@
   (logic 'dict:module type?) *test/assert
   (1 "int" type?) *test/assert
   ("test" "str" type?) *test/assert
-  (ROOT "dict:module" type?) *test/assert
+  (global "dict:module" type?) *test/assert
 
   (7 0 / inf ==) *test/assert
   (-7 0 / -inf ==) *test/assert
