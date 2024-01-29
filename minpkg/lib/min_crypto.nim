@@ -42,7 +42,7 @@ proc crypto_module*(i: In) =
   when defined(ssl):
 
     when defined(windows) and defined(amd64):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lbcrypt".}
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
     elif defined(linux) and defined(amd64):
       {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
     elif defined(macosx) and defined(amd64):
