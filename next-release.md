@@ -1,6 +1,6 @@
 ### BREAKING CHANGES
 
-- renamed `ROOT` symbol to `global`. Also the built-in `lang` module is now called `global`.
+- Renamed `ROOT` symbol to `global`. Also the built-in `lang` module is now called `global`.
 
 ### New Features
 
