@@ -17,6 +17,15 @@
       "description": "A minimal testing library for the min programming language.",
       "license": "MIT",
       "deps": {}
+    },
+    {
+      "name": "min-upgrade",
+      "method": "git",
+      "url": "https://git.sr.ht/~h3rald/min-upgrade",
+      "author": "Fabio Cevasco",
+      "description": "Script to upgrade min source code to the latest version of the min programming language.",
+      "license": "MIT",
+      "deps": {}
     }
   ],
   "updated": null
