@@ -46,6 +46,8 @@ Initializes a new managed min module in tbe current directory by creating a samp
 
 Install the specified managed module by specifying its name and version. By default, the module is installed in the `mmm/<name>/<version>` folder; if `-g` is specified, it is installed in `$HOME/mmm/<name>/<version>`.
 
+If no version is specified, the version will be set to the HEAD branch of the git repository of the module.
+
 If no name and no version are specified, all the managed modules (and their dependencies) specified as dependencies for the current managed module will be installed.
 
 If the installation of one dependency fails, the installation of the module will be rolled back.
@@ -54,6 +56,8 @@ If the installation of one dependency fails, the installation of the module will
 
 Uninstall the module specified by name and version either locally or globally (if `-g` is specified).
 
+If no version is specified, the version will be set to the HEAD branch of the git repository of the module.
+
 If no version is specified, all version of the module will be uninstalled (if the module is installed globally).
 
 If no name and no version are specified, all dependencies of the current managed module (and their dependencies) will be uninstalled.
@@ -61,6 +65,8 @@ If no name and no version are specified, all dependencies of the current managed
 ### min update [name version | name@version] [-g]
 
 Update the module specified by name and version either locally or globally (if `-g` is specified).
+
+If no version is specified, the version will be set to the HEAD branch of the git repository of the module.
 
 If no name and no version are specified, all dependencies of the current managed module (and their dependencies) will be updated.
 

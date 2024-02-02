@@ -1,6 +1,7 @@
 import 
     std/[json,
     os,
+    osproc,
     httpclient,
     strutils,
     sequtils,
@@ -28,6 +29,15 @@ proc raiseError(msg: string) =
 proc raiseAlreadyInstalledError(msg: string) = 
     raise MMMAlreadyInstalledError(msg: msg)
 
+proc getDefaultGitBranch(repo: string): string = 
+    let res = execCmdEx("git remote show $#" % [repo])
+    return res.output.splitLines().filterIt(it.contains("HEAD branch:"))[0].split(":")[1].strip
+
+proc getModuleByName(MMM: var MinModuleManager, name: string): JsonNode = 
+    try:
+        return MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)[0]
+    except CatchableError:
+        raiseError "Module '$#' not found." % [name]
 
 proc setup*(MMM: var MinModuleManager, check = true) =
     MMM.registry = MMMREGISTRY
@@ -95,20 +105,29 @@ proc init*(MMM: var MinModuleManager) =
         createDir(pwd / "mmm")
     notice "Created a mmm.json file in the current directory"
     
-proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false) =
+proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
     var dir: string
+    var version = v
     var versionLabel = version
-    if version == "":
+    if version == "*":
         versionLabel = "<all-versions>"
         if global:
             dir = MMM.globalDir / name
         else:
             dir = MMM.localDir / name
     else:
+        if version == "":
+            let url = MMM.getModuleByName(name)["url"].getStr
+            try: 
+                version = getDefaultGitBranch(url)
+                versionLabel = version
+            except CatchableError:
+                raiseError "Unable to determine default branch for module '$#'" % [name]
         if global:
             dir = MMM.globalDir / name / version
         else:
             dir = MMM.localDir / name / version
+    debug "Directory: $#" % [dir]
     let pwd = getCurrentDir()
     if not global and not fileExists(pwd / "mmm.json"):
           raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
@@ -134,7 +153,8 @@ proc uninstall*(MMM: var MinModuleManager, name, version: string, global = false
 proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
     let   parts = nameAndVersion.split("@")
     if parts.len != 2:
-        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+        MMM.uninstall nameAndVersion, "", global
+        return
     let name = parts[0]
     let version = parts[1]
     MMM.uninstall name, version, global
@@ -150,18 +170,10 @@ proc uninstall*(MMM: var MinModuleManager) =
     except CatchableError:
         raiseError "Unable to uninstall local managed modules."
 
-proc install*(MMM: var MinModuleManager, name, version: string, global = false) =
+proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
+    var version = v
     var dir: string
     let pwd = getCurrentDir()
-    if global:
-        dir = MMM.globalDir / name / version
-    else:
-        dir = MMM.localDir / name / version
-        if not fileExists(pwd / "mmm.json"):
-             raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
-    if dir.dirExists():
-        raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." % [name, version]
-    dir.createDir()
     let results = MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)
     if results.len == 0:
         raiseError "Unknown module '$#'." % [name]
@@ -174,6 +186,20 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
     if not data.hasKey("url"):
         raiseError "URL not specified for module '$#'" % [name]
     let url = data["url"].getStr
+    if version == "":
+        try:
+            version = getDefaultGitBranch(url)
+        except CatchableError:
+            raiseError "Unable to determine default branch for module '$#'" % [name]
+    if global:
+        dir = MMM.globalDir / name / version
+    else:
+        dir = MMM.localDir / name / version
+        if not fileExists(pwd / "mmm.json"):
+             raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
+    if dir.dirExists():
+        raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." % [name, version]
+    dir.createDir()
     let cmd = "git clone $# -b $# --depth 1 \"$#\"" % [url, version, dir.replace("\\", "/")]
     debug cmd
     notice "Installing module $#@$#..." % [name, version]
@@ -219,7 +245,8 @@ proc install*(MMM: var MinModuleManager, name, version: string, global = false) 
 proc install*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
     let   parts = nameAndVersion.split("@")
     if parts.len != 2:
-        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+        MMM.install nameAndVersion, "", global
+        return
     let name = parts[0]
     let version = parts[1]
     MMM.install name, version, global
@@ -251,8 +278,15 @@ proc install*(MMM: var MinModuleManager) =
             finally:
                 raiseError "Installation failed."
 
-proc update*(MMM: var MinModuleManager, name, version: string, global = false) =
+proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
+    var version = v
     var dir: string
+    if version == "":
+        try:
+            let url = MMM.getModuleByName(name)["url"].getStr
+            version = getDefaultGitBranch(url)
+        except CatchableError:
+            raiseError "Unable to determine default branch for module '$#'" % [name]
     if global:
         dir = MMM.globalDir / name / version
     else:
@@ -298,7 +332,8 @@ proc update*(MMM: var MinModuleManager, name, version: string, global = false) =
 proc update*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
     let   parts = nameAndVersion.split("@")
     if parts.len != 2:
-        raiseError "Invalid module name and version: $#. Expected: <module-name>@<module-version>" % [nameAndVersion]
+        MMM.update nameAndVersion, "", global
+        return
     let name = parts[0]
     let version = parts[1]
     MMM.update name, version, global
