@@ -8,7 +8,8 @@
 - mmm: It is now possible to install, uninstall, and update modules by specifying them via `<name>@<version>`.
 - mmm: The version is now optional when installing, uninstalling, and updating modules (the name of the HEAD branch will be used, e.g. "master" or "main", typically).
 
-
 ### Fixes and Improvements
+
+- Added check to prevent installing local managed modules in the HOME directory or $HOME/mmm.
 
 

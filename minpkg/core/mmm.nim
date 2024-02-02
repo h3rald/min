@@ -39,6 +39,10 @@ proc getModuleByName(MMM: var MinModuleManager, name: string): JsonNode =
     except CatchableError:
         raiseError "Module '$#' not found." % [name]
 
+proc forbidLocalModulesInGlobalDir(MMM: var MinModuleManager, op: string) = 
+    if MMM.localDir == MMM.globalDir or MMM.localDir.startsWith(MMM.globalDir/"mmm"):
+        raiseError "Cannot $# a module in the global directory without specifying -g." % [op]
+
 proc setup*(MMM: var MinModuleManager, check = true) =
     MMM.registry = MMMREGISTRY
     MMM.globalDir = HOME / "mmm"
@@ -106,6 +110,7 @@ proc init*(MMM: var MinModuleManager) =
     notice "Created a mmm.json file in the current directory"
     
 proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
+    forbidLocalModulesInGlobalDir(MMM, "uninstall")
     var dir: string
     var version = v
     var versionLabel = version
@@ -160,6 +165,7 @@ proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string, global = fals
     MMM.uninstall name, version, global
 
 proc uninstall*(MMM: var MinModuleManager) =
+    forbidLocalModulesInGlobalDir(MMM, "uninstall")
     let pwd = getCurrentDir()
     if not fileExists(pwd / "mmm.json"):
         raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
@@ -171,6 +177,7 @@ proc uninstall*(MMM: var MinModuleManager) =
         raiseError "Unable to uninstall local managed modules."
 
 proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
+    forbidLocalModulesInGlobalDir(MMM, "install")
     var version = v
     var dir: string
     let pwd = getCurrentDir()
@@ -252,6 +259,7 @@ proc install*(MMM: var MinModuleManager, nameAndVersion: string, global = false)
     MMM.install name, version, global
 
 proc install*(MMM: var MinModuleManager) =
+    forbidLocalModulesInGlobalDir(MMM, "install")
     let mmmJson = getCurrentDir() / "mmm.json"
     if not mmmJson.fileExists:
         raiseError "No mmm.json file found in the current directory."
@@ -279,6 +287,7 @@ proc install*(MMM: var MinModuleManager) =
                 raiseError "Installation failed."
 
 proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
+    forbidLocalModulesInGlobalDir(MMM, "update")
     var version = v
     var dir: string
     if version == "":
@@ -339,6 +348,7 @@ proc update*(MMM: var MinModuleManager, nameAndVersion: string, global = false) 
     MMM.update name, version, global
 
 proc update*(MMM: var MinModuleManager) =
+    forbidLocalModulesInGlobalDir(MMM, "update")
     let mmmJson = getCurrentDir() / "mmm.json"
     if not mmmJson.fileExists:
         raiseError "No mmm.json file found in the current directory."
