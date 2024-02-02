@@ -34,10 +34,10 @@ proc getDefaultGitBranch(repo: string): string =
     return res.output.splitLines().filterIt(it.contains("HEAD branch:"))[0].split(":")[1].strip
 
 proc getModuleByName(MMM: var MinModuleManager, name: string): JsonNode = 
-    try:
-        return MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)[0]
-    except CatchableError:
+    let match = MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)
+    if match.len == 0:
         raiseError "Module '$#' not found." % [name]
+    return match[0]
 
 proc forbidLocalModulesInGlobalDir(MMM: var MinModuleManager, op: string) = 
     if MMM.localDir == MMM.globalDir or MMM.localDir.startsWith(MMM.globalDir/"mmm"):
@@ -154,6 +154,7 @@ proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
             data["deps"].delete(name)
         mmmJson.writeFile(data.pretty)
     notice "Uninstall complete."
+
 
 proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
     let   parts = nameAndVersion.split("@")
@@ -285,6 +286,33 @@ proc install*(MMM: var MinModuleManager) =
                 warn "Rollback failed."
             finally:
                 raiseError "Installation failed."
+
+proc generateRunScript*(MMM: var MinModuleManager, id: string): string =
+    var name, version: string
+    if (id.contains("@")):
+        let parts = id.split("@")
+        name = parts[0]
+        version = parts[1]
+    else:
+        name = id
+        let data = MMM.getModuleByName(name)
+        debug data
+        version = getDefaultGitBranch(data["url"].getStr)
+    if not dirExists(MMM.globalDir / name / version):
+        try:
+            MMM.install name, version, true
+        except CatchableError:
+            debug getCurrentExceptionMsg()
+            raiseError "Unable to install module $#@$#." % [name, version]
+    let script = """
+'$1 require :$1
+($1 'main dhas?)
+  (*$1/main)
+  ("Managed module \"$1\" does not expose a 'main' symbol." error)
+if
+""" % [name]
+    debug "Generated run script:\n $#." % [script]
+    return script
 
 proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
     forbidLocalModulesInGlobalDir(MMM, "update")

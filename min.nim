@@ -266,6 +266,20 @@ when isMainModule:
         quit(0)
       elif file == "init":
         executeMmmCmd(proc () = MMM.init())
+      elif file == "run":
+        if args.len < 1:
+          logging.error "No script was specified."
+          quit(8)
+        MMM.setup()
+        var script: string
+        try:
+          script = MMM.generateRunScript(args[1])
+        except CatchableError:
+          error getCurrentExceptionMsg()
+          debug getCurrentException().getStackTrace()
+          quit(10)
+        minStr(script)
+        quit(0)
       elif file == "install":
         if args.len < 2:
           executeMmmCmd(proc () = MMM.install())
