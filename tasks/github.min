@@ -1,159 +1,1 @@
-#!/usr/bin/env min
-
-"_helpers" require :helpers 'helpers import
-
-"next-release.md" fread escape :release-body
-"tasks/data/draft-release.json" fread :draft-release-template 
-
-config /version :min-version
-env /github-token :token
-draft-release-template ("version" min-version "body" release-body) =% :draft-release-body
-
-{}  
-  "application/vnd.github.v3+json" %Accept
-  "token $#" (token) =% %Authorization  
-:headers
-
-(
-  symbol handle-errors
-  (dict :response ==>)
-  (
-    response to-json "response.json" fwrite
-    response /status :status
-    (status 300 >) (
-      response /body from-json :body
-      body /message :message
-      status string @status
-      "Error $#: $#" (status message) =% error status int exit
-    ) when
-  )
-) ::
-;; Handles HTTP errors.
-
-(
-  symbol gh-req
-  (dict :data ==> dict|quot :result)
-  (
-    data /endpoint :endpoint
-    "api" :subdomain
-    (data 'subdomain dhas?) (data /subdomain @subdomain) when
-    "https://$#.github.com/repos/h3rald/min$#" (subdomain endpoint) =% :url
-    {}
-      url %url
-      data /method %method
-      (data 'headers dhas?) 
-        (data /headers %headers) 
-        (headers %headers) 
-      if
-      (data 'body dhas?) (data /body %body) when
-    request :response
-    response /status :status
-    response /body :body
-    response handle-errors 
-    (body length 0 >) (body from-json) ({}) if
-    @result
-  )
-) ::
-;; Execute a request using the Github API.
-
-(
-  symbol get-assets
-  (dict :data ==> quot :result)
-  (
-    data /id :id
-    {}
-      "/releases/$#/assets" (id) =% %endpoint
-      "GET" %method
-    gh-req @result
-  )
-) ::
-;; Retrieve the assets from an existing Github release.
-
-(
-  symbol delete-assets
-  (dict :config ==>)
-  (
-    config get-assets :assets
-    config /id :id
-    assets (/id) map :assets-ids
-    assets-ids (
-      :asset
-      {}
-        "/releases/assets/$#" (asset) =% %endpoint
-        "DELETE" %method
-      gh-req pop
-    ) foreach
-  )
-) ::
-;; Delete all assets from an existing Github release.
-
-#| Tasks |#
-
-(
-  symbol draft
-  (==>)
-  (
-    {}
-    "/releases" %endpoint
-    "POST" %method
-    draft-release-body %body
-    gh-req /id string :id
-    ; Save Release ID to min.yml
-    config id %id to-yaml "min.yml" fwrite
-    "Draft release v$# ($#) created successfully" (min-version id) =% notice!
-  )
-) ::
-;; Creates a new draft release on Github.
-
-(
-  symbol update
-  (==>)
-  (
-    config /id :id
-  {}
-    "/releases/$#" (id) =% %endpoint
-    "PATCH" %method
-    draft-release-body %body
-  gh-req /id string :id
-  "Draft release v$# ($#) updated successfully" (min-version id) =% notice!
-  )
-) ::
-;; Updates the text of the current draft Github release.
-
-(
-  symbol assets
-  (==>)
-  (
-    config get-assets =assets 
-    assets size :total
-    "are" :verb
-    (total 1 ==) ("is" @verb) when
-    "There $# $# assets in release v$#" (verb total min-version) =% notice!
-    assets (/name () cons "- $#" swap % notice!) foreach 
-  )
-) ::
-;; Retrieve a list of all the assets of the current draft Github release.
-
-(
-  symbol upload
-  (==>)
-  (
-    config /id :id
-    config delete-assets
-    . ls ("\.zip$" match?) filter 
-    (
-      filename :file
-      "Uploading: $#" (file) =% notice!
-      file fread :body
-      headers "application/zip" %Content-Type :asset-headers
-      {}
-        "/releases/$#/assets?name=$#" (id file) =% %endpoint
-        asset-headers %headers
-        "uploads" %subdomain
-        "POST" %method
-        body %body
-      gh-req pop
-    ) foreach 
-  )
-) ::
-;; Uploads all assets to the current draft Github release, deleting any existing asset.
+#!/usr/bin/env min"_helpers" require :helpers 'helpers import"next-release.md" fread escape :release-body"tasks/data/draft-release.json" fread :draft-release-template config /version :min-versionenv /github-token :tokendraft-release-template ("version" min-version "body" release-body) =% :draft-release-body{}    "application/vnd.github.v3+json" %Accept  "token $#" (token) =% %Authorization  :headers(  symbol handle-errors  (dict :response ==>)  (    response to-json "response.json" fwrite    response /status :status    (status 300 >) (      response /body from-json :body      body /message :message      status string @status      "Error $#: $#" (status message) =% error status int exit    ) when  )) ::;; Handles HTTP errors.(  symbol gh-req  (dict :data ==> dict|quot :result)  (    data /endpoint :endpoint    "api" :subdomain    (data 'subdomain dhas?) (data /subdomain @subdomain) when    "https://$#.github.com/repos/h3rald/min$#" (subdomain endpoint) =% :url    {}      url %url      data /method %method      (data 'headers dhas?)         (data /headers %headers)         (headers %headers)       if      (data 'body dhas?) (data /body %body) when    request :response    response /status :status    response /body :body    response handle-errors     (body length 0 >) (body from-json) ({}) if    @result  )) ::;; Execute a request using the Github API.(  symbol get-assets  (dict :data ==> quot :result)  (    data /id :id    {}      "/releases/$#/assets" (id) =% %endpoint      "GET" %method    gh-req @result  )) ::;; Retrieve the assets from an existing Github release.(  symbol delete-assets  (dict :config ==>)  (    config get-assets :assets    config /id :id    assets (/id) map :assets-ids    assets-ids (      :asset      {}        "/releases/assets/$#" (asset) =% %endpoint        "DELETE" %method      gh-req pop    ) foreach  )) ::;; Delete all assets from an existing Github release.#| Tasks |#(  symbol draft  (==>)  (    {}    "/releases" %endpoint    "POST" %method    draft-release-body %body    gh-req /id string :id    ; Save Release ID to min.yml    config id %id to-yaml "min.yml" fwrite    "Draft release v$# ($#) created successfully" (min-version id) =% notice!  )) ::;; Creates a new draft release on Github.(  symbol update  (==>)  (    config /id :id  {}    "/releases/$#" (id) =% %endpoint    "PATCH" %method    draft-release-body %body  gh-req /id string :id  "Draft release v$# ($#) updated successfully" (min-version id) =% notice!  )) ::;; Updates the text of the current draft Github release.(  symbol assets  (==>)  (    config get-assets =assets     assets size :total    "are" :verb    (total 1 ==) ("is" @verb) when    "There $# $# assets in release v$#" (verb total min-version) =% notice!    assets (/name () cons "- $#" swap % notice!) foreach   )) ::;; Retrieve a list of all the assets of the current draft Github release.(  symbol upload  (==>)  (    config /id :id    config delete-assets    . ls ("\.zip$" match?) filter     (      filename :file      "Uploading: $#" (file) =% notice!      file fread :body      headers "application/zip" %Content-Type :asset-headers      {}        "/releases/$#/assets?name=$#" (id file) =% %endpoint        asset-headers %headers        "uploads" %subdomain        "POST" %method        body %body      gh-req pop    ) foreach   )) ::;; Uploads all assets to the current draft Github release, deleting any existing asset.

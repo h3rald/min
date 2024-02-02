@@ -1,11 +1,1 @@
-
-"min.yml" fread from-yaml :config
-".env.yml" fread from-yaml :env
-
-(
-    symbol required
-    ('sym :prog ==>)
-    (
-        (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when
-    )
-) ::
+"min.yml" fread from-yaml :config".env.yml" fread from-yaml :env(    symbol required    ('sym :prog ==>)    (        (prog which "" ==) ("$# is not available" (prog) =% error 1 exit) when    )) ::

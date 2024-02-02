@@ -1,21 +1,1 @@
-#!/usr/bin/env min
-
-"build" require :build
-"github" require :github
-
-#| Tasks |#
-(
-  symbol default
-  (==>)
-  ( 
-    *build/guide
-    *build/site
-    *build/vim
-    *build/windows
-    *build/linux
-    *build/macosx
-    *github/update
-    *github/upload
-  )
-) ::
-;; Builds min executables and updates the current draft Github release.
+#!/usr/bin/env min"build" require :build"github" require :github#| Tasks |#(  symbol default  (==>)  (     *build/guide    *build/site    *build/vim    *build/windows    *build/linux    *build/macosx    *github/update    *github/upload  )) ::;; Builds min executables and updates the current draft Github release.

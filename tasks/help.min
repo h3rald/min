@@ -1,152 +1,1 @@
-"tasks/data/doc-snippets.json" fread from-json :snippets
-"site/contents" ls ("reference-" match?) filter :src-files
-"(?sm)\{#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|(.+?)#\}" :op-regex
-"(?sm)\{#sig\|\|([^|]+)\|\|([^#]+)#\}" :sig-regex
-"(?sm)\{#alias\|\|([^|]+)\|\|([^#]+)#\}" :alias-regex
-"(?sm)\{\{([^}]+)\}\}" :snippet-regex
-"(?sm)\>( \>)*" :block-regex
-"(?sm)%([^%]+)%" :title-regex
-"(?sm)\{@[^@]+@\}" :incl-regex
-"(?sm)`([^`]+)`" :code-regex
-
-(
-  symbol fix-name
-  (str :s ==> str :result)
-  (
-    s
-      "&excl;" (pop "!") replace-apply
-      "&quot;" (pop "\"") replace-apply
-      "&#124;" (pop "|") replace-apply
-      "\[" (pop "") replace-apply
-      "\]" (pop "") replace-apply
-      "\(class:kwd\)" (pop "") replace-apply
-      "&gt;" (pop ">") replace-apply
-      "&lt;" (pop "<") replace-apply
-      "&apos;" (pop "'") replace-apply
-      "&ast;" (pop "*") replace-apply
-    @result
-  )
-) ::
-;; Fixes names with special characters
-(
-    symbol process-block-markup
-    (str :s ==> str :result)
-    (
-        s 
-            block-regex (pop "") replace-apply
-            title-regex (pop "") replace-apply
-            incl-regex (pop "") replace-apply
-            code-regex (1 get) replace-apply
-        @result
-    )
-) ::
-;; Simplify block-level markup
-
-(
-    symbol process-snippets
-    (str :s ==> str :result)
-    (
-        s snippet-regex (
-            1 get :id
-            snippets id dget
-        ) replace-apply @result
-    )
-) ::
-;; Resolves documentation snippets.
-
-(
-    symbol process
-    (str :s ==> str :result)
-    (
-        s process-snippets process-block-markup strip @result
-    )
-) ::
-;; Processes documentation snippets and markup.
-
-(
-    symbol process-op
-    (quot :matches ==> dict :data)
-    (
-        {}
-            matches 1 get process fix-name %name
-            matches 2 get process fix-name :input
-            matches 3 get process fix-name :output
-            "$# ==> $#" (input output) =% %signature
-            matches 4 get process %description
-            "symbol" %kind
-        @data
-    )   
-) ::
-;; Processes operator reference documentation.
-
-(
-    symbol process-alias
-    (quot :matches ==> dict :data)
-    (
-        {}
-            matches 1 get process fix-name %name
-            matches 2 get :ref
-            "See $#" (ref) =% %description
-            "symbol" %kind
-        @data
-    )   
-) ::
-;; Processes alias reference documentation.
-
-(
-    symbol process-sig
-    (quot :matches ==> dict :data)
-    (
-        {}
-            matches 1 get process fix-name %name
-            matches 2 get :ref
-            "See $#" (ref) =% %description
-            "sigil" %kind
-        @data
-    )   
-) ::
-;; Processes sigil reference documentation.
-
-(
-    symbol default
-    (==>)
-    ( 
-        {} :ref-dict
-        {} :op-dict
-        {} :sig-dict
-        src-files (
-            :file 
-            file "reference-([a-z]+)\.md" search 1 get :mod-id
-            "Processing: $#" (mod-id) =% notice!
-            file fread :contents
-            contents op-regex search-all (
-                process-op :op
-                op /name :op-name
-                op-dict 
-                  op op-name dset
-                @op-dict
-            ) foreach
-            contents alias-regex search-all (
-                process-alias :alias
-                alias /name :alias-name
-                op-dict 
-                  alias alias-name dset
-                @op-dict
-            ) foreach
-            contents sig-regex search-all (
-                process-sig :sig
-                sig /name :sig-name
-                sig-dict 
-                  sig sig-name dset
-                @sig-dict
-            ) foreach
-            ref-dict
-              op-dict   %operators
-              sig-dict  %sigils
-            @ref-dict
-        ) foreach
-        "Writing help.json" notice!
-        ref-dict to-json "help.json" fwrite
-    )
-) ::
-;; Builds the reference help JSON sources.
+"tasks/data/doc-snippets.json" fread from-json :snippets"site/contents" ls ("reference-" match?) filter :src-files"(?sm)\{#op\|\|([^|]+)\|\|([^|]+)\|\|([^|]+)\|\|(.+?)#\}" :op-regex"(?sm)\{#sig\|\|([^|]+)\|\|([^#]+)#\}" :sig-regex"(?sm)\{#alias\|\|([^|]+)\|\|([^#]+)#\}" :alias-regex"(?sm)\{\{([^}]+)\}\}" :snippet-regex"(?sm)\>( \>)*" :block-regex"(?sm)%([^%]+)%" :title-regex"(?sm)\{@[^@]+@\}" :incl-regex"(?sm)`([^`]+)`" :code-regex(  symbol fix-name  (str :s ==> str :result)  (    s      "&excl;" (pop "!") replace-apply      "&quot;" (pop "\"") replace-apply      "&#124;" (pop "|") replace-apply      "\[" (pop "") replace-apply      "\]" (pop "") replace-apply      "\(class:kwd\)" (pop "") replace-apply      "&gt;" (pop ">") replace-apply      "&lt;" (pop "<") replace-apply      "&apos;" (pop "'") replace-apply      "&ast;" (pop "*") replace-apply    @result  )) ::;; Fixes names with special characters(    symbol process-block-markup    (str :s ==> str :result)    (        s             block-regex (pop "") replace-apply            title-regex (pop "") replace-apply            incl-regex (pop "") replace-apply            code-regex (1 get) replace-apply        @result    )) ::;; Simplify block-level markup(    symbol process-snippets    (str :s ==> str :result)    (        s snippet-regex (            1 get :id            snippets id dget        ) replace-apply @result    )) ::;; Resolves documentation snippets.(    symbol process    (str :s ==> str :result)    (        s process-snippets process-block-markup strip @result    )) ::;; Processes documentation snippets and markup.(    symbol process-op    (quot :matches ==> dict :data)    (        {}            matches 1 get process fix-name %name            matches 2 get process fix-name :input            matches 3 get process fix-name :output            "$# ==> $#" (input output) =% %signature            matches 4 get process %description            "symbol" %kind        @data    )   ) ::;; Processes operator reference documentation.(    symbol process-alias    (quot :matches ==> dict :data)    (        {}            matches 1 get process fix-name %name            matches 2 get :ref            "See $#" (ref) =% %description            "symbol" %kind        @data    )   ) ::;; Processes alias reference documentation.(    symbol process-sig    (quot :matches ==> dict :data)    (        {}            matches 1 get process fix-name %name            matches 2 get :ref            "See $#" (ref) =% %description            "sigil" %kind        @data    )   ) ::;; Processes sigil reference documentation.(    symbol default    (==>)    (         {} :ref-dict        {} :op-dict        {} :sig-dict        src-files (            :file             file "reference-([a-z]+)\.md" search 1 get :mod-id            "Processing: $#" (mod-id) =% notice!            file fread :contents            contents op-regex search-all (                process-op :op                op /name :op-name                op-dict                   op op-name dset                @op-dict            ) foreach            contents alias-regex search-all (                process-alias :alias                alias /name :alias-name                op-dict                   alias alias-name dset                @op-dict            ) foreach            contents sig-regex search-all (                process-sig :sig                sig /name :sig-name                sig-dict                   sig sig-name dset                @sig-dict            ) foreach            ref-dict              op-dict   %operators              sig-dict  %sigils            @ref-dict        ) foreach        "Writing help.json" notice!        ref-dict to-json "help.json" fwrite    )) ::;; Builds the reference help JSON sources.
