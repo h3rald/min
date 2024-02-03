@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>min programming language</title>
+        <link>https://min-lang.org/rss.xml</link>
+        <description>The latest news about the min programming language</description>
+        {{#posts}}
+        <item>
+            <title>{{title}}</title>
+            <link>https://min-lang.org/{{id}}</link>
+            <description>
+            {{{contents}}}
+            </description>
+        </item>
+        {{/posts}}
+    </channel> 
+</rss>
