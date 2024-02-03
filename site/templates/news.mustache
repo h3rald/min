@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  {{> _head}}
+  <body>
+    {{> _menu}}
+    <main class="pure-g">
+      <article class="pure-u-5-5">
+        <h1>News</h1>
+        <p>This page lists the latest news about the min programming language.</p>
+        <ul>
+        {{#posts}}
+          <li><a href="/{{id}}">{{date}} &mdash; {{title}}</a></li>
+        {{/posts}}
+        </ul>
+      </article>
+    </main>
+    {{> _footer}}
+  </body>
+</html>

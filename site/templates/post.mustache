@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+  {{> _head}}
+  <body>
+    {{> _menu}}
+    <main class="pure-g">
+      <article class="pure-u-5-5">
+        <h1>{{title}}</h1>
+        <p>Published on: <time datetime="{{date}}">{{date}}</time></p>
+        {{{contents}}}
+      </article>
+    </main>
+    {{> _footer}}
+  </body>
+</html>

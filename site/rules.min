@@ -143,6 +143,14 @@
 when
 
 "Processing contents..." notice!
+
+; Get news
+contents 
+  (:content ((content 'content-type dhas?) (content /content-type "post" ==)) &&)
+filter 
+  (:a :b a /date  b /date >) 
+sort :posts
+
 contents (
   (dict) expect -> :meta
   (
@@ -186,5 +194,17 @@ modules (
   modules             %modules 
 dup
 "mmm" swap mustache %contents output-fwrite
+
+"Generating news page..." notice!
+{}
+  "news/index"     %id
+  "news.html"      %path
+  ".html"          %ext
+  "News"           %title
+  "min language"   %site
+  "page"           %content-type
+  posts            %posts 
+dup
+"news" swap mustache %contents output-fwrite
 
 
