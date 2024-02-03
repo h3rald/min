@@ -487,6 +487,9 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
 
+{#op||tokenize||{{s}}||{{q}}||
+Parses the min program {{s}} and returns a quotation {{q}} containing dictionaries with a `type` symbol and a `value` symbol for each token.#}
+
 {#op||to-json||{{any}}||{{s}}||
 Converts {{any}} into a JSON string.#}
 

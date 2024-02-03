@@ -160,6 +160,8 @@ when isMainModule:
     install [<module>@<version>]   Install the specified managed min module or all dependent modules.
     uninstall [<module>@<version>] Uninstall the specified managed min module or all dependent modules.
     update [<module>@<version>]    Update the specified managed min module or all dependent modules.
+    run <mmm>                      Executes the main symbol exposed by the specified min managed module,
+                                   downloading it and installing it globally if necessary.
     search [...terms...]           Search for a managed min module matching the specified terms.  
     list                           List all managed min modules installed in the local directory or globally.
   Options:

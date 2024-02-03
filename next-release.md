@@ -5,6 +5,7 @@
 ### New Features
 
 - Upgraded OpenSSL to v3.2.0
+- Added the `min run <mmm>` command to (download, install globally, and) execute the `main` symbol of the the specified managed module. For example this functionality can be used to upgrade `.min` files using the `min-upgrade` managed module.
 - mmm: It is now possible to install, uninstall, and update modules by specifying them via `<name>@<version>`.
 - mmm: The version is now optional when installing, uninstalling, and updating modules (the name of the HEAD branch will be used, e.g. "master" or "main", typically).
 
