@@ -22,6 +22,23 @@ import
   ../core/utils,
   ../core/scope
 
+proc processTokenValue(v: string, t: MinTokenKind): string =
+  case t:
+    of tkEof:
+      return ""
+    of tkString:
+      return v.escapeJson
+    of tkLineComment:
+      return ";$#" % [v]
+    of tkLineDocComment:
+      return ";;$#" % [v]
+    of tkBlockDocComment:
+      return "#||$#||#" % [v]
+    of tkBlockComment:
+      return "#|$#|#" % [v]
+    else:
+      return v
+
 proc global_module*(i: In) =
   let def = i.scope
 
@@ -106,7 +123,7 @@ proc global_module*(i: In) =
     if not file.endsWith(".min"):
       file = file & ".min"
     info("[require] File: ", file)
-    let lookup = proc (filename: string): string = 
+    let lookup = proc (filename: string): string =
       # First check in current folder
       result = simplifyPath(filename, file)
       if result.fileExists:
@@ -116,7 +133,8 @@ proc global_module*(i: In) =
       # ...locally...
       let localModuleDir = localDir/"mmm"/m
       if localModuleDir.dirExists:
-        let versions = localModuleDir.walkDir.toSeq.filterIt(it.kind == pcDir or it.kind == pcLinkToDir)
+        let versions = localModuleDir.walkDir.toSeq.filterIt(it.kind == pcDir or
+            it.kind == pcLinkToDir)
         if versions.len > 0:
           let localModuleVersion = versions[0].path
           result = localModuleVersion/"index.min"
@@ -125,7 +143,8 @@ proc global_module*(i: In) =
       # ...and then globally.
       let globalModuleDir = HOME/"mmm"/m
       if globalModuleDir.dirExists:
-        let versions = globalModuleDir.walkDir.toSeq.filterIt(it.kind == pcDir or it.kind == pcLinkToDir)
+        let versions = globalModuleDir.walkDir.toSeq.filterIt(it.kind ==
+            pcDir or it.kind == pcLinkToDir)
         if versions.len > 0:
           let globalModuleVersion = versions[0].path
           result = globalModuleVersion/"index.min"
@@ -1137,13 +1156,13 @@ proc global_module*(i: In) =
     var q = newSeq[MinValue](0)
     var dict = newDict(i.scope)
     i.dset(dict, "type", newVal($t))
-    i.dset(dict, "value", p.a.newVal)
+    i.dset(dict, "value", p.a.processTokenValue(t).newVal)
     q.add dict
     while t != tkEof:
       t = p.getToken()
       var dict = newDict(i.scope)
       i.dset(dict, "type", newVal($t))
-      i.dset(dict, "value", p.a.newVal)
+      i.dset(dict, "value", p.a.processTokenValue(t).newVal)
       q.add dict
     i.push q.newVal
 

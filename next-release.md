@@ -11,5 +11,6 @@
 ### Fixes and Improvements
 
 - Added check to prevent installing local managed modules in the HOME directory or $HOME/mmm.
+- Changed `tokenize` symbol so that it returns the full token, including delimiters (for strings and comments).
 
 

@@ -19,7 +19,7 @@ import
   mmm]
 import
   minpkg/lib/[
-    min_lang
+    min_global
   ]
 
 export
@@ -31,7 +31,7 @@ export
   shell,
   scope,
   stdlib,
-  min_lang,
+  min_global,
   niftylogger
 
 var NIMOPTIONS* = ""
