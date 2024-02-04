@@ -826,7 +826,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       var instructions = p.compileMinValue(i, false, indent)
       let v = instructions.pop
       result = result.concat(instructions)
-      result.add indent&qvar&".add "&v
+      if v.len > 0:
+        result.add indent&qvar&".add "&v
     eat(p, tkBracketRi)
     result.add op&"MinValue(kind: minQuotation, qVal: "&qvar&")"
   of tkSqBracketLe, tkSqBracketRi:
@@ -878,7 +879,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     discard getToken(p)
   of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
     discard getToken(p)
-    result = p.compileMinValue(i, push, indent)
+    result = @[""]
+    #result = p.compileMinValue(i, push, indent)
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
