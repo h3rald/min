@@ -127,7 +127,7 @@ To execute a min script, you can:
 
 * Run `min eval "... program..."` to execute a program inline.
 * Run `min myfile.min` to execute a program contained in a file.
-* Run `min run <mmm>` to execute the `main` symbol of the specified [min managed module](/learn-mmm/). If the managed module is not installed globally, it will be downloaded and installed automatically.
+* Run `min run <mmm>` to execute the `main` symbol of the specified {#link-page||learn-mmm||min managed module#}. If the managed module is not installed globally, it will be downloaded and installed automatically.
 
 min also supports running programs from standard input, so the following command can also be used (on Unix-like system) to run a program saved in [myfile.min](class:file):
 
