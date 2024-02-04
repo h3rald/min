@@ -35,6 +35,16 @@ jobs:
             # Checks out the repository
             - uses: actions/checkout@v2
 
+            # Sets path (Linux, macOS)
+            - name: Update $PATH
+              run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
+              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+
+            # Sets path (Windows)
+            - name: Update %PATH%
+              run: echo "${HOME}/.nimble/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+              if: matrix.os == 'windows-latest'
+              
             # Installs libraries
             - name: install musl-gcc
               run: sudo apt-get install -y musl-tools
@@ -55,16 +65,6 @@ jobs:
                   mingw-w64-x86_64-toolchain
                   mingw-w64-x86_64-autotools
 
-            # Sets path (Linux, macOS)
-            - name: Update $PATH
-              run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
-              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
-
-            # Sets path (Windows)
-            - name: Update %PATH%
-              run: echo "${HOME}/.nimble/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-              if: matrix.os == 'windows-latest'
-
             # Install the Nim compiler and dependencies
             - name: Install Nim and deps
               run: |
@@ -83,7 +83,8 @@ jobs:
 
             # Build for Windows
             - name: Build (Windows)
-              run: nimble build -v -y -d:release --opt:size --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
+              shell: msys2 {0}
+              run: nimble build -v -y -d:release --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
               if: matrix.os == 'windows-latest'
 
             # UPX compress (*nix) 
