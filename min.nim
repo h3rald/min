@@ -316,7 +316,11 @@ when isMainModule:
           executeMmmCmd(proc () = MMM.list(MMM.globalDir))
         else:
           executeMmmCmd(proc () = MMM.list(MMM.localDir))
-    minFile fn, op
+      else:
+        logging.error "File not found: $#" % [file]
+        quit(1)
+    else:
+      minFile fn, op
   elif SIMPLEREPL:
     minSimpleRepl()
     quit(0)
