@@ -13,5 +13,6 @@
 
 - Added check to prevent installing local managed modules in the HOME directory or $HOME/mmm.
 - Changed `tokenize` symbol so that it returns the full token, including delimiters (for strings and comments).
+- Fixed regression in `min compile` command introduced in the previews version due to parses changes.
 
 

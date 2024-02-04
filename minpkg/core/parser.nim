@@ -878,8 +878,9 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     p.a = ""
     discard getToken(p)
   of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
-    discard getToken(p)
+    eat(p, p.token)
     result = @[""]
+    #discard getToken(p)
     #result = p.compileMinValue(i, push, indent)
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
