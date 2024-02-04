@@ -1,4 +1,4 @@
-import 
+import
     std/[json,
     os,
     osproc,
@@ -23,25 +23,28 @@ type
     MMMAlreadyInstalledError = ref object of MMMError
 
 
-proc raiseError(msg: string) = 
+proc raiseError(msg: string) =
     raise MMMError(msg: msg)
 
-proc raiseAlreadyInstalledError(msg: string) = 
+proc raiseAlreadyInstalledError(msg: string) =
     raise MMMAlreadyInstalledError(msg: msg)
 
-proc getDefaultGitBranch(repo: string): string = 
+proc getDefaultGitBranch(repo: string): string =
     let res = execCmdEx("git remote show $#" % [repo])
-    return res.output.splitLines().filterIt(it.contains("HEAD branch:"))[0].split(":")[1].strip
+    return res.output.splitLines().filterIt(it.contains("HEAD branch:"))[
+            0].split(":")[1].strip
 
-proc getModuleByName(MMM: var MinModuleManager, name: string): JsonNode = 
+proc getModuleByName(MMM: var MinModuleManager, name: string): JsonNode =
     let match = MMM.modules.filterIt(it.hasKey("name") and it["name"] == %name)
     if match.len == 0:
         raiseError "Module '$#' not found." % [name]
     return match[0]
 
-proc forbidLocalModulesInGlobalDir(MMM: var MinModuleManager, op: string) = 
-    if MMM.localDir == MMM.globalDir or MMM.localDir.startsWith(MMM.globalDir/"mmm"):
-        raiseError "Cannot $# a module in the global directory without specifying -g." % [op]
+proc forbidLocalModulesInGlobalDir(MMM: var MinModuleManager, op: string) =
+    if MMM.localDir == MMM.globalDir or MMM.localDir.startsWith(
+            MMM.globalDir/"mmm"):
+        raiseError "Cannot $# a module in the global directory without specifying -g." %
+                [op]
 
 proc setup*(MMM: var MinModuleManager, check = true) =
     MMM.registry = MMMREGISTRY
@@ -67,7 +70,8 @@ proc setup*(MMM: var MinModuleManager, check = true) =
         var updatedRemote = 0
         try:
             debug "Checking remote registry"
-            updatedRemote = client.getContent(MMMREGISTRY & "/mmm.timestamp").parseInt
+            updatedRemote = client.getContent(MMMREGISTRY &
+                    "/mmm.timestamp").parseInt
             debug "Remote registry timestamp retrieved."
         except CatchableError:
             debug getCurrentExceptionMsg()
@@ -77,7 +81,8 @@ proc setup*(MMM: var MinModuleManager, check = true) =
             try:
                 client.downloadFile(MMMREGISTRY & "/mmm.json", mmmJson)
             except CatchableError:
-                warn "Unable to download remote registry data ($#)" % [MMMREGISTRY & "/mmm.json"]
+                warn "Unable to download remote registry data ($#)" % [
+                        MMMREGISTRY & "/mmm.json"]
                 debug getCurrentExceptionMsg()
             try:
                 let data = parseFile(mmmJson)
@@ -86,7 +91,7 @@ proc setup*(MMM: var MinModuleManager, check = true) =
                 debug getCurrentExceptionMsg()
                 raiseError "Invalid local registry data ($#)" % [mmmJson]
         else:
-            debug "Local registry up-to-date: $#" % [$updatedLocal] 
+            debug "Local registry up-to-date: $#" % [$updatedLocal]
 
 proc init*(MMM: var MinModuleManager) =
     let pwd = getCurrentDir()
@@ -108,7 +113,7 @@ proc init*(MMM: var MinModuleManager) =
         debug "Creating mmm directory"
         createDir(pwd / "mmm")
     notice "Created a mmm.json file in the current directory"
-    
+
 proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
     forbidLocalModulesInGlobalDir(MMM, "uninstall")
     var dir: string
@@ -123,11 +128,12 @@ proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
     else:
         if version == "":
             let url = MMM.getModuleByName(name)["url"].getStr
-            try: 
+            try:
                 version = getDefaultGitBranch(url)
                 versionLabel = version
             except CatchableError:
-                raiseError "Unable to determine default branch for module '$#'" % [name]
+                raiseError "Unable to determine default branch for module '$#'" %
+                        [name]
         if global:
             dir = MMM.globalDir / name / version
         else:
@@ -135,7 +141,7 @@ proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
     debug "Directory: $#" % [dir]
     let pwd = getCurrentDir()
     if not global and not fileExists(pwd / "mmm.json"):
-          raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
+        raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     if not dir.dirExists():
         raiseError "Module '$#' (version: $#) is not installed." % [name, versionLabel]
     notice "Uninstalling module $#@$#..." % [name, versionLabel]
@@ -156,8 +162,9 @@ proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
     notice "Uninstall complete."
 
 
-proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
-    let   parts = nameAndVersion.split("@")
+proc uninstall*(MMM: var MinModuleManager, nameAndVersion: string,
+        global = false) =
+    let parts = nameAndVersion.split("@")
     if parts.len != 2:
         MMM.uninstall nameAndVersion, "", global
         return
@@ -188,9 +195,10 @@ proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
     let data = results[0]
     if not data.hasKey("method"):
         raiseError "Installation method not specified for module '$#'" % [name]
-    let meth = data["method"].getStr 
+    let meth = data["method"].getStr
     if meth != "git":
-        raiseError "Unable to install module '$#': Installation method '$#' is not supported" % [name, meth]
+        raiseError "Unable to install module '$#': Installation method '$#' is not supported" %
+                [name, meth]
     if not data.hasKey("url"):
         raiseError "URL not specified for module '$#'" % [name]
     let url = data["url"].getStr
@@ -204,11 +212,13 @@ proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
     else:
         dir = MMM.localDir / name / version
         if not fileExists(pwd / "mmm.json"):
-             raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
+            raiseError "mmm.json not found in current directory. Please run min init to initialize your managed module."
     if dir.dirExists():
-        raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." % [name, version]
+        raiseAlreadyInstalledError "Module '$#' (version: $#) is already installed." %
+                [name, version]
     dir.createDir()
-    let cmd = "git clone $# -b $# --depth 1 \"$#\"" % [url, version, dir.replace("\\", "/")]
+    let cmd = "git clone $# -b $# --depth 1 \"$#\"" % [url, version,
+            dir.replace("\\", "/")]
     debug cmd
     notice "Installing module $#@$#..." % [name, version]
     if not data.hasKey("deps"):
@@ -231,12 +241,12 @@ proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
                 break
     # re-check if dependency installation failed.
     if result == 0:
-            if not global:
-                # Add dependency to current dir's mmm.json file.
-                let mmmJson = dir/"mmm.json"
-                var data = mmmJson.parseFile
-                data["deps"][name] = %($version)
-                mmmJson.writeFile(data.pretty)
+        if not global:
+            # Add dependency to current dir's mmm.json file.
+            let mmmJson = dir/"mmm.json"
+            var data = mmmJson.parseFile
+            data["deps"][name] = %($version)
+            mmmJson.writeFile(data.pretty)
     else:
         # Rollback
         warn "Installation failed - Rolling back..."
@@ -250,8 +260,9 @@ proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
         finally:
             raiseError "Installation failed."
 
-proc install*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
-    let   parts = nameAndVersion.split("@")
+proc install*(MMM: var MinModuleManager, nameAndVersion: string,
+        global = false) =
+    let parts = nameAndVersion.split("@")
     if parts.len != 2:
         MMM.install nameAndVersion, "", global
         return
@@ -276,7 +287,8 @@ proc install*(MMM: var MinModuleManager) =
             continue
         except CatchableError:
             debug getCurrentExceptionMsg()
-            warn "Installation of module $#@$# failed - Rolling back..." % [name, version]
+            warn "Installation of module $#@$# failed - Rolling back..." % [
+                    name, version]
             try:
                 MMM.setup(false)
                 MMM.uninstall(name, version)
@@ -328,6 +340,7 @@ proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
         dir = MMM.globalDir / name / version
     else:
         dir = MMM.localDir / name / version
+    debug "Dir: $#" % [dir]
     if not dir.dirExists():
         raiseError "Module '$#' (version: $#) is not installed." % [name, version]
     # Read local mmm.json
@@ -338,12 +351,14 @@ proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
     try:
         data = mmmJson.parseFile
     except CatchableError:
-        raiseError "Unable to parse mmm.json file for managed module $#@$#" % [name, version]
+        raiseError "Unable to parse mmm.json file for managed module $#@$#" % [
+                name, version]
     if not data.hasKey("method"):
         raiseError "Installation method not specified for module '$#'" % [name]
-    let meth = data["method"].getStr 
+    let meth = data["method"].getStr
     if meth != "git":
-        raiseError "Unable to install module '$#': Installation method '$#' is not supported" % [name, meth]
+        raiseError "Unable to install module '$#': Installation method '$#' is not supported" %
+                [name, meth]
     if not data.hasKey("url"):
         raiseError "URL not specified for module '$#'" % [name]
     let url = data["url"].getStr
@@ -361,13 +376,16 @@ proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
             notice "Updating dependencies..."
         for depName, depVersion in data["deps"].pairs:
             try:
+                debug "Updating dep: $#@$# (global: $#)" % [depName,
+                        depVersion.getStr, $global]
                 MMM.update depName, depVersion.getStr, global
             except CatchableError:
                 warn getCurrentExceptionMsg()
                 raiseError "Update of module '$#@$#' failed." % [name, version]
 
-proc update*(MMM: var MinModuleManager, nameAndVersion: string, global = false) =
-    let   parts = nameAndVersion.split("@")
+proc update*(MMM: var MinModuleManager, nameAndVersion: string,
+        global = false) =
+    let parts = nameAndVersion.split("@")
     if parts.len != 2:
         MMM.update nameAndVersion, "", global
         return
@@ -391,7 +409,7 @@ proc update*(MMM: var MinModuleManager) =
             debug getCurrentExceptionMsg()
             warn "Update of module '$#@$#' failed." % [name, version]
 
-proc search*(MMM: var MinModuleManager, search="") = 
+proc search*(MMM: var MinModuleManager, search = "") =
     let rateModule = proc(it: JsonNode): JsonNode =
         var score = 0
         if it["name"].getStr.contains(search):
@@ -402,13 +420,15 @@ proc search*(MMM: var MinModuleManager, search="") =
             score += 1
         it["score"] = %score
         return it
-    let sortModules = proc(x, y: JsonNode): int = 
+    let sortModules = proc(x, y: JsonNode): int =
         cmp(x["score"].getInt, y["score"].getInt)
     let formatDeps = proc(deps: JsonNode): string =
-        result = deps.pairs.toSeq().mapIt("$#@$#" % [it.key, it.val.getStr]).join(", ")
+        result = deps.pairs.toSeq().mapIt("$#@$#" % [it.key,
+                it.val.getStr]).join(", ")
         if result == "":
             result = "n/a"
-    var results = MMM.modules.getElems().map(rateModule).filterIt(it["score"].getInt > 0)
+    var results = MMM.modules.getElems().map(rateModule).filterIt(it[
+            "score"].getInt > 0)
     results.sort(sortModules)
     var msg = "$# results found:"
     if results.len == 1:
@@ -417,11 +437,11 @@ proc search*(MMM: var MinModuleManager, search="") =
         msg = "No results found."
     notice msg % [$results.len]
     for m in results:
-       notice "-> $#" % [m["name"].getStr] 
-       notice "   Description: $#" % [m["description"].getStr] 
-       notice "   Author: $#" % [m["author"].getStr] 
-       notice "   License: $#" % [m["license"].getStr] 
-       notice "   Dependencies: $#" % [m["deps"].formatDeps] 
+        notice "-> $#" % [m["name"].getStr]
+        notice "   Description: $#" % [m["description"].getStr]
+        notice "   Author: $#" % [m["author"].getStr]
+        notice "   License: $#" % [m["license"].getStr]
+        notice "   Dependencies: $#" % [m["deps"].formatDeps]
 
 proc list*(MMM: var MinModuleManager, dir: string, level = 0) =
     debug "Directory: " & dir
@@ -433,6 +453,7 @@ proc list*(MMM: var MinModuleManager, dir: string, level = 0) =
             for version in (name.path).walkDir:
                 debug "Module version directory: " & version.path
                 if name.kind == pcDir or name.kind == pcLinkToDir:
-                    notice " ".repeat(level) & "$#@$#" % [name.path.lastPathPart, version.path.lastPathPart]
+                    notice " ".repeat(level) & "$#@$#" % [
+                            name.path.lastPathPart, version.path.lastPathPart]
                     MMM.list version.path/"mmm", level+1
 
