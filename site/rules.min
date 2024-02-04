@@ -4,6 +4,7 @@
 'min-highlight import
 
 () :modules
+() :posts
 
 ;Routing
 (
@@ -46,6 +47,15 @@
         highlight-codeblocks highlight-codes @contents temp
       )
       (contents %contents)
+      (
+        ; Save post content (plain HTML fragment, no template)
+        :temp
+        (temp /content-type "post" ==)
+          ; Need to save html fragment separately because contents is overwritten.
+          (temp dup /contents %fragment posts append @posts)
+        when
+        temp
+      )
       (:temp tpl temp mustache @page temp)
       (page %contents)
     ) tap @result
@@ -190,11 +200,12 @@ dup
 
 "Generating news page..." notice!
 ; Get news
-contents 
-  (:content ((content 'content-type dhas?) (content /content-type "post" ==)) &&)
-filter 
+;contents 
+;  (:content ((content 'content-type dhas?) (content /content-type "post" ==)) &&)
+;filter
+posts 
   (:a :b a /date  b /date >) 
-sort :posts
+sort @posts
 
 {}
   "news/index"     %id
