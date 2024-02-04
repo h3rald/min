@@ -17,6 +17,13 @@ when defined(ssl):
   import
     openssl
 
+  when defined(windows) and defined(amd64):
+    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
+  elif defined(linux) and defined(amd64):
+    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
+  elif defined(macosx) and defined(amd64):
+    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+
   proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
   proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
   proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
@@ -40,13 +47,6 @@ proc crypto_module*(i: In) =
     i.push s.getString.decode.newVal
 
   when defined(ssl):
-
-    when defined(windows) and defined(amd64):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
-    elif defined(linux) and defined(amd64):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
-    elif defined(macosx) and defined(amd64):
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
 
     proc hash(s: string, kind: EVP_MD, size: int): string =
       var hash = alloc[ptr cuint](size)
