@@ -234,7 +234,6 @@ when isMainModule:
             discard
       else:
         discard
-  var op = "interpret"
   if MODULEPATH.len > 0:
     for f in walkDirRec(MODULEPATH):
       if f.endsWith(".min"):
@@ -246,7 +245,6 @@ when isMainModule:
     var fn = resolveFile(file)
     if fn == "":
       if file == "compile":
-        op = "compile"
         if args.len < 2:
           logging.error "No file was specified."
           quit(8)
@@ -254,6 +252,8 @@ when isMainModule:
         if fn == "":
           logging.error "File '$#' does not exist." % [args[1]]
           quit(9)
+        minFile fn, "compile"
+        quit(0)
       elif file == "eval":
         if args.len < 2:
           logging.error "No string to evaluate was specified."
@@ -320,7 +320,7 @@ when isMainModule:
         logging.error "File not found: $#" % [file]
         quit(1)
     else:
-      minFile fn, op
+      minFile fn, "interpret"
   elif SIMPLEREPL:
     minSimpleRepl()
     quit(0)
@@ -329,4 +329,4 @@ when isMainModule:
       minRepl()
       quit(0)
     else:
-      minStream newFileStream(stdin), "stdin", op
+      minStream newFileStream(stdin), "stdin", "interpret"
