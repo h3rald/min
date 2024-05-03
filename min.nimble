@@ -1,13 +1,9 @@
-import 
-  minpkg/core/meta
-
 # Package
 
-version       = pkgVersion
-author        = pkgAuthor
-description   = pkgDescription
+version       = "0.43.1"author        = "Fabio Cevasco"
+description   = "A small but practical concatenative programming language and shell."
 license       = "MIT"
-bin           = @[pkgName]
+bin           = @["min"]
 installExt    = @["nim", "c", "h", "a"]
 installFiles  = @["min.yml", "min.nim", "prelude.min", "help.json"]
 installDirs   = @["minpkg"]

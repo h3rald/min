@@ -126,11 +126,7 @@ Returns {{s}} containing {{sl}} repeated {{i}} times.#}
 > > 
 > > `"-1--2--3--4-"`
 > > 
-> > Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation:
-> >      ("-1-" "1")
-> >      ("-2-" "2")
-> >      ("-3-" "3")
-> >      ("-4-" "4") #}
+> > Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation: `("-1-" "1") ("-2-" "2") ("-3-" "3") ("-4-" "4")` #}
 
 {#op||search||{{s1}} {{s2}}||{{q}}||
 > Returns a quotation containing the first occurrence of {{s2}} within {{s1}}. Note that:
