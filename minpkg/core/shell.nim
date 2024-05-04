@@ -99,7 +99,8 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
       f = f.replace("\\", "/")
       if f[f.len-1] != '/':
         f = f & "/"
-      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace("\\", "/")])
+      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace(
+          "\\", "/")])
     else:
       var dir: string
       if f.contains("/") or dir.contains("\\"):
@@ -116,7 +117,7 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
   return symbols
 
 proc p(s: string, color = fgWhite) =
-  if SIMPLEREPL:
+  if SIMPLEREPL or not COLOR:
     stdout.write(s)
   else:
     stdout.styledWrite(color, s)

@@ -4,6 +4,9 @@ import
   terminal,
   exitprocs]
 
+import
+  ./env
+
 if isatty(stdin):
   addExitProc(resetAttributes)
 
@@ -34,10 +37,12 @@ method log*(logger: NiftyLogger; level: Level; args: varargs[string, `$`]) =
       f = stderr
     let ln = substituteLog(logger.fmtStr, level, args)
     let prefix = level.logPrefix()
-    f.setForegroundColor(prefix.color)
+    if COLOR:
+      f.setForegroundColor(prefix.color)
     f.write(prefix.msg)
     f.write(ln)
-    resetAttributes()
+    if COLOR:
+      resetAttributes()
     f.write("\n")
     if level in {lvlError, lvlFatal}: flushFile(f)
 

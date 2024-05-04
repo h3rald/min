@@ -14,6 +14,9 @@ Prints {{s1}} (prompt), reads a line from STDIN and places it on top of the stac
 
 {#op||clear||{{none}}||{{none}}||
 Clears the screen.#}
+
+{#op||color||{{b}}||{{none}}||
+Enables or disabled color output in terminal (enabled by default).#}
  
 {#op||column-print||{{q}} {{i}}||{{any}}||
 Prints all elements of {{q}} to STDOUT, in {{i}} columns.#}

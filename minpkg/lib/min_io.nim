@@ -46,6 +46,10 @@ proc io_module*(i: In) =
       ic.apply(q)
     KEYMAP[key] = action
 
+  def.symbol("color") do (i: In):
+    let vals = i.expect("bool")
+    COLOR = vals[0].boolVal
+
   def.symbol("newline") do (i: In):
     echo ""
 

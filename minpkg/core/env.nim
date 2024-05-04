@@ -22,4 +22,6 @@ var MINCOMPILED* {.threadvar.}: bool
 MINCOMPILED = false
 var DEV* {.threadvar.}: bool
 DEV = false
+var COLOR* {.threadvar.}: bool
+COLOR = true
 
