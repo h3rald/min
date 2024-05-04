@@ -40,5 +40,9 @@
     xnode to-xml "<document>\n  <b>this is a test</b>\n  <img src=\"test.jpg\" />\n  <i>&amp;copy</i>\n</document>" ==
    ) *test/assert
 
+   (
+    "&gt;" xentity xentity2utf8 ">" ==
+   ) *test/assert
+
   *test/report
   clear-stack

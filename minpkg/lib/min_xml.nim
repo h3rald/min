@@ -119,6 +119,13 @@ proc xml_module*(i: In) =
         let vals = i.expect("'sym")
         i.push i.newXDict(newEntity(vals[0].getString))
 
+    def.symbol("xentity2utf8") do (i: In):
+        let vals = i.expect("dict:xml-entity")
+        var entity = i.dget(vals[0], "text").getString
+        # Strip & and ;
+        entity = entity[1..entity.len-2]
+        i.push entity.entityToUtf8.newVal
+
     def.symbol("xelement") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newElement(vals[0].getString))

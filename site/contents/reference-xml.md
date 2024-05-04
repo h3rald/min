@@ -41,6 +41,17 @@ Returns a {{xelement}} representing an XML element (it will be an empty element 
 {#op||xentity||{{sl}}||{{xentity}}||
 Returns a {{xentity}} representing an XML entity. #}
 
+{#op||xentity2utf8||{{dict:xentity}}||{{s}}||
+> Returns the UTF-8 symbol corresponding to the specified XML entity. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program prints `p` to the screen:
+> > 
+> >      "&gt;" xentity xentity2utf8 puts 
+ #}
+
 {#op||xquery||{{xelement}} {{sl}}||{{xelement}}||
 > Returns an {{xelement}} representing the first element matching CSS the selector {{sl}}.
 > 
