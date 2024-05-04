@@ -4,8 +4,11 @@ title: "xml Module"
 -----
 {@ _defs_.md || 0 @}
 
+{#op||from-html||{{sl}}||{{xnode}}||
+Returns an {{xnode}} representing an HTML string (wrapped in a `<document>` tag unless a valid HTML document is provided as input).#}
+
 {#op||from-xml||{{sl}}||{{xnode}}||
-> Returns an {{xnode}} representing an XML string representing an element or fragment.
+> Returns an {{xnode}} representing an XML string (element or fragment).
 > 
 > > %sidebar%
 > > Example

@@ -35,5 +35,10 @@
     size 2 ==
    ) *test/assert
 
+   (
+    "<b>this is a test</b><img src='test.jpg'><i>&copy</i>" from-html :xnode
+    xnode to-xml "<document>\n  <b>this is a test</b>\n  <img src=\"test.jpg\" />\n  <i>&amp;copy</i>\n</document>" ==
+   ) *test/assert
+
   *test/report
   clear-stack

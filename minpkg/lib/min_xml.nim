@@ -3,6 +3,7 @@ import
     std/[xmlparser,
     xmltree,
     parsexml,
+    htmlparser,
     strtabs,
     critbits]
 import
@@ -87,6 +88,16 @@ proc xml_module*(i: In) =
         try:
             let xml = parseXml(s, {reportComments, allowUnquotedAttribs,
                     allowEmptyAttribs})
+            i.push(i.newXDict(xml))
+        except CatchableError:
+            let msg = getCurrentExceptionMsg()
+            raiseInvalid(msg)
+
+    def.symbol("from-html") do (i: In):
+        let vals = i.expect("str")
+        let s = vals[0].getString()
+        try:
+            let xml = parseHtml(s)
             i.push(i.newXDict(xml))
         except CatchableError:
             let msg = getCurrentExceptionMsg()
