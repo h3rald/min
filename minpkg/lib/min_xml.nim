@@ -126,6 +126,10 @@ proc xml_module*(i: In) =
         entity = entity[1..entity.len-2]
         i.push entity.entityToUtf8.newVal
 
+    def.symbol("xescape") do (i: In):
+        let vals = i.expect("'sym")
+        i.push vals[0].getString.escape.newVal
+
     def.symbol("xelement") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newElement(vals[0].getString))

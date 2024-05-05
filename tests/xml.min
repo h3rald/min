@@ -44,5 +44,9 @@
     "&gt;" xentity xentity2utf8 ">" ==
    ) *test/assert
 
+   (
+    "This is a <i>test</i>" xescape "This is a &lt;i&gt;test&lt;/i&gt;" ==
+   ) *test/assert
+
   *test/report
   clear-stack
