@@ -54,11 +54,11 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     return symbols.mapIt("#" & $it)
   if word.startsWith(">"):
     return symbols.mapIt(">" & $it)
-  if word.startsWith("*") and word.contains("/"):
-    let dicts = word.substr(1).split("/")
+  if word.contains("."):
+    let dicts = word.split(".")
     var op: MinOperator
     var dict: MinValue
-    var path = "*"
+    var path = ""
     for d in dicts:
       if dict.isNil:
         if i.scope.symbols.hasKey(d):
@@ -67,23 +67,15 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
             dict = op.mdl
           elif op.kind == minValOp and op.val.kind == minDictionary:
             dict = op.val
-        path &= d & "/"
+        path &= d & "."
       elif dict.dVal.hasKey(d):
         op = dict.dVal[d]
         if op.kind == minProcOp and not op.mdl.isNil:
           dict = op.mdl
         elif op.kind == minValOp and op.val.kind == minDictionary:
           dict = op.val
-        path &= d & "/"
+        path &= d & "."
     return dict.dVal.keys.toSeq.mapIt(path & it)
-  if word.startsWith("*"):
-    let filterProc = proc (it: string): bool =
-      let op = i.scope.symbols[it]
-      if op.kind == minProcOp and not op.mdl.isNil:
-        return true
-      else:
-        return op.kind == minValOp and op.val.kind == minDictionary
-    return symbols.filter(filterProc).mapIt("*" & $it)
   if word.startsWith("("):
     return symbols.mapIt("(" & $it)
   if word.startsWith("<"):
@@ -114,6 +106,14 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
         return toSeq(walkDir(dir, true)).filterIt(
             it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1\"" % [
             it.path.replace("\\", "/")])
+  if word.startsWith("*"):
+    let filterProc = proc (it: string): bool =
+      let op = i.scope.symbols[it]
+      if op.kind == minProcOp and not op.mdl.isNil:
+        return true
+      else:
+        return op.kind == minValOp and op.val.kind == minDictionary
+    return symbols.filter(filterProc).mapIt("*" & $it)
   return symbols
 
 proc p(s: string, color = fgWhite) =

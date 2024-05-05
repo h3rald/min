@@ -27,7 +27,7 @@ var COMPILEDMINFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
 var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
-const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
+const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*_-]*$"
 
 proc diff*(a, b: seq[MinValue]): seq[MinValue] =
   result = newSeq[MinValue](0)
@@ -250,6 +250,24 @@ proc pushSym*(i: In, s: string) =
     outerSym: i.currSym.symVal,
     docComment: i.currSym.docComment)
 
+proc getSymbolPath*(i: In, symbol: string) =
+  let parts = symbol.split(".")
+  if parts.len < 2:
+    raiseInvalid("Dictionary identifier not specified")
+  i.pushSym parts[0]
+  for p in 0..parts.len-2:
+    let mdl = i.pop
+    if mdl.kind != minDictionary:
+      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
+    let symId = parts[p+1]
+    let origScope = i.scope
+    i.scope = mdl.scope
+    if not i.scope.parent.isNil:
+      i.scope.parent = origScope
+    let sym = i.scope.getSymbol(symId)
+    i.apply(sym)
+    i.scope = origScope
+
 proc push*(i: In, val: MinValue) =
   if val.kind == minSymbol:
     i.debug(val)
@@ -265,8 +283,11 @@ proc push*(i: In, val: MinValue) =
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol), symbol
     else:
+      # Process dictionary access
+      if symbol.contains('.'):
+        i.getSymbolPath(symbol)
       # Check if symbol ends with ! (auto-popping)
-      if symbol.len > 1 and symbol[symbol.len-1] == '!':
+      elif symbol.len > 1 and symbol[symbol.len-1] == '!':
         let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)

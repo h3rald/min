@@ -351,6 +351,11 @@
     and 
   ) *test/assert
 
+  (
+    {{1 :aa} :a 2 :b} :test1
+    test1.b test1.a.aa + 3 ==
+  ) *test/assert
+
   *test/report
   ; Tidy up
   clear-stack
