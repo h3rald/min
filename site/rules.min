@@ -31,6 +31,22 @@
   )
 ) ::
 
+
+(
+  symbol convert-html-entities
+  (str :content ==> str :result)
+  (
+    content "&[^;]+;" 
+      (
+        0 get :entity
+        (("&lt;" "&gt;" "&amp;" "&apos;" "&quot;") entity in? not)
+          (entity xentity xentity2utf8 @entity)
+        when
+        entity 
+      ) replace-apply @result
+  ) 
+) ::
+
 ;Processing operators
 (
   symbol process-md-with-template
@@ -52,7 +68,7 @@
         :temp
         (temp /content-type "post" ==)
           ; Need to save html fragment separately because contents is overwritten.
-          (temp dup /contents %fragment posts append @posts)
+          (temp dup /contents convert-html-entities %fragment posts append @posts)
         when
         temp
       )
@@ -200,9 +216,6 @@ dup
 
 "Generating news page..." notice!
 ; Get news
-;contents 
-;  (:content ((content 'content-type dhas?) (content /content-type "post" ==)) &&)
-;filter
 posts 
   (:a :b a /date  b /date >) 
 sort @posts

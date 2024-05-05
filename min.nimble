@@ -1,11 +1,13 @@
 # Package
 
-version       = "0.44.0"author        = "Fabio Cevasco"
+version       = "0.44.0"
+author        = "Fabio Cevasco"
 description   = "A small but practical concatenative programming language and shell."
 license       = "MIT"
 bin           = @["min"]
 installExt    = @["nim", "c", "h", "a"]
 installFiles  = @["min.yml", "min.nim", "prelude.min", "help.json"]
+skipFiles     = @["mintool.min"]
 installDirs   = @["minpkg"]
 
 # Dependencies
