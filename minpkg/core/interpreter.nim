@@ -3,6 +3,7 @@ import
   strutils,
   sequtils,
   os,
+  nre,
   osproc,
   critbits,
   json,
@@ -267,6 +268,62 @@ proc getSymbolPath*(i: In, symbol: string) =
     let sym = i.scope.getSymbol(symId)
     i.apply(sym)
     i.scope = origScope
+
+proc setSymbolPath*(i: In, symbol: string, q1: MinValue, mustExist: bool) =
+  let parts = symbol.split(".")
+  if parts.len < 2:
+    raiseInvalid("Dictionary identifier not specified")
+  i.pushSym parts[0]
+  var count = 0
+  for p in 0..parts.len-2:
+    let mdl = i.pop
+    if mdl.kind != minDictionary:
+      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
+    let symId = parts[p+1]
+    let origScope = i.scope
+    i.scope = mdl.scope
+    if not i.scope.parent.isNil:
+      i.scope.parent = origScope
+    var sym: MinOperator
+    var notFound = false
+    try:
+      sym = i.scope.getSymbol(symId)
+    except CatchableError:
+      notFound = true
+      discard
+    if (notFound and mustExist):
+      raiseInvalid("Symbol $# does not exist" % [symId])
+    if count >= parts.len-2:
+      if not symId.contains re(USER_SYMBOL_REGEX):
+        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symId)
+      info "[define] $1 = $2" % [symbol, $q1]
+      if mdl.scope.symbols.hasKey(symId) and mdl.scope.symbols[symId].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
+      mdl.scope.symbols[symId] = MinOperator(kind: minValOp, val: q1,
+          sealed: false, quotation: q1.isQuotation)
+    i.scope = origScope
+    count = count+1
+
+proc getSymbolObjectPath*(i: In, symbol: string): MinOperator =
+  let parts = symbol.split(".")
+  if parts.len < 2:
+    raiseInvalid("Dictionary identifier not specified")
+  i.pushSym parts[0]
+  var count = 0
+  for p in 0..parts.len-2:
+    let mdl = i.pop
+    if mdl.kind != minDictionary:
+      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
+    let symId = parts[p+1]
+    let origScope = i.scope
+    i.scope = mdl.scope
+    if not i.scope.parent.isNil:
+      i.scope.parent = origScope
+    result = i.scope.getSymbol(symId)
+    if count < parts.len-2:
+      i.apply(result)
+    i.scope = origScope
+    count = count+1
 
 proc push*(i: In, val: MinValue) =
   if val.kind == minSymbol:
