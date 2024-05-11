@@ -36,6 +36,8 @@ proc processTokenValue(v: string, t: MinTokenKind): string =
       return "#||$#||#" % [v]
     of tkBlockComment:
       return "#|$#|#" % [v]
+    of tkCommand:
+      return "[$#]" % [v]
     else:
       return v
 

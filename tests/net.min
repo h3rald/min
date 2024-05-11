@@ -1,7 +1,7 @@
 'min-test require :test
 ;;;
 
-"net" *test/describe
+"net" test.describe
 
   {} socket :srv1
   {} socket :srv2
@@ -25,12 +25,12 @@
     (response line) => "\n" join puts @response 
   ) while
 
-  (response "200 OK" match?) *test/assert
+  (response "200 OK" match?) test.assert
 
-  (srv1 srv2 ==) *test/assert
-  (cli1 cli2 !=) *test/assert
+  (srv1 srv2 ==) test.assert
+  (cli1 cli2 !=) test.assert
 
-  *test/report
+  test.report
   clear-stack
   srv1 close
   srv2 close

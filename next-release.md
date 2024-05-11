@@ -10,3 +10,7 @@
 - Added a new `xentity2utf8` symbol to the `xml` module to convert an XML entity to its corresponding UTF-8 string.
 - Added a new `xescape` symbol to the `xml` module to convert special XML characters into the corresponding XML entities.
 
+### Fixes and Improvements
+
+- Fixed `tokenize` symbol (wasn't processing commands correctly)
+

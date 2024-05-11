@@ -1,161 +1,161 @@
 'min-test require :test
 ;;;
 
-"logic" *test/describe
+"logic" test.describe
 
-  (2 3 <) *test/assert
-  (3 2 < false ==) *test/assert
-  (3 3 < false ==) *test/assert
-  (2.99 3 <) *test/assert
-  (2 1.99 < false ==) *test/assert
-  (1.99 1.991 <) *test/assert
-  (1.99 1.990 < false ==) *test/assert
-  ("test1" "test2" <) *test/assert
-  ("test3" "test2" < false ==) *test/assert
-  ("test2" "test2" < false ==) *test/assert
+  (2 3 <) test.assert
+  (3 2 < false ==) test.assert
+  (3 3 < false ==) test.assert
+  (2.99 3 <) test.assert
+  (2 1.99 < false ==) test.assert
+  (1.99 1.991 <) test.assert
+  (1.99 1.990 < false ==) test.assert
+  ("test1" "test2" <) test.assert
+  ("test3" "test2" < false ==) test.assert
+  ("test2" "test2" < false ==) test.assert
 
-  (2 3 <=) *test/assert
-  (3 2 <= false ==) *test/assert
-  (3 3 <=) *test/assert
-  (2.99 3 <=) *test/assert
-  (2 1.99 <= false ==) *test/assert
-  (1.99 1.991 <=) *test/assert
-  (1.99 1.990 <=) *test/assert
-  ("test1" "test2" <=) *test/assert
-  ("test3" "test2" <= false ==) *test/assert
-  ("test2" "test2" <=) *test/assert
+  (2 3 <=) test.assert
+  (3 2 <= false ==) test.assert
+  (3 3 <=) test.assert
+  (2.99 3 <=) test.assert
+  (2 1.99 <= false ==) test.assert
+  (1.99 1.991 <=) test.assert
+  (1.99 1.990 <=) test.assert
+  ("test1" "test2" <=) test.assert
+  ("test3" "test2" <= false ==) test.assert
+  ("test2" "test2" <=) test.assert
 
 
-  (2 3 > false ==) *test/assert
-  (3 2 >) *test/assert
-  (3 3 > false ==) *test/assert
-  (2.99 3 > false ==) *test/assert
-  (2 1.99 >) *test/assert
-  (1.99 1.991 > false ==) *test/assert
-  (1.99 1.990 > false ==) *test/assert
-  ("test1" "test2" > false ==) *test/assert
-  ("test3" "test2" >) *test/assert
-  ("test2" "test2" > false ==) *test/assert
+  (2 3 > false ==) test.assert
+  (3 2 >) test.assert
+  (3 3 > false ==) test.assert
+  (2.99 3 > false ==) test.assert
+  (2 1.99 >) test.assert
+  (1.99 1.991 > false ==) test.assert
+  (1.99 1.990 > false ==) test.assert
+  ("test1" "test2" > false ==) test.assert
+  ("test3" "test2" >) test.assert
+  ("test2" "test2" > false ==) test.assert
 
-  (2 3 >= false ==) *test/assert
-  (3 2 >=) *test/assert
-  (3 3 >=) *test/assert
-  (2.99 3 >= false ==) *test/assert
-  (2 1.99 >=) *test/assert
-  (1.99 1.991 >= false ==) *test/assert
-  (1.99 1.990 >=) *test/assert
-  ("test1" "test2" >= false ==) *test/assert
-  ("test3" "test2" >=) *test/assert
-  ("test2" "test2" >=) *test/assert
+  (2 3 >= false ==) test.assert
+  (3 2 >=) test.assert
+  (3 3 >=) test.assert
+  (2.99 3 >= false ==) test.assert
+  (2 1.99 >=) test.assert
+  (1.99 1.991 >= false ==) test.assert
+  (1.99 1.990 >=) test.assert
+  ("test1" "test2" >= false ==) test.assert
+  ("test3" "test2" >=) test.assert
+  ("test2" "test2" >=) test.assert
 
-  (true true ==) *test/assert
-  (false true == false ==) *test/assert
-  (true false == false ==) *test/assert
-  (false false ==) *test/assert
-  (1 1 ==) *test/assert
-  ("aaa" "aaa" ==) *test/assert
-  (1.0 1 ==) *test/assert
-  ((1 2 3.0) (1.0 2 3) ==) *test/assert
-  (("a" "b") ("a" "b") ==) *test/assert
-  (("a" "b" 3) ("a" "b" 4) == false ==) *test/assert
-  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) ==) *test/assert
+  (true true ==) test.assert
+  (false true == false ==) test.assert
+  (true false == false ==) test.assert
+  (false false ==) test.assert
+  (1 1 ==) test.assert
+  ("aaa" "aaa" ==) test.assert
+  (1.0 1 ==) test.assert
+  ((1 2 3.0) (1.0 2 3) ==) test.assert
+  (("a" "b") ("a" "b") ==) test.assert
+  (("a" "b" 3) ("a" "b" 4) == false ==) test.assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) ==) test.assert
 
-  (true true != false ==) *test/assert
-  (false true !=) *test/assert
-  (true false !=) *test/assert
-  (false false != false ==) *test/assert
-  (1 1 != false ==) *test/assert
-  ("aaa" "aaa" != false ==) *test/assert
-  ;(1.0 1 != false ==) *test/assert
-  ;((1 2 3.0) (1.0 2.0 3) != false ==) *test/assert
-  ;(("a" "b") ("a" "b") != false ==) *test/assert
-  (("a" "b" 3) ("a" "b" 4) !=) *test/assert
-  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) *test/assert
+  (true true != false ==) test.assert
+  (false true !=) test.assert
+  (true false !=) test.assert
+  (false false != false ==) test.assert
+  (1 1 != false ==) test.assert
+  ("aaa" "aaa" != false ==) test.assert
+  ;;(1.0 1 != false ==) *test/assert
+  ;;((1 2 3.0) (1.0 2.0 3) != false ==) *test/assert
+  ;;(("a" "b") ("a" "b") != false ==) *test/assert
+  (("a" "b" 3) ("a" "b" 4) !=) test.assert
+  ((1 "b" 3 myrandomsymbol) (1 "b" 3.0 myrandomsymbol) != false ==) test.assert
 
-  (false not) *test/assert
-  (true not false ==) *test/assert
+  (false not) test.assert
+  (true not false ==) test.assert
 
-  (true true and) *test/assert
-  (true false and false ==) *test/assert
-  (false true and false ==) *test/assert
-  (false false and false ==) *test/assert
+  (true true and) test.assert
+  (true false and false ==) test.assert
+  (false true and false ==) test.assert
+  (false false and false ==) test.assert
 
-  (true true or) *test/assert
-  (true false or) *test/assert
-  (false true or) *test/assert
-  (false false or false ==) *test/assert
+  (true true or) test.assert
+  (true false or) test.assert
+  (false true or) test.assert
+  (false false or false ==) test.assert
 
-  (true true xor false ==) *test/assert
-  (true false xor) *test/assert
-  (false true xor) *test/assert
-  (false false xor false ==) *test/assert
+  (true true xor false ==) test.assert
+  (true false xor) test.assert
+  (false true xor) test.assert
+  (false false xor false ==) test.assert
 
-  ("a" string?) *test/assert
-  (1 string? false ==) *test/assert
-  (1.0 string? false ==) *test/assert
-  (true string? false ==) *test/assert
-  (false string? false ==) *test/assert
-  (("a" 2 c) string? false ==) *test/assert
+  ("a" string?) test.assert
+  (1 string? false ==) test.assert
+  (1.0 string? false ==) test.assert
+  (true string? false ==) test.assert
+  (false string? false ==) test.assert
+  (("a" 2 c) string? false ==) test.assert
 
-  ("a" integer? false ==) *test/assert
-  (1 integer?) *test/assert
-  (1.0 integer? false ==) *test/assert
-  (true integer? false ==) *test/assert
-  (false integer? false ==) *test/assert
-  (("a" 2 c) integer? false ==) *test/assert
+  ("a" integer? false ==) test.assert
+  (1 integer?) test.assert
+  (1.0 integer? false ==) test.assert
+  (true integer? false ==) test.assert
+  (false integer? false ==) test.assert
+  (("a" 2 c) integer? false ==) test.assert
 
-  ("a" float? false ==) *test/assert
-  (1 float? false ==) *test/assert
-  (1.0 float?) *test/assert
-  (true float? false ==) *test/assert
-  (false float? false ==) *test/assert
-  (("a" 2 c) float? false ==) *test/assert
+  ("a" float? false ==) test.assert
+  (1 float? false ==) test.assert
+  (1.0 float?) test.assert
+  (true float? false ==) test.assert
+  (false float? false ==) test.assert
+  (("a" 2 c) float? false ==) test.assert
 
-  ("a" boolean? false ==) *test/assert
-  (1 boolean? false ==) *test/assert
-  (1.0 boolean? false ==) *test/assert
-  (true boolean?) *test/assert
-  (false boolean?) *test/assert
-  (("a" 2 c) boolean? false ==) *test/assert
+  ("a" boolean? false ==) test.assert
+  (1 boolean? false ==) test.assert
+  (1.0 boolean? false ==) test.assert
+  (true boolean?) test.assert
+  (false boolean?) test.assert
+  (("a" 2 c) boolean? false ==) test.assert
 
-  ("a" number? false ==) *test/assert
-  (1 number?) *test/assert
-  (1.0 number?) *test/assert
-  (true number? false ==) *test/assert
-  (false number? false ==) *test/assert
-  (("a" 2 c) number? false ==) *test/assert
+  ("a" number? false ==) test.assert
+  (1 number?) test.assert
+  (1.0 number?) test.assert
+  (true number? false ==) test.assert
+  (false number? false ==) test.assert
+  (("a" 2 c) number? false ==) test.assert
 
-  ("a" quotation? false ==) *test/assert
-  (1 quotation? false ==) *test/assert
-  (1.0 quotation? false ==) *test/assert
-  (true quotation? false ==) *test/assert
-  (false quotation? false ==) *test/assert
-  (("a" 2 c) quotation?) *test/assert
+  ("a" quotation? false ==) test.assert
+  (1 quotation? false ==) test.assert
+  (1.0 quotation? false ==) test.assert
+  (true quotation? false ==) test.assert
+  (false quotation? false ==) test.assert
+  (("a" 2 c) quotation?) test.assert
 
-  ("a" stringlike?) *test/assert
-  (1 stringlike? false ==) *test/assert
-  ('test stringlike?) *test/assert
+  ("a" stringlike?) test.assert
+  (1 stringlike? false ==) test.assert
+  ('test stringlike?) test.assert
 
-  (("a") quoted-symbol? not) *test/assert
-  ('test quoted-symbol?) *test/assert
-  ((aaa bbb) quoted-symbol? not) *test/assert
+  (("a") quoted-symbol? not) test.assert
+  ('test quoted-symbol?) test.assert
+  ((aaa bbb) quoted-symbol? not) test.assert
 
-  ({} 'dict:module type? false ==) *test/assert
-  ((1 2 3) 'dict:module type? false ==) *test/assert
-  (4 'dict:module type? false ==) *test/assert
-  (logic 'dict:module type?) *test/assert
-  (1 "int" type?) *test/assert
-  ("test" "str" type?) *test/assert
-  (global "dict:module" type?) *test/assert
+  ({} 'dict:module type? false ==) test.assert
+  ((1 2 3) 'dict:module type? false ==) test.assert
+  (4 'dict:module type? false ==) test.assert
+  (logic 'dict:module type?) test.assert
+  (1 "int" type?) test.assert
+  ("test" "str" type?) test.assert
+  (global "dict:module" type?) test.assert
 
-  (7 0 / inf ==) *test/assert
-  (-7 0 / -inf ==) *test/assert
-  (0 0 / nan ==) *test/assert
-  (10 3 / 3.33333 ==) *test/assert
+  (7 0 / inf ==) test.assert
+  (-7 0 / -inf ==) test.assert
+  (0 0 / nan ==) test.assert
+  (10 3 / 3.33333 ==) test.assert
 
-  (3 "a" == not) *test/assert
-  (1 () != true) *test/assert
-  (3.3 'test == not) *test/assert
+  (3 "a" == not) test.assert
+  (1 () != true) test.assert
+  (3.3 'test == not) test.assert
 
   (
     (
@@ -165,7 +165,7 @@
       ("never printed" puts!)
     ) &&
     false ==
-  ) *test/assert
+  ) test.assert
   
   (
     (
@@ -174,7 +174,7 @@
       ("a" "a" ==)
       ("never printed" puts!)
     ) ||
-  ) *test/assert
+  ) test.assert
   
-  *test/report
+  test.report
   clear-stack

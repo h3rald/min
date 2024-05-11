@@ -1,88 +1,88 @@
 'min-test require :test
 ;;;
 
-"num" *test/describe
+"num" test.describe
 
-  (2 2 + 4 ==) *test/assert
-  (1 3.0 + 4 ==) *test/assert
-  (3.1 3.9 + 7 ==) *test/assert
-  (3 -2.1 + 0.8999999999999999 ==) *test/assert
+  (2 2 + 4 ==) test.assert
+  (1 3.0 + 4 ==) test.assert
+  (3.1 3.9 + 7 ==) test.assert
+  (3 -2.1 + 0.8999999999999999 ==) test.assert
 
-  (3 3 - 0 ==) *test/assert
-  (-5 -4 - -1 ==) *test/assert
-  (-4 3.7 - -7.7 ==) *test/assert
+  (3 3 - 0 ==) test.assert
+  (-5 -4 - -1 ==) test.assert
+  (-4 3.7 - -7.7 ==) test.assert
 
-  (-2 4 * -8 ==) *test/assert
-  (-2.5 -2 * 5 ==) *test/assert
-  (3 3 * 9 ==) *test/assert
+  (-2 4 * -8 ==) test.assert
+  (-2.5 -2 * 5 ==) test.assert
+  (3 3 * 9 ==) test.assert
 
-  (5 2 / 2.5 ==) *test/assert
-  (1 3 / 0.3333333333333333 ==) *test/assert
-  (-3 2 / -1.5 ==) *test/assert
+  (5 2 / 2.5 ==) test.assert
+  (1 3 / 0.3333333333333333 ==) test.assert
+  (-3 2 / -1.5 ==) test.assert
 
-  (5 2 div 2 ==) *test/assert
-  (1 3 div 0 ==) *test/assert
-  (-3 2 div -1 ==) *test/assert
+  (5 2 div 2 ==) test.assert
+  (1 3 div 0 ==) test.assert
+  (-3 2 div -1 ==) test.assert
   
-  (5 2 mod 1 ==) *test/assert
-  (4 2 mod 0 ==) *test/assert
-  (-3 2 mod -1 ==) *test/assert
+  (5 2 mod 1 ==) test.assert
+  (4 2 mod 0 ==) test.assert
+  (-3 2 mod -1 ==) test.assert
 
-  (1000 random 1000 <) *test/assert
+  (1000 random 1000 <) test.assert
 
-  ((1 2 3 4 5) sum 15 ==) *test/assert
+  ((1 2 3 4 5) sum 15 ==) test.assert
 
-  ((1 2 3 4 5) product 120 ==) *test/assert
+  ((1 2 3 4 5) product 120 ==) test.assert
 
-  ((1 2 3 4 5) avg 3.0 ==) *test/assert
-  ((1 2 3 4 5 6) avg 3.5 ==) *test/assert
+  ((1 2 3 4 5) avg 3.0 ==) test.assert
+  ((1 2 3 4 5 6) avg 3.5 ==) test.assert
 
-  ((1 3 5 7) med 4.0 ==) *test/assert
-  ((1 3 5 7 9) med 5 ==) *test/assert
+  ((1 3 5 7) med 4.0 ==) test.assert
+  ((1 3 5 7 9) med 5 ==) test.assert
 
-  ((1 5) range (1 2 3 4 5) ==) *test/assert
-  ((5 1) range (5 4 3 2 1) ==) *test/assert
-  ((4 7) range (4 5 6 7) ==) *test/assert
-  ((7 4) range (7 6 5 4) ==) *test/assert
-  ((1 6 2) range (1 3 5) ==) *test/assert
-  ((1 6 3) range (1 4) ==) *test/assert
-  ((0 6 2) range (0 2 4 6) ==) *test/assert
-  ((6 1 2) range (6 4 2) ==) *test/assert
-  ((6 1 3) range (6 3) ==) *test/assert
-  ((6 0 2) range (6 4 2 0) ==) *test/assert
+  ((1 5) range (1 2 3 4 5) ==) test.assert
+  ((5 1) range (5 4 3 2 1) ==) test.assert
+  ((4 7) range (4 5 6 7) ==) test.assert
+  ((7 4) range (7 6 5 4) ==) test.assert
+  ((1 6 2) range (1 3 5) ==) test.assert
+  ((1 6 3) range (1 4) ==) test.assert
+  ((0 6 2) range (0 2 4 6) ==) test.assert
+  ((6 1 2) range (6 4 2) ==) test.assert
+  ((6 1 3) range (6 3) ==) test.assert
+  ((6 0 2) range (6 4 2 0) ==) test.assert
   
-  (2 3 bitand 2 ==) *test/assert
+  (2 3 bitand 2 ==) test.assert
 
-  (123 bitnot -124 ==) *test/assert
+  (123 bitnot -124 ==) test.assert
 
-  (2 3 bitor 3 ==) *test/assert
+  (2 3 bitor 3 ==) test.assert
 
-  (2 3 bitxor 1 ==) *test/assert
+  (2 3 bitxor 1 ==) test.assert
 
-  (2 3 shl 16 ==) *test/assert
+  (2 3 shl 16 ==) test.assert
 
-  (16 3 shr 2 ==) *test/assert
+  (16 3 shr 2 ==) test.assert
   
   (0 :c
     (c 10 <) (c succ @c) while
-    c 10 ==) *test/assert
+    c 10 ==) test.assert
 
-  ((1 2 3 4 5) (even?) filter (2 4) ==) *test/assert
+  ((1 2 3 4 5) (even?) filter (2 4) ==) test.assert
 
-  ((1 2 3 4 5) (even?) any?) *test/assert
+  ((1 2 3 4 5) (even?) any?) test.assert
 
-  ((2 4 6 8) (even?) all?) *test/assert
+  ((2 4 6 8) (even?) all?) test.assert
 
-  (base? "dec" ==) *test/assert
-  ('bin base "bin" base? == 'dec base) *test/assert
-  (0b10010 18 ==) *test/assert
-  (0b101010 0b010101 bitand 0b000000 ==) *test/assert
-  (0b101010 0b010101 bitor 0b111111 ==) *test/assert
-  (0b101010 0b010101 bitxor 0b111111 ==) *test/assert
-  (0b111000 (0 2) bitflip 0b111101 ==) *test/assert
-  (0b111001 (0) bitclear 0b111000 ==) *test/assert
-  (0b111000 (0 1) bitset 0b111011 ==) *test/assert
-  (0b111000 bitparity 1 ==) *test/assert
+  (base? "dec" ==) test.assert
+  ('bin base "bin" base? == 'dec base) test.assert
+  (0b10010 18 ==) test.assert
+  (0b101010 0b010101 bitand 0b000000 ==) test.assert
+  (0b101010 0b010101 bitor 0b111111 ==) test.assert
+  (0b101010 0b010101 bitxor 0b111111 ==) test.assert
+  (0b111000 (0 2) bitflip 0b111101 ==) test.assert
+  (0b111001 (0) bitclear 0b111000 ==) test.assert
+  (0b111000 (0 1) bitset 0b111011 ==) test.assert
+  (0b111000 bitparity 1 ==) test.assert
 
-  *test/report
+  test.report
   clear-stack

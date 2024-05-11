@@ -1,37 +1,37 @@
 'min-test require :test 
 ;;;
 
-"dict" *test/describe
+"dict" test.describe
 
-  ((("a" 1)("b" 2)("c" 3)) dictionary? not) *test/assert
+  ((("a" 1)("b" 2)("c" 3)) dictionary? not) test.assert
 
-  ({1 :a 2 :b 3 :c} dictionary?) *test/assert
+  ({1 :a 2 :b 3 :c} dictionary?) test.assert
 
-  ({1 :a 2 :b 3 :c} 'b dget 2 ==) *test/assert
+  ({1 :a 2 :b 3 :c} 'b dget 2 ==) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) *test/assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) *test/assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 'b ddel {1 :a 3 :c} ==) *test/assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 'b ddel {1 :a 3 :c} ==) test.assert
 
-  ({1 :a 2 :b 3 :c} dkeys ("a" "b" "c") ==) *test/assert
+  ({1 :a 2 :b 3 :c} dkeys ("a" "b" "c") ==) test.assert
 
-  ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) *test/assert
+  ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) test.assert
 
-  (global dtype "module" ==) *test/assert
+  (global dtype "module" ==) test.assert
   
-  ({} dtype "" ==) *test/assert 
+  ({} dtype "" ==) test.assert 
 
-  ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) *test/assert
+  ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) test.assert
 
-  (2 2 {+ :plus} /plus 4 ==) *test/assert
+  (2 2 {+ :plus} /plus 4 ==) test.assert
 
-  (2 {(2 3 +) :sum} /sum -> + 7 ==) *test/assert
+  (2 {(2 3 +) :sum} /sum -> + 7 ==) test.assert
 
-  ({a :test} "test" dget-raw /str "a" ==) *test/assert
+  ({a :test} "test" dget-raw /str "a" ==) test.assert
 
-  ({} 'aaa 'test dset-sym {aaa :test} ==) *test/assert
+  ({} 'aaa 'test dset-sym {aaa :test} ==) test.assert
 
   (
     {} :archives
@@ -44,11 +44,11 @@
       :archive
       archives archive code dset @archives 
     ) foreach
-    archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) *test/assert
+    archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) test.assert
 
   (
     {1 :a 2 :b 3 :c} dpairs ((1 "a") (2 "b") (3 "c")) ==
-  ) *test/assert
+  ) test.assert
 
-  *test/report
+  test.report
   clear-stack

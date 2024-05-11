@@ -1,17 +1,17 @@
 'min-test require :test
 ;;;
 
-"global" *test/describe
+"global" test.describe
 
   (2 'a define
-    (3 a + (5 'a define a) -> +) -> a + 12 ==) *test/assert
+    (3 a + (5 'a define a) -> +) -> a + 12 ==) test.assert
 
-  (symbols "a" in? false ==) *test/assert
+  (symbols "a" in? false ==) test.assert
 
-  ('abcdefg defined-symbol? false ==) *test/assert
+  ('abcdefg defined-symbol? false ==) test.assert
   
   5 :five
-  (symbols "five" in?) *test/assert
+  (symbols "five" in?) test.assert
 
   (
     (1 2 3 4 5 6) :test-data
@@ -27,97 +27,97 @@
 
     _2 -> _5 -> _1 -> + +
     30 ==
-  ) *test/assert
+  ) test.assert
   
   (
     (dup *) ^square
     3 square 9 ==
-  ) *test/assert
+  ) test.assert
   
   'five delete-symbol
-  (symbols "five" in? false  ==) *test/assert
+  (symbols "five" in? false  ==) test.assert
 
-  ("3 4 +" eval 7 ==) *test/assert
+  ("3 4 +" eval 7 ==) test.assert
 
-  ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) *test/assert
+  ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) test.assert
   "tests/testload.min" rm
 
-  ("2 :two 3 :three" "tests/testrequire.min" fwrite 'testrequire require :tm *tm/two *tm/three + 5 ==) *test/assert
+  ("2 :two 3 :three" "tests/testrequire.min" fwrite 'testrequire require :tm tm.two tm.three + 5 ==) test.assert
   "tests/testrequire.min" rm
 
-  (2 quote (2) ==) *test/assert
+  (2 quote (2) ==) test.assert
 
-  ((2 3) dequote get-stack (2 3) ==) *test/assert
+  ((2 3) dequote get-stack (2 3) ==) test.assert
 
-  (3 (succ) 3 times 6 ==) *test/assert
+  (3 (succ) 3 times 6 ==) test.assert
 
-  ((2 3 >) ("YES") ("NO") if "NO" ==) *test/assert
-  ((2 3 <) ("YES") ("NO") if "YES" ==) *test/assert
+  ((2 3 >) ("YES") ("NO") if "NO" ==) test.assert
+  ((2 3 <) ("YES") ("NO") if "YES" ==) test.assert
 
-  ("NO" (2 3 >) ("YES") when "NO" ==) *test/assert
+  ("NO" (2 3 >) ("YES") when "NO" ==) test.assert
 
-  ((2 3 <) ("YES") when "YES" ==) *test/assert
+  ((2 3 <) ("YES") when "YES" ==) test.assert
 
-  ((2 3 >) ("YES") unless "YES" ==) *test/assert
+  ((2 3 >) ("YES") unless "YES" ==) test.assert
 
-  (1 type "int" ==) *test/assert
-  ({} type "dict" ==) *test/assert
-  (global type "dict:module" ==) *test/assert
+  (1 type "int" ==) test.assert
+  ({} type "dict" ==) test.assert
+  (global type "dict:module" ==) test.assert
 
-  (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) *test/assert ;factorial of 5
+  (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) test.assert ;;factorial of 5
 
   (
    (
     (pop) 
     ('error dget) 
     ("finally")
-    ) try get-stack ("MinEmptyStackError" "finally") ==) *test/assert 
+    ) try get-stack ("MinEmptyStackError" "finally") ==) test.assert 
 
-  ("aaaa" :cd cd "aaaa" ==) *test/assert ;It is possible to shadow sealed symbols in child scopes
+  ("aaaa" :cd cd "aaaa" ==) test.assert ;;It is possible to shadow sealed symbols in child scopes
 
-  (((2 :a1 'a1 seal-symbol 3 :a1) ("failed")) try "failed" ==) *test/assert
+  (((2 :a1 'a1 seal-symbol 3 :a1) ("failed")) try "failed" ==) test.assert
 
   (
     1 :a1
     'a1 seal-symbol
     'a1 unseal-symbol
     2 :a1
-    2 a1 ==) *test/assert
+    2 a1 ==) test.assert
 
   (
    (
     ({"TestError" :error "Test Message" :message} raise)
     (/error)
-    ) try "TestError" ==) *test/assert
+    ) try "TestError" ==) test.assert
 
   (
-   (("test" °test :)) try get-stack ("test") ==) *test/assert
+   (("test" °test :)) try get-stack ("test") ==) test.assert
 
   (
    (
     (() 1 get)
     (1)
-    ) try 1 ==) *test/assert
+    ) try 1 ==) test.assert
 
-  ((a b +) {4 :a 5 :b} with 9 ==) *test/assert
+  ((a b +) {4 :a 5 :b} with 9 ==) test.assert
 
-  ("{\"a\": 1, \"b\": 2.3}" from-json {1 :a 2.3 :b} ==) *test/assert
+  ("{\"a\": 1, \"b\": 2.3}" from-json {1 :a 2.3 :b} ==) test.assert
 
-  ((1 2 3 "aaa" 'q q true) to-json "\r\n" "" replace "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) *test/assert
+  ((1 2 3 "aaa" 'q q true) to-json "\r\n" "" replace "\n" "" replace " " "" replace "[1,2,3,\"aaa\",\";sym:'q\",\";sym:q\",true]"  ==) test.assert
 
-  ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) *test/assert
+  ((1 2 3 "aaa" 'q q true) to-json from-json (1 2 3 "aaa" 'q q true)  ==) test.assert
 
-  (((1 2 3)) :sym1 >sym1 saved-symbols "sym1" in?) *test/assert
+  (((1 2 3)) :sym1 >sym1 saved-symbols "sym1" in?) test.assert
 
-  (<sym1 symbols "sym1" in?) *test/assert
+  (<sym1 symbols "sym1" in?) test.assert
 
-  ('sym1 remove-symbol saved-symbols "sym1" in? false ==) *test/assert
+  ('sym1 remove-symbol saved-symbols "sym1" in? false ==) test.assert
 
-  (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) *test/assert
+  (0 :temp (1 2 3) (temp + @temp) foreach 6 temp ==) test.assert
 
   (
    (1 +) ^mysucc
-   'mysucc source (1 +) ==) *test/assert
+   'mysucc source (1 +) ==) test.assert
 
   (6 
     (
@@ -125,48 +125,48 @@
       ((3 <) (false))
       ((3 >) (true))
     ) case
-  ) *test/assert
+  ) test.assert
 
-  (time scope-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) *test/assert
+  (time scope-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) test.assert
 
-  (sys scope-sigils ("!" "$" "&") ==) *test/assert
+  (sys scope-sigils ("!" "$" "&") ==) test.assert
 
-  ({3 :a 5 :b} scope-symbols ("a" "b") ==) *test/assert
+  ({3 :a 5 :b} scope-symbols ("a" "b") ==) test.assert
 
   (dev?)
-    ((opts {true :d} ==) *test/assert)
-    ((opts {} ==) *test/assert)
+    ((opts {true :d} ==) test.assert)
+    ((opts {} ==) test.assert)
   if
 
-  (args first "\.min$" match?) *test/assert
+  (args first "\\.min$" match?) test.assert
 
-  (3 string "3" ==) *test/assert
+  (3 string "3" ==) test.assert
   
-  ("false" boolean false ==) *test/assert
+  ("false" boolean false ==) test.assert
   
-  ("" boolean false ==) *test/assert
+  ("" boolean false ==) test.assert
   
-  (0 boolean false ==) *test/assert
+  (0 boolean false ==) test.assert
   
-  (false boolean false ==) *test/assert
+  (false boolean false ==) test.assert
   
-  (0.0 boolean false ==) *test/assert
+  (0.0 boolean false ==) test.assert
   
-  ("something" boolean true ==) *test/assert
+  ("something" boolean true ==) test.assert
 
-  ("345" integer 345 ==) *test/assert
+  ("345" integer 345 ==) test.assert
 
-  (true integer 1 ==) *test/assert
+  (true integer 1 ==) test.assert
 
-  (3.5 integer 3 ==) *test/assert
+  (3.5 integer 3 ==) test.assert
 
-  (3.5 float 3.5 ==) *test/assert
+  (3.5 float 3.5 ==) test.assert
 
-  (3 float 3.0 ==) *test/assert
+  (3 float 3.0 ==) test.assert
 
-  (false float 0.0 ==) *test/assert
+  (false float 0.0 ==) test.assert
 
-  ("3.678" float 3.678 ==) *test/assert
+  ("3.678" float 3.678 ==) test.assert
 
   (
     {1 :a 2 :b 3 :c} (
@@ -174,7 +174,7 @@
       (dup /b  succ %b)
     ) tap
     {3 :a 3 :b 3 :c} ==
-  ) *test/assert
+  ) test.assert
 
   (
     {} :data
@@ -183,7 +183,7 @@
       2 %b
     ) tap
     {1 :a 2 :b} ==
-  ) *test/assert
+  ) test.assert
 
   (
     "" :s1
@@ -193,17 +193,17 @@
       (' "3" swap append "" join @s1 s1)
     ) tap!
     s1 "test123" ==
-  ) *test/assert
+  ) test.assert
 
-  (3.4 "test" 1 (int str num) expect (3.4 "test" 1) ==) *test/assert
+  (3.4 "test" 1 (int str num) expect (3.4 "test" 1) ==) test.assert
 
-  ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) *test/assert
+  ("aaa bbb ccc 2 2 + (2 3 4)" parse (aaa bbb ccc 2 2 + (2 3 4)) ==) test.assert
 
-  ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) *test/assert
+  ({} :myscope (2 :two 3 :three scope @myscope) -> myscope scope-symbols ("three" "two") ==) test.assert
 
-  ((2 < 3 and (4 > 2)) >< true) *test/assert
+  ((2 < 3 and (4 > 2)) >< true) test.assert
 
-  ((float 3) >> 3.0 ==) *test/assert
+  ((float 3) >> 3.0 ==) test.assert
   
   (
     (
@@ -212,7 +212,7 @@
       (in "--" suffix "--" prefix @out)
     ) ::
     del"test" "--test--" ==
-  ) *test/assert
+  ) test.assert
   
   (
     (
@@ -222,11 +222,11 @@
     ) ::
     'x unseal-sigil 'x delete-sigil 
     'x defined-sigil? false ==
-  ) *test/assert
+  ) test.assert
   
   (
-    {{100 :b} :a} :test *test/a/b 100 ==
-  ) *test/assert
+    {{100 :b} :a} :test test.a.b 100 ==
+  ) test.assert
   
   (
     (
@@ -239,7 +239,7 @@
       )
     ) operator 
     2 4 pow-mul - 8 == 
-  ) *test/assert
+  ) test.assert
   
   (
     ( 
@@ -260,15 +260,15 @@
       )
     ) ::
     nt"flt"
-  ) *test/assert
+  ) test.assert
 
- ; (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
+ ;; (:n ((n integer?) (n 0 >)) &&) 'natural typeclass
   (
     typeclass natural
     (int :n ==> bool :out)
     (((n integer?) (n 0 >)) && @out)
   ) ::
-  ("typeclass:natural" defined-symbol?) *test/assert
+  ("typeclass:natural" defined-symbol?) test.assert
   (
     symbol natural-sum
     (natural :n natural :m ==> natural :result)
@@ -281,9 +281,9 @@
         (3 -3 natural-sum)
         (@err)
       ) try
-      pop ;Remove 3 that was left on the stack.
-      (err format-error "expected: natural natural natural-sum" match?) *test/assert
-      (2 3 natural-sum 5 ==) *test/assert
+      pop ;;Remove 3 that was left on the stack.
+      (err format-error "expected: natural natural natural-sum" match?) test.assert
+      (2 3 natural-sum 5 ==) test.assert
     )
   when
   
@@ -297,7 +297,7 @@
     @out
    )
   ) ::
-  ("aaa" test-c 'dict:test-c type?) *test/assert
+  ("aaa" test-c 'dict:test-c type?) test.assert
   
   (
     symbol add
@@ -314,8 +314,8 @@
      when
     )
   ) ::
-  ("a" "b" add "ab" ==) *test/assert
-  ((1 2 3) (4 5) add (1 2 3 4 5) ==) *test/assert
+  ("a" "b" add "ab" ==) test.assert
+  ((1 2 3) (4 5) add (1 2 3 4 5) ==) test.assert
   
   
   (typeclass fiveplus
@@ -349,13 +349,13 @@
     6 test
     11 test
     and 
-  ) *test/assert
+  ) test.assert
 
   (
     {{1 :aa} :a 2 :b} :test1
     test1.b test1.a.aa + 3 ==
-  ) *test/assert
+  ) test.assert
 
-  *test/report
-  ; Tidy up
+  test.report
+  ;; Tidy up
   clear-stack
