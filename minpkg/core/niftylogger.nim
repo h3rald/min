@@ -74,5 +74,5 @@ proc setLogLevel*(val: var string): string {.discardable.} =
     else:
       val = "warn"
       lvl = lvlWarn
-  setLogFilter(lvl)
+  logging.setLogFilter(lvl)
   return val

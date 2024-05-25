@@ -11,6 +11,10 @@ proc copy*(s: ref MinScope): ref MinScope =
   new(result)
   result[] = scope
 
+proc isQuotedDictionary(d: MinOperator): bool =
+  return d.kind == minValOp and d.val.kind == minQuotation and d.val.qVal.len ==
+      1 and d.val.qVal[0].kind == minDictionary
+
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], acc = 0): MinOperator
 
@@ -27,13 +31,14 @@ proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], acc = 0): MinOperator =
-  let sym = keys.pop
+  let sym = keys[0]
+  keys.delete(0)
   let d = scope.getSymbol(sym, acc)
-  if d.kind == minValOp and d.val.kind == minDictionary:
-    if keys.len > 2:
-      return d.val.scope.getSymbolFromPath(keys, acc + 1)
+  if d.isQuotedDictionary:
+    if keys.len > 1:
+      return d.val.qVal[0].scope.getSymbolFromPath(keys, acc + 1)
     else:
-      return d.val.scope.getSymbol(keys[1], acc + 1)
+      return d.val.qVal[0].scope.getSymbol(keys[0], acc + 1)
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -55,13 +60,14 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
 
 proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool =
-  let sym = keys.pop
+  let sym = keys[0]
+  keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.kind == minValOp and d.val.kind == minDictionary:
-    if keys.len > 2:
-      return d.val.scope.hasSymbolFromPath(keys)
+  if d.isQuotedDictionary:
+    if keys.len > 1:
+      return d.val.qVal[0].scope.hasSymbolFromPath(keys)
     else:
-      return d.val.scope.hasSymbol(keys[1])
+      return d.val.qVal[0].scope.hasSymbol(keys[0])
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -81,13 +87,14 @@ proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
 
 proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool =
-  let sym = keys.pop
+  let sym = keys[0]
+  keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.kind == minValOp and d.val.kind == minDictionary:
-    if keys.len > 2:
-      return d.val.scope.delSymbolFromPath(keys)
+  if d.isQuotedDictionary:
+    if keys.len > 1:
+      return d.val.qVal[0].scope.delSymbolFromPath(keys)
     else:
-      return d.val.scope.delSymbol(keys[1])
+      return d.val.qVal[0].scope.delSymbol(keys[0])
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -95,7 +102,7 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], value: MinOperator, override = false): bool {.discardable.}
 
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
-    override = false): bool {.discardable.} =
+    override = false, define = false): bool {.discardable.} =
   result = false
   if key.contains ".":
     var keys = key.split(".")
@@ -106,6 +113,10 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
       raiseInvalid("Symbol '$1' is sealed ." % key)
     scope.symbols[key] = value
     result = true
+  # define new symbol
+  elif not scope.isNil and define:
+    scope.symbols[key] = value
+    result = true
   else:
     # Go up the scope chain and attempt to find the symbol
     if not scope.parent.isNil:
@@ -113,13 +124,14 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
 
 proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], value: MinOperator, override = false): bool {.discardable.} =
-  let sym = keys.pop
+  let sym = keys[0]
+  keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.kind == minValOp and d.val.kind == minDictionary:
-    if keys.len > 2:
-      return d.val.scope.setSymbolFromPath(keys, value, override)
+  if d.isQuotedDictionary:
+    if keys.len > 1:
+      return d.val.qVal[0].scope.setSymbolFromPath(keys, value, override)
     else:
-      return d.val.scope.setSymbol(keys[1], value, override)
+      return d.val.qVal[0].scope.setSymbol(keys[0], value, override)
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 

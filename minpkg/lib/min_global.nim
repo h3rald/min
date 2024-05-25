@@ -508,16 +508,11 @@ proc global_module*(i: In) =
     var symbol: string
     q1 = @[q1].newVal
     symbol = sym.getString
-    if symbol.contains ".":
-      i.setSymbolPath(symbol, q1, false)
-      return
-    if not symbol.contains re(USER_SYMBOL_REGEX):
+    if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
-    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false, quotation: q1.isQuotation)
+    i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
+        sealed: false, quotation: q1.isQuotation), false, true)
 
   def.symbol("typealias") do (i: In):
     let vals = i.expect("'sym", "'sym")
@@ -556,9 +551,6 @@ proc global_module*(i: In) =
     var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
-    if symbol.contains ".":
-      i.setSymbolPath(symbol, q1, true)
-      return
     info "[bind] $1 = $2" % [symbol, $q1]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
         quotation: isQuot))

@@ -209,9 +209,8 @@ when isMainModule:
           of "dev", "d":
             DEV = true
           of "log", "l":
-            if file == "":
-              var val = val
-              niftylogger.setLogLevel(val)
+            var v = val
+            niftylogger.setLogLevel(v)
           of "passN", "n":
             NIMOPTIONS = val
           of "help", "h":

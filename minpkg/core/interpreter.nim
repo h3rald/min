@@ -29,6 +29,7 @@ var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
 var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
 const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*_-]*$"
+const USER_PATH_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/.!?+*_-]*$"
 
 proc diff*(a, b: seq[MinValue]): seq[MinValue] =
   result = newSeq[MinValue](0)
@@ -251,80 +252,6 @@ proc pushSym*(i: In, s: string) =
     outerSym: i.currSym.symVal,
     docComment: i.currSym.docComment)
 
-proc getSymbolPath*(i: In, symbol: string) =
-  let parts = symbol.split(".")
-  if parts.len < 2:
-    raiseInvalid("Dictionary identifier not specified")
-  i.pushSym parts[0]
-  for p in 0..parts.len-2:
-    let mdl = i.pop
-    if mdl.kind != minDictionary:
-      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
-    let symId = parts[p+1]
-    let origScope = i.scope
-    i.scope = mdl.scope
-    if not i.scope.parent.isNil:
-      i.scope.parent = origScope
-    let sym = i.scope.getSymbol(symId)
-    i.apply(sym)
-    i.scope = origScope
-
-proc setSymbolPath*(i: In, symbol: string, q1: MinValue, mustExist: bool) =
-  let parts = symbol.split(".")
-  if parts.len < 2:
-    raiseInvalid("Dictionary identifier not specified")
-  i.pushSym parts[0]
-  var count = 0
-  for p in 0..parts.len-2:
-    let mdl = i.pop
-    if mdl.kind != minDictionary:
-      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
-    let symId = parts[p+1]
-    let origScope = i.scope
-    i.scope = mdl.scope
-    if not i.scope.parent.isNil:
-      i.scope.parent = origScope
-    var sym: MinOperator
-    var notFound = false
-    try:
-      sym = i.scope.getSymbol(symId)
-    except CatchableError:
-      notFound = true
-      discard
-    if (notFound and mustExist):
-      raiseInvalid("Symbol $# does not exist" % [symId])
-    if count >= parts.len-2:
-      if not symId.contains re(USER_SYMBOL_REGEX):
-        raiseInvalid("Symbol identifier '$1' contains invalid characters." % symId)
-      info "[define] $1 = $2" % [symbol, $q1]
-      if mdl.scope.symbols.hasKey(symId) and mdl.scope.symbols[symId].sealed:
-        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-      mdl.scope.symbols[symId] = MinOperator(kind: minValOp, val: q1,
-          sealed: false, quotation: q1.isQuotation)
-    i.scope = origScope
-    count = count+1
-
-proc getSymbolObjectPath*(i: In, symbol: string): MinOperator =
-  let parts = symbol.split(".")
-  if parts.len < 2:
-    raiseInvalid("Dictionary identifier not specified")
-  i.pushSym parts[0]
-  var count = 0
-  for p in 0..parts.len-2:
-    let mdl = i.pop
-    if mdl.kind != minDictionary:
-      raiseInvalid("$1 is not a dictionary" % [mdl.getString])
-    let symId = parts[p+1]
-    let origScope = i.scope
-    i.scope = mdl.scope
-    if not i.scope.parent.isNil:
-      i.scope.parent = origScope
-    result = i.scope.getSymbol(symId)
-    if count < parts.len-2:
-      i.apply(result)
-    i.scope = origScope
-    count = count+1
-
 proc push*(i: In, val: MinValue) =
   if val.kind == minSymbol:
     i.debug(val)
@@ -340,11 +267,8 @@ proc push*(i: In, val: MinValue) =
     if i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol), symbol
     else:
-      # Process dictionary access
-      if symbol.contains('.'):
-        i.getSymbolPath(symbol)
       # Check if symbol ends with ! (auto-popping)
-      elif symbol.len > 1 and symbol[symbol.len-1] == '!':
+      if symbol.len > 1 and symbol[symbol.len-1] == '!':
         let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)
