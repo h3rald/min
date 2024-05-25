@@ -11,17 +11,41 @@ proc copy*(s: ref MinScope): ref MinScope =
   new(result)
   result[] = scope
 
+proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string], acc = 0): MinOperator
+
 proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
-  if scope.symbols.hasKey(key):
+  if key.contains ".":
+    var keys = key.split(".")
+    return getSymbolFromPath(scope, keys, acc)
+  elif scope.symbols.hasKey(key):
     return scope.symbols[key]
   else:
     if scope.parent.isNil:
       raiseUndefined("Symbol '$1' not found." % key)
     return scope.parent.getSymbol(key, acc + 1)
 
+proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string], acc = 0): MinOperator =
+  let sym = keys.pop
+  let d = scope.getSymbol(sym, acc)
+  if d.kind == minValOp and d.val.kind == minDictionary:
+    if keys.len > 2:
+      return d.val.scope.getSymbolFromPath(keys, acc + 1)
+    else:
+      return d.val.scope.getSymbol(keys[1], acc + 1)
+  else:
+    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
+
+proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string]): bool
+
 proc hasSymbol*(scope: ref MinScope, key: string): bool =
   if scope.isNil:
     return false
+  elif key.contains ".":
+    var keys = key.split(".")
+    return hasSymbolFromPath(scope, keys)
   elif scope.symbols.hasKey(key):
     return true
   elif not scope.parent.isNil:
@@ -29,19 +53,55 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
+proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string]): bool =
+  let sym = keys.pop
+  let d = scope.getSymbol(sym)
+  if d.kind == minValOp and d.val.kind == minDictionary:
+    if keys.len > 2:
+      return d.val.scope.hasSymbolFromPath(keys)
+    else:
+      return d.val.scope.hasSymbol(keys[1])
+  else:
+    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
+
+proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string]): bool
+
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
-  if scope.symbols.hasKey(key):
+  if key.contains ".":
+    var keys = key.split(".")
+    return delSymbolFromPath(scope, keys)
+  elif scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key)
     scope.symbols.excl(key)
     return true
   return false
 
+proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string]): bool =
+  let sym = keys.pop
+  let d = scope.getSymbol(sym)
+  if d.kind == minValOp and d.val.kind == minDictionary:
+    if keys.len > 2:
+      return d.val.scope.delSymbolFromPath(keys)
+    else:
+      return d.val.scope.delSymbol(keys[1])
+  else:
+    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
+
+proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string], value: MinOperator, override = false): bool {.discardable.}
+
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
     override = false): bool {.discardable.} =
   result = false
+  if key.contains ".":
+    var keys = key.split(".")
+    return setSymbolFromPath(scope, keys, value, override)
   # check if a symbol already exists in current scope
-  if not scope.isNil and scope.symbols.hasKey(key):
+  elif not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed ." % key)
     scope.symbols[key] = value
@@ -50,6 +110,18 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
     # Go up the scope chain and attempt to find the symbol
     if not scope.parent.isNil:
       result = scope.parent.setSymbol(key, value, override)
+
+proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
+    string], value: MinOperator, override = false): bool {.discardable.} =
+  let sym = keys.pop
+  let d = scope.getSymbol(sym)
+  if d.kind == minValOp and d.val.kind == minDictionary:
+    if keys.len > 2:
+      return d.val.scope.setSymbolFromPath(keys, value, override)
+    else:
+      return d.val.scope.setSymbol(keys[1], value, override)
+  else:
+    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
   if scope.sigils.hasKey(key):
