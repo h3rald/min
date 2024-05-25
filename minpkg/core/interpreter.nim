@@ -195,7 +195,16 @@ proc copyDict*(i: In, val: MinValue): MinValue =
 
 proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
-    op.prc(i)
+    if not op.mdl.scope.isNil:
+      let origScope = i.scope
+      let origMdlParentScope = op.mdl.scope.parent
+      i.scope = op.mdl.scope
+      i.scope.parent = origScope
+      op.prc(i)
+      i.scope.parent = origMdlParentScope
+      i.scope = origScope
+    else:
+      op.prc(i)
   else:
     if op.val.kind == minQuotation:
       var newscope = newScopeRef(i.scope)
