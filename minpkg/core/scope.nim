@@ -1,5 +1,5 @@
 import
-  std/[strutils, sequtils, critbits]
+  std/[strutils, critbits]
 import
   parser
 
@@ -25,7 +25,7 @@ proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
     return getSymbolFromPath(scope, keys, acc)
   else:
     if scope.parent.isNil:
-      raiseUndefined("Symbol '$1' not found." % key)
+      raiseUndefined("Unable to retrieve symbol '$1' (not found)." % key)
     return scope.parent.getSymbol(key, acc + 1)
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
@@ -49,8 +49,10 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
     return false
   elif scope.symbols.hasKey(key):
     return true
-  elif key.contains ".":
+  elif key.contains("."):
     var keys = key.split(".")
+    if keys[0] == "":
+      raiseInvalid("Symbols cannot start with a dot")
     return hasSymbolFromPath(scope, keys)
   elif not scope.parent.isNil:
     return scope.parent.hasSymbol(key)

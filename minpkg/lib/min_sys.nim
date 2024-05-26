@@ -17,10 +17,10 @@ import zippy/ziparchives
 proc sys_module*(i: In) =
   let def = i.define()
 
-  def.symbol(".") do (i: In):
+  def.symbol("pwd") do (i: In):
     i.push newVal(getCurrentDir().unix)
 
-  def.symbol("..") do (i: In):
+  def.symbol("parent-dir") do (i: In):
     i.push newVal(getCurrentDir().parentDir.unix)
 
   def.symbol("cd") do (i: In):

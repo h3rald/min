@@ -27,13 +27,13 @@
 
   ("/home/h3rald" absolute-path?) test.assert
 
-  ("tests/sys.min" expand-filename unix-path . "/tests/sys.min" suffix unix-path ==) test.assert
+  ("tests/sys.min" expand-filename unix-path pwd "/tests/sys.min" suffix unix-path ==) test.assert
 
   ("./../tests" normalized-path unix-path "../tests" ==) test.assert
 
-  ((. "tests/global.min") => join-path . relative-path unix-path "tests/global.min" ==) test.assert
+  ((pwd "tests/global.min") => join-path pwd relative-path unix-path "tests/global.min" ==) test.assert
 
-  ("tests/global.min" absolute-path unix-path (. "tests/global.min") => join-path unix-path ==) test.assert
+  ("tests/global.min" absolute-path unix-path (pwd "tests/global.min") => join-path unix-path ==) test.assert
 
   ("./test" absolute-path? not) test.assert
 

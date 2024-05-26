@@ -25,10 +25,10 @@
 
   ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) test.assert  
 
-  ("systest" mkdir . ls (. "systest") => "/" join in?) test.assert
+  ("systest" mkdir pwd ls (pwd "systest") => "/" join in?) test.assert
 
-  ("systest" cd . "systest" match?) test.assert
-  .. cd
+  ("systest" cd pwd "systest" match?) test.assert
+  parent-dir cd
 
   ("./min -v" & 'output dget "\\." match?) test.assert
 
@@ -48,20 +48,20 @@
 
   ("test.txt" "test1.txt" mv "test1.txt" file?) test.assert
 
-  ("test2.txt" rm "test1.txt" rm . ls (. "test1.txt") => "/" join in? :t1 . ls "test2" in? t1 and false ==) test.assert
+  ("test2.txt" rm "test1.txt" rm pwd ls (pwd "test1.txt") => "/" join in? :t1 pwd ls "test2" in? t1 and false ==) test.assert
 
   ("systest" cd 
    "TEST" "test.txt" fwrite
    "TEST1" "test1.txt" fwrite
    "TEST2" "test2.txt" fwrite
    "TEST3" "test3.txt" fwrite
-   . ls "test.zip" zip . ls (. "test.zip") => "/" join in?) test.assert
+   pwd ls "test.zip" zip pwd ls (pwd "test.zip") => "/" join in?) test.assert
 
    ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) test.assert
 
-  .. cd
+  parent-dir cd
 
-  ("systest" rmdir . ls (. "systest") => "/" join in? false ==) test.assert
+  ("systest" rmdir pwd ls (pwd "systest") => "/" join in? false ==) test.assert
 
   ([ls] &ls /output ==) test.assert
 
