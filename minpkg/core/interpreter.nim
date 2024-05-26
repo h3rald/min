@@ -196,12 +196,10 @@ proc copyDict*(i: In, val: MinValue): MinValue =
 proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
     if not op.mdl.isNil and not op.mdl.scope.isNil:
+      # Capture closures at module level
       let origScope = i.scope
-      let origMdlParentScope = op.mdl.scope.parent
       i.scope = op.mdl.scope
-      i.scope.parent = origScope
       op.prc(i)
-      i.scope.parent = origMdlParentScope
       i.scope = origScope
     else:
       op.prc(i)
@@ -447,7 +445,10 @@ proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:
-      result.scope.symbols[key] = value
+      var v = value
+      if v.kind == minProcOp:
+        v.mdl = result
+      result.scope.symbols[key] = v
     CACHEDMODULES[s] = result
 
 proc parse*(i: In, s: string, name = "<parse>"): MinValue =

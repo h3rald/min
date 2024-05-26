@@ -1,6 +1,5 @@
 import
-  std/[strutils,
-  critbits]
+  std/[strutils, sequtils, critbits]
 import
   parser
 
