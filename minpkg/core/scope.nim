@@ -18,11 +18,11 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], acc = 0): MinOperator
 
 proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
-  if key.contains ".":
+  if scope.symbols.hasKey(key):
+    return scope.symbols[key]
+  elif key.contains ".":
     var keys = key.split(".")
     return getSymbolFromPath(scope, keys, acc)
-  elif scope.symbols.hasKey(key):
-    return scope.symbols[key]
   else:
     if scope.parent.isNil:
       raiseUndefined("Symbol '$1' not found." % key)
@@ -47,11 +47,11 @@ proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
 proc hasSymbol*(scope: ref MinScope, key: string): bool =
   if scope.isNil:
     return false
+  elif scope.symbols.hasKey(key):
+    return true
   elif key.contains ".":
     var keys = key.split(".")
     return hasSymbolFromPath(scope, keys)
-  elif scope.symbols.hasKey(key):
-    return true
   elif not scope.parent.isNil:
     return scope.parent.hasSymbol(key)
   else:
@@ -74,14 +74,14 @@ proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
-  if key.contains ".":
-    var keys = key.split(".")
-    return delSymbolFromPath(scope, keys)
-  elif scope.symbols.hasKey(key):
+  if scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key)
     scope.symbols.excl(key)
     return true
+  elif key.contains ".":
+    var keys = key.split(".")
+    return delSymbolFromPath(scope, keys)
   return false
 
 proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
@@ -103,15 +103,15 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
     override = false, define = false): bool {.discardable.} =
   result = false
-  if key.contains ".":
-    var keys = key.split(".")
-    return setSymbolFromPath(scope, keys, value, override)
   # check if a symbol already exists in current scope
-  elif not scope.isNil and scope.symbols.hasKey(key):
+  if not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed ." % key)
     scope.symbols[key] = value
     result = true
+  elif key.contains ".":
+    var keys = key.split(".")
+    return setSymbolFromPath(scope, keys, value, override)
   # define new symbol
   elif not scope.isNil and define:
     scope.symbols[key] = value
