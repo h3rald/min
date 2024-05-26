@@ -10,9 +10,12 @@ proc copy*(s: ref MinScope): ref MinScope =
   new(result)
   result[] = scope
 
-proc isQuotedDictionary(d: MinOperator): bool =
-  return d.kind == minValOp and d.val.kind == minQuotation and d.val.qVal.len ==
-      1 and d.val.qVal[0].kind == minDictionary
+proc getDictionary(d: MinOperator): MinValue=
+  if d.kind == minValOp and d.val.kind == minQuotation and d.val.qVal.len ==
+  1 and d.val.qVal[0].kind == minDictionary:
+    return d.val.qVal[0]
+  elif d.kind == minValOp and d.val.kind == minDictionary:
+    return d.val
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], acc = 0): MinOperator
@@ -33,11 +36,12 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym, acc)
-  if d.isQuotedDictionary:
+  let dict = d.getDictionary
+  if not dict.isNil:
     if keys.len > 1:
-      return d.val.qVal[0].scope.getSymbolFromPath(keys, acc + 1)
+      return dict.scope.getSymbolFromPath(keys, acc + 1)
     else:
-      return d.val.qVal[0].scope.getSymbol(keys[0], acc + 1)
+      return dict.scope.getSymbol(keys[0], acc + 1)
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -64,11 +68,12 @@ proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.isQuotedDictionary:
+  let dict = d.getDictionary
+  if not dict.isNil:
     if keys.len > 1:
-      return d.val.qVal[0].scope.hasSymbolFromPath(keys)
+      return dict.scope.hasSymbolFromPath(keys)
     else:
-      return d.val.qVal[0].scope.hasSymbol(keys[0])
+      return dict.scope.hasSymbol(keys[0])
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -91,11 +96,12 @@ proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.isQuotedDictionary:
+  let dict = d.getDictionary
+  if not dict.isNil:
     if keys.len > 1:
-      return d.val.qVal[0].scope.delSymbolFromPath(keys)
+      return dict.scope.delSymbolFromPath(keys)
     else:
-      return d.val.qVal[0].scope.delSymbol(keys[0])
+      return dict.scope.delSymbol(keys[0])
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
@@ -128,11 +134,12 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
-  if d.isQuotedDictionary:
+  let dict = d.getDictionary
+  if not dict.isNil:
     if keys.len > 1:
-      return d.val.qVal[0].scope.setSymbolFromPath(keys, value, override)
+      return dict.scope.setSymbolFromPath(keys, value, override)
     else:
-      return d.val.qVal[0].scope.setSymbol(keys[0], value, override)
+      return dict.scope.setSymbol(keys[0], value, override)
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
