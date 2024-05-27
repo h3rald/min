@@ -85,7 +85,7 @@ jobs:
             # Build for macOS
             - name: Build (macOS)
               run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size
-              if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
+              if: matrix.os == 'macos-latest'
 
             # UPX compress (*nix) 
             - name: UPX
