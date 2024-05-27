@@ -50,6 +50,21 @@ jobs:
               run: echo "${HOME}/.nimble/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
               if: matrix.os == 'windows-latest'
 
+            - name: Setup Msys2
+              if: matrix.os == 'windows-latest'
+              uses: msys2/setup-msys2@v2
+              with:
+                msystem: MINGW64
+                release: true
+                update: true
+                path-type: inherit
+                install: >-
+                  base-devel
+                  autotools
+                  mingw-w64-x86_64-perl-locale-maketext
+                  mingw-w64-x86_64-toolchain
+                  mingw-w64-x86_64-autotools
+
             # Install the Nim compiler and dependencies
             - name: Install Nim and deps
               run: |
@@ -61,10 +76,16 @@ jobs:
               run: nimble build -y -d:release --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'ubuntu-latest'
 
-            # Build for macOS/Windows
-            - name: Build (macOS, Windows)
+            # Build for Windows
+            - name: Build (Windows)
+              shell: msys2 {0}
+              run: nimble build -v -y -d:release --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
+              if: matrix.os == 'windows-latest'
+
+            # Build for macOS
+            - name: Build (macOS)
               run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size
-              if: matrix.os == 'macos-latest' || matrix.os == 'windows-latest'
+              if: matrix.os == 'macos-latest'
 
             # UPX compress (*nix) 
             - name: UPX
