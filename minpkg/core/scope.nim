@@ -10,8 +10,10 @@ proc copy*(s: ref MinScope): ref MinScope =
   new(result)
   result[] = scope
 
-proc getDictionary(d: MinOperator): MinValue=
-  if d.kind == minValOp and d.val.kind == minQuotation and d.val.qVal.len ==
+proc getDictionary(d: MinOperator): MinValue =
+  if d.kind == minProcOp:
+    return d.mdl
+  elif d.kind == minValOp and d.val.kind == minQuotation and d.val.qVal.len ==
   1 and d.val.qVal[0].kind == minDictionary:
     return d.val.qVal[0]
   elif d.kind == minValOp and d.val.kind == minDictionary:

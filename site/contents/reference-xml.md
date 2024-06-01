@@ -44,7 +44,7 @@ Returns a {{xentity}} representing an XML entity. #}
 {#op||xescape||{{sl}}||{{s}}||
 Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the corresponding XML entities. #}
 
-{#op||xentity2utf8||{{dict:xentity}}||{{s}}||
+{#op||xentity2utf8||{{xentity}}||{{s}}||
 > Returns the UTF-8 symbol corresponding to the specified XML entity. 
 > 
 > > %sidebar%

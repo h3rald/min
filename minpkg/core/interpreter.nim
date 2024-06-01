@@ -271,7 +271,7 @@ proc push*(i: In, val: MinValue) =
     let symbol = val.symVal
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
-    if i.scope.hasSymbol(symbol):
+    if not symbol.contains('.') and i.scope.hasSymbol(symbol):
       i.apply i.scope.getSymbol(symbol), symbol
     else:
       # Check if symbol ends with ! (auto-popping)

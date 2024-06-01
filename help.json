@@ -3,2420 +3,2861 @@
     "!": {
       "description": "See system",
       "kind": "symbol",
+      "module": "sys",
       "name": "!"
     },
     "!=": {
       "description": "Returns true if a1 is not equal to a2, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "!=",
       "signature": "a1 a2 ==> bool"
     },
     "$": {
       "description": "See get-env",
       "kind": "symbol",
+      "module": "sys",
       "name": "$"
     },
     "%": {
       "description": "See interpolate",
       "kind": "symbol",
+      "module": "str",
       "name": "%"
     },
     "&": {
       "description": "See run",
       "kind": "symbol",
+      "module": "sys",
       "name": "&"
     },
     "&&": {
       "description": "See expect-all",
       "kind": "symbol",
+      "module": "logic",
       "name": "&&"
     },
     "&vert;&vert;": {
       "description": "See expect-any",
       "kind": "symbol",
+      "module": "logic",
       "name": "&vert;&vert;"
     },
     "'": {
       "description": "See quotesym",
       "kind": "symbol",
+      "module": "global",
       "name": "'"
     },
     "*": {
       "description": "Multiplies num1 by num2.",
       "kind": "symbol",
+      "module": "num",
       "name": "*",
       "signature": "num1 num2 ==> num3"
     },
     "+": {
       "description": "Sums num1 and num2.",
       "kind": "symbol",
+      "module": "num",
       "name": "+",
       "signature": "num1 num2 ==> num3"
     },
     "-": {
-      "description": "Subtracts num2 from num1.",
+      "description": "See dequote",
       "kind": "symbol",
-      "name": "-",
-      "signature": "num1 num2 ==> num3"
+      "module": "global",
+      "name": "-"
     },
     "-inf": {
       "description": "Returns negative infinity.",
       "kind": "symbol",
+      "module": "num",
       "name": "-inf",
       "signature": " ==> num"
     },
     ".": {
       "description": "Returns the full path to the current directory.",
       "kind": "symbol",
+      "module": "sys",
       "name": ".",
       "signature": " ==> str"
     },
     "..": {
       "description": "Returns the full path to the parent directory.",
       "kind": "symbol",
+      "module": "sys",
       "name": "..",
       "signature": " ==> str"
     },
     "/": {
       "description": "Divides num1 by num2.",
       "kind": "symbol",
+      "module": "num",
       "name": "/",
       "signature": "num1 num2 ==> num3"
     },
     ":": {
       "description": "See define",
       "kind": "symbol",
+      "module": "global",
       "name": ":"
     },
     "::": {
       "description": "See operator",
       "kind": "symbol",
+      "module": "global",
       "name": "::"
     },
     "<": {
-      "description": "Returns true if a1 is smaller than a2, false  otherwise. \r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is smaller than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
+      "module": "logic",
       "name": "<",
       "signature": "a1 a2 ==> bool"
     },
     "<=": {
-      "description": "Returns true if a1 is smaller than or equal to a2, false  otherwise.\r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is smaller than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
+      "module": "logic",
       "name": "<=",
       "signature": "a1 a2 ==> bool"
     },
     "=%": {
       "description": "See apply-interpolate",
       "kind": "symbol",
+      "module": "str",
       "name": "=%"
     },
     "=-=": {
       "description": "See expect-empty-stack",
       "kind": "symbol",
+      "module": "global",
       "name": "=-="
     },
     "==": {
       "description": "Returns true if a1 is equal to a2, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "==",
       "signature": "a1 a2 ==> bool"
     },
     "==>": {
       "description": "Symbol used to separate input and output values in operator signatures.",
       "kind": "symbol",
+      "module": "global",
       "name": "==>",
       "signature": " ==> "
     },
     "=>": {
       "description": "See apply",
       "kind": "symbol",
+      "module": "global",
       "name": "=>"
     },
     ">": {
-      "description": "Returns true if a1 is greater than a2, false  otherwise. \r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is greater than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
+      "module": "logic",
       "name": ">",
       "signature": "a1 a2 ==> bool"
     },
     "><": {
       "description": "See infix-dequote",
       "kind": "symbol",
+      "module": "global",
       "name": "><"
     },
     ">=": {
-      "description": "Returns true if a1 is greater than or equal to a2, false  otherwise.\r\n \r\n Note\r\n \r\n Only comparisons among two numbers or two strings are supported.",
+      "description": "Returns true if a1 is greater than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
+      "module": "logic",
       "name": ">=",
       "signature": "a1 a2 ==> bool"
     },
     ">>": {
       "description": "See prefix-dequote",
       "kind": "symbol",
+      "module": "global",
       "name": ">>"
     },
     "?": {
       "description": "See help",
       "kind": "symbol",
+      "module": "global",
       "name": "?"
     },
     "@": {
       "description": "See bind",
       "kind": "symbol",
+      "module": "global",
       "name": "@"
     },
     "^": {
       "description": "See lambda",
       "kind": "symbol",
+      "module": "global",
       "name": "^"
     },
     "abs": {
       "description": "Calculates tbe absolute value of num1.",
       "kind": "symbol",
+      "module": "math",
       "name": "abs",
       "signature": "num1 ==> num2"
     },
     "absolute-path": {
       "description": "Returns the absolute path to 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "absolute-path",
       "signature": "'sym ==> str"
     },
     "absolute-path?": {
       "description": "Returns true if 'sym is an absolute path.",
       "kind": "symbol",
+      "module": "fs",
       "name": "absolute-path?",
       "signature": "'sym ==> bool"
     },
     "accept": {
       "description": "Makes dict:socket2 (server) accept a connection from dict:socket1 (client). Returns the client socket dict:socket1 from which it will be possible to receive data from.",
       "kind": "symbol",
+      "module": "net",
       "name": "accept",
       "signature": "dict:socket1 dict:socket2 ==> dict:socket1"
     },
     "acos": {
       "description": "Calculates the arc cosine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "acos",
       "signature": "num1 ==> num2"
     },
     "admin?": {
       "description": "Returns true if the program is being run with administrative privileges.",
       "kind": "symbol",
+      "module": "sys",
       "name": "admin?",
       "signature": " ==> bool"
     },
     "aes": {
       "description": "Encrypts or decrypts 'sym1 using the Advanced Encryption Standard (AES) in CTR mode, using 'sym2 as password.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "aes",
       "signature": "'sym1 'sym2 ==> str"
     },
     "all?": {
       "description": "Applies predicate quot2 to each element of quot1 and returns true if all elements of quot1 satisfy predicate quot2, false  otherwise.",
       "kind": "symbol",
+      "module": "seq",
       "name": "all?",
       "signature": "quot1 quot2 ==> bool"
     },
     "and": {
       "description": "Returns true if bool1 is equal to bool2, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "and",
       "signature": "bool1 bool2 ==> bool3"
     },
     "any?": {
       "description": "Applies predicate quot2 to each element of quot1 and returns true if at least one element of quot1 satisfies predicate quot2, false  otherwise.",
       "kind": "symbol",
+      "module": "seq",
       "name": "any?",
       "signature": "quot1 quot2 ==> bool"
     },
     "append": {
       "description": "Returns a new quotation containing the contents of quot with a appended.",
       "kind": "symbol",
+      "module": "seq",
       "name": "append",
       "signature": "a quot ==> (a* a)"
     },
     "apply": {
       "description": "Returns a new quotation obtained by evaluating each element of quot in a separate stack.",
       "kind": "symbol",
+      "module": "global",
       "name": "apply",
       "signature": "quot ==> (a*)"
     },
     "apply-interpolate": {
       "description": "The same as pushing apply and then interpolate on the stack.",
       "kind": "symbol",
+      "module": "str",
       "name": "apply-interpolate",
       "signature": "str quot ==> str"
     },
     "args": {
       "description": "Returns a list of all arguments passed to the current program.",
       "kind": "symbol",
+      "module": "global",
       "name": "args",
       "signature": " ==> quot"
     },
     "asin": {
       "description": "Calculates the arc sine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "asin",
       "signature": "num1 ==> num2"
     },
     "ask": {
       "description": "Prints str1 (prompt), reads a line from STDIN and places it on top of the stack as a string.",
       "kind": "symbol",
+      "module": "io",
       "name": "ask",
       "signature": "str1 ==> str2"
     },
     "atan": {
       "description": "Calculates the arc tangent of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "atan",
       "signature": "num1 ==> num2"
     },
     "atime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was last accessed.",
       "kind": "symbol",
+      "module": "fs",
       "name": "atime",
       "signature": "'sym ==> flt"
     },
     "avg": {
       "description": "Returns the average of the items of quot.",
       "kind": "symbol",
+      "module": "num",
       "name": "avg",
       "signature": "quot ==> num"
     },
     "base": {
       "description": "Sets the numeric base used to represent integers.",
       "kind": "symbol",
+      "module": "num",
       "name": "base",
       "signature": "\"dec\"|\"hex\"|\"oct\"|\"bin\" ==> "
     },
     "base?": {
       "description": "Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)).",
       "kind": "symbol",
+      "module": "num",
       "name": "base?",
       "signature": " ==> \"dec\"|\"hex\"|\"oct\"|\"bin\""
     },
     "bind": {
       "description": "Binds the specified value (auto-quoted) to an existing symbol 'sym.",
       "kind": "symbol",
+      "module": "global",
       "name": "bind",
       "signature": "a 'sym ==> "
     },
     "bitand": {
       "description": "Computes the bitwise *and* of integer int1 and int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitand",
       "signature": "int1 int2 ==> int3"
     },
     "bitclear": {
       "description": "Sets the bytes specified via their position in int1 through quot to 0.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitclear",
       "signature": "int1 quot ==> int2"
     },
     "bitflip": {
       "description": "Flips the bytes specified via their position in int1 through quot.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitflip",
       "signature": "int1 quot ==> int2"
     },
     "bitnot": {
       "description": "Computes the bitwise *complement* of int1.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitnot",
       "signature": "int1 ==> int2"
     },
     "bitor": {
       "description": "Computes the bitwise *or* of integers int1 and int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitor",
       "signature": "int1 int2 ==> int3"
     },
     "bitparity": {
       "description": "Calculate the bit parity in int1. If the number of 1-bits is odd, the parity is 1, otherwise 0.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitparity",
       "signature": "int1 ==> int2"
     },
     "bitset": {
       "description": "Sets the bytes specified via their position in int1 through quot to 0.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitset",
       "signature": "int1 quot ==> int2"
     },
     "bitxor": {
       "description": "Computes the bitwise *xor* of integers int1 and int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "bitxor",
       "signature": "int1 int2 ==> int3"
     },
     "bool": {
-      "description": "Converts a to a boolean value based on the following rules:\r\n \r\n  * If a is a boolean value, no conversion is performed.\r\n  * If a is null, it is converted to false .\r\n  * If a is a numeric value, zero is converted to false , otherwise it is converted to true.\r\n  * If a is a quotation or a dictionary, the empty quotation or dictionary is converted to false , otherwise it is converted to true.\r\n  * If a is a string, the empty string, and \"false\" are converted to false , otherwise it is converted to true.",
+      "description": "Converts a to a boolean value based on the following rules:\n \n  * If a is a boolean value, no conversion is performed.\n  * If a is null, it is converted to false .\n  * If a is a numeric value, zero is converted to false , otherwise it is converted to true.\n  * If a is a quotation or a dictionary, the empty quotation or dictionary is converted to false , otherwise it is converted to true.\n  * If a is a string, the empty string, and \"false\" are converted to false , otherwise it is converted to true.",
       "kind": "symbol",
+      "module": "global",
       "name": "bool",
       "signature": "a ==> bool"
     },
     "boolean?": {
       "description": "Returns true if a is a boolean, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "boolean?",
       "signature": "a ==> bool"
     },
     "capitalize": {
       "description": "Returns a copy of 'sym with the first character capitalized.",
       "kind": "symbol",
+      "module": "str",
       "name": "capitalize",
       "signature": "'sym ==> str"
     },
     "case": {
-      "description": "This operator takes a quotation containing _n_ different conditional branches. \r\n \r\n Each branch must be a quotation containing two quotations, and it is processed as follows:\r\n \r\n   * if quot1 evaluates to true, then the quot2 is executed.\r\n   * if quot1 evaluates to false , then the following branch is processed (if any).\r\n \r\n \r\n Example\r\n \r\n The following program prints \"Smaller than 3\":\r\n \r\n     (\r\n        ((2  3) (\"Greater than 3\" put!))\r\n        ((2 < 3) (\"Smaller than 3\" put!))\r\n        ((true) (\"Exactly 3\" put!))\r\n     ) case",
+      "description": "This operator takes a quotation containing _n_ different conditional branches. \n \n Each branch must be a quotation containing two quotations, and it is processed as follows:\n \n   * if quot1 evaluates to true, then the quot2 is executed.\n   * if quot1 evaluates to false , then the following branch is processed (if any).\n \n \n Example\n \n The following program prints \"Smaller than 3\":\n \n     (\n        ((2  3) (\"Greater than 3\" put!))\n        ((2 < 3) (\"Smaller than 3\" put!))\n        ((true) (\"Exactly 3\" put!))\n     ) case",
       "kind": "symbol",
+      "module": "global",
       "name": "case",
       "signature": "((quot1 quot2)*) ==> a*"
     },
     "cd": {
       "description": "Change the current directory to 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "cd",
       "signature": "'sym ==> "
     },
     "ceil": {
       "description": "Returns the smallest integer int that is not smaller than num.",
       "kind": "symbol",
+      "module": "math",
       "name": "ceil",
       "signature": "num ==> int"
     },
     "chmod": {
-      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\r\n \r\n \r\n Example\r\n \r\n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\r\n \r\n /tmp/test.txt 755 chmod",
+      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n /tmp/test.txt 755 chmod",
       "kind": "symbol",
+      "module": "sys",
       "name": "chmod",
       "signature": "'sym int ==> "
     },
     "choose": {
-      "description": "Prints str2, then prints all str1 included in the quotation prepended with a number, and waits from valid input from the user.\r\n \r\n If the user enters a number that matches one of the choices, then the corresponding quotation quot1 is executed, otherwise the choice menu is displayed again until a valid choice is made.",
+      "description": "Prints str2, then prints all str1 included in the quotation prepended with a number, and waits from valid input from the user.\n \n If the user enters a number that matches one of the choices, then the corresponding quotation quot1 is executed, otherwise the choice menu is displayed again until a valid choice is made.",
       "kind": "symbol",
+      "module": "io",
       "name": "choose",
       "signature": "((str1 quot1)+) str2 ==> a*"
     },
     "chr": {
       "description": "Returns the single character str obtained by interpreting int as an ASCII code.",
       "kind": "symbol",
+      "module": "str",
       "name": "chr",
       "signature": "int ==> str"
     },
     "clear": {
       "description": "Clears the screen.",
       "kind": "symbol",
+      "module": "io",
       "name": "clear",
       "signature": " ==> "
     },
     "clear-stack": {
       "description": "Empties the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "clear-stack",
       "signature": "a ==> "
     },
     "cleave": {
-      "description": "Applies each quotation contained in the first element to the second element a1.\r\n \r\n Example\r\n \r\n The following program leaves 2 on the stack:\r\n \r\n (1 2 3) ((sum) (size)) cleave /",
+      "description": "Applies each quotation contained in the first element to the second element a1.\n \n Example\n \n The following program leaves 2 on the stack:\n \n (1 2 3) ((sum) (size)) cleave /",
       "kind": "symbol",
+      "module": "stack",
       "name": "cleave",
       "signature": "a1 (quot*) ==> a*"
     },
     "close": {
       "description": "Closes a previously-opened socket.",
       "kind": "symbol",
+      "module": "net",
       "name": "close",
       "signature": "dict:socket ==> "
+    },
+    "color": {
+      "description": "Enables or disabled color output in terminal (enabled by default).",
+      "kind": "symbol",
+      "module": "io",
+      "name": "color",
+      "signature": "bool ==> "
     },
     "column-print": {
       "description": "Prints all elements of quot to STDOUT, in int columns.",
       "kind": "symbol",
+      "module": "io",
       "name": "column-print",
       "signature": "quot int ==> a"
     },
     "compiled?": {
       "description": "Returns true if the current program has been compiled.",
       "kind": "symbol",
+      "module": "global",
       "name": "compiled?",
       "signature": " ==> bool"
     },
     "concat": {
       "description": "Concatenates quot1 with quot2.",
       "kind": "symbol",
+      "module": "seq",
       "name": "concat",
       "signature": "quot1 quot2 ==> quot3"
     },
     "confirm": {
-      "description": "Prints str (prompt) appending \" [yes/no]: \", reads a line from STDIN and:\r\n \r\n  * if it matches /^y(es)?$/i, puts true on the stack.\r\n  * if it matches /^no?$/i, puts false  on the stack. \r\n  * Otherwise, it prints Invalid answer. Please enter 'yes' or 'no':  and waits for a new answer.",
+      "description": "Prints str (prompt) appending \" [yes/no]: \", reads a line from STDIN and:\n \n  * if it matches /^y(es)?$/i, puts true on the stack.\n  * if it matches /^no?$/i, puts false  on the stack. \n  * Otherwise, it prints Invalid answer. Please enter 'yes' or 'no':  and waits for a new answer.",
       "kind": "symbol",
+      "module": "io",
       "name": "confirm",
       "signature": "str ==> bool"
     },
     "connect": {
-      "description": "Connects socket dict:socket to address str and port int.\r\n \r\n \r\n Example\r\n \r\n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\r\n \r\n     {} socket \"localhost\" 7777 connect :cli\r\n     \r\n     args 1 get :msg\r\n     \r\n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  send\r\n     \r\n     \"Done.\" puts!\r\n     \r\n     cli close",
+      "description": "Connects socket dict:socket to address str and port int.\n \n \n Example\n \n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\n \n     {} socket \"localhost\" 7777 connect :cli\n     \n     args 1 get :msg\n     \n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  send\n     \n     \"Done.\" puts!\n     \n     cli close",
       "kind": "symbol",
+      "module": "net",
       "name": "connect",
       "signature": "dict:socket str int ==> dict:socket"
     },
     "cons": {
       "description": "Prepends a1 to the quotation on top of the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "cons",
       "signature": "a1 (a*) ==> (a1 a*)"
     },
     "cos": {
       "description": "Calculates the cosine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "cos",
       "signature": "num1 ==> num2"
     },
     "cosh": {
       "description": "Calculates the hyperbolic cosine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "cosh",
       "signature": "num1 ==> num2"
     },
     "cp": {
       "description": "Copies the file or directory 'sym1 to 'sym2.",
       "kind": "symbol",
+      "module": "sys",
       "name": "cp",
       "signature": "'sym1 'sym2 ==> "
     },
     "cpu": {
       "description": "Returns the host CPU. It can be one of the following strings i386, alpha, powerpc, powerpc64, powerpc64el, sparc, amd64, mips, mipsel, arm, arm64.",
       "kind": "symbol",
+      "module": "sys",
       "name": "cpu",
       "signature": " ==> str"
     },
     "ctime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was created.",
       "kind": "symbol",
+      "module": "fs",
       "name": "ctime",
       "signature": "'sym ==> flt"
     },
     "d2r": {
       "description": "Converts num1 from degrees to radians.",
       "kind": "symbol",
+      "module": "math",
       "name": "d2r",
       "signature": "num1 ==> num2"
     },
     "datetime": {
       "description": "Returns an ISO 8601 string representing the combined date and time in UTC of timestamp int.",
       "kind": "symbol",
+      "module": "time",
       "name": "datetime",
       "signature": "int ==> str"
     },
     "ddel": {
       "description": "Removes 'sym from dict1 and returns dict1.",
       "kind": "symbol",
+      "module": "dict",
       "name": "ddel",
       "signature": "dict 'sym ==> dict"
     },
     "ddup": {
       "description": "Returns a copy of dict1.",
       "kind": "symbol",
+      "module": "dict",
       "name": "ddup",
       "signature": "dict1 ==> dict2"
     },
     "debug": {
       "description": "Prints a and a new line to STDOUT, if logging level is set to [debug](class:kwd) or lower.",
       "kind": "symbol",
+      "module": "io",
       "name": "debug",
       "signature": "a ==> a"
     },
     "decode": {
       "description": "Decodes the Base64-encoded string 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "decode",
       "signature": "'sym ==> str"
     },
     "define": {
       "description": "Defines a new symbol 'sym, containing the specified value.",
       "kind": "symbol",
+      "module": "global",
       "name": "define",
       "signature": "a 'sym ==> "
     },
     "define-sigil": {
       "description": "Defines a new sigil 'sym, containing the specified value (auto-quoted if not already a quotation).",
       "kind": "symbol",
+      "module": "global",
       "name": "define-sigil",
       "signature": "a 'sym ==> "
     },
     "defined-sigil?": {
       "description": "Returns true if the symbol 'sym is defined, false  otherwise.",
       "kind": "symbol",
+      "module": "global",
       "name": "defined-sigil?",
       "signature": "'sym ==> bool"
     },
     "defined-symbol?": {
       "description": "Returns true if the symbol 'sym is defined, false  otherwise.",
       "kind": "symbol",
+      "module": "global",
       "name": "defined-symbol?",
       "signature": "'sym ==> bool"
     },
     "delete-sigil": {
       "description": "Deletes the specified user-defined sigil 'sym.",
       "kind": "symbol",
+      "module": "global",
       "name": "delete-sigil",
       "signature": "'sym ==> "
     },
     "dequote": {
-      "description": "Pushes the contents of quotation quot on the stack.\r\n\r\n Each element is pushed on the stack one by one. If any error occurs, quot is restored on the stack.",
+      "description": "Pushes the contents of quotation quot on the stack.\n\n Each element is pushed on the stack one by one. If any error occurs, quot is restored on the stack.",
       "kind": "symbol",
+      "module": "global",
       "name": "dequote",
       "signature": "quot ==> a*"
     },
     "dev": {
       "description": "Toggles development mode.",
       "kind": "symbol",
+      "module": "global",
       "name": "dev",
       "signature": " ==> "
     },
     "dev?": {
       "description": "Returns true if the current program is being executed in development mode.",
       "kind": "symbol",
+      "module": "global",
       "name": "dev?",
       "signature": " ==> bool"
     },
     "dget": {
       "description": "Returns the value of key 'sym from dictionary dict.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dget",
       "signature": "dict 'sym ==> a"
     },
     "dget-raw": {
       "description": "Returns the value of key 'sym from dictionary dict, wrapped in a dict:rawval.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dget-raw",
       "signature": "dict 'sym ==> dict:rawval"
     },
     "dhas?": {
-      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\r\n \r\n \r\n Example\r\n  \r\n The following program returns true:\r\n \r\n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
+      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\n \n \n Example\n  \n The following program returns true:\n \n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
       "kind": "symbol",
+      "module": "dict",
       "name": "dhas?",
       "signature": "dict 'sym ==> bool"
     },
     "dictionary?": {
       "description": "Returns true if a is a dictionary, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "dictionary?",
       "signature": "a ==> bool"
     },
     "difference": {
-      "description": "Calculates the difference quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
+      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
       "kind": "symbol",
+      "module": "seq",
       "name": "difference",
       "signature": "quot1 quot2 ==> quot3"
     },
     "dip": {
       "description": "Removes the first and second element from the stack, dequotes the first element, and restores the second element.",
       "kind": "symbol",
+      "module": "stack",
       "name": "dip",
       "signature": "a1 (a2) ==> a* a1"
     },
     "dir?": {
       "description": "Returns true if the specified path 'sym exists and is a directory.",
       "kind": "symbol",
+      "module": "fs",
       "name": "dir?",
       "signature": "'sym ==> bool"
     },
     "dirname": {
       "description": "Returns the path of the directory containing path 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "dirname",
       "signature": "'sym ==> str"
     },
     "div": {
       "description": "Divides int1 by int2 (integer division).",
       "kind": "symbol",
+      "module": "num",
       "name": "div",
       "signature": "int1 int2 ==> int3"
     },
     "dkeys": {
       "description": "Returns a quotation containing all the keys of dictionary dict.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dkeys",
       "signature": "dict ==> (str*)"
     },
     "download": {
       "description": "Downloads the contents of URL str1 to the local file str2.",
       "kind": "symbol",
+      "module": "http",
       "name": "download",
       "signature": "str1 str2 ==> "
     },
     "dpairs": {
-      "description": "Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary dict. \r\n \r\n \r\n Example\r\n\r\n A The following program returns ((1 \"a\") (2 \"b\")):\r\n     {1 :a 2 :b} dpairs",
+      "description": "Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary dict. \n \n \n Example\n\n A The following program returns ((1 \"a\") (2 \"b\")):\n     {1 :a 2 :b} dpairs",
       "kind": "symbol",
+      "module": "dict",
       "name": "dpairs",
       "signature": "dict ==> (a*)"
     },
     "dpick": {
-      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\r\n \r\n \r\n Example\r\n  \r\n The following program returns {4 :a 7 :d}:\r\n \r\n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dpick",
+      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\n \n \n Example\n  \n The following program returns {4 :a 7 :d}:\n \n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dpick",
       "kind": "symbol",
+      "module": "dict",
       "name": "dpick",
       "signature": "dict1 quot ==> dict2"
     },
     "drop": {
       "description": "Returns a quotation quot2 containing the remaining elements after the first _n_ values of the input quotation quot1, or an empty quotation if int is greater than the length of quot1.",
       "kind": "symbol",
+      "module": "seq",
       "name": "drop",
       "signature": "quot1 int ==> quot2"
     },
     "dsdelete": {
       "description": "Removes an item from the datastore dict:datastore. The item is uniquely identified by 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/). Puts the reference to the modified datastore back on tbe stack.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsdelete",
       "signature": "dict:datastore 'sym ==> dict:datastore"
     },
     "dset": {
       "description": "Sets the value of the 'sym of dict1  to a, and returns the modified dictionary dict.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dset",
       "signature": "dict a 'sym ==> dict"
     },
     "dset-sym": {
       "description": "Sets the value of the 'sym of dict1  to 'sym (treating it as a symbol), and returns the modified dictionary dict.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dset-sym",
       "signature": "dict 'sym 'sym ==> dict"
     },
     "dsget": {
       "description": "Retrieves item dict from datastore dict:datastore. dict is retrieved by specifying 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/).",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsget",
       "signature": "dict:datastore 'sym ==> dict"
     },
     "dsinit": {
       "description": "Initializes a bew datastore by creating the 'sym JSON file. Puts the datastore instance on the stack.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsinit",
       "signature": "'sym ==> dict:datastore"
     },
     "dspost": {
       "description": "Adds the dictionary dict to the datastore dict:datastore inside collection 'sym, generating and adding a unique **id** field to dict. If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dspost",
       "signature": "dict:datastore 'sym dict ==> dict:datastore"
     },
     "dsput": {
       "description": "Adds the dictionary dict to the datastore dict:datastore. 'sym contains the collection where dict will be placed and the id of dict, separated by a forward slash (/). If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsput",
       "signature": "dict:datastore 'sym dict ==> dict:datastore"
     },
     "dsquery": {
-      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\r\n\r\n \r\n Example\r\n\r\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\r\n\r\n      ds \"posts\" (/author \"h3rald\" ==) dsquery",
+      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" (/author \"h3rald\" ==) dsquery",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsquery",
       "signature": "dict:datastore 'sym quot ==> (dict*)"
     },
     "dsread": {
       "description": "Reads the previously-created datastore from the file 'sym and puts the resulting datastore instance on the stack.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dsread",
       "signature": "'sym ==> dict:datastore"
     },
     "dswrite": {
       "description": "Writes the contents of the datastore dict:datastore to the filesystem.",
       "kind": "symbol",
+      "module": "dstore",
       "name": "dswrite",
       "signature": "dict:datastore ==> dict:datastore"
     },
     "dtype": {
       "description": "Returns a string set to the type of dict (empty if the dictionary has no type).",
       "kind": "symbol",
+      "module": "dict",
       "name": "dtype",
       "signature": "dict ==> str"
     },
     "dup": {
       "description": "Duplicates the first element on the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "dup",
       "signature": "a1 ==> a1 a1"
     },
     "dvalues": {
       "description": "Returns a quotation containing all the values of dictionary dict.",
       "kind": "symbol",
+      "module": "dict",
       "name": "dvalues",
       "signature": "dict ==> (a*)"
     },
     "e": {
       "description": "Returns the value of the _e_ constant (Euler's number).",
       "kind": "symbol",
+      "module": "math",
       "name": "e",
       "signature": " ==> num"
     },
     "encode": {
       "description": "Base64-encodes 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "encode",
       "signature": "'sym ==> str"
     },
     "env?": {
       "description": "Returns true if environment variable 'sym exists, false  otherwise.",
       "kind": "symbol",
+      "module": "sys",
       "name": "env?",
       "signature": "'sym ==> bool"
     },
     "error": {
       "description": "Prints a and a new line to STDERR, if logging level is set to [error](class:kwd) or lower.",
       "kind": "symbol",
+      "module": "io",
       "name": "error",
       "signature": "a ==> a"
     },
     "escape": {
       "description": "Returns a copy of 'sym with quotes and backslashes escaped with a backslash.",
       "kind": "symbol",
+      "module": "str",
       "name": "escape",
       "signature": "'sym ==> str"
     },
     "eval": {
       "description": "Parses and interprets str.",
       "kind": "symbol",
+      "module": "global",
       "name": "eval",
       "signature": "str ==> a*"
     },
     "even?": {
       "description": "Returns true if int is even, false  otherwise.",
       "kind": "symbol",
+      "module": "num",
       "name": "even?",
       "signature": "int ==> bool"
     },
     "exists?": {
       "description": "Returns true if the specified file or directory 'sym exists.",
       "kind": "symbol",
+      "module": "fs",
       "name": "exists?",
       "signature": "'sym ==> bool"
     },
     "exit": {
       "description": "Exits the program or shell with int as return code.",
       "kind": "symbol",
+      "module": "global",
       "name": "exit",
       "signature": "int ==> "
     },
     "expand-filename": {
       "description": "Returns the absolute path to the file name 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "expand-filename",
       "signature": "'sym ==> str"
     },
     "expand-symlink": {
       "description": "Returns the absolute path to the symlink 'sym (an error is raised if 'sym is not a symlink).",
       "kind": "symbol",
+      "module": "fs",
       "name": "expand-symlink",
       "signature": "'sym ==> str"
     },
     "expect": {
-      "description": "If the -d (--dev) flag is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). If the -d (--dev) flag is not specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. \r\n\r\n \r\n Tips\r\n \r\n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\r\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\r\n\r\n \r\n Example\r\n \r\n Assuming that the following elements are on the stack (from top to bottom): \r\n \r\n 1 \"test\" 3.4\r\n \r\n the following program evaluates to true:\r\n \r\n (int string num) expect (3.4 \"test\" 1) ==",
+      "description": "If the -d (--dev) flag is specified when running the program, validates the first _n_ elements of the stack against the type descriptions specified in quot1 (_n_ is quot1's length) and if all the elements are valid returns them wrapped in quot2 (in reverse order). If the -d (--dev) flag is not specified when running the program, no validation is performed and all elements are just returned in a quotation in reverse order. \n\n \n Tips\n \n * You can specify a typed dictionary by prepending the type name with dict:. Example: dict:socket\n * You can specify two or more matching types by separating combined together in a logical type expression, e.g.: string|quot\n\n \n Example\n \n Assuming that the following elements are on the stack (from top to bottom): \n \n 1 \"test\" 3.4\n \n the following program evaluates to true:\n \n (int string num) expect (3.4 \"test\" 1) ==",
       "kind": "symbol",
+      "module": "global",
       "name": "expect",
       "signature": "quot1 ==> quot2"
     },
     "expect-all": {
       "description": "Assuming that quot is a quotation of quotations each evaluating to a boolean value, it pushes true on the stack if they all evaluate to true, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "expect-all",
       "signature": "quot ==> bool"
     },
     "expect-any": {
       "description": "Assuming that quot is a quotation of quotations each evaluating to a boolean value, it pushes true on the stack if any evaluates to true, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "expect-any",
       "signature": "quot ==> bool"
     },
     "expect-empty-stack": {
       "description": "Raises an error if the stack is not empty.",
       "kind": "symbol",
+      "module": "global",
       "name": "expect-empty-stack",
       "signature": " ==> "
     },
     "fappend": {
       "description": "Appends str1 to the end of file str2.",
       "kind": "symbol",
+      "module": "io",
       "name": "fappend",
       "signature": "str1 str2 ==> "
     },
     "fatal": {
       "description": "Prints a and a new line to STDERR, and exists the program with error code 100.",
       "kind": "symbol",
+      "module": "io",
       "name": "fatal",
       "signature": "a ==> a"
     },
     "file?": {
       "description": "Returns true if the specified path 'sym exists and is a file.",
       "kind": "symbol",
+      "module": "fs",
       "name": "file?",
       "signature": "'sym ==> bool"
     },
     "filename": {
       "description": "Returns the file name of path 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "filename",
       "signature": "'sym ==> str"
     },
     "filter": {
-      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (2 6 8 12) on the stack:\r\n \r\n     (1 37 34 2 6 8 12 21) \r\n     (dup 20 < swap even? and) filter",
+      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (dup 20 < swap even? and) filter",
       "kind": "symbol",
+      "module": "seq",
       "name": "filter",
       "signature": "quot1 quot2 ==> quot3"
     },
     "find": {
-      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 3 on the stack:\r\n \r\n     (1 2 4 8 16) \r\n     (5 ) find",
+      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) find",
       "kind": "symbol",
+      "module": "seq",
       "name": "find",
       "signature": "quot1 quot2 ==> int"
     },
     "first": {
       "description": "Returns the first element of quot.",
       "kind": "symbol",
+      "module": "seq",
       "name": "first",
       "signature": "quot ==> a"
     },
     "flatten": {
-      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\r\n \r\n     (1 (2 3 4) 5 (6 7) 8) \r\n     flatten",
+      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     flatten",
       "kind": "symbol",
+      "module": "seq",
       "name": "flatten",
       "signature": "quot1 ==> quot2"
     },
     "float": {
-      "description": "Converts a to a float value based on the following rules:\r\n \r\n   * If a is true, it is converted to 1.0.\r\n   * If a is false , it is converted to 0.0.\r\n   * If a is null, it is converted to 0.0.\r\n   * If a is a integer, it is converted to float value.\r\n   * If a is a float, no conversion is performed.\r\n   * If a is a string, it is parsed as a float value.",
+      "description": "Converts a to a float value based on the following rules:\n \n   * If a is true, it is converted to 1.0.\n   * If a is false , it is converted to 0.0.\n   * If a is null, it is converted to 0.0.\n   * If a is a integer, it is converted to float value.\n   * If a is a float, no conversion is performed.\n   * If a is a string, it is parsed as a float value.",
       "kind": "symbol",
+      "module": "global",
       "name": "float",
       "signature": "a ==> flt"
     },
     "float?": {
       "description": "Returns true if a is a float, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "float?",
       "signature": "a ==> bool"
     },
     "floor": {
       "description": "Returns the largest integer int that is not greater than num.",
       "kind": "symbol",
+      "module": "math",
       "name": "floor",
       "signature": "num ==> int"
     },
     "foreach": {
       "description": "Applies the quotation quot2 to each element of quot1.",
       "kind": "symbol",
+      "module": "global",
       "name": "foreach",
       "signature": "quot1 quot2 ==> a*"
     },
     "format-error": {
-      "description": "Formats the error dict:error as a string. \r\n \r\n Example\r\n \r\n The following code: \r\n \r\n      (\r\n        (\r\n           {\"MyError\" :error \"This is a test error\" :message} raise\r\n        ) \r\n        (format-error)\r\n      ) try\r\n \r\n produces: \"This is a test error\"",
+      "description": "Formats the error dict:error as a string. \n \n Example\n \n The following code: \n \n      (\n        (\n           {\"MyError\" :error \"This is a test error\" :message} raise\n        ) \n        (format-error)\n      ) try\n \n produces: \"This is a test error\"",
       "kind": "symbol",
+      "module": "global",
       "name": "format-error",
       "signature": "dict:error ==> str"
     },
     "fperms": {
       "description": "Returns the Unix permissions (expressed as a three-digit number) of file/directory 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "fperms",
       "signature": "'sym ==> int"
     },
     "fread": {
       "description": "Reads the file str and puts its contents on the top of the stack as a string.",
       "kind": "symbol",
+      "module": "io",
       "name": "fread",
       "signature": "str ==> str"
     },
     "from-bin": {
       "description": "Parses 'sym as a binary number.",
       "kind": "symbol",
+      "module": "str",
       "name": "from-bin",
       "signature": "'sym ==> int"
     },
     "from-dec": {
       "description": "Parses 'sym as a decimal number.",
       "kind": "symbol",
+      "module": "str",
       "name": "from-dec",
       "signature": "'sym ==> int"
     },
     "from-hex": {
       "description": "Parses 'sym as a hexadecimal number.",
       "kind": "symbol",
+      "module": "str",
       "name": "from-hex",
       "signature": "'sym ==> int"
+    },
+    "from-html": {
+      "description": "Returns an xml-node representing an HTML string (wrapped in a <document tag unless a valid HTML document is provided as input).",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "from-html",
+      "signature": "'sym ==> xml-node"
     },
     "from-json": {
       "description": "Converts a JSON string into min data.",
       "kind": "symbol",
+      "module": "global",
       "name": "from-json",
       "signature": "str ==> a"
     },
     "from-oct": {
       "description": "Parses 'sym as a octal number.",
       "kind": "symbol",
+      "module": "str",
       "name": "from-oct",
       "signature": "'sym ==> int"
     },
     "from-semver": {
-      "description": "Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str, \r\nit pushes a dictionary dict on the stack containing a **major**, **minor**, and **patch** key/value pairs.",
+      "description": "Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str, \nit pushes a dictionary dict on the stack containing a **major**, **minor**, and **patch** key/value pairs.",
       "kind": "symbol",
+      "module": "str",
       "name": "from-semver",
       "signature": "str ==> dict"
     },
     "from-xml": {
-      "description": "Returns an xml-node representing an XML string representing an element or fragment.\r\n \r\n \r\n Example\r\n  \r\n The following program:\r\n\r\n     \"<a href='https://min-lang.org'min web site</a\" from-xml  \r\n returns the following:\r\n \r\n     {\r\n       {\"https://min-lang.org\" :href} :attributes\r\n      ({\"min web site\" :text}) :children\r\n      \"a\" :tag\r\n      ;xml-element\r\n     }",
+      "description": "Returns an xml-node representing an XML string (element or fragment).\n \n \n Example\n  \n The following program:\n\n     \"<a href='https://min-lang.org'min web site</a\" from-xml  \n returns the following:\n \n     {\n       {\"https://min-lang.org\" :href} :attributes\n      ({\"min web site\" :text}) :children\n      \"a\" :tag\n      ;xml-element\n     }",
       "kind": "symbol",
+      "module": "xml",
       "name": "from-xml",
       "signature": "'sym ==> xml-node"
     },
     "from-yaml": {
-      "description": "Converts a YAML string into min data.\r\n \r\n Note\r\n \r\n At present, only YAML objects containing string values are supported.",
+      "description": "Converts a YAML string into min data.\n \n Note\n \n At present, only YAML objects containing string values are supported.",
       "kind": "symbol",
+      "module": "global",
       "name": "from-yaml",
       "signature": "str ==> a"
     },
     "fsize": {
       "description": "Returns the size in bytes of file/directory 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "fsize",
       "signature": "'sym ==> int"
     },
     "fstats": {
-      "description": "Returns a dictionary dict containing information on file/directory 'sym.\r\n \r\n Example\r\n \r\n Assuming that min is a file, the following:\r\n \r\n \"min\" fstats\r\n \r\n produces:\r\n \r\n      {\r\n        \"min\" :name\r\n        16777220 :device\r\n        50112479 :file\r\n        \"file\" :type\r\n        617068 :size\r\n        755 :permissions\r\n        1 :nlinks\r\n        1496583112.0 :ctime\r\n        1496584370.0 :atime\r\n        1496583112.0 :mtime\r\n      }",
+      "description": "Returns a dictionary dict containing information on file/directory 'sym.\n \n Example\n \n Assuming that min is a file, the following:\n \n \"min\" fstats\n \n produces:\n \n      {\n        \"min\" :name\n        16777220 :device\n        50112479 :file\n        \"file\" :type\n        617068 :size\n        755 :permissions\n        1 :nlinks\n        1496583112.0 :ctime\n        1496584370.0 :atime\n        1496583112.0 :mtime\n      }",
       "kind": "symbol",
+      "module": "fs",
       "name": "fstats",
       "signature": "'sym ==> dict"
     },
     "ftype": {
       "description": "Returns the type of file/directory 'sym (\"file\" or \"dir\").",
       "kind": "symbol",
+      "module": "fs",
       "name": "ftype",
       "signature": "'sym ==> str"
     },
     "fwrite": {
       "description": "Writes str1 to the file str2, erasing all its contents first.",
       "kind": "symbol",
+      "module": "io",
       "name": "fwrite",
       "signature": "str1 str2 ==> "
     },
     "get": {
       "description": "Returns the _n^th_ element of quot (zero-based).",
       "kind": "symbol",
+      "module": "seq",
       "name": "get",
       "signature": "quot int ==> a"
     },
     "get-content": {
       "description": "Retrieves the contents of URL str1 as str2.",
       "kind": "symbol",
+      "module": "http",
       "name": "get-content",
       "signature": "str1 ==> str2"
     },
     "get-env": {
       "description": "Returns environment variable 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "get-env",
       "signature": "'sym ==> str"
     },
     "get-stack": {
       "description": "Puts a quotation containing the contents of the stack on the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "get-stack",
       "signature": " ==> (a*)"
     },
     "getchr": {
       "description": "Reads single character from STDIN without waiting for ENTER key and places its ASCII code on top of the stack.",
       "kind": "symbol",
+      "module": "io",
       "name": "getchr",
       "signature": " ==> int"
     },
     "gets": {
       "description": "Reads a line from STDIN and places it on top of the stack as a string.",
       "kind": "symbol",
+      "module": "global",
       "name": "gets",
       "signature": " ==> str"
     },
     "getstack": {
       "description": "See get-stack",
       "kind": "symbol",
+      "module": "stack",
       "name": "getstack"
     },
     "hardlink": {
       "description": "Creates hardlink 'sym2 for file or directory 'sym1.",
       "kind": "symbol",
+      "module": "sys",
       "name": "hardlink",
       "signature": "'sym1 'sym2 ==> "
     },
     "harvest": {
-      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 2 3) on the stack:\r\n \r\n     (1 () () () 2 () 3) \r\n     harvest",
+      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     harvest",
       "kind": "symbol",
+      "module": "seq",
       "name": "harvest",
       "signature": "quot1 ==> quot2"
     },
     "help": {
       "description": "Prints the help text for 'sym, if available.",
       "kind": "symbol",
+      "module": "global",
       "name": "help",
       "signature": "'sym ==> "
     },
     "hidden?": {
       "description": "Returns true if file/directory 'sym is hidden, false  otherwise.",
       "kind": "symbol",
+      "module": "fs",
       "name": "hidden?",
       "signature": "'sym ==> bool"
     },
     "id": {
       "description": "Does nothing.",
       "kind": "symbol",
+      "module": "stack",
       "name": "id",
       "signature": " ==> "
     },
     "if": {
       "description": "If quot1 evaluates to true then evaluates quot2, otherwise evaluates quot3.",
       "kind": "symbol",
+      "module": "global",
       "name": "if",
       "signature": "quot1 quot2 quot3 ==> a*"
     },
     "import": {
       "description": "Imports the a previously-loaded module 'sym, defining all its symbols in the current scope.",
       "kind": "symbol",
+      "module": "global",
       "name": "import",
       "signature": "'sym ==> "
     },
     "in?": {
       "description": "Returns true if a is contained in quot, false  otherwise.",
       "kind": "symbol",
+      "module": "seq",
       "name": "in?",
       "signature": "quot a ==> bool"
     },
     "indent": {
       "description": "Returns str containing 'sym indented with int spaces.",
       "kind": "symbol",
+      "module": "str",
       "name": "indent",
       "signature": "'sym int ==> str"
     },
     "indexof": {
       "description": "If str2 is contained in str1, returns the index of the first match or -1 if no match is found.",
       "kind": "symbol",
+      "module": "str",
       "name": "indexof",
       "signature": "str1 str2 ==> int"
     },
     "inf": {
       "description": "Returns infinity.",
       "kind": "symbol",
+      "module": "num",
       "name": "inf",
       "signature": " ==> num"
     },
     "infix-dequote": {
-      "description": "Dequotes quot using infix notation. \r\n \r\n Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 17 on the stack:\r\n\r\n      (2 + (3 * 5)) infix-dequote\r\n\r\n while this program leaves 25 on the stack:\r\n \r\n      (2 + 3 * 5) infix-dequote",
+      "description": "Dequotes quot using infix notation. \n \n Note that no special operator preference is defined, symbols precedence is always left-to-right. However, you can use parentheses (quotes) to evaluate expressions before others.\n \n \n Example\n \n The following program leaves 17 on the stack:\n\n      (2 + (3 * 5)) infix-dequote\n\n while this program leaves 25 on the stack:\n \n      (2 + 3 * 5) infix-dequote",
       "kind": "symbol",
+      "module": "global",
       "name": "infix-dequote",
       "signature": "quot ==> a"
     },
     "info": {
       "description": "Prints a and a new line to STDOUT, if logging level is set to [info](class:kwd) or lower.",
       "kind": "symbol",
+      "module": "io",
       "name": "info",
       "signature": "a ==> a"
     },
     "insert": {
       "description": "Inserts a as the value of the _n^th_ element quot1 (zero-based), and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
+      "module": "seq",
       "name": "insert",
       "signature": "quot1 a int ==> quot2"
     },
     "integer": {
-      "description": "Converts a to an integer value based on the following rules:\r\n \r\n   * If a is true, it is converted to 1.\r\n   * If a is false , it is converted to 0.\r\n   * If a is null, it is converted to 0.\r\n   * If a is an integer, no conversion is performed.\r\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\r\n   * If a is a string, it is parsed as an integer value.",
+      "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.\n   * If a is false , it is converted to 0.\n   * If a is null, it is converted to 0.\n   * If a is an integer, no conversion is performed.\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\n   * If a is a string, it is parsed as an integer value.",
       "kind": "symbol",
+      "module": "global",
       "name": "integer",
       "signature": "a ==> int"
     },
     "integer?": {
       "description": "Returns true if a is an integer, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "integer?",
       "signature": "a ==> bool"
     },
     "interpolate": {
-      "description": "Substitutes the placeholders included in str with the values in quot.\r\n \r\n Notes\r\n \r\n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\r\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\r\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\r\n \r\n \r\n Example\r\n  \r\n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\r\n \r\n \"Directory '$1' includes $2 files.\" (. (. ls 'file? filter size)) apply interpolate\r\n \r\n produces:\r\n \r\n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
+      "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (. (. ls 'file? filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
       "kind": "symbol",
+      "module": "str",
       "name": "interpolate",
       "signature": "str quot ==> str"
     },
     "intersection": {
-      "description": "Calculates the intersection quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (1 \"test\") on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
+      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
       "kind": "symbol",
+      "module": "seq",
       "name": "intersection",
       "signature": "quot1 quot2 ==> quot3"
     },
     "invoke": {
-      "description": "Assuming that 'sym is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. \r\n \r\n \r\n Example\r\n \r\n The following program leaves 100 on the stack:\r\n \r\n     {{100 :b} :a} :test *test/a/b",
+      "description": "Assuming that 'sym is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. \n \n \n Example\n \n The following program leaves 100 on the stack:\n \n     {{100 :b} :a} :test *test/a/b",
       "kind": "symbol",
+      "module": "global",
       "name": "invoke",
       "signature": "'sym ==> a*"
     },
     "join": {
       "description": "Joins the elements of quot using separator 'sym, producing str.",
       "kind": "symbol",
+      "module": "str",
       "name": "join",
       "signature": "quot 'sym ==> str"
     },
     "join-path": {
       "description": "Joins the strings contained in quot with /.",
       "kind": "symbol",
+      "module": "fs",
       "name": "join-path",
       "signature": "quot ==> str"
     },
     "keep": {
-      "description": "Removes the first element from the stack, dequotes it, and restores the second element.\r\n \r\n Example\r\n \r\n The following program leaves 5 3 on the stack:\r\n \r\n 2 3 '+ keep",
+      "description": "Removes the first element from the stack, dequotes it, and restores the second element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ keep",
       "kind": "symbol",
+      "module": "stack",
       "name": "keep",
       "signature": "a1 quot ==> a* a1"
     },
     "lambda": {
-      "description": "Defines a new symbol 'sym, containing the specified quotation quot. Unlike with define, in this case quot will not be quoted, so its values will be pushed on the stack when the symbol 'sym is pushed on the stack.\r\n\r\nEssentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.",
+      "description": "Defines a new symbol 'sym, containing the specified quotation quot. Unlike with define, in this case quot will not be quoted, so its values will be pushed on the stack when the symbol 'sym is pushed on the stack.\n \n Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.",
       "kind": "symbol",
+      "module": "global",
       "name": "lambda",
       "signature": "quot 'sym ==> "
     },
     "lambda-bind": {
       "description": "Binds the specified quotation to an existing symbol 'sym which was previously-set via lambda.",
       "kind": "symbol",
+      "module": "global",
       "name": "lambda-bind",
       "signature": "quot 'sym ==> "
     },
     "lambdabind": {
       "description": "See lambda-bind",
       "kind": "symbol",
+      "module": "global",
       "name": "lambdabind"
     },
     "last": {
       "description": "Returns the last element of quot.",
       "kind": "symbol",
+      "module": "seq",
       "name": "last",
       "signature": "quot ==> a"
     },
     "length": {
       "description": "Returns the length of 'sym.",
       "kind": "symbol",
+      "module": "str",
       "name": "length",
       "signature": "'sym ==> int"
     },
     "line-info": {
       "description": "Returns a dictionary dict containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.",
       "kind": "symbol",
+      "module": "global",
       "name": "line-info",
       "signature": " ==> dict"
     },
     "linrec": {
-      "description": "Implements linear recursions as follows:\r\n \r\n   1. Evaluates quot1.\r\n     * If quot1 evaluates to true, then it evaluates quot2.\r\n     * Otherwises it executes quot3 and recurses using the same four quotations.\r\n   2. Finally, it executes quot4.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 120 on the stack, the factorial of 5:\r\n \r\n      5 (dup 0 ==) 'succ (dup pred) '* linrec",
+      "description": "Implements linear recursions as follows:\n \n   1. Evaluates quot1.\n     * If quot1 evaluates to true, then it evaluates quot2.\n     * Otherwises it executes quot3 and recurses using the same four quotations.\n   2. Finally, it executes quot4.\n \n \n Example\n \n The following program leaves 120 on the stack, the factorial of 5:\n \n      5 (dup 0 ==) 'succ (dup pred) '* linrec",
       "kind": "symbol",
+      "module": "global",
       "name": "linrec",
       "signature": "quot1 quot2 quot3 quot4 ==> a*"
     },
     "listen": {
-      "description": "Makes socket dict:socket1 listen to the specified address and port. dict can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.\r\n \r\n address\r\n : The address to listen to (default: **0.0.0.0**).\r\n port\r\n : The port to listen to (default: **80**).\r\n \r\n \r\n Example\r\n \r\n The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string exit:\r\n \r\n     {} socket {\"127.0.0.1\" :address 7777 :port} listen :srv\r\n     \r\n     \"Server listening on localhost:7777\" puts!\r\n     \r\n     {} socket :cli\r\n     \"\" :line\r\n     (line \"exit\" !=)\r\n     (\r\n       srv cli accept #cli\r\n       cli recv-line @line\r\n       \"Received: $1\" (line) = % puts!\r\n     ) while\r\n     \r\n     \"Exiting...\" puts!\r\n     \r\n     srv close",
+      "description": "Makes socket dict:socket1 listen to the specified address and port. dict can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.\n \n address\n : The address to listen to (default: **0.0.0.0**).\n port\n : The port to listen to (default: **80**).\n \n \n Example\n \n The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string exit:\n \n     {} socket {\"127.0.0.1\" :address 7777 :port} listen :srv\n     \n     \"Server listening on localhost:7777\" puts!\n     \n     {} socket :cli\n     \"\" :line\n     (line \"exit\" !=)\n     (\n       srv cli accept #cli\n       cli recv-line @line\n       \"Received: $1\" (line) = % puts!\n     ) while\n     \n     \"Exiting...\" puts!\n     \n     srv close",
       "kind": "symbol",
+      "module": "net",
       "name": "listen",
       "signature": "dict dict:socket1 ==> dict:socket2"
     },
     "ln": {
       "description": "Calculates the natural logarithm of num1.",
       "kind": "symbol",
+      "module": "math",
       "name": "ln",
       "signature": "num1 ==> num2"
     },
     "load": {
       "description": "Parses and interprets the specified min file 'sym, adding [.min](class:ext) if not specified.",
       "kind": "symbol",
+      "module": "global",
       "name": "load",
       "signature": "'sym ==> a*"
     },
     "load-symbol": {
       "description": "Loads the contents of symbol 'sym from the [.min\\_symbols](class:file) file.",
       "kind": "symbol",
+      "module": "global",
       "name": "load-symbol",
       "signature": "'sym ==> a*"
     },
     "log10": {
       "description": "Calculates the common logarithm of num1.",
       "kind": "symbol",
+      "module": "math",
       "name": "log10",
       "signature": "num1 ==> num2"
     },
     "log2": {
       "description": "Calculates the binary logarithm of num1.",
       "kind": "symbol",
+      "module": "math",
       "name": "log2",
       "signature": "num1 ==> num2"
     },
     "loglevel": {
-      "description": "Sets the current logging level to 'sym. 'sym must be one of the following strings or quoted symbols:\r\n \r\n   * debug\r\n   * info\r\n   * notice\r\n   * warn\r\n   * error\r\n   * fatal\r\n \r\n \r\n Note\r\n \r\n The default logging level is _notice_.",
+      "description": "Sets the current logging level to 'sym. 'sym must be one of the following strings or quoted symbols:\n \n   * debug\n   * info\n   * notice\n   * warn\n   * error\n   * fatal\n \n \n Note\n \n The default logging level is _notice_.",
       "kind": "symbol",
+      "module": "global",
       "name": "loglevel",
       "signature": "'sym ==> "
     },
     "loglevel?": {
       "description": "Returns the current log level (debug, info, notice, warn, error or fatal).",
       "kind": "symbol",
+      "module": "global",
       "name": "loglevel?",
       "signature": " ==> str"
     },
     "lowercase": {
       "description": "Returns a copy of 'sym converted to lowercase.",
       "kind": "symbol",
+      "module": "str",
       "name": "lowercase",
       "signature": "'sym ==> str"
     },
     "ls": {
       "description": "Returns a quotation quot containing all children (files and directories) of the directory 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "ls",
       "signature": "'sym ==> quot"
     },
     "ls-r": {
       "description": "Returns a quotation quot containing all children (files and directories) of the directory 'sym, recursively.",
       "kind": "symbol",
+      "module": "sys",
       "name": "ls-r",
       "signature": "'sym ==> quot"
     },
     "map": {
       "description": "Returns a new quotation quot3 obtained by applying quot2 to each element of quot1.",
       "kind": "symbol",
+      "module": "seq",
       "name": "map",
       "signature": "quot1 quot2 ==> quot3"
     },
     "map-reduce": {
-      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 35 on the stack:\r\n \r\n     (1 3 5) \r\n     (dup *) (+) map-reduce",
+      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (dup *) (+) map-reduce",
       "kind": "symbol",
+      "module": "seq",
       "name": "map-reduce",
       "signature": "quot1 quot2 quot3 ==> int"
     },
     "mapkey": {
-      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\r\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     (clear) 'ctrl+l mapkey \r\n \r\n causes the CTRL+L key to clear the screen.",
+      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l mapkey \n \n causes the CTRL+L key to clear the screen.",
       "kind": "symbol",
+      "module": "io",
       "name": "mapkey",
       "signature": "quot 'sym ==> "
     },
     "match?": {
-      "description": "Returns true if str2 matches str1, false  otherwise.\r\n \r\n Tip\r\n \r\n str2 is a Perl-compatible regular expression",
+      "description": "Returns true if str2 matches str1, false  otherwise.\n \n Tip\n \n str2 is a Perl-compatible regular expression",
       "kind": "symbol",
+      "module": "str",
       "name": "match?",
       "signature": "str1 str2 ==> bool"
     },
     "md4": {
       "description": "Returns the MD4 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "md4",
       "signature": "'sym ==> str"
     },
     "md5": {
       "description": "Returns the MD5 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "md5",
       "signature": "'sym ==> str"
     },
     "med": {
       "description": "Returns the median of the items of quot.",
       "kind": "symbol",
+      "module": "num",
       "name": "med",
       "signature": "quot ==> num"
     },
     "mkdir": {
       "description": "Creates the specified directory 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "mkdir",
       "signature": "'sym ==> "
     },
     "mod": {
       "description": "Returns the integer module of int1 divided by int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "mod",
       "signature": "int1 int2 ==> int3"
     },
     "mtime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was last modified.",
       "kind": "symbol",
+      "module": "fs",
       "name": "mtime",
       "signature": "'sym ==> flt"
     },
     "mv": {
       "description": "Moves the file or directory 'sym1 to 'sym2.",
       "kind": "symbol",
+      "module": "sys",
       "name": "mv",
       "signature": "'sym1 'sym2 ==> "
     },
     "nan": {
       "description": "Returns **NaN** (not a number).",
       "kind": "symbol",
+      "module": "num",
       "name": "nan",
       "signature": " ==> nan"
     },
     "newline": {
       "description": "Prints a new line to STDOUT.",
       "kind": "symbol",
+      "module": "io",
       "name": "newline",
       "signature": " ==> "
     },
     "nip": {
       "description": "Removes the second element from the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "nip",
       "signature": "a1 a2 ==> a2"
     },
     "normalized-path": {
       "description": "Returns the normalized path to 'sym.",
       "kind": "symbol",
+      "module": "fs",
       "name": "normalized-path",
       "signature": "'sym ==> str"
     },
     "not": {
       "description": "Negates bool1.",
       "kind": "symbol",
+      "module": "logic",
       "name": "not",
       "signature": "bool1 ==> bool2"
     },
     "notice": {
       "description": "Prints a and a new line to STDOUT, if logging level is set to [notice](class:kwd) (default) or lower.",
       "kind": "symbol",
+      "module": "io",
       "name": "notice",
       "signature": "a ==> a"
     },
     "now": {
       "description": "Returns the current time as Unix timestamp with microseconds.",
       "kind": "symbol",
+      "module": "time",
       "name": "now",
       "signature": " ==> flt"
     },
     "null?": {
       "description": "Returns true if a is null, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "null?",
       "signature": "a ==> bool"
     },
     "number?": {
       "description": "Returns true if a is a number, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "number?",
       "signature": "a ==> bool"
     },
     "odd?": {
       "description": "Returns true if int is odd, false  otherwise.",
       "kind": "symbol",
+      "module": "num",
       "name": "odd?",
       "signature": "int ==> bool"
     },
     "one?": {
       "description": "Applies predicate quot2 to each element of quot1 and returns true if only one element of quot1 satisfies predicate quot2, false  otherwise.",
       "kind": "symbol",
+      "module": "seq",
       "name": "one?",
       "signature": "quot1 quot2 ==> bool"
     },
     "operator": {
-      "description": "Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\r\n \r\n quot is a quotation containing:\r\n \r\n * A symbol identifying the type of operator to define (symbol, sigil, or typeclass).\r\n * A symbol identifying the name of the operator.\r\n * A quotation defining the signature of the operator, containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\r\n * A quotation identifying the body of the operator.\r\n\r\n The main additional features offered by this way of defining operators are the following:\r\n\r\n * If in development mode (-d or --dev flag specified at run time), both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\r\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\r\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elements from the stack (besides adding the declared output values).\r\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\r\n \r\n \r\n Example\r\n \r\n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\r\n\r\n      (\r\n        symbol pow\r\n        (num :base int :exp == num :result)\r\n        ( \r\n          (base 0 == exp 0 == and)\r\n            (nan @result return)\r\n          when\r\n          (base 1 == exp inf == and)\r\n            (nan @result return)\r\n          when\r\n          (base inf == exp 0 == and)\r\n            (nan @result return)\r\n          when\r\n          exp 1 - :n\r\n          base  (dup) n times (*) n times @result\r\n        )\r\n      ) ::",
+      "description": "Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\n \n quot is a quotation containing:\n \n * A symbol identifying the type of operator to define (symbol, sigil, or typeclass).\n * A symbol identifying the name of the operator.\n * A quotation defining the signature of the operator, containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\n * A quotation identifying the body of the operator.\n\n The main additional features offered by this way of defining operators are the following:\n\n * If in development mode (-d or --dev flag specified at run time), both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elements from the stack (besides adding the declared output values).\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\n \n \n Example\n \n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\n\n      (\n        symbol pow\n        (num :base int :exp == num :result)\n        ( \n          (base 0 == exp 0 == and)\n            (nan @result return)\n          when\n          (base 1 == exp inf == and)\n            (nan @result return)\n          when\n          (base inf == exp 0 == and)\n            (nan @result return)\n          when\n          exp 1 - :n\n          base  (dup) n times (*) n times @result\n        )\n      ) ::",
       "kind": "symbol",
+      "module": "global",
       "name": "operator",
       "signature": "quot ==> a*"
     },
     "opts": {
       "description": "Returns a dictionary of all options passed to the current program, with their respective values.",
       "kind": "symbol",
+      "module": "global",
       "name": "opts",
       "signature": " ==> dict"
     },
     "or": {
       "description": "Returns true if bool1 or bool2 is true, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "or",
       "signature": "bool1 bool2 ==> bool3"
     },
     "ord": {
       "description": "Returns the ASCII code int corresponding to the single character str.",
       "kind": "symbol",
+      "module": "str",
       "name": "ord",
       "signature": "str ==> int"
     },
     "os": {
       "description": "Returns the host operating system. It can be one of the following strings: windows, macosx, linux, netbsd, freebsd, openbsd, solaris, aix, standalone.",
       "kind": "symbol",
+      "module": "sys",
       "name": "os",
       "signature": " ==> str"
     },
     "over": {
       "description": "Pushes a copy of the second element on top of the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "over",
       "signature": "a1 a2 ==> a1 a2 a1"
     },
     "parent-scope": {
       "description": "Returns a dictionary dict2 holding a reference to the parent scope of dict1 or null if dict1 is global.",
       "kind": "symbol",
+      "module": "global",
       "name": "parent-scope",
       "signature": "dict1 ==> dict2"
     },
     "parse": {
       "description": "Parses str and returns a quoted program quot.",
       "kind": "symbol",
+      "module": "global",
       "name": "parse",
       "signature": "str ==> quot"
     },
     "parse-url": {
       "description": "Parses the url str into its components and stores them into dict:url.",
       "kind": "symbol",
+      "module": "str",
       "name": "parse-url",
       "signature": "str ==> dict:url"
     },
     "partition": {
-      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 3 5) (2 4 6) on the stack:\r\n \r\n     (1 2 3 4 5 6) \r\n     (odd?) partition",
+      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) partition",
       "kind": "symbol",
+      "module": "seq",
       "name": "partition",
       "signature": "quot1 quot2 ==> quot3 quot4"
     },
     "password": {
       "description": "Reads a line from STDIN displaying \\* for each typed character, and places it on top of the stack as a string.",
       "kind": "symbol",
+      "module": "io",
       "name": "password",
       "signature": " ==> str"
     },
     "pi": {
       "description": "Returns the value of the &pi; constant.",
       "kind": "symbol",
+      "module": "math",
       "name": "pi",
       "signature": " ==> num"
     },
     "pick": {
       "description": "Pushes a copy of the third element on top of the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "pick",
       "signature": "a1 a2 a3 ==> a1 a2 a3 a1"
     },
     "pop": {
       "description": "Removes the first element from the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "pop",
       "signature": "a ==> "
     },
     "pow": {
       "description": "Computes num1 to power raised of num2.",
       "kind": "symbol",
+      "module": "math",
       "name": "pow",
       "signature": "num1 num2 ==> num3"
     },
     "pred": {
       "description": "Returns the predecessor of int1.",
       "kind": "symbol",
+      "module": "num",
       "name": "pred",
       "signature": "int1 ==> int2"
     },
     "prefix": {
       "description": "Prepends 'sym2 to 'sym1.",
       "kind": "symbol",
+      "module": "str",
       "name": "prefix",
       "signature": "'sym1 'sym2 ==> str"
     },
     "prefix-dequote": {
-      "description": "Dequotes quot using prefix notation (essentially it reverses quot and dequotes it).\r\n \r\n \r\n Example\r\n \r\n The following program leaves 4 on the stack:\r\n\r\n     (* 8 4) prefix-dequote",
+      "description": "Dequotes quot using prefix notation (essentially it reverses quot and dequotes it).\n \n \n Example\n \n The following program leaves 4 on the stack:\n\n     (* 8 4) prefix-dequote",
       "kind": "symbol",
+      "module": "global",
       "name": "prefix-dequote",
       "signature": "quot ==> a"
     },
     "prepend": {
       "description": "Returns a new quotation containing the contents of quot with a prepended.",
       "kind": "symbol",
+      "module": "seq",
       "name": "prepend",
       "signature": "a quot ==> (a a*)"
     },
     "print": {
       "description": "Prints a to STDOUT.",
       "kind": "symbol",
+      "module": "io",
       "name": "print",
       "signature": "a ==> a"
     },
     "product": {
       "description": "Returns the product of all items of quot. quot is a quotation of integers.",
       "kind": "symbol",
+      "module": "num",
       "name": "product",
       "signature": "quot ==> int"
     },
     "prompt": {
-      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\r\n \r\n     (\"[$1]$$ \" (.) = %)\r\n \r\n Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.",
+      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\n \n     (\"[$1]$$ \" (.) = %)\n \n Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.",
       "kind": "symbol",
+      "module": "global",
       "name": "prompt",
       "signature": " ==> str"
     },
     "publish": {
-      "description": "Publishes symbol 'sym to the scope of dict.\r\n \r\n \r\n Example\r\n \r\n Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:\r\n 'my-local-symbol global publish",
+      "description": "Publishes symbol 'sym to the scope of dict.\n \n \n Example\n \n Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:\n 'my-local-symbol global publish",
       "kind": "symbol",
+      "module": "global",
       "name": "publish",
       "signature": "'sym dict ==> "
     },
     "put-env": {
       "description": "Sets environment variable 'sym2 to 'sym1.",
       "kind": "symbol",
+      "module": "sys",
       "name": "put-env",
       "signature": "'sym1 'sym2 ==> str"
     },
     "putchr": {
       "description": "Prints str to STDOUT without printing a new line (str must contain only one character).",
       "kind": "symbol",
+      "module": "io",
       "name": "putchr",
       "signature": "str ==> a"
     },
     "puts": {
       "description": "Prints a and a new line to STDOUT.",
       "kind": "symbol",
+      "module": "global",
       "name": "puts",
       "signature": "a ==> a"
     },
     "quit": {
       "description": "Exits the program or shell with 0 as return code.",
       "kind": "symbol",
+      "module": "global",
       "name": "quit",
       "signature": " ==> "
     },
     "quotation?": {
       "description": "Returns true if a is a quotation, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "quotation?",
       "signature": "a ==> bool"
     },
     "quote": {
       "description": "Wraps a in a quotation.",
       "kind": "symbol",
+      "module": "global",
       "name": "quote",
       "signature": "a ==> (a)"
     },
     "quote-map": {
       "description": "Returns a new quotation quot2 obtained by quoting each element of quot1.",
       "kind": "symbol",
+      "module": "seq",
       "name": "quote-map",
       "signature": "quot1 ==> quot2"
     },
     "quotecmd": {
       "description": "Creates a command with the value of str and wraps it in a quotation.",
       "kind": "symbol",
+      "module": "global",
       "name": "quotecmd",
       "signature": "str ==> (sym)"
     },
     "quoted-symbol?": {
       "description": "Returns true if a is a quoted symbol, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "quoted-symbol?",
       "signature": "a ==> bool"
     },
     "quotesym": {
       "description": "Creates a symbol with the value of str and wraps it in a quotation.",
       "kind": "symbol",
+      "module": "global",
       "name": "quotesym",
       "signature": "str ==> (sym)"
     },
     "r2d": {
       "description": "Converts num1 from radians to degrees.",
       "kind": "symbol",
+      "module": "math",
       "name": "r2d",
       "signature": "num1 ==> num2"
     },
     "raise": {
       "description": "Raises the error specified via the dictionary dict:error.",
       "kind": "symbol",
+      "module": "global",
       "name": "raise",
       "signature": "dict:error ==> "
     },
     "random": {
-      "description": "Returns a random number int2 between 0 and int1-1. \r\n \r\n \r\n Note\r\n \r\n You must call randomize to initialize the random number generator, otherwise the same sequence of numbers will be returned.",
+      "description": "Returns a random number int2 between 0 and int1-1. \n \n \n Note\n \n You must call randomize to initialize the random number generator, otherwise the same sequence of numbers will be returned.",
       "kind": "symbol",
+      "module": "num",
       "name": "random",
       "signature": "int1 ==> int2"
     },
     "randomize": {
       "description": "Initializes the random number generator using a seed based on the current timestamp.",
       "kind": "symbol",
+      "module": "num",
       "name": "randomize",
       "signature": " ==> {{null}"
     },
     "range": {
       "description": "Takes a quotation quot1 of two or three integers in the form of *start*, *end* and an optional *step* (1 if not specified) and generates the sequence and returns the resulting quotation of integers quot2.",
       "kind": "symbol",
+      "module": "num",
       "name": "range",
       "signature": "quot2 ==> quot2"
     },
     "raw-args": {
       "description": "Returns a list of all arguments and (non-parsed) options passed to the current program.",
       "kind": "symbol",
+      "module": "global",
       "name": "raw-args",
       "signature": " ==> quot"
     },
     "raw-get": {
       "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
       "kind": "symbol",
+      "module": "seq",
       "name": "raw-get",
       "signature": "quot int ==> dict:rawval"
     },
     "read": {
       "description": "See fread",
       "kind": "symbol",
+      "module": "io",
       "name": "read"
     },
     "recv": {
       "description": "Waits to receive int characters from dict:socket and returns the resulting data str.",
       "kind": "symbol",
+      "module": "net",
       "name": "recv",
       "signature": "dict:socket int ==> str"
     },
     "recv-line": {
-      "description": "Waits to receive a line of data from dict:socket and returns the resulting data str. \"\" is returned if dict:socket is disconnected.\r\n \r\n \r\n Example\r\n \r\n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\r\n \r\n \r\n     {} socket \"httpbin.org\" 80 connect :cli\r\n    \r\n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" send\r\n   \r\n     cli recv-line puts :line\r\n     (line \"\\}\" match not) \r\n     (\r\n       cli recv-line puts @line\r\n     ) while",
+      "description": "Waits to receive a line of data from dict:socket and returns the resulting data str. \"\" is returned if dict:socket is disconnected.\n \n \n Example\n \n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\n \n \n     {} socket \"httpbin.org\" 80 connect :cli\n    \n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" send\n   \n     cli recv-line puts :line\n     (line \"\\}\" match not) \n     (\n       cli recv-line puts @line\n     ) while",
       "kind": "symbol",
+      "module": "net",
       "name": "recv-line",
       "signature": "dict:socket ==> str"
     },
     "reduce": {
-      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 120 on the stack:\r\n \r\n     (1 2 3 4 5) \r\n     1 (*) reduce",
+      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
       "kind": "symbol",
+      "module": "seq",
       "name": "reduce",
       "signature": "quot1 a1 quot2 ==> a2"
     },
     "reject": {
       "description": "Returns a new quotatios quot3 including all elements of quot1 that do not satisfy predicate quot2 (i.e. the opposite of filter)",
       "kind": "symbol",
+      "module": "seq",
       "name": "reject",
       "signature": "quot1 quot2 ==> quot3"
     },
     "relative-path": {
       "description": "Returns the path of 'sym1 relative to 'sym2.",
       "kind": "symbol",
+      "module": "fs",
       "name": "relative-path",
       "signature": "'sym1 'sym2 ==> str"
     },
     "remove": {
       "description": "Returns the _n^th_ element of quot1 (zero-based), and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
+      "module": "seq",
       "name": "remove",
       "signature": "quot1 int ==> quot2"
     },
     "remove-symbol": {
       "description": "Removes the symbol 'sym from the [.min\\_symbols](class:file) file.",
       "kind": "symbol",
+      "module": "global",
       "name": "remove-symbol",
       "signature": "'sym ==> "
     },
     "repeat": {
       "description": "Returns str containing 'sym repeated int times.",
       "kind": "symbol",
+      "module": "str",
       "name": "repeat",
       "signature": "'sym int ==> str"
     },
     "replace": {
-      "description": "Returns a copy of str1 containing all occurrences of str2 replaced by str3\r\n \r\n Tip\r\n \r\n str2 is a Perl-compatible regular expression.\r\n \r\n \r\n Example\r\n \r\n The following:\r\n \r\n \"This is a stupid test. Is it really a stupid test?\" \" s[a-z]+\" \" simple\" replace\r\n \r\n produces:\r\n \r\n \"This is a simple test. Is it really a simple test?\"",
+      "description": "Returns a copy of str1 containing all occurrences of str2 replaced by str3\n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"This is a stupid test. Is it really a stupid test?\" \" s[a-z]+\" \" simple\" replace\n \n produces:\n \n \"This is a simple test. Is it really a simple test?\"",
       "kind": "symbol",
+      "module": "str",
       "name": "replace",
       "signature": "str1 str2 str3 ==> str4"
     },
     "replace-apply": {
-      "description": "Returns a copy of str1 containing all occurrences of str2 replaced by applying quot to each quotation corresponding to each match.\r\n \r\n Tip\r\n \r\n str2 is a Perl-compatible regular expression.\r\n \r\n \r\n Example\r\n \r\n The following:\r\n \r\n \":1::2::3::4:\" \":(\\d):\" (1 get :d \"-$#-\" (d) =%) replace-apply\r\n \r\n produces:\r\n \r\n \"-1--2--3--4-\"\r\n \r\n Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation:\r\n      (\"-1-\" \"1\")\r\n      (\"-2-\" \"2\")\r\n      (\"-3-\" \"3\")\r\n      (\"-4-\" \"4\")",
+      "description": "Returns a copy of str1 containing all occurrences of str2 replaced by applying quot to each quotation corresponding to each match.\n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \":1::2::3::4:\" \":(\\d):\" (1 get :d \"-$#-\" (d) =%) replace-apply\n \n produces:\n \n \"-1--2--3--4-\"\n \n Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation: (\"-1-\" \"1\") (\"-2-\" \"2\") (\"-3-\" \"3\") (\"-4-\" \"4\")",
       "kind": "symbol",
+      "module": "str",
       "name": "replace-apply",
       "signature": "str1 str2 quot ==> str3"
     },
     "request": {
-      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\r\n\r\n \r\n Example\r\n \r\n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\r\n \r\n     {}\r\n       \"GET\" url\r\n     request",
+      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\n\n \n Example\n \n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" url\n     request",
       "kind": "symbol",
+      "module": "http",
       "name": "request",
       "signature": "dict ==> dict:http-response"
     },
     "require": {
-      "description": "Parses and interprets (in a separated interpreter) the specified min module, and returns a module dictionary dict containing all the symbols defined in 'sym. \r\n\r\nThis symbol will attempt to locate the specified module in this way. Given the following min program:\r\n\r\n     'my-module require :my-module\r\n\r\n1. Check for a file named my-module in the same folder as the current file (with our without a .min extension).\r\n2. Check for a file named index.min in the mmm/my-module/*/index.min folder relative to the current file (locally-installed [managed-module](/learn-mmm)).\r\n3. Check for a file named index.min in the $HOME/mmm/my-module/*/index.min folder (globally-installed [managed-module](/learn-mmm)). If multiple versions of the same module are present, the first one will be loaded.",
+      "description": "Parses and interprets (in a separated interpreter) the specified min module, and returns a module dictionary dict containing all the symbols defined in 'sym. \n\nThis symbol will attempt to locate the specified module in this way. Given the following min program:\n\n     'my-module require :my-module\n\n1. Check for a file named my-module in the same folder as the current file (with our without a .min extension).\n2. Check for a file named index.min in the mmm/my-module/*/index.min folder relative to the current file (locally-installed [managed-module](/learn-mmm)).\n3. Check for a file named index.min in the $HOME/mmm/my-module/*/index.min folder (globally-installed [managed-module](/learn-mmm)). If multiple versions of the same module are present, the first one will be loaded.",
       "kind": "symbol",
+      "module": "global",
       "name": "require",
       "signature": "'sym ==> dict"
     },
     "rest": {
       "description": "Returns a new quotation quot2 containing all elements of quot1 quotation except for the first.",
       "kind": "symbol",
+      "module": "seq",
       "name": "rest",
       "signature": "quot1 ==> quot2"
     },
     "return": {
-      "description": "If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. \r\n\r\nIf used outside of the body quotation of an operator definition, it raises an exception.",
+      "description": "If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. \n\nIf used outside of the body quotation of an operator definition, it raises an exception.",
       "kind": "symbol",
+      "module": "global",
       "name": "return",
       "signature": " ==> "
     },
     "reverse": {
       "description": "Returns a new quotation quot2 containing all elements of quot1 in reverse order.",
       "kind": "symbol",
+      "module": "seq",
       "name": "reverse",
       "signature": "quot1 ==> quot2"
     },
     "rm": {
       "description": "Deletes the specified file 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "rm",
       "signature": "'sym ==> "
     },
     "rmdir": {
       "description": "Deletes the specified directory 'sym and all its subdirectories recursively.",
       "kind": "symbol",
+      "module": "sys",
       "name": "rmdir",
       "signature": "'sym ==> "
     },
     "rolldown": {
       "description": "Moves the third element in first position, the second in third position and the the first in second position.",
       "kind": "symbol",
+      "module": "stack",
       "name": "rolldown",
       "signature": "a1 a2 a3 ==> a2 a3 a1"
     },
     "rollup": {
       "description": "Moves the third and second element into second and third position and moves the first element into third position.",
       "kind": "symbol",
+      "module": "stack",
       "name": "rollup",
       "signature": "a1 a2 a3 ==> a3 a2 a1"
     },
     "round": {
       "description": "Rounds num1 to the int^th decimal place.",
       "kind": "symbol",
+      "module": "math",
       "name": "round",
       "signature": "num1 int ==> num2"
     },
     "run": {
       "description": "Executes the external command 'sym in the current directory without displaying its output. Returns a dictionary containing the command output and return code (in keys **output** and **code** respectively).",
       "kind": "symbol",
+      "module": "sys",
       "name": "run",
       "signature": "'sym ==> dict"
     },
     "save-symbol": {
       "description": "Saves the contents of symbol 'sym to the [.min\\_symbols](class:file) file.",
       "kind": "symbol",
+      "module": "global",
       "name": "save-symbol",
       "signature": "'sym ==> "
     },
     "saved-symbols": {
       "description": "Returns a quotation containing all symbols saved in the [.min\\_symbols](class:file) file.",
       "kind": "symbol",
+      "module": "global",
       "name": "saved-symbols",
       "signature": " ==> (str*)"
     },
     "scope": {
-      "description": "Returns a dictionary dict holding a reference to the current scope.\r\n  \r\n This can be useful to save a reference to a given execution scope to access later on.\r\n\r\n \r\n Example\r\n \r\n The following program leaves {(2) :two ;module} on the stack:\r\n \r\n     {} :myscope (2 :two scope @myscope) -",
+      "description": "Returns a dictionary dict holding a reference to the current scope.\n  \n This can be useful to save a reference to a given execution scope to access later on.\n\n \n Example\n \n The following program leaves {(2) :two ;module} on the stack:\n \n     {} :myscope (2 :two scope @myscope) -",
       "kind": "symbol",
+      "module": "global",
       "name": "scope",
       "signature": " ==> dict"
     },
     "scope-sigils": {
       "description": "Returns a list of all sigils defined in dictionary dict.",
       "kind": "symbol",
+      "module": "global",
       "name": "scope-sigils",
       "signature": "dict ==> (str*)"
     },
     "scope-symbols": {
       "description": "Returns a list of all symbols defined in dictionary dict.",
       "kind": "symbol",
+      "module": "global",
       "name": "scope-symbols",
       "signature": "dict ==> (str*)"
     },
     "seal-sigil": {
       "description": "Seals the user-defined sigil 'sym, so that it cannot be re-defined.",
       "kind": "symbol",
+      "module": "global",
       "name": "seal-sigil",
       "signature": "'sym ==> "
     },
     "seal-symbol": {
       "description": "Seals symbol 'sym, so that it cannot be re-assigned.",
       "kind": "symbol",
+      "module": "global",
       "name": "seal-symbol",
       "signature": "'sym ==> "
     },
     "sealed-sigil?": {
       "description": "Returns true if the sigil 'sym is sealed, false  otherwise.",
       "kind": "symbol",
+      "module": "global",
       "name": "sealed-sigil?",
       "signature": "'sym ==> bool"
     },
     "sealed-symbol?": {
       "description": "Returns true if the symbol 'sym is sealed, false  otherwise.",
       "kind": "symbol",
+      "module": "global",
       "name": "sealed-symbol?",
       "signature": "'sym ==> bool"
     },
     "search": {
-      "description": "Returns a quotation containing the first occurrence of str2 within str1. Note that:\r\n \r\n   * The first element of quot is the matching substring.\r\n   * Other elements (if any) contain captured substrings.\r\n   * If no matches are found, the quotation contains empty strings.\r\n \r\n \r\n Tip\r\n \r\n str2 is a Perl-compatible regular expression.\r\n \r\n \r\n Example\r\n \r\n The following:\r\n \r\n \"192.168.1.1, 127.0.0.1\" \"[0-9]+\\.[0-9]+\\.([0-9]+)\\.([0-9]+)\" search\r\n \r\n produces: (\"192.168.1.1\", \"1\", \"1\")",
+      "description": "Returns a quotation containing the first occurrence of str2 within str1. Note that:\n \n   * The first element of quot is the matching substring.\n   * Other elements (if any) contain captured substrings.\n   * If no matches are found, the quotation contains empty strings.\n \n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"192.168.1.1, 127.0.0.1\" \"[0-9]+\\.[0-9]+\\.([0-9]+)\\.([0-9]+)\" search\n \n produces: (\"192.168.1.1\", \"1\", \"1\")",
       "kind": "symbol",
+      "module": "str",
       "name": "search",
       "signature": "str1 str2 ==> quot"
     },
     "search-all": {
       "description": "Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of str2 within str1.",
       "kind": "symbol",
+      "module": "str",
       "name": "search-all",
       "signature": "str1 str2 ==> quot"
     },
     "semver-inc-major": {
       "description": "Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
+      "module": "str",
       "name": "semver-inc-major",
       "signature": "str1 ==> str2"
     },
     "semver-inc-minor": {
       "description": "Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
+      "module": "str",
       "name": "semver-inc-minor",
       "signature": "str1 ==> str2"
     },
     "semver-inc-patch": {
       "description": "Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
+      "module": "str",
       "name": "semver-inc-patch",
       "signature": "str1 ==> str2"
     },
     "semver?": {
       "description": "Checks whether str is a [SemVer](https://semver.org)-compliant version or not.",
       "kind": "symbol",
+      "module": "str",
       "name": "semver?",
       "signature": "str ==> bool"
     },
     "send": {
       "description": "Sends str to the connected socket dict:socket.",
       "kind": "symbol",
+      "module": "net",
       "name": "send",
       "signature": "dict:socket str ==> "
     },
     "set": {
       "description": "Sets the value of the _n^th_ element quot1 (zero-based) to a, and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
+      "module": "seq",
       "name": "set",
       "signature": "quot1 a int ==> quot2"
     },
     "set-stack": {
       "description": "Substitute the existing stack with the contents of quot.",
       "kind": "symbol",
+      "module": "stack",
       "name": "set-stack",
       "signature": "quot ==> a*"
     },
     "set-sym": {
       "description": "Sets the value of the _n^th_ element quot1 (zero-based) to 'sym (treating it as a symbol), and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
+      "module": "seq",
       "name": "set-sym",
       "signature": "quot1 'sym int ==> quot2"
     },
     "setstack": {
       "description": "See set-stack",
       "kind": "symbol",
+      "module": "stack",
       "name": "setstack"
     },
     "sha1": {
       "description": "Returns the SHA1 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "sha1",
       "signature": "'sym ==> str"
     },
     "sha224": {
       "description": "Returns the SHA224 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "sha224",
       "signature": "'sym ==> str"
     },
     "sha256": {
       "description": "Returns the SHA256 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "sha256",
       "signature": "'sym ==> str"
     },
     "sha384": {
       "description": "Returns the SHA384 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "sha384",
       "signature": "'sym ==> str"
     },
     "sha512": {
       "description": "Returns the SHA512 hash of 'sym.",
       "kind": "symbol",
+      "module": "crypto",
       "name": "sha512",
       "signature": "'sym ==> str"
     },
     "shl": {
       "description": "Computes the *shift left* operation of int1 and int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "shl",
       "signature": "int1 int2 ==> int3"
     },
     "shorten": {
       "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1.",
       "kind": "symbol",
+      "module": "seq",
       "name": "shorten",
       "signature": "quot1 int ==> quot2"
     },
     "shr": {
       "description": "Computes the *shift right* operation of int1 and int2.",
       "kind": "symbol",
+      "module": "num",
       "name": "shr",
       "signature": "int1 int2 ==> int3"
     },
     "sigils": {
       "description": "Returns a list of all sigils defined in the [global](class:kwd) scope.",
       "kind": "symbol",
+      "module": "global",
       "name": "sigils",
       "signature": " ==> (str*)"
     },
     "sin": {
       "description": "Calculates the sine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "sin",
       "signature": "num1 ==> num2"
     },
     "sinh": {
       "description": "Calculates the hyperbolic sine of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "sinh",
       "signature": "num1 ==> num2"
     },
     "sip": {
       "description": "Saves the quot1, dequotes quot2, and restores quot1.",
       "kind": "symbol",
+      "module": "stack",
       "name": "sip",
       "signature": "quot1 quot2 ==> a* quot1"
     },
     "size": {
       "description": "Returns the length of quot.",
       "kind": "symbol",
+      "module": "seq",
       "name": "size",
       "signature": "quot ==> int"
     },
     "sleep": {
       "description": "Halts program execution for int milliseconds.",
       "kind": "symbol",
+      "module": "sys",
       "name": "sleep",
       "signature": "int ==> "
     },
     "slice": {
-      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\r\n \r\n \r\n Example\r\n \r\n The following program leaves (3 4 5) on the stack:\r\n \r\n     (1 2 3 4 5 6) \r\n     2 4 slice",
+      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 slice",
       "kind": "symbol",
+      "module": "seq",
       "name": "slice",
       "signature": "quot1 int1 int2 ==> quot2"
     },
     "socket": {
-      "description": "Opens a new socket.\r\n \r\n dict can be empty or contain any of the following properties, used to specify the domain, type and protocol of the socket respectively.\r\n \r\n domain\r\n : The socket domain. It can be set to one of the following values:\r\n   \r\n   *  **ipv4** (default): Internet Protocol version 4.\r\n   *  **ipv6**: Internet Protocol version 6.\r\n   *  **unix**: local Unix file (not supported on Windows systems).\r\n type\r\n : The socket type. It can be set to one of the following values:\r\n  \r\n   * **stream** (default): Reliable stream-oriented service or Stream Socket.\r\n   * **dgram**: Datagram service or Datagram Socket.\r\n   * **raw**: Raw protocols atop the network layer.\r\n   * **seqpacket**: Reliable sequenced packet service.\r\n protocol\r\n : The socket protocol. It can be set to one of the following values:\r\n \r\n   * **tcp** (default): Transmission Control Protocol.\r\n   * **udp**: User Datagram Protocol.\r\n   * **ipv4**: Internet Protocol version 4 (not supported on Windows systems).\r\n   * **ipv6**: Internet Protocol version 6 (not supported on Windows systems).\r\n   * **raw**: Raw IP Packets protocol (not supported on Windows systems).\r\n   * **icmp**: Internet Control Message Protocol (not supported on Windows systems).",
+      "description": "Opens a new socket.\n \n dict can be empty or contain any of the following properties, used to specify the domain, type and protocol of the socket respectively.\n \n domain\n : The socket domain. It can be set to one of the following values:\n   \n   *  **ipv4** (default): Internet Protocol version 4.\n   *  **ipv6**: Internet Protocol version 6.\n   *  **unix**: local Unix file (not supported on Windows systems).\n type\n : The socket type. It can be set to one of the following values:\n  \n   * **stream** (default): Reliable stream-oriented service or Stream Socket.\n   * **dgram**: Datagram service or Datagram Socket.\n   * **raw**: Raw protocols atop the network layer.\n   * **seqpacket**: Reliable sequenced packet service.\n protocol\n : The socket protocol. It can be set to one of the following values:\n \n   * **tcp** (default): Transmission Control Protocol.\n   * **udp**: User Datagram Protocol.\n   * **ipv4**: Internet Protocol version 4 (not supported on Windows systems).\n   * **ipv6**: Internet Protocol version 6 (not supported on Windows systems).\n   * **raw**: Raw IP Packets protocol (not supported on Windows systems).\n   * **icmp**: Internet Control Message Protocol (not supported on Windows systems).",
       "kind": "symbol",
+      "module": "net",
       "name": "socket",
       "signature": "dict ==> dict:socket"
     },
     "sort": {
-      "description": "Sorts all elements of quot1 according to predicate quot2. \r\n \r\n \r\n Example\r\n \r\n The following program leaves (1 3 5 7 9 13 16) on the stack:\r\n \r\n     (1 9 5 13 16 3 7) ' sort",
+      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' sort",
       "kind": "symbol",
+      "module": "seq",
       "name": "sort",
       "signature": "quot1 quot2 ==> quot3"
     },
     "source": {
       "description": "Display the source code of symbol 'sym (if it has been implemented a min quotation).",
       "kind": "symbol",
+      "module": "global",
       "name": "source",
       "signature": "'sym ==> quot"
     },
     "split": {
       "description": "Splits 'sym1 using separator 'sym2 (a Perl-compatible regular expression) and returns the resulting strings within the quotation quot.",
       "kind": "symbol",
+      "module": "str",
       "name": "split",
       "signature": "'sym1 'sym2 ==> quot"
     },
     "spread": {
-      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\r\n \r\n Example\r\n \r\n The following program leaves (1 4) on the stack:\r\n \r\n (1 2) (3 4) ((0 get) (1 get)) spread",
+      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves (1 4) on the stack:\n \n (1 2) (3 4) ((0 get) (1 get)) spread",
       "kind": "symbol",
+      "module": "stack",
       "name": "spread",
       "signature": "a* (quot*) ==> a*"
     },
     "sqrt": {
       "description": "Returns square root of num1.",
       "kind": "symbol",
+      "module": "math",
       "name": "sqrt",
       "signature": "num1 ==> num2"
     },
     "start-server": {
-      "description": "Starts an HTTP server based on the configuration provided in dict.\r\n \r\n dict is a dictionary containing the following keys:\r\n \r\n address\r\n : The address to bind the server to (default: **127.0.0.1**).\r\n port\r\n : The port to bind the server to.\r\n handler\r\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\r\n \r\n \r\n Example\r\n \r\n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\r\n \r\n     ; Define the request handler\r\n     (\r\n       ; Assume there is a request on the stack, take it off and give it the name req\r\n       :req\r\n       ; Let's see what we got (print req to standard out)\r\n       \"THE REQUEST:\" puts! req puts!\r\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\r\n       req /url :url\r\n       \"THE URL is '$1'.\" url quote ))\r\n       ) case\r\n       :body\r\n       ; Prepare the response\r\n       {} body handler\r\n     5555 %port\r\n     \r\n     ; Start server\r\n     \"Server started on port 5555.\" puts!\r\n     \"Press Ctrl+C to stop.\" puts!\r\n     start-server",
+      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body handler\n     5555 %port\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
       "kind": "symbol",
+      "module": "http",
       "name": "start-server",
       "signature": "dict ==> "
     },
     "stop-server": {
       "description": "Stops the currently-running HTTP server. This operator should be used within an HTTP server handler quotation.",
       "kind": "symbol",
+      "module": "http",
       "name": "stop-server",
       "signature": " ==> "
     },
     "string": {
       "description": "Converts a to its string representation.",
       "kind": "symbol",
+      "module": "global",
       "name": "string",
       "signature": "a ==> str"
     },
     "string?": {
       "description": "Returns true if a is a string, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "string?",
       "signature": "a ==> bool"
     },
     "stringlike?": {
       "description": "Returns true if a is a string or a quoted symbol, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "stringlike?",
       "signature": "a ==> bool"
     },
     "strip": {
       "description": "Returns str, which is set to 'sym with leading and trailing spaces removed.",
       "kind": "symbol",
+      "module": "str",
       "name": "strip",
       "signature": "'sym ==> str"
     },
     "substr": {
       "description": "Returns a substring str2 obtained by retrieving int2 characters starting from index int1 within str1.",
       "kind": "symbol",
+      "module": "str",
       "name": "substr",
       "signature": "str1 int1 int2 ==> str2"
     },
     "succ": {
       "description": "Returns the successor of int1.",
       "kind": "symbol",
+      "module": "num",
       "name": "succ",
       "signature": "int1 ==> int2"
     },
     "suffix": {
       "description": "Appends 'sym2 to 'sym1.",
       "kind": "symbol",
+      "module": "str",
       "name": "suffix",
       "signature": "'sym1 'sym2 ==> str"
     },
     "sum": {
       "description": "Returns the sum of all items of quot. quot is a quotation of integers.",
       "kind": "symbol",
+      "module": "num",
       "name": "sum",
       "signature": "quot ==> int"
     },
     "swap": {
       "description": "Swaps the first two elements on the stack.",
       "kind": "symbol",
+      "module": "stack",
       "name": "swap",
       "signature": "a1 a2 ==> a2 a1"
     },
     "swons": {
       "description": "Prepends a1 to the quotation that follows it.",
       "kind": "symbol",
+      "module": "stack",
       "name": "swons",
       "signature": "(a*) a1 ==> (a1 a*)"
     },
     "symbols": {
       "description": "Returns a list of all symbols defined in the [global](class:kwd) scope.",
       "kind": "symbol",
+      "module": "global",
       "name": "symbols",
       "signature": " ==> (str*)"
     },
     "symlink": {
       "description": "Creates symlink 'sym2 for file or directory 'sym1.",
       "kind": "symbol",
+      "module": "sys",
       "name": "symlink",
       "signature": "'sym1 'sym2 ==> "
     },
     "symlink?": {
       "description": "Returns true if the specified path 'sym exists and is a symbolic link.",
       "kind": "symbol",
+      "module": "fs",
       "name": "symlink?",
       "signature": "'sym ==> bool"
     },
     "symmetric-difference": {
-      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (true \"a\" 2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
+      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
       "kind": "symbol",
+      "module": "seq",
       "name": "symmetric-difference",
       "signature": "quot1 quot2 ==> quot3"
     },
     "system": {
       "description": "Executes the external command 'sym in the current directory and pushes its return code on the stack.",
       "kind": "symbol",
+      "module": "sys",
       "name": "system",
       "signature": "'sym ==> int"
     },
     "take": {
       "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1, or quot1 itself if int is greater than the length of quot1.",
       "kind": "symbol",
+      "module": "seq",
       "name": "take",
       "signature": "quot1 int ==> quot2"
     },
     "tan": {
       "description": "Calculates the tangent of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "tan",
       "signature": "num1 ==> num2"
     },
     "tanh": {
       "description": "Calculates the hyperbolic tangent of num1 (in radians).",
       "kind": "symbol",
+      "module": "math",
       "name": "tanh",
       "signature": "num1 ==> num2"
     },
     "tap": {
-      "description": "Performs the following operations:\r\n \r\n 1. Removes a from the stack.\r\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\r\n    1. Pushes a back to the stack.\r\n    2. Dequotes the quotation and saves the result as a.\r\n 3. Push the resulting a back on the stack.\r\n \r\n \r\n Example\r\n \r\n The following program:\r\n \r\n     {1 :a 2 :b 3 :c} (\r\n       (dup /a  succ succ b)\r\n     ) tap\r\n \r\n Returns {3 :a 3 :b 3 :c}.",
+      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (dup /a  succ succ b)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
       "kind": "symbol",
+      "module": "global",
       "name": "tap",
       "signature": "a quot ==> a"
     },
     "tau": {
       "description": "Returns the value of the &tau; constant (2&pi;).",
       "kind": "symbol",
+      "module": "math",
       "name": "tau",
       "signature": " ==> num"
     },
     "tformat": {
-      "description": "Formats timestamp int using string str.\r\n \r\n \r\n Tip\r\n \r\n For information on special characters in the format string, see the [format](https://nim-lang.org/docs/times.html#format,TimeInfo,string) nim method.",
+      "description": "Formats timestamp int using string str.\n \n \n Tip\n \n For information on special characters in the format string, see the [format](https://nim-lang.org/docs/times.html#format,TimeInfo,string) nim method.",
       "kind": "symbol",
+      "module": "time",
       "name": "tformat",
       "signature": "int str ==> str"
     },
     "timeinfo": {
       "description": "Returns a timeinfo dictionary from timestamp int.",
       "kind": "symbol",
+      "module": "time",
       "name": "timeinfo",
       "signature": "int ==> dict:timeinfo"
     },
     "times": {
       "description": "Applies the quotation quot int times.",
       "kind": "symbol",
+      "module": "global",
       "name": "times",
       "signature": "quot int ==> a*"
     },
     "timestamp": {
       "description": "Returns the current time as Unix timestamp.",
       "kind": "symbol",
+      "module": "time",
       "name": "timestamp",
       "signature": " ==> int"
     },
     "titleize": {
       "description": "Returns a copy of 'sym in which the first character of each word is capitalized.",
       "kind": "symbol",
+      "module": "str",
       "name": "titleize",
       "signature": "'sym ==> str"
     },
     "to-bin": {
       "description": "Converts int to its binary representation.",
       "kind": "symbol",
+      "module": "str",
       "name": "to-bin",
       "signature": "int ==> str"
     },
     "to-dec": {
       "description": "Converts int to its decimal representation.",
       "kind": "symbol",
+      "module": "str",
       "name": "to-dec",
       "signature": "int ==> str"
     },
     "to-hex": {
       "description": "Converts int to its hexadecimal representation.",
       "kind": "symbol",
+      "module": "str",
       "name": "to-hex",
       "signature": "int ==> str"
     },
     "to-json": {
       "description": "Converts a into a JSON string.",
       "kind": "symbol",
+      "module": "global",
       "name": "to-json",
       "signature": "a ==> str"
     },
     "to-oct": {
       "description": "Converts int to its octal representation.",
       "kind": "symbol",
+      "module": "str",
       "name": "to-oct",
       "signature": "int ==> str"
     },
     "to-semver": {
       "description": "Given a a dictionary dict containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str on the stack.",
       "kind": "symbol",
+      "module": "str",
       "name": "to-semver",
       "signature": "dict ==> str"
     },
     "to-timestamp": {
       "description": "Converts the timeinfo dictionary dict:timeinfo to the corresponding Unix timestamp.",
       "kind": "symbol",
+      "module": "time",
       "name": "to-timestamp",
       "signature": "dict:timeinfo ==> int"
     },
     "to-xml": {
       "description": "Returns a str representing an XML node.",
       "kind": "symbol",
+      "module": "xml",
       "name": "to-xml",
       "signature": "xml-node ==> str"
     },
     "to-yaml": {
-      "description": "Converts a into a YAML string.\r\n\r\n \r\n Note\r\n \r\n At present, only min dictionaries containing string values are supported.",
+      "description": "Converts a into a YAML string.\n\n \n Note\n \n At present, only min dictionaries containing string values are supported.",
       "kind": "symbol",
+      "module": "global",
       "name": "to-yaml",
       "signature": "a ==> str"
+    },
+    "tokenize": {
+      "description": "Parses the min program str and returns a quotation quot containing dictionaries with a type symbol and a value symbol for each token.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "tokenize",
+      "signature": "str ==> quot"
     },
     "trunc": {
       "description": "Truncates num to the decimal point.",
       "kind": "symbol",
+      "module": "math",
       "name": "trunc",
       "signature": "num1 ==> num2"
     },
     "try": {
-      "description": "Evaluates a quotation as a try/catch/finally block. \r\n \r\n The must contain the following elements:\r\n \r\n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\r\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\r\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\r\n \r\n \r\n Example\r\n \r\n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\r\n \r\n       (\r\n         (pop)\r\n         (format-error puts)\r\n         (0)\r\n       ) try",
+      "description": "Evaluates a quotation as a try/catch/finally block. \n \n The must contain the following elements:\n \n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\n \n \n Example\n \n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\n \n       (\n         (pop)\n         (format-error puts)\n         (0)\n       ) try",
       "kind": "symbol",
+      "module": "global",
       "name": "try",
       "signature": "(quot1 quot2? quot3?) ==> a*"
     },
     "type": {
       "description": "Puts the data type of a on the stack. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
       "kind": "symbol",
+      "module": "io",
       "name": "type",
       "signature": "a ==> str"
     },
     "type?": {
       "description": "Returns true if the data type of a satisfies the specified type expression 'sym, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "type?",
       "signature": "a 'sym ==> bool"
     },
     "typealias": {
       "description": "Creates a type alias 'sym1 for type expression 'sym2.",
       "kind": "symbol",
+      "module": "global",
       "name": "typealias",
       "signature": "'sym1 'sym2 ==> "
     },
     "union": {
-      "description": "Calculates the union quot3 of quot1 and quot2.\r\n\r\n \r\n Example\r\n \r\n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\r\n \r\n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
+      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
       "kind": "symbol",
+      "module": "seq",
       "name": "union",
       "signature": "quot1 quot2 ==> quot3"
     },
     "unix-path": {
       "description": "Converts all backslashes in 'sym to slashes.",
       "kind": "symbol",
+      "module": "fs",
       "name": "unix-path",
       "signature": "'sym ==> str"
     },
     "unless": {
       "description": "If 1 evaluates to false  then evaluates 2.",
       "kind": "symbol",
+      "module": "global",
       "name": "unless",
       "signature": "quot1 quot2 ==> a*"
     },
     "unmapkey": {
-      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\r\n\r\n \r\n Notes\r\n\r\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\r\n * At present, all the default mappings of min are those provided by the [minline](https://h3rald.com/minline/minline.html) library.",
+      "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\n\n \n Notes\n\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\n * At present, all the default mappings of min are those provided by the [minline](https://h3rald.com/minline/minline.html) library.",
       "kind": "symbol",
+      "module": "io",
       "name": "unmapkey",
       "signature": "'sym ==> "
     },
     "unseal-sigil": {
       "description": "Unseals sigil 'sym, so that it can be re-defined (system sigils cannot be unsealed).",
       "kind": "symbol",
+      "module": "global",
       "name": "unseal-sigil",
       "signature": "'sym ==> "
     },
     "unseal-symbol": {
       "description": "Unseals the user-defined symbol 'sym, so that it can be re-assigned.",
       "kind": "symbol",
+      "module": "global",
       "name": "unseal-symbol",
       "signature": "'sym ==> "
     },
     "unzip": {
       "description": "Decompresses zip file 'sym1 to directory 'sym2 (created if not present).",
       "kind": "symbol",
+      "module": "sys",
       "name": "unzip",
       "signature": "'sym1 'sym2 ==> "
     },
     "uppercase": {
       "description": "Returns a copy of 'sym converted to uppercase.",
       "kind": "symbol",
+      "module": "str",
       "name": "uppercase",
       "signature": "'sym1 ==> 'sym2"
     },
     "version": {
       "description": "Returns the current min version number.",
       "kind": "symbol",
+      "module": "global",
       "name": "version",
       "signature": " ==> str"
     },
     "warn": {
       "description": "Prints a and a new line to STDERR, if logging level is set to [warn](class:kwd) or lower.",
       "kind": "symbol",
+      "module": "io",
       "name": "warn",
       "signature": "a ==> a"
     },
     "when": {
       "description": "If quot1 evaluates to true then evaluates quot2.",
       "kind": "symbol",
+      "module": "global",
       "name": "when",
       "signature": "quot1 quot2 ==> a*"
     },
     "which": {
       "description": "Returns the full path to the directory containing executable 'sym, or an empty string if the executable is not found in **$PATH**.",
       "kind": "symbol",
+      "module": "sys",
       "name": "which",
       "signature": "'sym ==> str"
     },
     "while": {
-      "description": "Executes quot2 while quot1 evaluates to true.\r\n \r\n \r\n Example\r\n \r\n The following program prints all natural numbers from 0 to 10:\r\n \r\n     0 :count \r\n     (count 10 <=) \r\n     (count puts succ @count) while",
+      "description": "Executes quot2 while quot1 evaluates to true.\n \n \n Example\n \n The following program prints all natural numbers from 0 to 10:\n \n     0 :count \n     (count 10 <=) \n     (count puts succ @count) while",
       "kind": "symbol",
+      "module": "global",
       "name": "while",
       "signature": "quot1 quot2 ==> a*"
     },
     "windows-path": {
       "description": "Converts all slashes in 'sym to backslashes.",
       "kind": "symbol",
+      "module": "fs",
       "name": "windows-path",
       "signature": "'sym ==> str"
     },
     "with": {
       "description": "Pushes each item of quot1 on the stack using the scope of quot2 as scope.",
       "kind": "symbol",
+      "module": "global",
       "name": "with",
       "signature": "quot1 quot2 ==> a*"
     },
     "write": {
       "description": "See fwrite",
       "kind": "symbol",
+      "module": "io",
       "name": "write"
     },
     "xcdata": {
       "description": "Returns a dict:xml-cdata representing an XML CDATA section.",
       "kind": "symbol",
+      "module": "xml",
       "name": "xcdata",
       "signature": "'sym ==> dict:xml-cdata"
     },
     "xcomment": {
       "description": "Returns a dict:xml-comment representing an XML comment.",
       "kind": "symbol",
+      "module": "xml",
       "name": "xcomment",
       "signature": "'sym ==> dict:xml-comment"
     },
     "xelement": {
       "description": "Returns a dict:xml-element representing an XML element (it will be an empty element with no attributes or children).",
       "kind": "symbol",
+      "module": "xml",
       "name": "xelement",
       "signature": "'sym ==> dict:xml-element"
     },
     "xentity": {
       "description": "Returns a dict:xml-entity representing an XML entity.",
       "kind": "symbol",
+      "module": "xml",
       "name": "xentity",
       "signature": "'sym ==> dict:xml-entity"
+    },
+    "xentity2utf8": {
+      "description": "Returns the UTF-8 symbol corresponding to the specified XML entity. \n \n \n Example\n \n The following program prints p to the screen:\n \n      \"&gt;\" xentity xentity2utf8 puts",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "xentity2utf8",
+      "signature": "dict:xml-entity ==> str"
+    },
+    "xescape": {
+      "description": "Converts any <, `, &, ', and \"` present in 'sym into the corresponding XML entities.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "xescape",
+      "signature": "'sym ==> str"
     },
     "xor": {
       "description": "Returns true if bool1 and bool2 are different, false  otherwise.",
       "kind": "symbol",
+      "module": "logic",
       "name": "xor",
       "signature": "bool1 bool2 ==> bool3"
     },
     "xquery": {
-      "description": "Returns an dict:xml-element representing the first element matching CSS the selector 'sym.\r\n \r\n \r\n Example\r\n  \r\n The following program:\r\n\r\n     \"<ul\r\n        <li class='test'first</li\r\n        <li class='other'second</li\r\n        <li class='test'third</li\r\n     </ul\" \r\n     from-xml \".test\" xquery\r\n Returns the following:\r\n\r\n     {\r\n       {\"test\" :class} :attributes \r\n       ({\"first\" :text}) :children \r\n       \"li\" :tag \r\n       ;xml-element\r\n     }",
+      "description": "Returns an dict:xml-element representing the first element matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     from-xml \".test\" xquery\n Returns the following:\n\n     {\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }",
       "kind": "symbol",
+      "module": "xml",
       "name": "xquery",
       "signature": "dict:xml-element 'sym ==> dict:xml-element"
     },
     "xqueryall": {
-      "description": "Returns a list of dict:xml-element dictionaries representing all the elements matching CSS the selector 'sym.\r\n \r\n \r\n Example\r\n  \r\n The following program:\r\n\r\n     \"<ul\r\n        <li class='test'first</li\r\n        <li class='other'second</li\r\n        <li class='test'third</li\r\n     </ul\" \r\n     from-xml \".test\" xqueryall\r\n Returns the following:\r\n\r\n     ({\r\n       {\"test\" :class} :attributes \r\n       ({\"first\" :text}) :children \r\n       \"li\" :tag \r\n       ;xml-element\r\n     }\r\n     {\r\n       {\"test\" :class} :attributes \r\n       ({\"third\" :text}) :children \r\n       \"li\" :tag \r\n       ;xml-element\r\n     })",
+      "description": "Returns a list of dict:xml-element dictionaries representing all the elements matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     from-xml \".test\" xqueryall\n Returns the following:\n\n     ({\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }\n     {\n       {\"test\" :class} :attributes \n       ({\"third\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     })",
       "kind": "symbol",
+      "module": "xml",
       "name": "xqueryall",
       "signature": "dict:xml-element 'sym ==> dict:xml-element"
     },
     "xtext": {
       "description": "Returns a dict:xml-text representing an XML text node.",
       "kind": "symbol",
+      "module": "xml",
       "name": "xtext",
       "signature": "'sym ==> dict:xml-text"
     },
     "zip": {
       "description": "Compresses files included in quotation quot into zip file 'sym.",
       "kind": "symbol",
+      "module": "sys",
       "name": "zip",
       "signature": "quot 'sym ==> "
     },
     "~": {
       "description": "See lambda-bind",
       "kind": "symbol",
+      "module": "global",
       "name": "~"
     }
   },
@@ -2424,71 +2865,85 @@
     "!": {
       "description": "See system",
       "kind": "sigil",
+      "module": "sys",
       "name": "!"
     },
     "$": {
       "description": "See get-env",
       "kind": "sigil",
+      "module": "sys",
       "name": "$"
     },
     "%": {
       "description": "See dset",
       "kind": "sigil",
+      "module": "dict",
       "name": "%"
     },
     "&": {
       "description": "See run",
       "kind": "sigil",
+      "module": "sys",
       "name": "&"
     },
     "'": {
       "description": "See quotesym",
       "kind": "sigil",
+      "module": "global",
       "name": "'"
     },
     "*": {
       "description": "See invoke",
       "kind": "sigil",
+      "module": "global",
       "name": "*"
     },
     "/": {
       "description": "See dget",
       "kind": "sigil",
+      "module": "dict",
       "name": "/"
     },
     ":": {
       "description": "See define",
       "kind": "sigil",
+      "module": "global",
       "name": ":"
     },
     "<": {
       "description": "See load-symbol",
       "kind": "sigil",
+      "module": "global",
       "name": "<"
     },
     ">": {
       "description": "See save-symbol",
       "kind": "sigil",
+      "module": "global",
       "name": ">"
     },
     "?": {
       "description": "See help",
       "kind": "sigil",
+      "module": "global",
       "name": "?"
     },
     "@": {
       "description": "See bind",
       "kind": "sigil",
+      "module": "global",
       "name": "@"
     },
     "^": {
       "description": "See lambda",
       "kind": "sigil",
+      "module": "global",
       "name": "^"
     },
     "~": {
       "description": "See lambda-bind",
       "kind": "sigil",
+      "module": "global",
       "name": "~"
     }
   }

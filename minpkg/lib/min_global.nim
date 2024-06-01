@@ -644,11 +644,14 @@ proc global_module*(i: In) =
     if i.stack.len == 0 or not i.stack[i.stack.len-1].isStringLike:
       warn "Specify a quoted symbol or string to show its help documentation, e.g. 'puts help"
       return
-    let s = i.pop.getString
+    var s = i.pop.getString
     var found = false
     var foundDoc = false
     let displayDoc = proc (j: JsonNode) =
-      echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
+      if j.hasKey("module"):
+        echo "=== $#.$# [$#]" % [j["module"].getStr, j["name"].getStr, j["kind"].getStr]
+      else:
+        echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
       if j.hasKey("signature"):
         echo j["signature"].getStr
       if j.hasKey("description"):
@@ -665,7 +668,14 @@ proc global_module*(i: In) =
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
-      elif HELP["operators"].hasKey(s):
+        return
+      var mdl = ""
+      if s.contains('.'):
+        let parts = s.split(".")
+        mdl = parts[0]
+        s = parts[1]
+      if HELP["operators"].hasKey(s) and (mdl == "" or mdl == HELP["operators"][
+          s]["module"].getStr):
         foundDoc = true
         displayDoc HELP["operators"][s]
     if i.scope.hasSigil(s):

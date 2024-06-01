@@ -47,8 +47,8 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     var dict: MinValue
     var path = ""
     if ['?', '@', '\'', '~', '#'].contains(word[0]):
-      word = word[1..^1]
       path &= word[0]
+      word = word[1..^1]
     let dicts = word.split(".")
     for d in dicts:
       if dict.isNil:
