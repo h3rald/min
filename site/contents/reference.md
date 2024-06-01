@@ -23,7 +23,7 @@ min includes a small but powerful standard library organized into the following 
 {#link-module||logic#}
 : Provides comparison operators for all min data types and other boolean logic operators.
 {#link-module||str#}
-: Provides operators to perform operations on strings, use regular expressions, interpolation, etc..
+: Provides operators to perform operations on strings, use regular expressions, interpolation, etc.
 {#link-module||sys#}
 : Provides operators to use as basic shell commands, access environment variables, and execute external commands.
 {#link-module||num#}

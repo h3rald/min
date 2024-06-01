@@ -22,8 +22,6 @@ title: "global Module"
 
 {#alias||~||lambda-bind#}
 
-{#sig||&ast;||invoke#}
-
 {#sig||@||bind#}
 
 {#alias||@||bind#}
@@ -224,17 +222,6 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 >   * If {{any}} is an integer, no conversion is performed.
 >   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
 >   * If {{any}} is a string, it is parsed as an integer value.#}
-
-{#op||invoke||{{sl}}||{{a0p}}||
-> Assuming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program leaves `100` on the stack:
-> > 
-> >     {{100 :b} :a} :test *test/a/b
- #}
  
  {#op||lambda||{{q}} {{sl}}||{{none}}||
 > Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.

@@ -16,12 +16,6 @@ title: "sys Module"
 
 {#alias||&||run#}
 
-{#op||.||{{none}}||{{s}}||
-Returns the full path to the current directory. #}
-
-{#op||..||{{none}}||{{s}}||
-Returns the full path to the parent directory. #}
-
 {#op||admin?||{{none}}||{{b}}||
 Returns {{t}} if the program is being run with administrative privileges. #}
 
@@ -68,8 +62,14 @@ Moves the file or directory {{sl1}} to {{sl2}}. #}
 {#op||os||{{none}}||{{s}}||
 Returns the host operating system. It can be one of the following strings: windows, macosx, linux, netbsd, freebsd, openbsd, solaris, aix, standalone. #}
 
+{#op||parent-dir||{{none}}||{{s}}||
+Returns the full path to the parent directory. #}
+
 {#op||put-env||{{sl1}} {{sl2}}||{{s}}||
 Sets environment variable {{sl2}} to {{sl1}}. #}
+
+{#op||pwd||{{none}}||{{s}}||
+Returns the full path to the current directory. #}
 
 {#op||rm||{{sl}}||{{none}}||
 Deletes the specified file {{sl}}. #}
