@@ -1133,7 +1133,7 @@ proc global_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]\n$$ " (.) => %""")
+    i.eval(""""[$1]\n$$ " (pwd) => %""")
 
   def.symbol("quotesym") do (i: In):
     let vals = i.expect("str")

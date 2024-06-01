@@ -42,23 +42,14 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     word = ed.lineText
   else:
     word = words[words.len-1]
-  if word.startsWith("'"):
-    return symbols.mapIt("'" & $it)
-  if word.startsWith("~"):
-    return symbols.mapIt("~" & $it)
-  if word.startsWith("?"):
-    return symbols.mapIt("?" & $it)
-  if word.startsWith("@"):
-    return symbols.mapIt("@" & $it)
-  if word.startsWith("#"):
-    return symbols.mapIt("#" & $it)
-  if word.startsWith(">"):
-    return symbols.mapIt(">" & $it)
   if word.contains("."):
-    let dicts = word.split(".")
     var op: MinOperator
     var dict: MinValue
     var path = ""
+    if ['?', '@', '\'', '~', '#'].contains(word[0]):
+      word = word[1..^1]
+      path &= word[0]
+    let dicts = word.split(".")
     for d in dicts:
       if dict.isNil:
         if i.scope.symbols.hasKey(d):
@@ -76,10 +67,16 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
           dict = op.val
         path &= d & "."
     return dict.dVal.keys.toSeq.mapIt(path & it)
-  if word.startsWith("("):
-    return symbols.mapIt("(" & $it)
-  if word.startsWith("<"):
-    return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
+  if word.startsWith("'"):
+    return symbols.mapIt("'" & $it)
+  if word.startsWith("~"):
+    return symbols.mapIt("~" & $it)
+  if word.startsWith("?"):
+    return symbols.mapIt("?" & $it)
+  if word.startsWith("@"):
+    return symbols.mapIt("@" & $it)
+  if word.startsWith("#"):
+    return symbols.mapIt("#" & $it)
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
   if word.startsWith("\""):
@@ -106,14 +103,6 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
         return toSeq(walkDir(dir, true)).filterIt(
             it.path.toLowerAscii.startsWith(f.toLowerAscii)).mapIt("\"$1\"" % [
             it.path.replace("\\", "/")])
-  if word.startsWith("*"):
-    let filterProc = proc (it: string): bool =
-      let op = i.scope.symbols[it]
-      if op.kind == minProcOp and not op.mdl.isNil:
-        return true
-      else:
-        return op.kind == minValOp and op.val.kind == minDictionary
-    return symbols.filter(filterProc).mapIt("*" & $it)
   return symbols
 
 proc p(s: string, color = fgWhite) =
