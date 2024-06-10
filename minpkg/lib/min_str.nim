@@ -330,7 +330,7 @@ proc str_module*(i: In) =
     let vals = i.expect("'sym")
     i.push parseInt(vals[0].getString).newVal
 
-  def.symbol("%") do (i: In):
+  def.symbol("%%") do (i: In):
     i.pushSym("interpolate")
 
   def.symbol("=%") do (i: In):
