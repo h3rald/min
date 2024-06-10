@@ -8,14 +8,6 @@ title: "sys Module"
 
 {#alias||$||get-env#}
 
-{#sig||&excl;||system#}
-
-{#alias||&excl;||system#}
-
-{#sig||&||run#}
-
-{#alias||&||run#}
-
 {#op||admin?||{{none}}||{{b}}||
 Returns {{t}} if the program is being run with administrative privileges. #}
 

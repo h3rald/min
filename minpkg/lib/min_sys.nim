@@ -158,20 +158,8 @@ proc sys_module*(i: In) =
   def.symbol("$") do (i: In):
     i.pushSym("get-env")
 
-  def.symbol("!") do (i: In):
-    i.pushSym("system")
-
-  def.symbol("&") do (i: In):
-    i.pushSym("run")
-
   def.sigil("$") do (i: In):
     i.pushSym("get-env")
-
-  def.sigil("!") do (i: In):
-    i.pushSym("system")
-
-  def.sigil("&") do (i: In):
-    i.pushSym("run")
 
   def.symbol("unzip") do (i: In):
     let vals = i.expect("'sym", "'sym")

@@ -9,9 +9,9 @@
 
   ({1 :a 2 :b 3 :c} 'b dget 2 ==) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) test.assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 "d" dset :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 %d :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) test.assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 "d" dset :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) test.assert
 
   ({1 :a 2 :b 3 :c} :dict1 dict1 'b ddel {1 :a 3 :c} ==) test.assert
 
@@ -25,11 +25,11 @@
 
   ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) test.assert
 
-  (2 2 {+ :plus} /plus 4 ==) test.assert
+  (2 2 {+ :plus} "plus" dget 4 ==) test.assert
 
-  (2 {(2 3 +) :sum} /sum -> + 7 ==) test.assert
+  (2 {(2 3 +) :sum} "sum" dget -> + 7 ==) test.assert
 
-  ({a :test} "test" dget-raw /str "a" ==) test.assert
+  ({a :test} "test" dget-raw "str" dget "a" ==) test.assert
 
   ({} 'aaa 'test dset-sym {aaa :test} ==) test.assert
 
@@ -38,9 +38,9 @@
     ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
     (
       :article
-      article /a :code
+      article "a" dget :code
       {}
-      code %code
+      code "code" dset
       :archive
       archives archive code dset @archives 
     ) foreach

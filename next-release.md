@@ -3,6 +3,12 @@
 - User-defined symbols can no longer contain dots (`.`).
 - The symbol `invoke` and the `*` sigil have been removed in favor of symbol dot notation.
 - The `.` and `..` symbols have been renamed to `pwd` and `parent-dir` respectively.
+- The `!` symbol has been removed. Use `system` instead.
+- The `!` sigil has been removed. Use `system` instead.
+- The `&` symbol has been removed. Use `run` instead.
+- The `&` sigil has been removed. Use `run` instead.
+- The `/` sigil has been removed. Use `dget` or symbol dot notation instead.
+- The `%` sigil has been removed. Use `dset` or symbol dot notation instead.
 
 ### New Features
 

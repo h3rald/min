@@ -87,7 +87,7 @@
   (
    (
     ({"TestError" :error "Test Message" :message} raise)
-    (/error)
+    ("error" dget)
     ) try "TestError" ==) test.assert
 
   (
@@ -129,7 +129,7 @@
 
   (time scope-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) test.assert
 
-  (sys scope-sigils ("!" "$" "&") ==) test.assert
+  (sys scope-sigils ("$") ==) test.assert
 
   ({3 :a 5 :b} scope-symbols ("a" "b") ==) test.assert
 
@@ -170,8 +170,8 @@
 
   (
     {1 :a 2 :b 3 :c} (
-      (dup /a  succ succ %a)
-      (dup /b  succ %b)
+      (dup "a" dget  succ succ "a" dset)
+      (dup "b" dget  succ "b" dset)
     ) tap
     {3 :a 3 :b 3 :c} ==
   ) test.assert
@@ -179,8 +179,8 @@
   (
     {} :data
     data (
-      1 %a
-      2 %b
+      1 "a" dset
+      2 "b" dset
     ) tap
     {1 :a 2 :b} ==
   ) test.assert
@@ -266,7 +266,7 @@
   (
     typeclass natural
     (int :n ==> bool :out)
-    (((n integer?) (n 0 >)) && @out)
+    (((n integer?) (n 0 >)) "&" run @out)
   ) ::
   ("typeclass:natural" defined-symbol?) test.assert
   (
@@ -293,7 +293,7 @@
    (str :in ==> dict :out)
    (
     {}
-      in %test
+      in "test" dset
     @out
    )
   ) ::

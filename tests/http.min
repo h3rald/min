@@ -6,53 +6,53 @@
   "postman-echo.com"        :host
   "https://$1" (host) => %   :url
 
-  ("$1/get" (url) => % get-content from-json /headers /user-agent  "min http-module/$1" (version) => % ==) test.assert
+  ("$1/get" (url) => % get-content from-json "headers" dget "user-agent" dget  "min http-module/$1" (version) => % ==) test.assert
 
-  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json /args /test "Hello!" ==) test.assert
+  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fread from-json "args" dget "test" dget "Hello!" ==) test.assert
   "tests/test1.json" rm
 
   (
     {} (
-      ("$1/get" (url) => % %url) 
-      ("GET" %method)
-      ({"it-it" :Accept-Language} %headers)
+      ("$1/get" (url) => % "url" dset) 
+      ("GET" "method" dset)
+      ({"it-it" :Accept-Language} "headers" dset)
       (request)
-    ) tap /body from-json /headers /accept-language "it-it" ==
+    ) tap "body" dget from-json "headers" dget "accept-language" dget "it-it" ==
   ) test.assert
 
   (
     {} (
-      ("$1/put" (url) => % %url) 
-      ("PUT" %method)
-      ({} to-json %body)
+      ("$1/put" (url) => % "url" dset) 
+      ("PUT" "method" dset)
+      ({} to-json "body" dset)
       (request)
-    ) tap /body from-json /data {} ==
+    ) tap "body" dget from-json "data" dget {} ==
   ) test.assert
 
   (
     {} (
-      ("$1/post" (url) => % %url) 
-      ("POST" %method)
-      ({"post" :test} to-json %body)
+      ("$1/post" (url) => % "url" dset) 
+      ("POST" "method" dset)
+      ({"post" :test} to-json "body" dset)
       (request)
-    ) tap /headers /content-type "^application/json" match?
+    ) tap "headers" dget "content-type" dget "^application/json" match?
   ) test.assert
 
   (
     {} (
-      ("$1/patch" (url) => % %url) 
-      ("PATCH" %method)
-      ({} to-json %body)
+      ("$1/patch" (url) => % "url" dset) 
+      ("PATCH" "method" dset)
+      ({} to-json "body" dset)
       (request)
-    ) tap /body from-json /data {} ==
+    ) tap "body" dget from-json "data" dget {} ==
   ) test.assert
 
   (
     {} (
-      ("$1/delete" (url) => % %url) 
-      ("DELETE" %method)
+      ("$1/delete" (url) => % "url" dset) 
+      ("DELETE" "method" dset)
       (request)
-    ) tap /body from-json /url "https://$1/delete" (host) => % ==
+    ) tap "body" dget from-json "url" dget "https?:\/\/$1\/delete" (host) => % match?
   ) test.assert
 
   test.report
