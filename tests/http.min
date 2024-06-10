@@ -52,7 +52,7 @@
       ("$1/delete" (url) => % "url" dset) 
       ("DELETE" "method" dset)
       (request)
-    ) tap "body" dget from-json "url" dget "https?:\/\/$1\/delete" (host) => % match?
+    ) tap "body" dget from-json "url" dget "https?:\\/\\/$1/delete" (host) => % match?
   ) test.assert
 
   test.report

@@ -1192,12 +1192,6 @@ proc global_module*(i: In) =
   def.sigil("*") do (i: In):
     i.pushSym("invoke")
 
-  def.sigil(">") do (i: In):
-    i.pushSym("save-symbol")
-
-  def.sigil("<") do (i: In):
-    i.pushSym("load-symbol")
-
   def.sigil("^") do (i: In):
     i.pushSym("lambda")
 

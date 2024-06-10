@@ -26,10 +26,6 @@ title: "global Module"
 
 {#alias||@||bind#}
 
-{#sig||&gt;||save-symbol#}
-
-{#sig||&lt;||load-symbol#}
-
 {#alias||->||dequote#}
 
 {#alias||&gt;&gt;||prefix-dequote#}
