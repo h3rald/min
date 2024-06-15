@@ -616,8 +616,8 @@ proc global_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
-      elif HELP["operators"].hasKey(s):
-        var doc = i.fromJson(HELP["operators"][s])
+      elif HELP["symbols"].hasKey(s):
+        var doc = i.fromJson(HELP["symbols"][s])
         doc.objType = "help"
         i.push doc
         return
@@ -633,8 +633,8 @@ proc global_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
-      elif HELP["operators"].hasKey(s):
-        var doc = i.fromJson(HELP["operators"][s])
+      elif HELP["symbols"].hasKey(s):
+        var doc = i.fromJson(HELP["symbols"][s])
         doc.objType = "help"
         i.push doc
         return
@@ -674,10 +674,10 @@ proc global_module*(i: In) =
         let parts = s.split(".")
         mdl = parts[0]
         s = parts[1]
-      if HELP["operators"].hasKey(s) and (mdl == "" or mdl == HELP["operators"][
+      if HELP["symbols"].hasKey(s) and (mdl == "" or mdl == HELP["symbols"][
           s]["module"].getStr):
         foundDoc = true
-        displayDoc HELP["operators"][s]
+        displayDoc HELP["symbols"][s]
     if i.scope.hasSigil(s):
       found = true
       let sym = i.scope.getSigil(s)

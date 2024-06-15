@@ -1,11 +1,49 @@
 {
-  "operators": {
-    "!": {
-      "description": "See system",
-      "kind": "symbol",
-      "module": "sys",
-      "name": "!"
+  "sigils": {
+    "$": {
+      "description": "See get-env",
+      "kind": "sigil",
+      "module": "global",
+      "name": "$"
     },
+    "'": {
+      "description": "See quotesym",
+      "kind": "sigil",
+      "module": "global",
+      "name": "'"
+    },
+    ":": {
+      "description": "See define",
+      "kind": "sigil",
+      "module": "global",
+      "name": ":"
+    },
+    "?": {
+      "description": "See help",
+      "kind": "sigil",
+      "module": "global",
+      "name": "?"
+    },
+    "@": {
+      "description": "See bind",
+      "kind": "sigil",
+      "module": "global",
+      "name": "@"
+    },
+    "^": {
+      "description": "See lambda",
+      "kind": "sigil",
+      "module": "global",
+      "name": "^"
+    },
+    "~": {
+      "description": "See lambda-bind",
+      "kind": "sigil",
+      "module": "global",
+      "name": "~"
+    }
+  },
+  "symbols": {
     "!=": {
       "description": "Returns true if a1 is not equal to a2, false  otherwise.",
       "kind": "symbol",
@@ -16,7 +54,7 @@
     "$": {
       "description": "See get-env",
       "kind": "symbol",
-      "module": "sys",
+      "module": "global",
       "name": "$"
     },
     "%": {
@@ -24,12 +62,6 @@
       "kind": "symbol",
       "module": "str",
       "name": "%"
-    },
-    "&": {
-      "description": "See run",
-      "kind": "symbol",
-      "module": "sys",
-      "name": "&"
     },
     "&&": {
       "description": "See expect-all",
@@ -75,20 +107,6 @@
       "module": "num",
       "name": "-inf",
       "signature": " ==> num"
-    },
-    ".": {
-      "description": "Returns the full path to the current directory.",
-      "kind": "symbol",
-      "module": "sys",
-      "name": ".",
-      "signature": " ==> str"
-    },
-    "..": {
-      "description": "Returns the full path to the parent directory.",
-      "kind": "symbol",
-      "module": "sys",
-      "name": "..",
-      "signature": " ==> str"
     },
     "/": {
       "description": "Divides num1 by num2.",
@@ -1189,7 +1207,7 @@
     "get-env": {
       "description": "Returns environment variable 'sym.",
       "kind": "symbol",
-      "module": "sys",
+      "module": "global",
       "name": "get-env",
       "signature": "'sym ==> str"
     },
@@ -1345,13 +1363,6 @@
       "module": "seq",
       "name": "intersection",
       "signature": "quot1 quot2 ==> quot3"
-    },
-    "invoke": {
-      "description": "Assuming that 'sym is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. \n \n \n Example\n \n The following program leaves 100 on the stack:\n \n     {{100 :b} :a} :test *test/a/b",
-      "kind": "symbol",
-      "module": "global",
-      "name": "invoke",
-      "signature": "'sym ==> a*"
     },
     "join": {
       "description": "Joins the elements of quot using separator 'sym, producing str.",
@@ -1695,6 +1706,13 @@
       "name": "over",
       "signature": "a1 a2 ==> a1 a2 a1"
     },
+    "parent-dir": {
+      "description": "Returns the full path to the parent directory.",
+      "kind": "symbol",
+      "module": "sys",
+      "name": "parent-dir",
+      "signature": " ==> str"
+    },
     "parent-scope": {
       "description": "Returns a dictionary dict2 holding a reference to the parent scope of dict1 or null if dict1 is global.",
       "kind": "symbol",
@@ -1817,7 +1835,7 @@
     "put-env": {
       "description": "Sets environment variable 'sym2 to 'sym1.",
       "kind": "symbol",
-      "module": "sys",
+      "module": "global",
       "name": "put-env",
       "signature": "'sym1 'sym2 ==> str"
     },
@@ -1834,6 +1852,13 @@
       "module": "global",
       "name": "puts",
       "signature": "a ==> a"
+    },
+    "pwd": {
+      "description": "Returns the full path to the current directory.",
+      "kind": "symbol",
+      "module": "sys",
+      "name": "pwd",
+      "signature": " ==> str"
     },
     "quit": {
       "description": "Exits the program or shell with 0 as return code.",
@@ -2857,92 +2882,6 @@
     "~": {
       "description": "See lambda-bind",
       "kind": "symbol",
-      "module": "global",
-      "name": "~"
-    }
-  },
-  "sigils": {
-    "!": {
-      "description": "See system",
-      "kind": "sigil",
-      "module": "sys",
-      "name": "!"
-    },
-    "$": {
-      "description": "See get-env",
-      "kind": "sigil",
-      "module": "sys",
-      "name": "$"
-    },
-    "%": {
-      "description": "See dset",
-      "kind": "sigil",
-      "module": "dict",
-      "name": "%"
-    },
-    "&": {
-      "description": "See run",
-      "kind": "sigil",
-      "module": "sys",
-      "name": "&"
-    },
-    "'": {
-      "description": "See quotesym",
-      "kind": "sigil",
-      "module": "global",
-      "name": "'"
-    },
-    "*": {
-      "description": "See invoke",
-      "kind": "sigil",
-      "module": "global",
-      "name": "*"
-    },
-    "/": {
-      "description": "See dget",
-      "kind": "sigil",
-      "module": "dict",
-      "name": "/"
-    },
-    ":": {
-      "description": "See define",
-      "kind": "sigil",
-      "module": "global",
-      "name": ":"
-    },
-    "<": {
-      "description": "See load-symbol",
-      "kind": "sigil",
-      "module": "global",
-      "name": "<"
-    },
-    ">": {
-      "description": "See save-symbol",
-      "kind": "sigil",
-      "module": "global",
-      "name": ">"
-    },
-    "?": {
-      "description": "See help",
-      "kind": "sigil",
-      "module": "global",
-      "name": "?"
-    },
-    "@": {
-      "description": "See bind",
-      "kind": "sigil",
-      "module": "global",
-      "name": "@"
-    },
-    "^": {
-      "description": "See lambda",
-      "kind": "sigil",
-      "module": "global",
-      "name": "^"
-    },
-    "~": {
-      "description": "See lambda-bind",
-      "kind": "sigil",
       "module": "global",
       "name": "~"
     }
