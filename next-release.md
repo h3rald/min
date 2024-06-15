@@ -11,6 +11,7 @@
 - The `%` sigil has been removed; use `dset` or symbol dot notation instead.
 - The `>` sigil has been removed; use `save-symbol` innstead.
 - The `<` sigil has been removed; use `load-symbol` innstead.
+- Moved `get-env`, `put-env`, `$` symbol and `$` sigil from `sys` to `global` module.
 
 ### New Features
 

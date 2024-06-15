@@ -60,17 +60,6 @@ proc sys_module*(i: In) =
     i.dset(d, "code", res.exitCode.newVal)
     i.push(d)
 
-  def.symbol("get-env") do (i: In):
-    let vals = i.expect("'sym")
-    let a = vals[0]
-    i.push a.getString.getEnv.newVal
-
-  def.symbol("put-env") do (i: In):
-    let vals = i.expect("'sym", "'sym")
-    let key = vals[0]
-    let value = vals[1]
-    key.getString.putEnv value.getString
-
   def.symbol("env?") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
@@ -154,12 +143,6 @@ proc sys_module*(i: In) =
     let dest = vals[0]
     let src = vals[1]
     src.getString.createHardlink dest.getString
-
-  def.symbol("$") do (i: In):
-    i.pushSym("get-env")
-
-  def.sigil("$") do (i: In):
-    i.pushSym("get-env")
 
   def.symbol("unzip") do (i: In):
     let vals = i.expect("'sym", "'sym")

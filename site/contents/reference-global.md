@@ -22,6 +22,10 @@ title: "global Module"
 
 {#alias||~||lambda-bind#}
 
+{#sig||$||get-env#}
+
+{#alias||$||get-env#}
+
 {#sig||@||bind#}
 
 {#alias||@||bind#}
@@ -182,6 +186,9 @@ Converts a JSON string into {{m}} data.#}
 
 {#op||gets||{{none}}||{{s}}||
 Reads a line from STDIN and places it on top of the stack as a string.#}
+
+{#op||get-env||{{sl}}||{{s}}||
+Returns environment variable {{sl}}. #}
 
 {#op||help||{{sl}}||{{none}}||
 Prints the help text for {{sl}}, if available. #}
@@ -352,6 +359,9 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
+
+{#op||put-env||{{sl1}} {{sl2}}||{{s}}||
+Sets environment variable {{sl2}} to {{sl1}}. #}
 
 {#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}

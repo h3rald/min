@@ -1175,6 +1175,20 @@ proc global_module*(i: In) =
       q.add dict
     i.push q.newVal
 
+  def.symbol("get-env") do (i: In):
+    let vals = i.expect("'sym")
+    let a = vals[0]
+    i.push a.getString.getEnv.newVal
+
+  def.symbol("put-env") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let key = vals[0]
+    let value = vals[1]
+    key.getString.putEnv value.getString
+
+  def.symbol("$") do (i: In):
+    i.pushSym("get-env")
+
   # Sigils
 
   def.sigil("'") do (i: In):
@@ -1197,6 +1211,9 @@ proc global_module*(i: In) =
 
   def.sigil("~") do (i: In):
     i.pushSym("lambda-bind")
+
+  def.sigil("$") do (i: In):
+    i.pushSym("get-env")
 
   # Shorthand symbol aliases
 

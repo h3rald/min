@@ -4,10 +4,6 @@ title: "sys Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||$||get-env#}
-
-{#alias||$||get-env#}
-
 {#op||admin?||{{none}}||{{b}}||
 Returns {{t}} if the program is being run with administrative privileges. #}
 
@@ -33,9 +29,6 @@ Returns the host CPU. It can be one of the following strings i386, alpha, powerp
 {#op||env?||{{sl}}||{{b}}||
 Returns {{t}} if environment variable {{sl}} exists, {{f}} otherwise. #}
 
-{#op||get-env||{{sl}}||{{s}}||
-Returns environment variable {{sl}}. #}
-
 {#op||hardlink||{{sl1}} {{sl2}}||{{none}}||
 Creates hardlink {{sl2}} for file or directory {{sl1}}. #}
 
@@ -56,9 +49,6 @@ Returns the host operating system. It can be one of the following strings: windo
 
 {#op||parent-dir||{{none}}||{{s}}||
 Returns the full path to the parent directory. #}
-
-{#op||put-env||{{sl1}} {{sl2}}||{{s}}||
-Sets environment variable {{sl2}} to {{sl1}}. #}
 
 {#op||pwd||{{none}}||{{s}}||
 Returns the full path to the current directory. #}
