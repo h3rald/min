@@ -114,7 +114,7 @@ Like symbols, sigils can be defined with the {#link-operator||global||operator#}
 
 This definition will add a `j` sigil that will process the following string as JSON code, so for example:
 
-     j"{\"test\": true}"
+     j"{\\"test\\": true}"
 
 ...will push the following dictionary on the stack:
 
@@ -323,8 +323,8 @@ Consider the following example:
        (num :x num :y ==> dict :out)
        (
          {}
-           x %x
-           y %y
+           x 'x dset
+           y 'y dset
          @out
        )
      ) ::

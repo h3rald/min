@@ -19,8 +19,8 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > The following code constructs {{d}} and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
 > >     {}
-> >       "GET" %method
-> >       "http://httpbin.org/ip" %url
+> >       "GET" 'method dget
+> >       "http://httpbin.org/ip" 'url dset
 > >     request
  #}
 
@@ -63,7 +63,7 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       ) case
 > >       :body
 > >       ; Prepare the response
-> >       {} body %body
+> >       {} body 'body dset
 > >       dup puts!
 > >     )
 > >     ; The request handler is ready, give it the name handler
@@ -71,8 +71,8 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >     
 > >     ; Create the parameter dictionary for the server
 > >     {}
-> >     handler %handler
-> >     5555 %port
+> >     handler 'handler dset
+> >     5555 'port dset
 > >     
 > >     ; Start server
 > >     "Server started on port 5555." puts!

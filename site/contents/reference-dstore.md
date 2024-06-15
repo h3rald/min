@@ -31,7 +31,7 @@ Adds the dictionary {{d}} to the datastore {{dstore}}. {{sl}} contains the colle
 > >
 > > Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to "h3rald":
 > >
-> >      ds "posts" (/author "h3rald" ==) dsquery
+> >      ds "posts" ('author dget "h3rald" ==) dsquery
  #}
 
 {#op||dsread||{{sl}}||{{dstore}}||

@@ -471,8 +471,8 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 > > The following program:
 > > 
 > >     {1 :a 2 :b 3 :c} (
-> >       (dup /a  succ succ %a)
-> >       (dup /b  succ %b)
+> >       (dup 'a dget succ succ 'a dset)
+> >       (dup 'b dget succ 'b dset)
 > >     ) tap
 > > 
 > > Returns `{3 :a 3 :b 3 :c}`.#}
