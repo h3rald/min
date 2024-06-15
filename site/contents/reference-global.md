@@ -100,10 +100,10 @@ Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
 {#op||delete-sigil||{{sl}}||{{none}}||
-Deletes the specified symbol {{sl}}.#}
-
-{#op||delete-sigil||{{sl}}||{{none}}||
 Deletes the specified user-defined sigil {{sl}}.#}
+
+{#op||delete-symbol||{{sl}}||{{none}}||
+Deletes the specified symbol {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
 > Pushes the contents of quotation {{q}} on the stack.
