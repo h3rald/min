@@ -206,7 +206,7 @@ proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
       i.scope = origScope
       i.scope.parent = origParentScope
       op.mdl.scope.parent = origMdlParentScope
-    else
+    else:
       op.prc(i)
   else:
     if op.val.kind == minQuotation:

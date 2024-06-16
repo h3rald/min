@@ -56,7 +56,7 @@ proc hasSymbol*(scope: ref MinScope, key: string): bool =
   if scope.isNil:
     return false
   else:
-    debug "hasSymbol - scope symbols: $#" % [$scope.symbols.keys.toSeq]
+    #debug "hasSymbol - scope symbols: $#" % [$scope.symbols.keys.toSeq]
     if scope.symbols.hasKey(key):
       debug "hasSymbol - found $#" % [key]
       return true
@@ -126,7 +126,7 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
   result = false
   # check if a symbol already exists in current scope
   debug "setSymbol: $#" % [key]
-  debug "setSymbol: scope symbols: $#" % [$scope.symbols.keys.toSeq]
+  #debug "setSymbol: scope symbols: $#" % [$scope.symbols.keys.toSeq]
   if not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed ." % key)
