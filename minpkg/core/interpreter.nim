@@ -197,13 +197,13 @@ proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
     if not op.mdl.isNil and not op.mdl.scope.isNil:
       # Capture closures at module level
-      let origScope = i.scope
       let origParentScope = i.scope.parent
-      i.scope = op.mdl.scope
-      i.scope.parent = origScope
+      let origMdlParentScope = op.mdl.scope.parent
+      i.scope.parent = op.mdl.scope
+      i.scope.parent.parent = origParentScope
       op.prc(i)
-      i.scope = origScope
       i.scope.parent = origParentScope
+      op.mdl.scope.parent = origMdlParentScope
     else:
       op.prc(i)
   else:
