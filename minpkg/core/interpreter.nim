@@ -200,13 +200,13 @@ proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
       let origScope = i.scope
       let origParentScope = i.scope.parent
       let origMdlParentScope = op.mdl.scope.parent
-      i.scope = op.mdl.scope
-      i.scope.parent = origScope
+      i.scope.parent = op.mdl.scope
+      i.scope.parent.parent = origParentScope
       op.prc(i)
       i.scope = origScope
       i.scope.parent = origParentScope
       op.mdl.scope.parent = origMdlParentScope
-    else:
+    else
       op.prc(i)
   else:
     if op.val.kind == minQuotation:
