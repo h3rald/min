@@ -1,5 +1,5 @@
 import
-  std/math
+  std/[math, strutils]
 import
   ../core/parser,
   ../core/value,
@@ -133,7 +133,7 @@ proc logic_module*(i: In) =
       let r = i.pop
       c.inc()
       if not r.isBool:
-        raiseInvalid("Quotation #$# does not evaluate to a boolean value")
+        raiseInvalid("Quotation #$# does not evaluate to a boolean value" % [$c])
       if not r.boolVal:
         i.push r
         return
@@ -157,7 +157,7 @@ proc logic_module*(i: In) =
       let r = i.pop
       c.inc()
       if not r.isBool:
-        raiseInvalid("Quotation #$# does not evaluate to a boolean value")
+        raiseInvalid("Quotation #$# does not evaluate to a boolean value" % [$c])
       if r.boolVal:
         i.push r
         return
