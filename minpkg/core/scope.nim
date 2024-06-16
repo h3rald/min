@@ -53,10 +53,10 @@ proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
 
 proc hasSymbol*(scope: ref MinScope, key: string): bool =
   debug "hasSymbol: $#" % [key]
-
   if scope.isNil:
     return false
   else:
+    debug "hasSymbol - scope symbols: $#" % [$scope.symbols.keys.toSeq]
     if scope.symbols.hasKey(key):
       debug "hasSymbol - found $#" % [key]
       return true
