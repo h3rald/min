@@ -23,7 +23,8 @@
   (
     cli1 recv-line @line
     (response line) => "\n" join puts @response 
-  ) while
+  ) 
+  while
 
   (response "200 OK" match?) test.assert
 

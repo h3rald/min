@@ -1,5 +1,5 @@
 import
-  std/[strutils, critbits]
+  std/[strutils, critbits, logging, sequtils]
 import
   parser
 
@@ -23,6 +23,7 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     string], acc = 0): MinOperator
 
 proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
+  debug "getSymbol: $#" % [key]
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif key.contains ".":
@@ -51,26 +52,35 @@ proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool
 
 proc hasSymbol*(scope: ref MinScope, key: string): bool =
+  debug "hasSymbol: $#" % [key]
+
   if scope.isNil:
     return false
-  elif scope.symbols.hasKey(key):
-    return true
-  elif key.contains("."):
-    var keys = key.split(".")
-    if keys[0] == "":
-      raiseInvalid("Symbols cannot start with a dot")
-    return hasSymbolFromPath(scope, keys)
-  elif not scope.parent.isNil:
-    return scope.parent.hasSymbol(key)
   else:
-    return false
+    if scope.symbols.hasKey(key):
+      debug "hasSymbol - found $#" % [key]
+      return true
+    elif key.contains("."):
+      var keys = key.split(".")
+      if keys[0] == "":
+        raiseInvalid("Symbols cannot start with a dot")
+      return hasSymbolFromPath(scope, keys)
+    elif not scope.parent.isNil:
+      return scope.parent.hasSymbol(key)
+    else:
+      return false
 
 proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool =
   let sym = keys[0]
   keys.delete(0)
-  let d = scope.getSymbol(sym)
+  var d: MinOperator
+  try:
+    d = scope.getSymbol(sym)
+  except CatchableError:
+    return false
   let dict = d.getDictionary
+  debug "hasSymbolFromPath: Found dictionary $# - keys: $#" % [sym, keys.join(".")]
   if not dict.isNil:
     if keys.len > 1:
       return dict.scope.hasSymbolFromPath(keys)
@@ -108,40 +118,49 @@ proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
 proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], value: MinOperator, override = false): bool {.discardable.}
+    string], value: MinOperator, override = false,
+        define = false): bool {.discardable.}
 
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
     override = false, define = false): bool {.discardable.} =
   result = false
   # check if a symbol already exists in current scope
+  debug "setSymbol: $#" % [key]
+  debug "setSymbol: scope symbols: $#" % [$scope.symbols.keys.toSeq]
   if not scope.isNil and scope.symbols.hasKey(key):
     if not override and scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed ." % key)
     scope.symbols[key] = value
+    debug "setSymbol (existing): $# = $#" % [key, $value]
     result = true
   elif key.contains ".":
     var keys = key.split(".")
-    return setSymbolFromPath(scope, keys, value, override)
+    return setSymbolFromPath(scope, keys, value, override, define)
   # define new symbol
   elif not scope.isNil and define:
+    debug "setSymbol (new): $# = $#" % [key, $value]
     scope.symbols[key] = value
     result = true
   else:
     # Go up the scope chain and attempt to find the symbol
     if not scope.parent.isNil:
-      result = scope.parent.setSymbol(key, value, override)
+      result = scope.parent.setSymbol(key, value, override, define)
+    else:
+      debug "setSymbol: failure to set: $# = $#" % [key, $value]
 
 proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], value: MinOperator, override = false): bool {.discardable.} =
+    string], value: MinOperator, override = false,
+        define = false): bool {.discardable.} =
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
   let dict = d.getDictionary
+  debug "setSymbolFromPath: Found dictionary $# - keys: $#" % [sym, keys.join(".")]
   if not dict.isNil:
     if keys.len > 1:
-      return dict.scope.setSymbolFromPath(keys, value, override)
+      return dict.scope.setSymbolFromPath(keys, value, override, define)
     else:
-      return dict.scope.setSymbol(keys[0], value, override)
+      return dict.scope.setSymbol(keys[0], value, override, define)
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 

@@ -64,7 +64,7 @@
   (16 3 shr 2 ==) test.assert
   
   (0 :c
-    (c 10 <) (c succ @c) while
+  (c 10 <) (c succ @c) while
     c 10 ==) test.assert
 
   ((1 2 3 4 5) (even?) filter (2 4) ==) test.assert

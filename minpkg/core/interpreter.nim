@@ -246,6 +246,7 @@ proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
+    debug "pop - empty stack!"
     raiseEmptyStack()
 
 # Inherit file/line/column from current symbol
@@ -271,27 +272,36 @@ proc push*(i: In, val: MinValue) =
     let symbol = val.symVal
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
+    i.debug("push: $#" % [symbol])
     if i.scope.hasSymbol(symbol):
+      i.debug("push: symbol found: $#" % [symbol])
       i.apply i.scope.getSymbol(symbol), symbol
     else:
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':
+        i.debug("push - checking auto-popping symbol: $#" % [symbol])
         let apSymbol = symbol[0..symbol.len-2]
         if i.scope.hasSymbol(apSymbol):
           i.apply i.scope.getSymbol(apSymbol)
           discard i.pop
       else:
+        i.debug("push - checking sigil: $#" % [symbol])
+        # Check user-defined sigil
         var qIndex = symbol.find('"')
         if qIndex > 0:
           let sigil = symbol[0..qIndex-1]
+          i.debug("push - checking user sigil: $#" % [sigil])
           if not i.scope.hasSigil(sigil):
             raiseUndefined("Undefined sigil '$1'"%sigil)
           i.stack.add(MinValue(kind: minString, strVal: symbol[
               qIndex+1..symbol.len-2]))
           i.apply(i.scope.getSigil(sigil))
         else:
+          # Check system sigil
           let sigil = "" & symbol[0]
+          i.debug("push - checking system sigil: $#" % [sigil])
           if symbol.len > 1 and i.scope.hasSigil(sigil):
+            i.debug("Processing sigil: $# ($#)" % [sigil, symbol])
             i.stack.add(MinValue(kind: minString, strVal: symbol[
                 1..symbol.len-1]))
             i.apply(i.scope.getSigil(sigil))
@@ -313,6 +323,7 @@ proc peek*(i: MinInterpreter): MinValue =
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
+    debug "peek - empty stack!"
     raiseEmptyStack()
 
 template handleErrors*(i: In, body: untyped) =
