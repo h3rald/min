@@ -1,5 +1,5 @@
 import
-  std/[strutils, critbits, logging, sequtils]
+  std/[strutils, critbits, logging]
 import
   parser
 
@@ -209,3 +209,10 @@ proc previous*(scope: ref MinScope): ref MinScope =
     return scope
   else:
     return scope.parent
+
+proc hasParent*(scope: ref MinScope, parent: ref MinScope): bool =
+  if scope.parent.isNil:
+    return false
+  if scope.parent == parent:
+    return true
+  return scope.parent.hasParent parent
