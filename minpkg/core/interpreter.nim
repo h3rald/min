@@ -13,7 +13,6 @@ import
 import
   baseutils,
   value,
-  scope,
   parser
 
 type
@@ -467,6 +466,7 @@ proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
       var v = value
       if v.kind == minProcOp:
         v.mdl = result
+      #result.scope.setSymbol(key, v)
       result.scope.symbols[key] = v
     CACHEDMODULES[s] = result
 

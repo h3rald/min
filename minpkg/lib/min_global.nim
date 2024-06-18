@@ -19,8 +19,7 @@ import
   ../core/parser,
   ../core/value,
   ../core/interpreter,
-  ../core/utils,
-  ../core/scope
+  ../core/utils
 
 proc processTokenValue(v: string, t: MinTokenKind): string =
   case t:
@@ -163,7 +162,7 @@ proc global_module*(i: In) =
           CACHEDMODULES[f].objType = "module"
         mdl = CACHEDMODULES[f]
         for key, value in i2.scope.symbols.pairs:
-          mdl.scope.symbols[key] = value
+          mdl.scope.setSymbol(key, value, false, false)
         i.push(mdl)
     else:
       if not f.fileExists:

@@ -6,7 +6,6 @@ import
   parser,
   value,
   json,
-  scope,
   env,
   interpreter
 
