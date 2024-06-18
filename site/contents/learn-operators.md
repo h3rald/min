@@ -14,10 +14,12 @@ There are two types of operators: _symbols_ and _sigils_.
 
 ## Symbols
 
-_Symbols_ are the most common type of operator. A min symbol is a single word that is either provided by one of the predefined min {#link-page||reference||modules#} like `dup` or `.` or defined by the user. User-defined symbols must:
+_Symbols_ are the most common type of operator. A min symbol is a single word that is either provided by one of the predefined min {#link-page||reference||modules#} like `dup` or `pwd` or defined by the user. User-defined symbols must:
 
 * Start with a letter or an underscore (\_).
-* Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * . _ -`
+* Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * _ -`
+
+If a symbol contains a dot (`.`) then it is namespaced by its containing module or dictionary. For example, `fs.dirname` identifies the {{#link-operator||fs||dirname}} operator defined in the {{#link-module||fs}} module.
 
 It is possible to define operator symbols using the {#link-operator||global||operator#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
@@ -71,8 +73,6 @@ Currently min provides the following sigils:
 : Alias for {#link-operator||global||quote#}.
 \:
 : Alias for {#link-operator||global||define#}. 
-*
-: Alias for {#link-operator||global||invoke#}. 
 @
 : Alias for {#link-operator||global||bind#}. 
 ^
@@ -114,7 +114,7 @@ Like symbols, sigils can be defined with the {#link-operator||global||operator#}
 
 This definition will add a `j` sigil that will process the following string as JSON code, so for example:
 
-     j"{\"test\": true}"
+     j"{\\"test\\": true}"
 
 ...will push the following dictionary on the stack:
 
@@ -323,8 +323,8 @@ Consider the following example:
        (num :x num :y ==> dict :out)
        (
          {}
-           x %x
-           y %y
+           x 'x dset
+           y 'y dset
          @out
        )
      ) ::

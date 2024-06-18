@@ -4,24 +4,6 @@ title: "sys Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||$||get-env#}
-
-{#alias||$||get-env#}
-
-{#sig||&excl;||system#}
-
-{#alias||&excl;||system#}
-
-{#sig||&||run#}
-
-{#alias||&||run#}
-
-{#op||.||{{none}}||{{s}}||
-Returns the full path to the current directory. #}
-
-{#op||..||{{none}}||{{s}}||
-Returns the full path to the parent directory. #}
-
 {#op||admin?||{{none}}||{{b}}||
 Returns {{t}} if the program is being run with administrative privileges. #}
 
@@ -33,7 +15,7 @@ Returns {{t}} if the program is being run with administrative privileges. #}
 > > 
 > > The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:
 > > 
-> > `/tmp/test.txt 755 chmod`#}
+> > `"/tmp/test.txt 755 chmod"`#}
 
 {#op||cd||{{sl}}||{{none}}||
 Change the current directory to {{sl}}. #}
@@ -46,9 +28,6 @@ Returns the host CPU. It can be one of the following strings i386, alpha, powerp
 
 {#op||env?||{{sl}}||{{b}}||
 Returns {{t}} if environment variable {{sl}} exists, {{f}} otherwise. #}
-
-{#op||get-env||{{sl}}||{{s}}||
-Returns environment variable {{sl}}. #}
 
 {#op||hardlink||{{sl1}} {{sl2}}||{{none}}||
 Creates hardlink {{sl2}} for file or directory {{sl1}}. #}
@@ -68,8 +47,11 @@ Moves the file or directory {{sl1}} to {{sl2}}. #}
 {#op||os||{{none}}||{{s}}||
 Returns the host operating system. It can be one of the following strings: windows, macosx, linux, netbsd, freebsd, openbsd, solaris, aix, standalone. #}
 
-{#op||put-env||{{sl1}} {{sl2}}||{{s}}||
-Sets environment variable {{sl2}} to {{sl1}}. #}
+{#op||parent-dir||{{none}}||{{s}}||
+Returns the full path to the parent directory. #}
+
+{#op||pwd||{{none}}||{{s}}||
+Returns the full path to the current directory. #}
 
 {#op||rm||{{sl}}||{{none}}||
 Deletes the specified file {{sl}}. #}

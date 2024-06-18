@@ -1,14 +1,14 @@
 'min-test require :test
 ;;;
 
-"io" *test/describe
+"io" test.describe
 
   ("TEST" "test.txt" fwrite
-   "test.txt" fread "TEST" ==) *test/assert
+   "test.txt" fread "TEST" ==) test.assert
 
   (" - TEST" "test.txt" fappend
-   "test.txt" fread "TEST - TEST" ==) *test/assert
+   "test.txt" fread "TEST - TEST" ==) test.assert
 
   "test.txt" rm
-  *test/report
+  test.report
   clear-stack

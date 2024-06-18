@@ -4,10 +4,6 @@ title: "dict Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||/||dget#}
-
-{#sig||%||dset#}
-
 {#op||ddup||{{d1}}||{{d2}}||
 Returns a copy of {{d1}}. #}
 

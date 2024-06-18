@@ -22,15 +22,13 @@ title: "global Module"
 
 {#alias||~||lambda-bind#}
 
-{#sig||&ast;||invoke#}
+{#sig||$||get-env#}
+
+{#alias||$||get-env#}
 
 {#sig||@||bind#}
 
 {#alias||@||bind#}
-
-{#sig||&gt;||save-symbol#}
-
-{#sig||&lt;||load-symbol#}
 
 {#alias||->||dequote#}
 
@@ -102,10 +100,10 @@ Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}
 
 {#op||delete-sigil||{{sl}}||{{none}}||
-Deletes the specified symbol {{sl}}.#}
-
-{#op||delete-sigil||{{sl}}||{{none}}||
 Deletes the specified user-defined sigil {{sl}}.#}
+
+{#op||delete-symbol||{{sl}}||{{none}}||
+Deletes the specified symbol {{sl}}.#}
 
 {#op||dequote||{{q}}||{{a0p}}||
 > Pushes the contents of quotation {{q}} on the stack.
@@ -189,6 +187,9 @@ Converts a JSON string into {{m}} data.#}
 {#op||gets||{{none}}||{{s}}||
 Reads a line from STDIN and places it on top of the stack as a string.#}
 
+{#op||get-env||{{sl}}||{{s}}||
+Returns environment variable {{sl}}. #}
+
 {#op||help||{{sl}}||{{none}}||
 Prints the help text for {{sl}}, if available. #}
 
@@ -224,17 +225,6 @@ Imports the a previously-loaded module {{sl}}, defining all its symbols in the c
 >   * If {{any}} is an integer, no conversion is performed.
 >   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
 >   * If {{any}} is a string, it is parsed as an integer value.#}
-
-{#op||invoke||{{sl}}||{{a0p}}||
-> Assuming that {{sl}} is a formatted like *dictionary*/*symbol*, calls *symbol* defined in *dictionary* (note that this also works for nested dictionaries. 
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program leaves `100` on the stack:
-> > 
-> >     {{100 :b} :a} :test *test/a/b
- #}
  
  {#op||lambda||{{q}} {{sl}}||{{none}}||
 > Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
@@ -370,6 +360,9 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
 
+{#op||put-env||{{sl1}} {{sl2}}||{{s}}||
+Sets environment variable {{sl2}} to {{sl1}}. #}
+
 {#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}
 
@@ -478,8 +471,8 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 > > The following program:
 > > 
 > >     {1 :a 2 :b 3 :c} (
-> >       (dup /a  succ succ %a)
-> >       (dup /b  succ %b)
+> >       (dup 'a dget succ succ 'a dset)
+> >       (dup 'b dget succ 'b dset)
 > >     ) tap
 > > 
 > > Returns `{3 :a 3 :b 3 :c}`.#}

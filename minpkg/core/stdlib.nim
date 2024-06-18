@@ -34,7 +34,6 @@ var customPrelude* {.threadvar.}: string
 customPrelude = ""
 
 proc stdLib*(i: In) =
-  setLogFilter(logging.lvlNotice)
   if not MINSYMBOLS.fileExists:
     MINSYMBOLS.writeFile("{}")
   if not MINHISTORY.fileExists:

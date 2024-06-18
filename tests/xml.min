@@ -2,38 +2,51 @@
 ;;;
 
 
-"xml" *test/describe
+"xml" test.describe
 
-  ("test" xentity /text "test" ==) *test/assert
+  ("test" xentity "text" dget "test" ==) test.assert
 
-  ("test" xcomment /text "test" ==) *test/assert
+  ("test" xcomment "text" dget "test" ==) test.assert
 
-  ("test" xtext /text "test" ==) *test/assert
+  ("test" xtext "text" dget "test" ==) test.assert
 
-  ("test" xcdata /text "test" ==) *test/assert
+  ("test" xcdata "text" dget "test" ==) test.assert
 
-  ("test" xelement /tag "test" ==) *test/assert
+  ("test" xelement "tag" dget "test" ==) test.assert
 
   (
    "test" xelement :xnode
-   xnode {"a" :attr1} %attributes @xnode
+   xnode {"a" :attr1} "attributes" dset @xnode
    "a1" xelement :child
    "text..." xtext :text
-   xnode (child text) => %children @xnode
+   xnode (child text) => "children" dset @xnode
    xnode to-xml 
-   "<test attr1=\"a\"><a1 />text...</test>" == ) *test/assert
+   "<test attr1=\"a\"><a1 />text...</test>" == ) test.assert
 
    (
     "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
     xnode "li.test" xquery 
-    /children first /text "yes" ==
-   ) *test/assert
+    "children" dget first "text" dget "yes" ==
+   ) test.assert
 
    (
     "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
     xnode "li.test" xqueryall 
     size 2 ==
-   ) *test/assert
+   ) test.assert
 
-  *test/report
+   (
+    "<b>this is a test</b><img src='test.jpg'><i>&copy</i>" from-html :xnode
+    xnode to-xml "<document>\n  <b>this is a test</b>\n  <img src=\"test.jpg\" />\n  <i>&amp;copy</i>\n</document>" ==
+   ) test.assert
+
+   (
+    "&gt;" xentity xentity2utf8 ">" ==
+   ) test.assert
+
+   (
+    "This is a <i>test</i>" xescape "This is a &lt;i&gt;test&lt;/i&gt;" ==
+   ) test.assert
+
+  test.report
   clear-stack

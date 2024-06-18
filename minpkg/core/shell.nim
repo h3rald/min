@@ -3,7 +3,6 @@ import
   std/[
     strutils,
     sequtils,
-    json,
     critbits,
     algorithm,
     streams,
@@ -42,6 +41,31 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     word = ed.lineText
   else:
     word = words[words.len-1]
+  if word.contains("."):
+    var op: MinOperator
+    var dict: MinValue
+    var path = ""
+    if ['?', '@', '\'', '~', '#'].contains(word[0]):
+      path &= word[0]
+      word = word[1..^1]
+    let dicts = word.split(".")
+    for d in dicts:
+      if dict.isNil:
+        if i.scope.symbols.hasKey(d):
+          op = i.scope.symbols[d]
+          if op.kind == minProcOp and not op.mdl.isNil:
+            dict = op.mdl
+          elif op.kind == minValOp and op.val.kind == minDictionary:
+            dict = op.val
+        path &= d & "."
+      elif dict.dVal.hasKey(d):
+        op = dict.dVal[d]
+        if op.kind == minProcOp and not op.mdl.isNil:
+          dict = op.mdl
+        elif op.kind == minValOp and op.val.kind == minDictionary:
+          dict = op.val
+        path &= d & "."
+    return dict.dVal.keys.toSeq.mapIt(path & it)
   if word.startsWith("'"):
     return symbols.mapIt("'" & $it)
   if word.startsWith("~"):
@@ -52,42 +76,6 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     return symbols.mapIt("@" & $it)
   if word.startsWith("#"):
     return symbols.mapIt("#" & $it)
-  if word.startsWith(">"):
-    return symbols.mapIt(">" & $it)
-  if word.startsWith("*") and word.contains("/"):
-    let dicts = word.substr(1).split("/")
-    var op: MinOperator
-    var dict: MinValue
-    var path = "*"
-    for d in dicts:
-      if dict.isNil:
-        if i.scope.symbols.hasKey(d):
-          op = i.scope.symbols[d]
-          if op.kind == minProcOp and not op.mdl.isNil:
-            dict = op.mdl
-          elif op.kind == minValOp and op.val.kind == minDictionary:
-            dict = op.val
-        path &= d & "/"
-      elif dict.dVal.hasKey(d):
-        op = dict.dVal[d]
-        if op.kind == minProcOp and not op.mdl.isNil:
-          dict = op.mdl
-        elif op.kind == minValOp and op.val.kind == minDictionary:
-          dict = op.val
-        path &= d & "/"
-    return dict.dVal.keys.toSeq.mapIt(path & it)
-  if word.startsWith("*"):
-    let filterProc = proc (it: string): bool =
-      let op = i.scope.symbols[it]
-      if op.kind == minProcOp and not op.mdl.isNil:
-        return true
-      else:
-        return op.kind == minValOp and op.val.kind == minDictionary
-    return symbols.filter(filterProc).mapIt("*" & $it)
-  if word.startsWith("("):
-    return symbols.mapIt("(" & $it)
-  if word.startsWith("<"):
-    return toSeq(MINSYMBOLS.readFile.parseJson.pairs).mapIt("<" & $it[0])
   if word.startsWith("$"):
     return toSeq(envPairs()).mapIt("$" & $it[0])
   if word.startsWith("\""):
@@ -99,7 +87,8 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
       f = f.replace("\\", "/")
       if f[f.len-1] != '/':
         f = f & "/"
-      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace("\\", "/")])
+      return toSeq(walkDir(f, true)).mapIt("\"$1$2\"" % [f, it.path.replace(
+          "\\", "/")])
     else:
       var dir: string
       if f.contains("/") or dir.contains("\\"):
@@ -116,7 +105,7 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
   return symbols
 
 proc p(s: string, color = fgWhite) =
-  if SIMPLEREPL:
+  if SIMPLEREPL or not COLOR:
     stdout.write(s)
   else:
     stdout.styledWrite(color, s)

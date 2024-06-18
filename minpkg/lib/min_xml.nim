@@ -3,6 +3,7 @@ import
     std/[xmlparser,
     xmltree,
     parsexml,
+    htmlparser,
     strtabs,
     critbits]
 import
@@ -92,6 +93,16 @@ proc xml_module*(i: In) =
             let msg = getCurrentExceptionMsg()
             raiseInvalid(msg)
 
+    def.symbol("from-html") do (i: In):
+        let vals = i.expect("str")
+        let s = vals[0].getString()
+        try:
+            let xml = parseHtml(s)
+            i.push(i.newXDict(xml))
+        except CatchableError:
+            let msg = getCurrentExceptionMsg()
+            raiseInvalid(msg)
+
     def.symbol("xcomment") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newComment(vals[0].getString))
@@ -107,6 +118,17 @@ proc xml_module*(i: In) =
     def.symbol("xentity") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newEntity(vals[0].getString))
+
+    def.symbol("xentity2utf8") do (i: In):
+        let vals = i.expect("dict:xml-entity")
+        var entity = i.dget(vals[0], "text").getString
+        # Strip & and ;
+        entity = entity[1..entity.len-2]
+        i.push entity.entityToUtf8.newVal
+
+    def.symbol("xescape") do (i: In):
+        let vals = i.expect("'sym")
+        i.push vals[0].getString.escape.newVal
 
     def.symbol("xelement") do (i: In):
         let vals = i.expect("'sym")

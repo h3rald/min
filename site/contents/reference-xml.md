@@ -4,8 +4,11 @@ title: "xml Module"
 -----
 {@ _defs_.md || 0 @}
 
+{#op||from-html||{{sl}}||{{xnode}}||
+Returns an {{xnode}} representing an HTML string (wrapped in a `<document>` tag unless a valid HTML document is provided as input).#}
+
 {#op||from-xml||{{sl}}||{{xnode}}||
-> Returns an {{xnode}} representing an XML string representing an element or fragment.
+> Returns an {{xnode}} representing an XML string (element or fragment).
 > 
 > > %sidebar%
 > > Example
@@ -37,6 +40,20 @@ Returns a {{xelement}} representing an XML element (it will be an empty element 
 
 {#op||xentity||{{sl}}||{{xentity}}||
 Returns a {{xentity}} representing an XML entity. #}
+
+{#op||xescape||{{sl}}||{{s}}||
+Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the corresponding XML entities. #}
+
+{#op||xentity2utf8||{{xentity}}||{{s}}||
+> Returns the UTF-8 symbol corresponding to the specified XML entity. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program prints `p` to the screen:
+> > 
+> >      "&gt;" xentity xentity2utf8 puts 
+ #}
 
 {#op||xquery||{{xelement}} {{sl}}||{{xelement}}||
 > Returns an {{xelement}} representing the first element matching CSS the selector {{sl}}.

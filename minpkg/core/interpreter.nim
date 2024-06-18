@@ -3,6 +3,7 @@ import
   strutils,
   sequtils,
   os,
+  nre,
   osproc,
   critbits,
   json,
@@ -12,7 +13,6 @@ import
 import
   baseutils,
   value,
-  scope,
   parser
 
 type
@@ -27,7 +27,8 @@ var COMPILEDMINFILES* {.threadvar.}: CritBitTree[MinOperatorProc]
 var COMPILEDASSETS* {.threadvar.}: CritBitTree[string]
 var CACHEDMODULES* {.threadvar.}: CritBitTree[MinValue]
 
-const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*._-]*$"
+const USER_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/!?+*_-]*$"
+const USER_PATH_SYMBOL_REGEX* = "^[a-zA-Z_][a-zA-Z0-9/.!?+*_-]*$"
 
 proc diff*(a, b: seq[MinValue]): seq[MinValue] =
   result = newSeq[MinValue](0)
@@ -193,7 +194,20 @@ proc copyDict*(i: In, val: MinValue): MinValue =
 
 proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
   if op.kind == minProcOp:
-    op.prc(i)
+    if not op.mdl.isNil and not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
+      # Capture closures at module level
+      let origScope = i.scope
+      let origParentScope = i.scope.parent
+      let origMdlParentScope = op.mdl.scope.parent
+      i.scope = op.mdl.scope
+      i.scope.parent = origScope
+      i.scope.parent.parent = origParentScope 
+      op.prc(i)
+      i.scope = origScope
+      i.scope.parent = origParentScope
+      op.mdl.scope.parent = origMdlParentScope
+    else:
+      op.prc(i)
   else:
     if op.val.kind == minQuotation:
       var newscope = newScopeRef(i.scope)
@@ -237,6 +251,7 @@ proc pop*(i: In): MinValue =
   if i.stack.len > 0:
     return i.stack.pop
   else:
+    debug "pop - empty stack!"
     raiseEmptyStack()
 
 # Inherit file/line/column from current symbol
@@ -262,27 +277,38 @@ proc push*(i: In, val: MinValue) =
     let symbol = val.symVal
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
-    if i.scope.hasSymbol(symbol):
-      i.apply i.scope.getSymbol(symbol), symbol
+    i.debug("push: $#" % [symbol])
+    let op = i.scope.getSymbol(symbol)
+    if not op.isNull:
+      i.debug("push: symbol found: $#" % [symbol])
+      i.apply op, symbol
     else:
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':
+        i.debug("push - checking auto-popping symbol: $#" % [symbol])
         let apSymbol = symbol[0..symbol.len-2]
-        if i.scope.hasSymbol(apSymbol):
-          i.apply i.scope.getSymbol(apSymbol)
+        let apOp = i.scope.getSymbol(apSymbol)
+        if not apOp.isNull:
+          i.apply apOp
           discard i.pop
       else:
+        i.debug("push - checking sigil: $#" % [symbol])
+        # Check user-defined sigil
         var qIndex = symbol.find('"')
         if qIndex > 0:
           let sigil = symbol[0..qIndex-1]
+          i.debug("push - checking user sigil: $#" % [sigil])
           if not i.scope.hasSigil(sigil):
             raiseUndefined("Undefined sigil '$1'"%sigil)
           i.stack.add(MinValue(kind: minString, strVal: symbol[
               qIndex+1..symbol.len-2]))
           i.apply(i.scope.getSigil(sigil))
         else:
+          # Check system sigil
           let sigil = "" & symbol[0]
+          i.debug("push - checking system sigil: $#" % [sigil])
           if symbol.len > 1 and i.scope.hasSigil(sigil):
+            i.debug("Processing sigil: $# ($#)" % [sigil, symbol])
             i.stack.add(MinValue(kind: minString, strVal: symbol[
                 1..symbol.len-1]))
             i.apply(i.scope.getSigil(sigil))
@@ -304,6 +330,7 @@ proc peek*(i: MinInterpreter): MinValue =
   if i.stack.len > 0:
     return i.stack[i.stack.len-1]
   else:
+    debug "peek - empty stack!"
     raiseEmptyStack()
 
 template handleErrors*(i: In, body: untyped) =
@@ -369,6 +396,8 @@ proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable.} =
     result.add "import critbits"
   if ASSETPATH != "":
     result.add "import base64"
+  result.add "import logging"  
+  result.add "logging.setLogFilter(logging.lvlNotice)"
   result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
@@ -436,7 +465,10 @@ proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
     result = newDict(i2.scope)
     result.objType = "module"
     for key, value in i2.scope.symbols.pairs:
-      result.scope.symbols[key] = value
+      var v = value
+      if v.kind == minProcOp:
+        v.mdl = result
+      result.scope.symbols[key] = v
     CACHEDMODULES[s] = result
 
 proc parse*(i: In, s: string, name = "<parse>"): MinValue =

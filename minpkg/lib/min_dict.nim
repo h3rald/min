@@ -91,10 +91,4 @@ proc dict_module*(i: In) =
     let vals = i.expect("dict")
     i.push vals[0].objType.newVal
 
-  def.sigil("/") do (i: In):
-    i.pushSym("dget")
-
-  def.sigil("%") do (i: In):
-    i.pushSym("dset")
-
   def.finalize("dict")

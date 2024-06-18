@@ -6,7 +6,6 @@ import
   parser,
   value,
   json,
-  scope,
   env,
   interpreter
 
@@ -248,6 +247,7 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
     else:
       let tc = "typeclass:$#" % t
       let ta = "typealias:$#" % t
+      let taSym = i.scope.getSymbol(ta)
       if t.contains(":"):
         var split = t.split(":")
         # Typed dictionaries
@@ -255,11 +255,11 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
           if value.isTypedDictionary(split[1]):
             return true
         return false
-      elif i.scope.hasSymbol(ta):
+      elif not taSym.isNull:
         # Custom type alias
-        let element = i.scope.getSymbol(ta).val.getString
+        let element = taSym.val.getString
         return i.validateValueType(element, value)
-      elif i.scope.hasSymbol(tc):
+      elif not i.scope.getSymbol(tc).isNull:
         # Custom type class
         var i2 = i.copy(i.filename)
         i2.withScope():
@@ -292,7 +292,7 @@ proc validType*(i: In, s: string): bool =
       "sym", "str", "a"]
   if ts.contains(s):
     return true
-  if i.scope.hasSymbol("typeclass:$#" % s):
+  if not i.scope.getSymbol("typeclass:$#" % s).isNull:
     return true
   for ta in s.split("|"):
     for to in ta.split("&"):
@@ -302,10 +302,11 @@ proc validType*(i: In, s: string): bool =
       if to[0] == '!':
         tt = to[1..to.len-1]
       if not ts.contains(tt) and not tt.startsWith("dict:") and
-          not i.scope.hasSymbol("typeclass:$#" % tt):
+          i.scope.getSymbol("typeclass:$#" % tt).isNull:
         let ta = "typealias:$#" % tt
-        if i.scope.hasSymbol(ta):
-          return i.validType(i.scope.getSymbol(ta).val.getString)
+        let taSym = i.scope.getSymbol(ta)
+        if not taSym.isNull:
+          return i.validType(taSym.val.getString)
         return false
   return true
 

@@ -1,21 +1,21 @@
 'min-test require :test
 ;;;
 
-"time" *test/describe
+"time" test.describe
 
-  (timestamp 1464951736 >) *test/assert
+  (timestamp 1464951736 >) test.assert
 
-  (now 1464951736 >) *test/assert
+  (now 1464951736 >) test.assert
 
-  (1464951736 datetime "2016-06-03T11:02:16Z" ==) *test/assert
+  (1464951736 datetime "2016-06-03T11:02:16Z" ==) test.assert
 
-  (1464951736 "yy-MM-dd" tformat "16-06-03" ==) *test/assert
+  (1464951736 "yy-MM-dd" tformat "16-06-03" ==) test.assert
 
-  (1464951736 timeinfo to-timestamp 1464951736 ==) *test/assert
+  (1464951736 timeinfo to-timestamp 1464951736 ==) test.assert
 
-  (1464951736 timeinfo 'second dget 16 ==) *test/assert
+  (1464951736 timeinfo 'second dget 16 ==) test.assert
 
-  (1464951736 timeinfo 'timezone dget integer?) *test/assert
+  (1464951736 timeinfo 'timezone dget integer?) test.assert
 
-  *test/report
+  test.report
   clear-stack

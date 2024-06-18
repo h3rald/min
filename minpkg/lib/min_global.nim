@@ -19,8 +19,7 @@ import
   ../core/parser,
   ../core/value,
   ../core/interpreter,
-  ../core/utils,
-  ../core/scope
+  ../core/utils
 
 proc processTokenValue(v: string, t: MinTokenKind): string =
   case t:
@@ -36,6 +35,8 @@ proc processTokenValue(v: string, t: MinTokenKind): string =
       return "#||$#||#" % [v]
     of tkBlockComment:
       return "#|$#|#" % [v]
+    of tkCommand:
+      return "[$#]" % [v]
     else:
       return v
 
@@ -161,7 +162,11 @@ proc global_module*(i: In) =
           CACHEDMODULES[f].objType = "module"
         mdl = CACHEDMODULES[f]
         for key, value in i2.scope.symbols.pairs:
-          mdl.scope.symbols[key] = value
+          # We need to set the mdl field of minOperators 
+          # In case of modules, or internal calls will not work
+          var v = value
+          v.mdl = mdl
+          mdl.scope.symbols[key] = v
         i.push(mdl)
     else:
       if not f.fileExists:
@@ -417,7 +422,7 @@ proc global_module*(i: In) =
 
   def.symbol("defined-symbol?") do (i: In):
     let vals = i.expect("'sym")
-    i.push(i.scope.hasSymbol(vals[0].getString).newVal)
+    i.push((not i.scope.getSymbol(vals[0].getString).isNull).newVal)
 
   def.symbol("defined-sigil?") do (i: In):
     let vals = i.expect("'sym")
@@ -504,16 +509,13 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
-    var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
-    if not symbol.contains re(USER_SYMBOL_REGEX):
+    if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
-    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false, quotation: isQuot)
+    i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
+        sealed: false, quotation: q1.isQuotation), false, true)
 
   def.symbol("typealias") do (i: In):
     let vals = i.expect("'sym", "'sym")
@@ -610,15 +612,15 @@ proc global_module*(i: In) =
   def.symbol("symbol-help") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0].getString
-    if i.scope.hasSymbol(s):
-      let sym = i.scope.getSymbol(s)
+    let sym = i.scope.getSymbol(s) 
+    if not sym.isNull:
       if not sym.doc.isNil and sym.doc.kind == JObject:
         var doc = i.fromJson(sym.doc)
         doc.objType = "help"
         i.push doc
         return
-      elif HELP["operators"].hasKey(s):
-        var doc = i.fromJson(HELP["operators"][s])
+      elif HELP["symbols"].hasKey(s):
+        var doc = i.fromJson(HELP["symbols"][s])
         doc.objType = "help"
         i.push doc
         return
@@ -634,8 +636,8 @@ proc global_module*(i: In) =
         doc.objType = "help"
         i.push doc
         return
-      elif HELP["operators"].hasKey(s):
-        var doc = i.fromJson(HELP["operators"][s])
+      elif HELP["symbols"].hasKey(s):
+        var doc = i.fromJson(HELP["symbols"][s])
         doc.objType = "help"
         i.push doc
         return
@@ -645,11 +647,14 @@ proc global_module*(i: In) =
     if i.stack.len == 0 or not i.stack[i.stack.len-1].isStringLike:
       warn "Specify a quoted symbol or string to show its help documentation, e.g. 'puts help"
       return
-    let s = i.pop.getString
+    var s = i.pop.getString
     var found = false
     var foundDoc = false
     let displayDoc = proc (j: JsonNode) =
-      echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
+      if j.hasKey("module"):
+        echo "=== $#.$# [$#]" % [j["module"].getStr, j["name"].getStr, j["kind"].getStr]
+      else:
+        echo "=== $# [$#]" % [j["name"].getStr, j["kind"].getStr]
       if j.hasKey("signature"):
         echo j["signature"].getStr
       if j.hasKey("description"):
@@ -660,15 +665,22 @@ proc global_module*(i: In) =
           for l in lines:
             echo "  " & l
       echo "==="
-    if i.scope.hasSymbol(s):
+    let sym = i.scope.getSymbol(s)
+    if not sym.isNull:
       found = true
-      let sym = i.scope.getSymbol(s)
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)
-      elif HELP["operators"].hasKey(s):
+        return
+      var mdl = ""
+      if s.contains('.'):
+        let parts = s.split(".")
+        mdl = parts[0]
+        s = parts[1]
+      if HELP["symbols"].hasKey(s) and (mdl == "" or mdl == HELP["symbols"][
+          s]["module"].getStr):
         foundDoc = true
-        displayDoc HELP["operators"][s]
+        displayDoc HELP["symbols"][s]
     if i.scope.hasSigil(s):
       found = true
       let sym = i.scope.getSigil(s)
@@ -1134,7 +1146,7 @@ proc global_module*(i: In) =
       raiseInvalid("Cannot convert a quotation to float.")
 
   def.symbol("prompt") do (i: In):
-    i.eval(""""[$1]\n$$ " (.) => %""")
+    i.eval(""""[$1]\n$$ " (pwd) => %""")
 
   def.symbol("quotesym") do (i: In):
     let vals = i.expect("str")
@@ -1166,6 +1178,20 @@ proc global_module*(i: In) =
       q.add dict
     i.push q.newVal
 
+  def.symbol("get-env") do (i: In):
+    let vals = i.expect("'sym")
+    let a = vals[0]
+    i.push a.getString.getEnv.newVal
+
+  def.symbol("put-env") do (i: In):
+    let vals = i.expect("'sym", "'sym")
+    let key = vals[0]
+    let value = vals[1]
+    key.getString.putEnv value.getString
+
+  def.symbol("$") do (i: In):
+    i.pushSym("get-env")
+
   # Sigils
 
   def.sigil("'") do (i: In):
@@ -1183,17 +1209,14 @@ proc global_module*(i: In) =
   def.sigil("*") do (i: In):
     i.pushSym("invoke")
 
-  def.sigil(">") do (i: In):
-    i.pushSym("save-symbol")
-
-  def.sigil("<") do (i: In):
-    i.pushSym("load-symbol")
-
   def.sigil("^") do (i: In):
     i.pushSym("lambda")
 
   def.sigil("~") do (i: In):
     i.pushSym("lambda-bind")
+
+  def.sigil("$") do (i: In):
+    i.pushSym("get-env")
 
   # Shorthand symbol aliases
 

@@ -11,24 +11,40 @@
   symbol set-destination
   (dict :meta ==> dict :result)
   (
-    meta /id :id
-    meta /ext :ext
+    meta "id" dget :id
+    meta "ext" dget :ext
     (
       ((id "home" ==) (
         meta (
-          ("index" %id)
-          (".html" %ext)
+          ("index" "id" dset)
+          (".html" "ext" dset)
         ) tap
       ))
       ((ext ".md" ==) (
         meta (
-          (".html" %ext)
-          ("$1/index" (id) => % %id)
+          (".html" "ext" dset)
+          ("$1/index" (id) => % "id" dset)
         ) tap
       ))
     ) case
     @result
   )
+) ::
+
+
+(
+  symbol convert-html-entities
+  (str :content ==> str :result)
+  (
+    content "&[^;]+;" 
+      (
+        0 get :entity
+        (("&lt;" "&gt;" "&amp;" "&apos;" "&quot;") entity in? not)
+          (entity xentity xentity2utf8 @entity)
+        when
+        entity 
+      ) replace-apply @result
+  ) 
 ) ::
 
 ;Processing operators
@@ -40,24 +56,24 @@
     "" :contents
     meta (
       (input-fread @contents meta)
-      (settings /title %site)
-      (settings /version %version)
+      (settings "title" dget "site" dset)
+      (settings "version" dget "version" dset)
       (
         :temp contents temp markdown 
         highlight-codeblocks highlight-codes @contents temp
       )
-      (contents %contents)
+      (contents "contents" dset)
       (
         ; Save post content (plain HTML fragment, no template)
         :temp
-        (temp /content-type "post" ==)
+        (temp "content-type" dget "post" ==)
           ; Need to save html fragment separately because contents is overwritten.
-          (temp dup /contents %fragment posts append @posts)
+          (temp dup "contents" dget convert-html-entities "fragment" dset posts append @posts)
         when
         temp
       )
       (:temp tpl temp mustache @page temp)
-      (page %contents)
+      (page "contents" dset)
     ) tap @result
   )
 ) ::
@@ -66,7 +82,7 @@
   symbol process-md-content
   (dict :meta ==> dict :result)
   (
-    meta /content-type :ct
+    meta "content-type" dget :ct
     meta ct process-md-with-template
     @result
   )
@@ -76,8 +92,8 @@
   symbol process-content
   (dict :meta ==> dict :result)
   (
-    meta /ext :ext
-    meta /id :id
+    meta "ext" dget :ext
+    meta "id" dget :id
     meta
     (
       ((".md" ext ==) (process-md-content))
@@ -94,7 +110,7 @@
     meta (
       (input-fread @contents meta)
       (:temp contents preprocess-css @contents temp)
-      (contents %contents)
+      (contents "contents" dset)
     ) tap
     output-fwrite
   )
@@ -107,10 +123,10 @@
     timestamp :ts
     data input-fread from-json :contents
     ; Save modules
-    contents /modules @modules
+    contents "modules" dget @modules
     ; Update timestamp
-    contents ts %updated @contents
-    data contents to-json %contents
+    contents ts "updated" dset @contents
+    data contents to-json "contents" dset
     output-fwrite
     ; Add timesyamp file
     {
@@ -119,7 +135,7 @@
       ".timestamp"    :ext
       "asset"         :type
     } 
-    ts string %contents
+    ts string "contents" dset
     output-fwrite
   ) 
 ) ::
@@ -129,7 +145,7 @@
   (==>)
   (
     "Downloading latest min executables..." notice!
-    settings /version :version
+    settings "version" dget :version
     ("windows" "macosx" "linux")
     (
       :opsys
@@ -157,7 +173,7 @@ when
 contents (
   (dict) expect -> :meta
   (
-    ((meta /id "^_" match?) ()) ;Ignore files starting with underscore.
+    ((meta "id" dget "^_" match?) ()) ;Ignore files starting with underscore.
     ((true) (meta process-content set-destination output-fwrite)) 
   ) case
 ) foreach
@@ -166,8 +182,8 @@ contents (
 assets (
   (dict) expect -> :meta
   (
-    ((meta /ext ".css" ==) (meta process-css-asset))
-    ((meta /path "mmm.json" ==) (meta process-mmm-json))
+    ((meta "ext" dget ".css" ==) (meta process-css-asset))
+    ((meta "path" dget "mmm.json" ==) (meta process-mmm-json))
     ((true) (meta output-cp))
   ) case
 ) foreach
@@ -176,57 +192,54 @@ assets (
 ; Process deps of each module -> name@version
 modules (
   :module
-  module /deps dkeys (
+  module "deps" dget dkeys (
     :name
-    module /deps name dget :version
+    module "deps" dget name dget :version
     "$#@$#" (name version) =%
   ) map ", " join :dependencies
   (dependencies "" ==)
     ("n/a" @dependencies)
   when
-  module dependencies %dependencies
+  module dependencies "dependencies" dset
 ) map @modules
 
 {}
-  "mmm/index"         %id
-  "mmm.html"          %path
-  ".html"             %ext
-  "mmm"               %title
-  "min language"      %site
-  "page"              %content-type
-  modules             %modules 
+  "mmm/index"         "id" dset
+  "mmm.html"          "path" dset
+  ".html"             "ext" dset
+  "mmm"               "title" dset
+  "min language"      "site" dset
+  "page"              "content-type" dset
+  modules             "modules" dset 
 dup
-"mmm" swap mustache %contents output-fwrite
+"mmm" swap mustache "contents" dset output-fwrite
 
 "Generating news page..." notice!
 ; Get news
-;contents 
-;  (:content ((content 'content-type dhas?) (content /content-type "post" ==)) &&)
-;filter
 posts 
-  (:a :b a /date  b /date >) 
+  (:a :b a "date" dget  b "date" dget >) 
 sort @posts
 
 {}
-  "news/index"     %id
-  "news.html"      %path
-  ".html"          %ext
-  "News"           %title
-  "min language"   %site
-  "page"           %content-type
-  posts            %posts 
+  "news/index"     "id" dset
+  "news.html"      "path" dset
+  ".html"          "ext" dset
+  "News"           "title" dset
+  "min language"   "site" dset
+  "page"           "content-type" dset
+  posts            "posts" dset 
 dup
-"news" swap mustache %contents output-fwrite
+"news" swap mustache "contents" dset output-fwrite
 
 {}
-  "rss"                       %id
-  "rss.xml"                   %path
-  ".xml"                      %ext
-  "min programming language"  %title
-  "min language"              %site
-  "rss"                       %content-type
-  posts                       %posts 
+  "rss"                       "id" dset
+  "rss.xml"                   "path" dset
+  ".xml"                      "ext" dset
+  "min programming language"  "title" dset
+  "min language"              "site" dset
+  "rss"                       "content-type" dset
+  posts                       "posts" dset 
 dup
-"rss" swap mustache %contents output-fwrite
+"rss" swap mustache "contents" dset output-fwrite
 
 

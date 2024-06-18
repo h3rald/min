@@ -11,7 +11,6 @@ import
   env,
   parser,
   value,
-  scope,
   interpreter,
   stdlib,
   shell,
@@ -29,7 +28,6 @@ export
   utils,
   value,
   shell,
-  scope,
   stdlib,
   min_global,
   niftylogger
@@ -209,9 +207,8 @@ when isMainModule:
           of "dev", "d":
             DEV = true
           of "log", "l":
-            if file == "":
-              var val = val
-              niftylogger.setLogLevel(val)
+            var v = val
+            niftylogger.setLogLevel(v)
           of "passN", "n":
             NIMOPTIONS = val
           of "help", "h":
