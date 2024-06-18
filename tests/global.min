@@ -368,6 +368,12 @@
     obj.three 6 ==
   ) test.assert
 
+  (
+    {} :obj
+    (dup *) ^square
+    3 obj.square 9 ==
+  ) test.assert
+
   test.report
   ;; Tidy up
   clear-stack
