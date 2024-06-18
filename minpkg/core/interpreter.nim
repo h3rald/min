@@ -279,16 +279,18 @@ proc push*(i: In, val: MinValue) =
     if symbol == "return":
       raise MinReturnException(msg: "return symbol found")
     i.debug("push: $#" % [symbol])
-    if i.scope.hasSymbol(symbol):
+    let op = i.scope.getSymbol(symbol)
+    if not op.isNull:
       i.debug("push: symbol found: $#" % [symbol])
-      i.apply i.scope.getSymbol(symbol), symbol
+      i.apply op, symbol
     else:
       # Check if symbol ends with ! (auto-popping)
       if symbol.len > 1 and symbol[symbol.len-1] == '!':
         i.debug("push - checking auto-popping symbol: $#" % [symbol])
         let apSymbol = symbol[0..symbol.len-2]
-        if i.scope.hasSymbol(apSymbol):
-          i.apply i.scope.getSymbol(apSymbol)
+        let apOp = i.scope.getSymbol(apSymbol)
+        if not apOp.isNull:
+          i.apply apOp
           discard i.pop
       else:
         i.debug("push - checking sigil: $#" % [symbol])

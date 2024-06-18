@@ -419,7 +419,7 @@ proc global_module*(i: In) =
 
   def.symbol("defined-symbol?") do (i: In):
     let vals = i.expect("'sym")
-    i.push(i.scope.hasSymbol(vals[0].getString).newVal)
+    i.push((not i.scope.getSymbol(vals[0].getString).isNull).newVal)
 
   def.symbol("defined-sigil?") do (i: In):
     let vals = i.expect("'sym")
@@ -609,8 +609,8 @@ proc global_module*(i: In) =
   def.symbol("symbol-help") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0].getString
-    if i.scope.hasSymbol(s):
-      let sym = i.scope.getSymbol(s)
+    let sym = i.scope.getSymbol(s) 
+    if not sym.isNull:
       if not sym.doc.isNil and sym.doc.kind == JObject:
         var doc = i.fromJson(sym.doc)
         doc.objType = "help"
@@ -662,9 +662,9 @@ proc global_module*(i: In) =
           for l in lines:
             echo "  " & l
       echo "==="
-    if i.scope.hasSymbol(s):
+    let sym = i.scope.getSymbol(s)
+    if not sym.isNull:
       found = true
-      let sym = i.scope.getSymbol(s)
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
         displayDoc(sym.doc)

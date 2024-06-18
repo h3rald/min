@@ -20,74 +20,38 @@ proc getDictionary(d: MinOperator): MinValue =
     return d.val
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], acc = 0): MinOperator
+    string]): MinOperator
 
-proc getSymbol*(scope: ref MinScope, key: string, acc = 0): MinOperator =
+proc isNull*(op: MinOperator): bool =
+  return op.kind == minValOp and op.val.kind == minNull
+
+proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   debug "getSymbol: $#" % [key]
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
   elif key.contains ".":
     var keys = key.split(".")
-    return getSymbolFromPath(scope, keys, acc)
+    return getSymbolFromPath(scope, keys)
   else:
     if scope.parent.isNil:
-      raiseUndefined("Unable to retrieve symbol '$1' (not found)." % key)
-    return scope.parent.getSymbol(key, acc + 1)
+      debug("Unable to retrieve symbol '$1' (not found)." % key)
+      return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
+    return scope.parent.getSymbol(key)
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], acc = 0): MinOperator =
+    string]): MinOperator =
   let sym = keys[0]
   keys.delete(0)
-  let d = scope.getSymbol(sym, acc)
+  let d = scope.getSymbol(sym)
   let dict = d.getDictionary
   if not dict.isNil:
     if keys.len > 1:
-      return dict.scope.getSymbolFromPath(keys, acc + 1)
+      return dict.scope.getSymbolFromPath(keys)
     else:
-      return dict.scope.getSymbol(keys[0], acc + 1)
+      return dict.scope.getSymbol(keys[0])
   else:
-    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
-
-proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): bool
-
-proc hasSymbol*(scope: ref MinScope, key: string): bool =
-  debug "hasSymbol: $#" % [key]
-  if scope.isNil:
-    return false
-  else:
-    #debug "hasSymbol - scope symbols: $#" % [$scope.symbols.keys.toSeq]
-    if scope.symbols.hasKey(key):
-      debug "hasSymbol - found $#" % [key]
-      return true
-    elif key.contains("."):
-      var keys = key.split(".")
-      if keys[0] == "":
-        raiseInvalid("Symbols cannot start with a dot")
-      return hasSymbolFromPath(scope, keys)
-    elif not scope.parent.isNil:
-      return scope.parent.hasSymbol(key)
-    else:
-      return false
-
-proc hasSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): bool =
-  let sym = keys[0]
-  keys.delete(0)
-  var d: MinOperator
-  try:
-    d = scope.getSymbol(sym)
-  except CatchableError:
-    return false
-  let dict = d.getDictionary
-  debug "hasSymbolFromPath: Found dictionary $# - keys: $#" % [sym, keys.join(".")]
-  if not dict.isNil:
-    if keys.len > 1:
-      return dict.scope.hasSymbolFromPath(keys)
-    else:
-      return dict.scope.hasSymbol(keys[0])
-  else:
-    raiseInvalid("Symbol '$1' is not a dictionary." % sym)
+    debug("Symbol '$1' is not a dictionary." % sym)
+    return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
 
 proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
     string]): bool
