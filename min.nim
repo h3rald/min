@@ -11,7 +11,6 @@ import
   env,
   parser,
   value,
-  scope,
   interpreter,
   stdlib,
   shell,
@@ -29,7 +28,6 @@ export
   utils,
   value,
   shell,
-  scope,
   stdlib,
   min_global,
   niftylogger
