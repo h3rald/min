@@ -162,7 +162,11 @@ proc global_module*(i: In) =
           CACHEDMODULES[f].objType = "module"
         mdl = CACHEDMODULES[f]
         for key, value in i2.scope.symbols.pairs:
-          mdl.scope.setSymbol(key, value, false, false)
+          # We need to set the mdl field of minOperators 
+          # In case of modules, or internal calls will not work
+          var v = value
+          v.mdl = mdl
+          mdl.scope.symbols[key] = v
         i.push(mdl)
     else:
       if not f.fileExists:

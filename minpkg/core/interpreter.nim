@@ -396,6 +396,8 @@ proc initCompiledFile*(i: In, files: seq[string]): seq[string] {.discardable.} =
     result.add "import critbits"
   if ASSETPATH != "":
     result.add "import base64"
+  result.add "import logging"  
+  result.add "logging.setLogFilter(logging.lvlNotice)"
   result.add "MINCOMPILED = true"
   result.add "var i = newMinInterpreter(\"$#\")" % i.filename
   result.add "i.stdLib()"
@@ -466,7 +468,6 @@ proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
       var v = value
       if v.kind == minProcOp:
         v.mdl = result
-      #result.scope.setSymbol(key, v)
       result.scope.symbols[key] = v
     CACHEDMODULES[s] = result
 

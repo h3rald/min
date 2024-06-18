@@ -111,10 +111,10 @@ type
   MinOperator* = object
     sealed*: bool
     doc*: JsonNode
+    mdl*: MinValue # Only set in case of modules
     case kind*: MinOperatorKind
     of minProcOp:
       prc*: MinOperatorProc
-      mdl*: MinValue # Only set in case of modules
     of minValOp:
       quotation*: bool
       val*: MinValue
