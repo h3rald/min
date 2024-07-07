@@ -20,8 +20,6 @@ min includes a small but powerful standard library organized into the following 
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
 : Provides operators for accessing file information and properties. 
-{#link-module||logic#}
-: Provides comparison operators for all min data types and other boolean logic operators.
 {#link-module||str#}
 : Provides operators to perform operations on strings, use regular expressions, interpolation, etc.
 {#link-module||sys#}

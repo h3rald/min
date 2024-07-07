@@ -62,6 +62,47 @@ Multiplies {{n1}} by {{n2}}. #}
 {#op||/||{{n1}} {{n2}}||{{n3}}||
 Divides {{n1}} by {{n2}}. #}
 
+{#op||&gt;||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is greater than {{a2}}, {{f}} otherwise. 
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#op||&gt;=||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is greater than or equal to {{a2}}, {{f}} otherwise.
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#op||&lt;||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is smaller than {{a2}}, {{f}} otherwise. 
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#op||&lt;=||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is smaller than or equal to {{a2}}, {{f}} otherwise.
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#op||==||{{a1}} {{a2}}||{{b}}||
+Returns {{t}} if {{a1}} is equal to {{a2}}, {{f}} otherwise. #}
+
+{#op||!=||{{a1}} {{a2}}||{{b}}||
+Returns {{t}} if {{a1}} is not equal to {{a2}}, {{f}} otherwise. #}
+
+{#alias||&vert;&vert;||expect-any#}
+
+{#alias||&&||expect-all#}
+
+{#op||and||{{b1}} {{b2}}||{{b3}}||
+Returns {{t}} if {{b1}} is equal to {{b2}}, {{f}} otherwise.#}
+
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
@@ -112,6 +153,9 @@ Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
 >  * If {{any}} is a numeric value, zero is converted to {{f}}, otherwise it is converted to {{t}}.
 >  * If {{any}} is a quotation or a dictionary, the empty quotation or dictionary is converted to {{f}}, otherwise it is converted to {{t}}.
 >  * If {{any}} is a string, the empty string, and `"false"` are converted to {{f}}, otherwise it is converted to {{t}}.#}
+
+{#op||boolean?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
 
 {#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
 > This operator takes a quotation containing _n_ different conditional branches. 
@@ -164,6 +208,9 @@ Toggles development mode.#}
 {#op||dev?||{{none}}||{{b}}||
 Returns {{t}} if the current program is being executed in development mode.#}
 
+{#op||dictionary?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
+
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
 
@@ -196,6 +243,14 @@ Exits the program or shell with {{i}} as return code. #}
 > > 
 > > `(int string num) expect (3.4 "test" 1) ==`#}
 
+{#op||expect-all||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if they all evaluate to {{t}}, {{f}} otherwise.
+ #}
+ 
+{#op||expect-any||{{q}}||{{b}}||
+Assuming that {{q}} is a quotation of quotations each evaluating to a boolean value, it pushes {{t}} on the stack if any evaluates to {{t}}, {{f}} otherwise.
+ #}
+
 {#op||expect-empty-stack||{{none}}||{{none}}||
 Raises an error if the stack is not empty.#}
 
@@ -208,6 +263,9 @@ Raises an error if the stack is not empty.#}
 >   * If {{any}} is a integer, it is converted to float value.
 >   * If {{any}} is a float, no conversion is performed.
 >   * If {{any}} is a string, it is parsed as a float value.#}
+
+{#op||float?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a float, {{f}} otherwise. #}
 
 {#op||foreach||{{q1}} {{q2}}||{{a0p}}||
 Applies the quotation {{q2}} to each element of {{q1}}.#}
@@ -282,6 +340,9 @@ Returns infinity. #}
 >   * If {{any}} is an integer, no conversion is performed.
 >   * If {{any}} is a float, it is converted to an integer value by truncating its decimal part.
 >   * If {{any}} is a string, it is parsed as an integer value.#}
+
+{#op||integer?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
  
  {#op||lambda||{{q}} {{sl}}||{{none}}||
 > Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
@@ -345,6 +406,15 @@ Returns the integer module of {{i1}} divided by {{i2}}. #}
 
 {#op||nan||{{none}}||nan||
 Returns **NaN** (not a number). #}
+
+{#op||not||{{b1}}||{{b2}}||
+Negates {{b1}}.#}
+
+{#op||null?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is {{null}}, {{f}} otherwise. #}
+
+{#op||number?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a number, {{f}} otherwise. #}
 
 {#op||odd?||{{i}}||{{b}}||
 Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
@@ -426,6 +496,9 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:
 > > `'my-local-symbol global publish` #}
 
+{#op||or||{{b1}} {{b2}}||{{b3}}||
+Returns {{t}} if {{b1}} or {{b2}} is {{t}}, {{f}} otherwise.#}
+
 {#op||pred||{{i1}}||{{i2}}||
 Returns the predecessor of {{i1}}.#}
 
@@ -440,6 +513,12 @@ Sets environment variable {{sl2}} to {{sl1}}. #}
 
 {#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}
+
+{#op||quotation?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
+
+{#op||quoted-symbol?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a quoted symbol, {{f}} otherwise. #}
 
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
@@ -544,6 +623,12 @@ Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quo
 {#op||string||{{any}}||{{s}}||
 Converts {{any}} to its string representation.#}
 
+{#op||stringlike?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
+
+{#op||string?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
+
 {#op||succ||{{i1}}||{{i2}}||
 Returns the successor of {{i1}}.#}
 
@@ -620,6 +705,9 @@ Returns the type of {{any}}.#}
 {#op||typealias||{{sl1}} {{sl2}}||{{none}}||
 Creates a type alias {{sl1}} for type expression {{sl2}}.#}
 
+{#op||type?||{{any}} {{sl}}||{{b}}||
+Returns {{t}} if the data type of {{any}} satisfies the specified type expression {{sl}}, {{f}} otherwise. #}
+
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
@@ -649,3 +737,6 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}.#}
 
 {#op||with||{{q1}} {{q2}}||{{a0p}}||
 Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. #}
+
+{#op||xor||{{b1}} {{b2}}||{{b3}}||
+Returns {{t}} if {{b1}} and {{b2}} are different, {{f}} otherwise.#}

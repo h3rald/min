@@ -24,7 +24,7 @@ Consider the following program:
      filepath mtime now 3600 - >
      and and
 
-In this case, the `filepath` symbol is defined and then used on the following three lines, each of which defines a condition to be evaluated. The last line contains just two {#link-operator||logic||and#} symbols necessary to compare the three conditions.
+In this case, the `filepath` symbol is defined and then used on the following three lines, each of which defines a condition to be evaluated. The last line contains just two {#link-operator||global||and#} symbols necessary to compare the three conditions.
 
 
 ## Lexical scoping and binding

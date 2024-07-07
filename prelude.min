@@ -1,6 +1,5 @@
 ; Imports
 'str       import
-'logic     import
 'stack     import
 'seq       import
 'dict      import

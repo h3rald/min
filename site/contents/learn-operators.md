@@ -336,6 +336,6 @@ The operator above creates a `point` constructor symbol that can be used to crea
 > %note%
 > Tip
 >
-> Except for some native symbols, constructors represent the only way to create new typed dictionaries. The more validations you perform in a constructor, the most effective checking for a specific type using the {#link-operator||logic||type?#} operator will be, as `type?` only checks if a specific type annotation is present on a typed dictionary, nothing else.
+> Except for some native symbols, constructors represent the only way to create new typed dictionaries. The more validations you perform in a constructor, the most effective checking for a specific type using the {#link-operator||global||type?#} operator will be, as `type?` only checks if a specific type annotation is present on a typed dictionary, nothing else.
 
 {#link-learn||quotations||Quotations#}

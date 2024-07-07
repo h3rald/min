@@ -16,7 +16,6 @@ import
   min_seq,
   min_dict,
   min_str,
-  min_logic,
   min_time,
   min_sys,
   min_io,
@@ -43,7 +42,6 @@ proc stdLib*(i: In) =
   i.stack_module
   i.seq_module
   i.dict_module
-  i.logic_module
   i.str_module
   i.time_module
   i.sys_module
