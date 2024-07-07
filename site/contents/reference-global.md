@@ -47,14 +47,62 @@ Symbol used to separate input and output values in operator signatures.#}
 
 {#alias||^||lambda#}
 
+{#op||+||{{n1}} {{n2}}||{{n3}}||
+Sums {{n1}} and {{n2}}. #}
+
+{#op||-||{{n1}} {{n2}}||{{n3}}||
+Subtracts {{n2}} from {{n1}}. #}
+
+{#op||-inf||{{none}}||{{n}}||
+Returns negative infinity. #}
+
+{#op||&ast;||{{n1}} {{n2}}||{{n3}}||
+Multiplies {{n1}} by {{n2}}. #}
+
+{#op||/||{{n1}} {{n2}}||{{n3}}||
+Divides {{n1}} by {{n2}}. #}
+
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
 {#op||args||{{none}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
 
+{#op||avg||{{q}}||{{n}}||
+Returns the average of the items of {{q}}. #}
+
+{#op||base||[&quot;dec&quot;&#124;&quot;hex&quot;&#124;&quot;oct&quot;&#124;&quot;bin&quot;](class:kwd)||{{none}}||
+Sets the numeric base used to represent integers. #}
+
+{#op||base?||{{none}}||[&quot;dec&quot;&#124;&quot;hex&quot;&#124;&quot;oct&quot;&#124;&quot;bin&quot;](class:kwd)||
+Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)). #}
+
 {#op||bind||{{any}} {{sl}}||{{none}}||
 Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
+
+{#op||bitand||{{i1}} {{i2}}||{{i3}}||
+Computes the bitwise *and* of integer {{i1}} and {{i2}}.#}
+
+{#op||bitclear||{{i1}} {{q}}||{{i2}}||
+Sets the bytes specified via their position in {{i1}} through {{q}} to 0. #}
+
+{#op||bitflip||{{i1}} {{q}}||{{i2}}||
+Flips the bytes specified via their position in {{i1}} through {{q}}. #}
+
+{#op||bitnot||{{i1}}||{{i2}}||
+Computes the bitwise *complement* of {{i1}}.#}
+
+{#op||bitor||{{i1}} {{i2}}||{{i3}}||
+Computes the bitwise *or* of integers {{i1}} and {{i2}}.#}
+
+{#op||bitparity||{{i1}}||{{i2}}||
+Calculate the bit parity in {{i1}}. If the number of 1-bits is odd, the parity is 1, otherwise 0.#}
+
+{#op||bitset||{{i1}} {{q}}||{{i2}}||
+Sets the bytes specified via their position in {{i1}} through {{q}} to 0. #}
+
+{#op||bitxor||{{i1}} {{i2}}||{{i3}}||
+Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
 
 {#op||bool||{{any}}||{{b}}||
 > Converts {{any}} to a boolean value based on the following rules:
@@ -116,8 +164,14 @@ Toggles development mode.#}
 {#op||dev?||{{none}}||{{b}}||
 Returns {{t}} if the current program is being executed in development mode.#}
 
+{#op||div||{{i1}} {{i2}}||{{i3}}||
+Divides {{i1}} by {{i2}} (integer division). #}
+
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
+
+{#op||even?||{{i}}||{{b}}||
+Returns {{t}} if {{i}} is even, {{f}} otherwise. #}
 
 {#op||exit||{{i}}||{{none}}||
 Exits the program or shell with {{i}} as return code. #}
@@ -198,6 +252,9 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#
 
 {#op||import||{{sl}}||{{none}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
+
+{#op||inf||{{none}}||{{n}}||
+Returns infinity. #}
 
 {#op||infix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using infix notation. 
@@ -280,6 +337,18 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 {#op||loglevel?||{{none}}||{{s}}||
 Returns the current log level (debug, info, notice, warn, error or fatal). #}
 
+{#op||med||{{q}}||{{n}}||
+Returns the median of the items of {{q}}. #}
+
+{#op||mod||{{i1}} {{i2}}||{{i3}}||
+Returns the integer module of {{i1}} divided by {{i2}}. #}
+
+{#op||nan||{{none}}||nan||
+Returns **NaN** (not a number). #}
+
+{#op||odd?||{{i}}||{{b}}||
+Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
+
 {#op||operator||{{q}}||{{a0p}}||
 > Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to `define` and `define-sigil`), and automatically mapping inputs and outputs.
 > 
@@ -357,6 +426,12 @@ Parses {{s}} and returns a quoted program {{q}}. #}
 > Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:
 > > `'my-local-symbol global publish` #}
 
+{#op||pred||{{i1}}||{{i2}}||
+Returns the predecessor of {{i1}}.#}
+
+{#op||product||{{q}}||{{i}}||
+Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
+
 {#op||puts||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT.#}
 
@@ -375,6 +450,19 @@ Creates a command with the value of {{s}} and wraps it in a quotation. #}
 {#op||quotesym||{{s}}||({{sym}})||
 Creates a symbol with the value of {{s}} and wraps it in a quotation. #}
 
+{#op||random||{{i1}}||{{i2}}||
+> Returns a random number {{i2}} between 0 and {{i1}}-1. 
+> 
+> > %note%
+> > Note
+> > 
+> > You must call `randomize` to initialize the random number generator, otherwise the same sequence of numbers will be returned.#}
+
+{#op||randomize||{{none}}||{{null}||
+Initializes the random number generator using a seed based on the current timestamp. #}
+
+{#op||range||{{q2}}||{{q2}}||
+Takes a quotation {{q1}} of two or three integers in the form of *start*, *end* and an optional *step* (1 if not specified) and generates the sequence and returns the resulting quotation of integers {{q2}}. #}
 
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}
@@ -438,6 +526,12 @@ Returns {{t}} if the symbol {{sl}} is sealed, {{f}} otherwise.#}
 {#op||sealed-sigil?||{{sl}}||{{b}}||
 Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
 
+{#op||shl||{{i1}} {{i2}}||{{i3}}||
+Computes the *shift left* operation of {{i1}} and {{i2}}.#}
+
+{#op||shr||{{i1}} {{i2}}||{{i3}}||
+Computes the *shift right* operation of {{i1}} and {{i2}}.#}
+
 {#op||sigil-help||{{sl}}||{{help}}|{{null}}||
 Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
 
@@ -449,6 +543,12 @@ Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quo
 
 {#op||string||{{any}}||{{s}}||
 Converts {{any}} to its string representation.#}
+
+{#op||succ||{{i1}}||{{i2}}||
+Returns the successor of {{i1}}.#}
+
+{#op||sum||{{q}}||{{i}}||
+Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
 
 {#op||symbols||{{none}}||({{s0p}})||
 Returns a list of all symbols defined in the [global](class:kwd) scope.#}

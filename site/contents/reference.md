@@ -26,8 +26,6 @@ min includes a small but powerful standard library organized into the following 
 : Provides operators to perform operations on strings, use regular expressions, interpolation, etc.
 {#link-module||sys#}
 : Provides operators to use as basic shell commands, access environment variables, and execute external commands.
-{#link-module||num#}
-: Provides operators to perform simple mathematical operations on integer and floating point numbers.
 {#link-module||time#}
 : Provides a few basic operators to manage dates, times, and timestamps.
 {#link-module||crypto#}

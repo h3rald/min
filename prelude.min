@@ -1,7 +1,6 @@
 ; Imports
 'str       import
 'logic     import
-'num       import
 'stack     import
 'seq       import
 'dict      import
