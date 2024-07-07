@@ -70,13 +70,13 @@ If this flag is not specified:
 
 #### -d:nopcre
 
-If the **-d:nopcre** is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||str#}:
+If the **-d:nopcre** is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||global#}:
 
-* {#link-operator||str||search#}
-* {#link-operator||str||match?#}
-* {#link-operator||str||search-all#}
-* {#link-operator||str||replace#}
-* {#link-operator||str||replace-apply#}
+* {#link-operator||global||search#}
+* {#link-operator||global||match?#}
+* {#link-operator||global||search-all#}
+* {#link-operator||global||replace#}
+* {#link-operator||global||replace-apply#}
 
 ## Building a docker image
 

@@ -20,8 +20,6 @@ min includes a small but powerful standard library organized into the following 
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
 {#link-module||fs#}
 : Provides operators for accessing file information and properties. 
-{#link-module||str#}
-: Provides operators to perform operations on strings, use regular expressions, interpolation, etc.
 {#link-module||sys#}
 : Provides operators to use as basic shell commands, access environment variables, and execute external commands.
 {#link-module||time#}

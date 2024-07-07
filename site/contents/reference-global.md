@@ -43,6 +43,10 @@ Symbol used to separate input and output values in operator signatures.#}
 
 {#alias||=-=||expect-empty-stack#}
 
+{#alias||%||interpolate#}
+
+{#alias||=%||apply-interpolate#}
+
 {#sig||^||lambda#}
 
 {#alias||^||lambda#}
@@ -106,6 +110,9 @@ Returns {{t}} if {{b1}} is equal to {{b2}}, {{f}} otherwise.#}
 {#op||apply||{{q}}||({{a0p}})||
 Returns a new quotation obtained by evaluating each element of {{q}} in a separate stack. #}
 
+{#op||apply-interpolate||{{s}} {{q}}||{{s}}||
+The same as pushing `apply` and then `interpolate` on the stack.#}
+
 {#op||args||{{none}}||{{q}}||
 Returns a list of all arguments passed to the current program.#}
 
@@ -156,6 +163,12 @@ Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
 
 {#op||boolean?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
+
+{#op||capitalize||{{sl}}||{{s}}||
+Returns a copy of {{sl}} with the first character capitalized.#}
+
+{#op||chr||{{i}}||{{s}}||
+Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
 
 {#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
 > This operator takes a quotation containing _n_ different conditional branches. 
@@ -213,6 +226,9 @@ Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
 
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
+
+{#op||escape||{{sl}}||{{s}}||
+Returns a copy of {{sl}} with quotes and backslashes escaped with a backslash.#}
 
 {#op||eval||{{s}}||{{a0p}}||
 Parses and interprets {{s}}. #}
@@ -286,8 +302,24 @@ Applies the quotation {{q2}} to each element of {{q1}}.#}
 > > 
 > > produces: `"This is a test error"`#}
 
+{#op||from-bin||{{sl}}||{{i}}||
+Parses {{sl}} as a binary number. #}
+
+{#op||from-dec||{{sl}}||{{i}}||
+Parses {{sl}} as a decimal number. #}
+
+{#op||from-hex||{{sl}}||{{i}}||
+Parses {{sl}} as a hexadecimal number. #}
+
 {#op||from-json||{{s}}||{{any}}||
 Converts a JSON string into {{m}} data.#}
+
+{#op||from-oct||{{sl}}||{{i}}||
+Parses {{sl}} as a octal number. #}
+
+{#op||from-semver||{{s}}||{{d}}||
+Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}}, 
+it pushes a dictionary {{d}} on the stack containing a **major**, **minor**, and **patch** key/value pairs.#}
 
 {#op||from-yaml||{{s}}||{{any}}||
 > Converts a YAML string into {{m}} data.
@@ -310,6 +342,12 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#
 
 {#op||import||{{sl}}||{{none}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
+
+{#op||indent||{{sl}} {{i}}||{{s}}||
+Returns {{s}} containing {{sl}} indented with {{i}} spaces.#}
+
+{#op||indexof||{{s1}} {{s2}}||{{i}}||
+If {{s2}} is contained in {{s1}}, returns the index of the first match or -1 if no match is found. #}
 
 {#op||inf||{{none}}||{{n}}||
 Returns infinity. #}
@@ -343,8 +381,31 @@ Returns infinity. #}
 
 {#op||integer?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
+
+{#op||interpolate||{{s}} {{q}}||{{s}}||
+> Substitutes the placeholders included in {{s}} with the values in {{q}}.
+> > %note%
+> > Notes
+> > 
+> > * If {{q}} contains symbols or quotations, they are not interpreted. To do so, call `apply` before interpolating or use `apply-interpolate` instead.
+> > * You can use the `$#` placeholder to indicate the next placeholder that has not been already referenced in the string.
+> > * You can use named placeholders like `$pwd`, but in this case {{q}} must contain a quotation containing both the placeholder names (odd items) and the values (even items).
+> 
+> > %sidebar%
+> > Example
+> >  
+> > The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):
+> > 
+> > `"Directory '$1' includes $2 files." (. (. ls 'file? filter size)) apply interpolate`
+> > 
+> > produces:
+> > 
+> > `"Directory '/Users/h3rald/Development/min' includes 19 files."`#}
  
- {#op||lambda||{{q}} {{sl}}||{{none}}||
+{#op||join||{{q}} {{sl}}||{{s}}||
+Joins the elements of {{q}} using separator {{sl}}, producing {{s}}.#}
+
+{#op||lambda||{{q}} {{sl}}||{{none}}||
 > Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
 > 
 > Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
@@ -354,6 +415,8 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 {#op||lambda-bind||{{q}} {{sl}}||{{none}}||
 Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. #}
 
+{#op||length||{{sl}}||{{i}}||
+Returns the length of {{sl}}.#}
 
 {#op||line-info||{{none}}||{{d}}||
 Returns a dictionary {{d}} containing a **filename**, **line**, and **column** properties identifying the filename, line and column of the current symbol.#}
@@ -397,6 +460,16 @@ Loads the contents of symbol {{sl}} from the [.min\_symbols](class:file) file. #
 
 {#op||loglevel?||{{none}}||{{s}}||
 Returns the current log level (debug, info, notice, warn, error or fatal). #}
+
+{#op||lowercase||{{sl}}||{{s}}||
+Returns a copy of {{sl}} converted to lowercase.#}
+
+{#op||match?||{{s1}} {{s2}}||{{b}}||
+> Returns {{t}} if {{s2}} matches {{s1}}, {{f}} otherwise.
+> > %tip%
+> > Tip
+> > 
+> > {{s2}} is a {{pcre}}#}.
 
 {#op||med||{{q}}||{{n}}||
 Returns the median of the items of {{q}}. #}
@@ -463,11 +536,20 @@ Returns {{t}} if {{i}} is odd, {{f}} otherwise. #}
 {#op||opts||{{none}}||{{d}}||
 Returns a dictionary of all options passed to the current program, with their respective values.#}
 
+{#op||ord||{{s}}||{{i}}||
+Returns the ASCII code {{i}} corresponding to the single character {{s}}.#}
+
 {#op||parent-scope||{{d1}}||{{d2}}||
 Returns a dictionary {{d2}} holding a reference to the parent scope of {{d1}} or {{null}} if {{d1}} is global.#}
 
 {#op||parse||{{s}}||{{q}}||
 Parses {{s}} and returns a quoted program {{q}}. #}
+
+{#op||parse-url||{{s}}||{{url}}||
+Parses the url {{s}} into its components and stores them into {{url}}.#} 
+
+{#op||prefix||{{sl1}} {{sl2}}||{{s}}||
+Prepends {{sl2}} to {{sl1}}.#}
 
 {#op||prefix-dequote||{{q}}||{{any}}||
 > Dequotes {{q}} using prefix notation (essentially it reverses {{q}} and dequotes it).
@@ -552,6 +634,47 @@ Returns a list of all arguments and (non-parsed) options passed to the current p
 {#op||remove-symbol||{{sl}}||{{none}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
 
+{#op||repeat||{{sl}} {{i}}||{{s}}||
+Returns {{s}} containing {{sl}} repeated {{i}} times.#}
+
+{#op||replace||{{s1}} {{s2}} {{s3}}||{{s4}}||
+> Returns a copy of {{s1}} containing all occurrences of {{s2}} replaced by {{s3}}
+> > %tip%
+> > Tip
+> > 
+> > {{s2}} is a {{pcre}}.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following:
+> > 
+> > `"This is a stupid test. Is it really a stupid test?" " s[a-z]+" " simple" replace`
+> > 
+> > produces:
+> > 
+> > `"This is a simple test. Is it really a simple test?"`#}
+
+{#op||replace-apply||{{s1}} {{s2}} {{q}}||{{s3}}||
+> Returns a copy of {{s1}} containing all occurrences of {{s2}} replaced by applying {{q}} to each quotation corresponding to each match.
+> > %tip%
+> > Tip
+> > 
+> > {{s2}} is a {{pcre}}.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following:
+> > 
+> > `":1::2::3::4:" ":(\d):" (1 get :d "-$#-" (d) =%) replace-apply`
+> > 
+> > produces:
+> > 
+> > `"-1--2--3--4-"`
+> > 
+> > Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation: `("-1-" "1") ("-2-" "2") ("-3-" "3") ("-4-" "4")` #}
+
 {#op||require||{{sl}}||{{d}}||
 Parses and interprets (in a separated interpreter) the specified {{m}} module, and returns a module dictionary {{d}} containing all the symbols defined in {{sl}}. 
 
@@ -605,6 +728,45 @@ Returns {{t}} if the symbol {{sl}} is sealed, {{f}} otherwise.#}
 {#op||sealed-sigil?||{{sl}}||{{b}}||
 Returns {{t}} if the sigil {{sl}} is sealed, {{f}} otherwise.#}
 
+{#op||search||{{s1}} {{s2}}||{{q}}||
+> Returns a quotation containing the first occurrence of {{s2}} within {{s1}}. Note that:
+> 
+>   * The first element of {{q}} is the matching substring.
+>   * Other elements (if any) contain captured substrings.
+>   * If no matches are found, the quotation contains empty strings.
+> 
+> > %tip%
+> > Tip
+> > 
+> > {{s2}} is a {{pcre}}.
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following:
+> > 
+> > `"192.168.1.1, 127.0.0.1" "[0-9]+\.[0-9]+\.([0-9]+)\.([0-9]+)" search`
+> > 
+> > produces: `("192.168.1.1", "1", "1")`#}
+
+{#op||search-all||{{s1}} {{s2}}||{{q}}||
+Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of {{s2}} within {{s1}}. #}
+
+{#op||semver-inc-major||{{s1}}||{{s2}}||
+Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-minor||{{s1}}||{{s2}}||
+Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver-inc-patch||{{s1}}||{{s2}}||
+Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) {{s1}}. #}
+
+{#op||semver?||{{s}}||{{b}}||
+Checks whether {{s}} is a [SemVer](https://semver.org)-compliant version or not. #}
+
+{#op||split||{{sl1}} {{sl2}}||{{q}}||
+Splits {{sl1}} using separator {{sl2}} (a {{pcre}}) and returns the resulting strings within the quotation {{q}}. #}
+
 {#op||shl||{{i1}} {{i2}}||{{i3}}||
 Computes the *shift left* operation of {{i1}} and {{i2}}.#}
 
@@ -629,8 +791,18 @@ Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
 {#op||string?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
 
+
+{#op||strip||{{sl}}||{{s}}||
+Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#} 
+
+{#op||substr||{{s1}} {{i1}} {{i2}}||{{s2}}||
+Returns a substring {{s2}} obtained by retrieving {{i2}} characters starting from index {{i1}} within {{s1}}.#}
+
 {#op||succ||{{i1}}||{{i2}}||
 Returns the successor of {{i1}}.#}
+
+{#op||suffix||{{sl1}} {{sl2}}||{{s}}||
+Appends {{sl2}} to {{sl1}}.#}
 
 {#op||sum||{{q}}||{{i}}||
 Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
@@ -664,12 +836,29 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
+{#op||titleize||{{sl}}||{{s}}||
+Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
 
 {#op||tokenize||{{s}}||{{q}}||
 Parses the min program {{s}} and returns a quotation {{q}} containing dictionaries with a `type` symbol and a `value` symbol for each token.#}
 
+{#op||to-bin||{{i}}||{{s}}||
+Converts {{i}} to its binary representation. #}
+
+{#op||to-dec||{{i}}||{{s}}||
+Converts {{i}} to its decimal representation. #}
+
+{#op||to-hex||{{i}}||{{s}}||
+Converts {{i}} to its hexadecimal representation. #}
+
 {#op||to-json||{{any}}||{{s}}||
 Converts {{any}} into a JSON string.#}
+
+{#op||to-oct||{{i}}||{{s}}||
+Converts {{i}} to its octal representation. #}
+
+{#op||to-semver||{{d}}||{{s}}||
+Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) {{s}} on the stack.#}
 
 {#op||to-yaml||{{any}}||{{s}}||
 > Converts {{any}} into a YAML string.
@@ -716,6 +905,9 @@ Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
 
 {#op||unseal-sigil||{{sl}}||{{none}}||
 Unseals sigil {{sl}}, so that it can be re-defined (system sigils cannot be unsealed). #}
+
+{#op||uppercase||{{sl1}}||{{sl2}}||
+Returns a copy of {{sl}} converted to uppercase.#}
 
 {#op||version||{{none}}||{{s}}||
 Returns the current min version number. #}

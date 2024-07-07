@@ -1,5 +1,4 @@
 ; Imports
-'str       import
 'stack     import
 'seq       import
 'dict      import
