@@ -42,7 +42,6 @@ By default, when min is started it loads the following *prelude.min* program:
 'io        import
 'sys       import
 'stack     import
-'seq       import
 'dict      import
 'time      import
 'fs        import

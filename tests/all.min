@@ -15,7 +15,6 @@ sigils size :total-sigils
 'io      load
 'global    load
 'math    load
-'seq     load
 'stack   load
 'sys     load
 'time    load

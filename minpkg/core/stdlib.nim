@@ -13,7 +13,6 @@ import
 import
   ../lib/[min_global,
   min_stack,
-  min_seq,
   min_dict,
   min_time,
   min_sys,
@@ -39,7 +38,6 @@ proc stdLib*(i: In) =
     MINRC.writeFile("")
   i.global_module
   i.stack_module
-  i.seq_module
   i.dict_module
   i.time_module
   i.sys_module

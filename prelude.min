@@ -1,6 +1,5 @@
 ; Imports
 'stack     import
-'seq       import
 'dict      import
 'time      import
 'io        import
