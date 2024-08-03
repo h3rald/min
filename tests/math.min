@@ -32,4 +32,4 @@
   (-2.87 abs 2.87 ==) test.assert
 
   test.report
-  clear-stack
+  stack.clear

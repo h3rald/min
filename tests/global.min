@@ -19,7 +19,7 @@
     (
       :item
       "_$1" (item) => % :namesym
-      item (dup *) cons namesym define
+      item (stack.dup *) stack.cons namesym define
       namesym global publish
     ) :def
 
@@ -30,7 +30,7 @@
   ) test.assert
   
   (
-    (dup *) ^square
+    (stack.dup *) ^square
     3 square 9 ==
   ) test.assert
   
@@ -47,7 +47,7 @@
 
   (2 quote (2) ==) test.assert
 
-  ((2 3) dequote get-stack (2 3) ==) test.assert
+  ((2 3) dequote stack.get (2 3) ==) test.assert
 
   (3 (succ) 3 times 6 ==) test.assert
 
@@ -64,14 +64,14 @@
   ({} type "dict" ==) test.assert
   (global type "dict:module" ==) test.assert
 
-  (5 (dup 0 ==) (1 +) (dup 1 -) ( * ) linrec 120 ==) test.assert ;;factorial of 5
+  (5 (stack.dup 0 ==) (1 +) (stack.dup 1 -) ( * ) linrec 120 ==) test.assert ;;factorial of 5
 
   (
    (
-    (pop) 
+    (stack.pop) 
     ('error dget) 
     ("finally")
-    ) try get-stack ("MinEmptyStackError" "finally") ==) test.assert 
+    ) try stack.get ("MinEmptyStackError" "finally") ==) test.assert 
 
   ("aaaa" :cd cd "aaaa" ==) test.assert ;;It is possible to shadow sealed symbols in child scopes
 
@@ -91,7 +91,7 @@
     ) try "TestError" ==) test.assert
 
   (
-   (("test" °test :)) try get-stack ("test") ==) test.assert
+   (("test" °test :)) try stack.get ("test") ==) test.assert
 
   (
    (
@@ -170,8 +170,8 @@
 
   (
     {1 :a 2 :b 3 :c} (
-      (dup "a" dget  succ succ "a" dset)
-      (dup "b" dget  succ "b" dset)
+      (stack.dup "a" dget  succ succ "a" dset)
+      (stack.dup "b" dget  succ "b" dset)
     ) tap
     {3 :a 3 :b 3 :c} ==
   ) test.assert
@@ -188,9 +188,9 @@
   (
     "" :s1
     "test" (
-      (' "1" swap append "" join)
-      (' "2" swap append "" join)
-      (' "3" swap append "" join @s1 s1)
+      (' "1" stack.swap append "" join)
+      (' "2" stack.swap append "" join)
+      (' "3" stack.swap append "" join @s1 s1)
     ) tap!
     s1 "test123" ==
   ) test.assert
@@ -235,7 +235,7 @@
       ( 
         exp 1 - :n
         base exp * @mr
-        base  (dup) n times (*) n times @pr
+        base  (stack.dup) n times (*) n times @pr
       )
     ) operator 
     2 4 pow-mul - 8 == 
@@ -281,7 +281,7 @@
         (3 -3 natural-sum)
         (@err)
       ) try
-      pop ;;Remove 3 that was left on the stack.
+      stack.pop ;;Remove 3 that was left on the stack.
       (err format-error "expected: natural natural natural-sum" match?) test.assert
       (2 3 natural-sum 5 ==) test.assert
     )
@@ -370,7 +370,7 @@
 
   (
     {} :obj
-    (dup *) ^square
+    (stack.dup *) ^square
     3 obj.square 9 ==
   ) test.assert
 
@@ -714,10 +714,10 @@
   
   ("http://h3rald.com/a/b/c?test=1#123" parse-url {"123" :anchor "h3rald.com" :hostname "" :password "/a/b/c" :path "" :port "test=1" :query "http" :scheme "" :username} ==) test.assert
 
-  ("0b00101101" dup from-bin to-bin ==) test.assert
-  ("0x00FF0000" dup from-hex to-hex ==) test.assert
-  ("0o00007473" dup from-oct to-oct ==) test.assert
-  ("123" dup from-dec to-dec ==) test.assert
+  ("0b00101101" stack.dup from-bin to-bin ==) test.assert
+  ("0x00FF0000" stack.dup from-hex to-hex ==) test.assert
+  ("0o00007473" stack.dup from-oct to-oct ==) test.assert
+  ("123" stack.dup from-dec to-dec ==) test.assert
 
   ;; Sequence operations
 
@@ -773,9 +773,9 @@
 
   ((1 2 3 4 5) 1 (*) reduce 120 ==) test.assert
 
-  ((1 3 5) (dup *) (+) map-reduce 35 ==) test.assert
+  ((1 3 5) (stack.dup *) (+) map-reduce 35 ==) test.assert
 
-  ((1 2 3 4 5 6) (odd?) partition get-stack ((1 3 5) (2 4 6)) ==) test.assert
+  ((1 2 3 4 5 6) (odd?) partition stack.get ((1 3 5) (2 4 6)) ==) test.assert
 
   ((1 2 3 4 5 6) (odd?) reject (2 4 6) ==) test.assert
 
@@ -809,4 +809,4 @@
 
   test.report
   ;; Tidy up
-  clear-stack
+  stack.clear

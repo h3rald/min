@@ -4,7 +4,7 @@ title: "stack Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#op||clear-stack||{{any}}||{{none}}||
+{#op||clear||{{any}}||{{none}}||
 Empties the stack.#}
 
 {#op||cleave||{{a1}} ({{q}}{{0p}})||{{a0p}}||
@@ -25,9 +25,7 @@ Removes the first and second element from the stack, dequotes the first element,
 {#op||dup||{{a1}}||{{a1}} {{a1}}||
 Duplicates the first element on the stack.#}
 
-{#alias||getstack||get-stack#}
-
-{#op||get-stack||{{none}}||({{a0p}})||
+{#op||get||{{none}}||({{a0p}})||
 Puts a quotation containing the contents of the stack on the stack.#}
 
 {#op||id||{{none}}||{{none}}||
@@ -60,9 +58,7 @@ Moves the third element in first position, the second in third position and the 
 {#op||rollup||{{a1}} {{a2}} {{a3}}||{{a3}} {{a2}} {{a1}}||
 Moves the third and second element into second and third position and moves the first element into third position.#}
 
-{#alias||setstack||set-stack#}
-
-{#op||set-stack||{{q}}||{{a0p}}||
+{#op||set||{{q}}||{{a0p}}||
 Substitute the existing stack with the contents of {{q}}.#}
 
 {#op||sip||{{q1}} {{q2}}||{{a0p}} {{q1}}||

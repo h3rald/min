@@ -1,31 +1,28 @@
-import 
-  ../core/parser, 
-  ../core/value, 
-  ../core/interpreter, 
+import
+  ../core/parser,
+  ../core/value,
+  ../core/interpreter,
   ../core/utils
 
-proc stack_module*(i: In)=
+proc stack_module*(i: In) =
 
   let def = i.define()
 
-  def.symbol("clear-stack") do (i: In):
+  def.symbol("clear") do (i: In):
     while i.stack.len > 0:
       discard i.pop
 
-  def.symbol("get-stack") do (i: In):
+  def.symbol("get") do (i: In):
     i.push i.stack.newVal
 
-  def.symbol("set-stack") do (i: In):
+  def.symbol("set") do (i: In):
     let vals = i.expect("quot")
     let q = vals[0]
     i.stack = q.qVal
-  
-  def.symbol("id") do (i: In):
-    discard
-  
+
   def.symbol("pop") do (i: In):
     discard i.pop
-  
+
   def.symbol("dup") do (i: In):
     i.push i.peek
 
@@ -40,7 +37,7 @@ proc stack_module*(i: In)=
     let vals = i.expect("a", "a")
     let a = vals[0]
     i.push a
-  
+
   def.symbol("cleave") do (i: In):
     var q: MinValue
     i.reqQuotationOfQuotations q
@@ -49,7 +46,7 @@ proc stack_module*(i: In)=
       var s1 = s
       i.push v
       i.dequote(s1)
-  
+
   def.symbol("spread") do (i: In):
     var q: MinValue
     i.reqQuotationOfQuotations q
@@ -62,7 +59,7 @@ proc stack_module*(i: In)=
       i.push els[count]
       i.dequote(s1)
       count.dec
-  
+
   def.symbol("keep") do (i: In):
     let vals = i.expect("quot", "a")
     var q = vals[0]
@@ -70,7 +67,7 @@ proc stack_module*(i: In)=
     i.push v
     i.dequote(q)
     i.push v
-  
+
   def.symbol("swap") do (i: In):
     let vals = i.expect("a", "a")
     let a = vals[0]
@@ -123,7 +120,7 @@ proc stack_module*(i: In)=
   def.symbol("swons") do (i: In):
     i.pushSym "swap"
     i.pushSym "cons"
-  
+
   def.symbol("sip") do (i: In):
     let vals = i.expect("quot", "quot")
     var a = vals[0]
@@ -131,11 +128,5 @@ proc stack_module*(i: In)=
     i.push b
     i.dequote(a)
     i.push b
-
-  def.symbol("getstack") do (i: In):
-    i.pushSym("get-stack")
-
-  def.symbol("setstack") do (i: In):
-    i.pushSym("set-stack")
 
   def.finalize("stack")

@@ -5,4 +5,4 @@
 
  
   test.report
-  clear-stack
+  stack.clear

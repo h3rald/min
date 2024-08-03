@@ -36,7 +36,7 @@ nimble-cfg fread :nimble-data
   (
     "(version\\s+=\\s*)([^\\s]+)(\\s*)" :version-regexp
     nimble-data version-regexp 
-      (dup 1 get :start 3 get :end "$#\"$#\"$#" (start new-version end) =%) replace-apply @nimble-data
+      (stack.dup 1 get :start 3 get :end "$#\"$#\"$#" (start new-version end) =%) replace-apply @nimble-data
     nimble-data nimble-cfg fwrite
   )
 ) ::

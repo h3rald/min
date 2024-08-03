@@ -32,7 +32,7 @@
   (cli1 cli2 !=) test.assert
 
   test.report
-  clear-stack
+  stack.clear
   srv1 close
   srv2 close
   cli1 close

@@ -12,7 +12,7 @@
       1 "test1" dset
       2 "test2" dset
     dspost dswrite
-    "tests" (pop true) dsquery size 1 ==
+    "tests" (stack.pop true) dsquery size 1 ==
   ) test.assert
   
   (
@@ -34,4 +34,4 @@
   "dstore.json" rm
 
   test.report
-  clear-stack
+  stack.clear

@@ -18,4 +18,4 @@
   (1464951736 timeinfo 'timezone dget integer?) test.assert
 
   test.report
-  clear-stack
+  stack.clear

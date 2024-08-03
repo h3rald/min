@@ -11,4 +11,4 @@
 
   "test.txt" rm
   test.report
-  clear-stack
+  stack.clear

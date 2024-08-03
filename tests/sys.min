@@ -66,5 +66,5 @@
   ([ls] "ls" run "output" dget ==) test.assert
 
   test.report
-  clear-stack
+  stack.clear
   "systest" rmdir

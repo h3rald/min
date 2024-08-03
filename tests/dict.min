@@ -51,4 +51,4 @@
   ) test.assert
 
   test.report
-  clear-stack
+  stack.clear

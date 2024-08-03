@@ -22,4 +22,4 @@
   ("test" "test" aes "test" aes strip "test" ==) test.assert
   
   test.report
-  clear-stack
+  stack.clear

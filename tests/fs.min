@@ -40,5 +40,5 @@
   ("c:/windows" windows-path "c:\\windows" ==)  test.assert
   
   test.report
-  clear-stack
+  stack.clear
   "test.txt" rm
