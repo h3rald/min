@@ -2509,7 +2509,4 @@ proc global_module*(i: In) =
   def.symbol("><") do (i: In):
     i.pushSym("infix-dequote")
 
-  def.symbol("lambdabind") do (i: In):
-    i.pushSym("lambda-bind")
-
   def.finalize("global")

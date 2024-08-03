@@ -47,7 +47,7 @@
     "!=": {
       "description": "Returns true if a1 is not equal to a2, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "!=",
       "signature": "a1 a2 ==> bool"
     },
@@ -60,19 +60,19 @@
     "%": {
       "description": "See interpolate",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "%"
     },
     "&&": {
       "description": "See expect-all",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "&&"
     },
     "&vert;&vert;": {
       "description": "See expect-any",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "&vert;&vert;"
     },
     "'": {
@@ -84,14 +84,14 @@
     "*": {
       "description": "Multiplies num1 by num2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "*",
       "signature": "num1 num2 ==> num3"
     },
     "+": {
       "description": "Sums num1 and num2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "+",
       "signature": "num1 num2 ==> num3"
     },
@@ -104,14 +104,14 @@
     "-inf": {
       "description": "Returns negative infinity.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "-inf",
       "signature": " ==> num"
     },
     "/": {
       "description": "Divides num1 by num2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "/",
       "signature": "num1 num2 ==> num3"
     },
@@ -130,21 +130,21 @@
     "<": {
       "description": "Returns true if a1 is smaller than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "<",
       "signature": "a1 a2 ==> bool"
     },
     "<=": {
       "description": "Returns true if a1 is smaller than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "<=",
       "signature": "a1 a2 ==> bool"
     },
     "=%": {
       "description": "See apply-interpolate",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "=%"
     },
     "=-=": {
@@ -156,7 +156,7 @@
     "==": {
       "description": "Returns true if a1 is equal to a2, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "==",
       "signature": "a1 a2 ==> bool"
     },
@@ -176,7 +176,7 @@
     ">": {
       "description": "Returns true if a1 is greater than a2, false  otherwise. \n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": ">",
       "signature": "a1 a2 ==> bool"
     },
@@ -189,7 +189,7 @@
     ">=": {
       "description": "Returns true if a1 is greater than or equal to a2, false  otherwise.\n \n Note\n \n Only comparisons among two numbers or two strings are supported.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": ">=",
       "signature": "a1 a2 ==> bool"
     },
@@ -276,7 +276,7 @@
     "and": {
       "description": "Returns true if bool1 is equal to bool2, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "and",
       "signature": "bool1 bool2 ==> bool3"
     },
@@ -304,7 +304,7 @@
     "apply-interpolate": {
       "description": "The same as pushing apply and then interpolate on the stack.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "apply-interpolate",
       "signature": "str quot ==> str"
     },
@@ -346,21 +346,21 @@
     "avg": {
       "description": "Returns the average of the items of quot.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "avg",
       "signature": "quot ==> num"
     },
     "base": {
       "description": "Sets the numeric base used to represent integers.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "base",
       "signature": "\"dec\"|\"hex\"|\"oct\"|\"bin\" ==> "
     },
     "base?": {
       "description": "Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)).",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "base?",
       "signature": " ==> \"dec\"|\"hex\"|\"oct\"|\"bin\""
     },
@@ -374,56 +374,56 @@
     "bitand": {
       "description": "Computes the bitwise *and* of integer int1 and int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitand",
       "signature": "int1 int2 ==> int3"
     },
     "bitclear": {
       "description": "Sets the bytes specified via their position in int1 through quot to 0.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitclear",
       "signature": "int1 quot ==> int2"
     },
     "bitflip": {
       "description": "Flips the bytes specified via their position in int1 through quot.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitflip",
       "signature": "int1 quot ==> int2"
     },
     "bitnot": {
       "description": "Computes the bitwise *complement* of int1.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitnot",
       "signature": "int1 ==> int2"
     },
     "bitor": {
       "description": "Computes the bitwise *or* of integers int1 and int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitor",
       "signature": "int1 int2 ==> int3"
     },
     "bitparity": {
       "description": "Calculate the bit parity in int1. If the number of 1-bits is odd, the parity is 1, otherwise 0.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitparity",
       "signature": "int1 ==> int2"
     },
     "bitset": {
       "description": "Sets the bytes specified via their position in int1 through quot to 0.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitset",
       "signature": "int1 quot ==> int2"
     },
     "bitxor": {
       "description": "Computes the bitwise *xor* of integers int1 and int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "bitxor",
       "signature": "int1 int2 ==> int3"
     },
@@ -437,14 +437,14 @@
     "boolean?": {
       "description": "Returns true if a is a boolean, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "boolean?",
       "signature": "a ==> bool"
     },
     "capitalize": {
       "description": "Returns a copy of 'sym with the first character capitalized.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "capitalize",
       "signature": "'sym ==> str"
     },
@@ -470,7 +470,7 @@
       "signature": "num ==> int"
     },
     "chmod": {
-      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n /tmp/test.txt 755 chmod",
+      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n \"/tmp/test.txt 755 chmod\"",
       "kind": "symbol",
       "module": "sys",
       "name": "chmod",
@@ -486,7 +486,7 @@
     "chr": {
       "description": "Returns the single character str obtained by interpreting int as an ASCII code.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "chr",
       "signature": "int ==> str"
     },
@@ -679,6 +679,13 @@
       "name": "delete-sigil",
       "signature": "'sym ==> "
     },
+    "delete-symbol": {
+      "description": "Deletes the specified symbol 'sym.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "delete-symbol",
+      "signature": "'sym ==> "
+    },
     "dequote": {
       "description": "Pushes the contents of quotation quot on the stack.\n\n Each element is pushed on the stack one by one. If any error occurs, quot is restored on the stack.",
       "kind": "symbol",
@@ -724,7 +731,7 @@
     "dictionary?": {
       "description": "Returns true if a is a dictionary, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "dictionary?",
       "signature": "a ==> bool"
     },
@@ -759,7 +766,7 @@
     "div": {
       "description": "Divides int1 by int2 (integer division).",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "div",
       "signature": "int1 int2 ==> int3"
     },
@@ -848,7 +855,7 @@
       "signature": "dict:datastore 'sym dict ==> dict:datastore"
     },
     "dsquery": {
-      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" (/author \"h3rald\" ==) dsquery",
+      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" ('author dget \"h3rald\" ==) dsquery",
       "kind": "symbol",
       "module": "dstore",
       "name": "dsquery",
@@ -920,7 +927,7 @@
     "escape": {
       "description": "Returns a copy of 'sym with quotes and backslashes escaped with a backslash.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "escape",
       "signature": "'sym ==> str"
     },
@@ -934,7 +941,7 @@
     "even?": {
       "description": "Returns true if int is even, false  otherwise.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "even?",
       "signature": "int ==> bool"
     },
@@ -976,14 +983,14 @@
     "expect-all": {
       "description": "Assuming that quot is a quotation of quotations each evaluating to a boolean value, it pushes true on the stack if they all evaluate to true, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "expect-all",
       "signature": "quot ==> bool"
     },
     "expect-any": {
       "description": "Assuming that quot is a quotation of quotations each evaluating to a boolean value, it pushes true on the stack if any evaluates to true, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "expect-any",
       "signature": "quot ==> bool"
     },
@@ -1060,7 +1067,7 @@
     "float?": {
       "description": "Returns true if a is a float, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "float?",
       "signature": "a ==> bool"
     },
@@ -1102,21 +1109,21 @@
     "from-bin": {
       "description": "Parses 'sym as a binary number.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "from-bin",
       "signature": "'sym ==> int"
     },
     "from-dec": {
       "description": "Parses 'sym as a decimal number.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "from-dec",
       "signature": "'sym ==> int"
     },
     "from-hex": {
       "description": "Parses 'sym as a hexadecimal number.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "from-hex",
       "signature": "'sym ==> int"
     },
@@ -1137,14 +1144,14 @@
     "from-oct": {
       "description": "Parses 'sym as a octal number.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "from-oct",
       "signature": "'sym ==> int"
     },
     "from-semver": {
       "description": "Given a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str, \nit pushes a dictionary dict on the stack containing a **major**, **minor**, and **patch** key/value pairs.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "from-semver",
       "signature": "str ==> dict"
     },
@@ -1297,21 +1304,21 @@
     "indent": {
       "description": "Returns str containing 'sym indented with int spaces.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "indent",
       "signature": "'sym int ==> str"
     },
     "indexof": {
       "description": "If str2 is contained in str1, returns the index of the first match or -1 if no match is found.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "indexof",
       "signature": "str1 str2 ==> int"
     },
     "inf": {
       "description": "Returns infinity.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "inf",
       "signature": " ==> num"
     },
@@ -1346,14 +1353,14 @@
     "integer?": {
       "description": "Returns true if a is an integer, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "integer?",
       "signature": "a ==> bool"
     },
     "interpolate": {
       "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (. (. ls 'file? filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "interpolate",
       "signature": "str quot ==> str"
     },
@@ -1367,7 +1374,7 @@
     "join": {
       "description": "Joins the elements of quot using separator 'sym, producing str.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "join",
       "signature": "quot 'sym ==> str"
     },
@@ -1399,12 +1406,6 @@
       "name": "lambda-bind",
       "signature": "quot 'sym ==> "
     },
-    "lambdabind": {
-      "description": "See lambda-bind",
-      "kind": "symbol",
-      "module": "global",
-      "name": "lambdabind"
-    },
     "last": {
       "description": "Returns the last element of quot.",
       "kind": "symbol",
@@ -1415,7 +1416,7 @@
     "length": {
       "description": "Returns the length of 'sym.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "length",
       "signature": "'sym ==> int"
     },
@@ -1492,7 +1493,7 @@
     "lowercase": {
       "description": "Returns a copy of 'sym converted to lowercase.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "lowercase",
       "signature": "'sym ==> str"
     },
@@ -1534,7 +1535,7 @@
     "match?": {
       "description": "Returns true if str2 matches str1, false  otherwise.\n \n Tip\n \n str2 is a Perl-compatible regular expression",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "match?",
       "signature": "str1 str2 ==> bool"
     },
@@ -1555,7 +1556,7 @@
     "med": {
       "description": "Returns the median of the items of quot.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "med",
       "signature": "quot ==> num"
     },
@@ -1569,7 +1570,7 @@
     "mod": {
       "description": "Returns the integer module of int1 divided by int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "mod",
       "signature": "int1 int2 ==> int3"
     },
@@ -1590,7 +1591,7 @@
     "nan": {
       "description": "Returns **NaN** (not a number).",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "nan",
       "signature": " ==> nan"
     },
@@ -1618,7 +1619,7 @@
     "not": {
       "description": "Negates bool1.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "not",
       "signature": "bool1 ==> bool2"
     },
@@ -1639,21 +1640,21 @@
     "null?": {
       "description": "Returns true if a is null, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "null?",
       "signature": "a ==> bool"
     },
     "number?": {
       "description": "Returns true if a is a number, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "number?",
       "signature": "a ==> bool"
     },
     "odd?": {
       "description": "Returns true if int is odd, false  otherwise.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "odd?",
       "signature": "int ==> bool"
     },
@@ -1681,14 +1682,14 @@
     "or": {
       "description": "Returns true if bool1 or bool2 is true, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "or",
       "signature": "bool1 bool2 ==> bool3"
     },
     "ord": {
       "description": "Returns the ASCII code int corresponding to the single character str.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "ord",
       "signature": "str ==> int"
     },
@@ -1730,7 +1731,7 @@
     "parse-url": {
       "description": "Parses the url str into its components and stores them into dict:url.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "parse-url",
       "signature": "str ==> dict:url"
     },
@@ -1779,14 +1780,14 @@
     "pred": {
       "description": "Returns the predecessor of int1.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "pred",
       "signature": "int1 ==> int2"
     },
     "prefix": {
       "description": "Prepends 'sym2 to 'sym1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "prefix",
       "signature": "'sym1 'sym2 ==> str"
     },
@@ -1814,7 +1815,7 @@
     "product": {
       "description": "Returns the product of all items of quot. quot is a quotation of integers.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "product",
       "signature": "quot ==> int"
     },
@@ -1870,7 +1871,7 @@
     "quotation?": {
       "description": "Returns true if a is a quotation, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "quotation?",
       "signature": "a ==> bool"
     },
@@ -1898,7 +1899,7 @@
     "quoted-symbol?": {
       "description": "Returns true if a is a quoted symbol, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "quoted-symbol?",
       "signature": "a ==> bool"
     },
@@ -1926,21 +1927,21 @@
     "random": {
       "description": "Returns a random number int2 between 0 and int1-1. \n \n \n Note\n \n You must call randomize to initialize the random number generator, otherwise the same sequence of numbers will be returned.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "random",
       "signature": "int1 ==> int2"
     },
     "randomize": {
       "description": "Initializes the random number generator using a seed based on the current timestamp.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "randomize",
       "signature": " ==> {{null}"
     },
     "range": {
       "description": "Takes a quotation quot1 of two or three integers in the form of *start*, *end* and an optional *step* (1 if not specified) and generates the sequence and returns the resulting quotation of integers quot2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "range",
       "signature": "quot2 ==> quot2"
     },
@@ -2016,26 +2017,26 @@
     "repeat": {
       "description": "Returns str containing 'sym repeated int times.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "repeat",
       "signature": "'sym int ==> str"
     },
     "replace": {
       "description": "Returns a copy of str1 containing all occurrences of str2 replaced by str3\n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"This is a stupid test. Is it really a stupid test?\" \" s[a-z]+\" \" simple\" replace\n \n produces:\n \n \"This is a simple test. Is it really a simple test?\"",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "replace",
       "signature": "str1 str2 str3 ==> str4"
     },
     "replace-apply": {
       "description": "Returns a copy of str1 containing all occurrences of str2 replaced by applying quot to each quotation corresponding to each match.\n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \":1::2::3::4:\" \":(\\d):\" (1 get :d \"-$#-\" (d) =%) replace-apply\n \n produces:\n \n \"-1--2--3--4-\"\n \n Note that for each match the following quotations (each containing the full match and the captured matches) are produced as input for the replace quotation: (\"-1-\" \"1\") (\"-2-\" \"2\") (\"-3-\" \"3\") (\"-4-\" \"4\")",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "replace-apply",
       "signature": "str1 str2 quot ==> str3"
     },
     "request": {
-      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\n\n \n Example\n \n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" url\n     request",
+      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\n\n \n Example\n \n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" 'method dget\n       \"http://httpbin.org/ip\" 'url dset\n     request",
       "kind": "symbol",
       "module": "http",
       "name": "request",
@@ -2177,42 +2178,42 @@
     "search": {
       "description": "Returns a quotation containing the first occurrence of str2 within str1. Note that:\n \n   * The first element of quot is the matching substring.\n   * Other elements (if any) contain captured substrings.\n   * If no matches are found, the quotation contains empty strings.\n \n \n Tip\n \n str2 is a Perl-compatible regular expression.\n \n \n Example\n \n The following:\n \n \"192.168.1.1, 127.0.0.1\" \"[0-9]+\\.[0-9]+\\.([0-9]+)\\.([0-9]+)\" search\n \n produces: (\"192.168.1.1\", \"1\", \"1\")",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "search",
       "signature": "str1 str2 ==> quot"
     },
     "search-all": {
       "description": "Returns a quotation of quotations (like the one returned by the search operator) containing all occurrences of str2 within str1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "search-all",
       "signature": "str1 str2 ==> quot"
     },
     "semver-inc-major": {
       "description": "Increments the major digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "semver-inc-major",
       "signature": "str1 ==> str2"
     },
     "semver-inc-minor": {
       "description": "Increments the minor digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "semver-inc-minor",
       "signature": "str1 ==> str2"
     },
     "semver-inc-patch": {
       "description": "Increments the patch digit of the [SemVer](https://semver.org)-compliant string (with no additional labels) str1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "semver-inc-patch",
       "signature": "str1 ==> str2"
     },
     "semver?": {
       "description": "Checks whether str is a [SemVer](https://semver.org)-compliant version or not.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "semver?",
       "signature": "str ==> bool"
     },
@@ -2288,7 +2289,7 @@
     "shl": {
       "description": "Computes the *shift left* operation of int1 and int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "shl",
       "signature": "int1 int2 ==> int3"
     },
@@ -2302,7 +2303,7 @@
     "shr": {
       "description": "Computes the *shift right* operation of int1 and int2.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "shr",
       "signature": "int1 int2 ==> int3"
     },
@@ -2379,7 +2380,7 @@
     "split": {
       "description": "Splits 'sym1 using separator 'sym2 (a Perl-compatible regular expression) and returns the resulting strings within the quotation quot.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "split",
       "signature": "'sym1 'sym2 ==> quot"
     },
@@ -2398,7 +2399,7 @@
       "signature": "num1 ==> num2"
     },
     "start-server": {
-      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body handler\n     5555 %port\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
+      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body 'body dset\n       dup puts!\n     )\n     ; The request handler is ready, give it the name handler\n     :handler\n     \n     ; Create the parameter dictionary for the server\n     {}\n     handler 'handler dset\n     5555 'port dset\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
       "kind": "symbol",
       "module": "http",
       "name": "start-server",
@@ -2421,49 +2422,49 @@
     "string?": {
       "description": "Returns true if a is a string, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "string?",
       "signature": "a ==> bool"
     },
     "stringlike?": {
       "description": "Returns true if a is a string or a quoted symbol, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "stringlike?",
       "signature": "a ==> bool"
     },
     "strip": {
       "description": "Returns str, which is set to 'sym with leading and trailing spaces removed.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "strip",
       "signature": "'sym ==> str"
     },
     "substr": {
       "description": "Returns a substring str2 obtained by retrieving int2 characters starting from index int1 within str1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "substr",
       "signature": "str1 int1 int2 ==> str2"
     },
     "succ": {
       "description": "Returns the successor of int1.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "succ",
       "signature": "int1 ==> int2"
     },
     "suffix": {
       "description": "Appends 'sym2 to 'sym1.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "suffix",
       "signature": "'sym1 'sym2 ==> str"
     },
     "sum": {
       "description": "Returns the sum of all items of quot. quot is a quotation of integers.",
       "kind": "symbol",
-      "module": "num",
+      "module": "global",
       "name": "sum",
       "signature": "quot ==> int"
     },
@@ -2538,7 +2539,7 @@
       "signature": "num1 ==> num2"
     },
     "tap": {
-      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (dup /a  succ succ b)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
+      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (dup 'a dget succ succ 'a dset)\n       (dup 'b dget succ 'b dset)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
       "kind": "symbol",
       "module": "global",
       "name": "tap",
@@ -2582,28 +2583,28 @@
     "titleize": {
       "description": "Returns a copy of 'sym in which the first character of each word is capitalized.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "titleize",
       "signature": "'sym ==> str"
     },
     "to-bin": {
       "description": "Converts int to its binary representation.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "to-bin",
       "signature": "int ==> str"
     },
     "to-dec": {
       "description": "Converts int to its decimal representation.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "to-dec",
       "signature": "int ==> str"
     },
     "to-hex": {
       "description": "Converts int to its hexadecimal representation.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "to-hex",
       "signature": "int ==> str"
     },
@@ -2617,14 +2618,14 @@
     "to-oct": {
       "description": "Converts int to its octal representation.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "to-oct",
       "signature": "int ==> str"
     },
     "to-semver": {
       "description": "Given a a dictionary dict containing a **major**, **minor**, and **patch** key/value pairs , it pushes a basic [SemVer](https://semver.org)-compliant string (with no additional labels) str on the stack.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "to-semver",
       "signature": "dict ==> str"
     },
@@ -2680,7 +2681,7 @@
     "type?": {
       "description": "Returns true if the data type of a satisfies the specified type expression 'sym, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "type?",
       "signature": "a 'sym ==> bool"
     },
@@ -2743,7 +2744,7 @@
     "uppercase": {
       "description": "Returns a copy of 'sym converted to uppercase.",
       "kind": "symbol",
-      "module": "str",
+      "module": "global",
       "name": "uppercase",
       "signature": "'sym1 ==> 'sym2"
     },
@@ -2847,7 +2848,7 @@
     "xor": {
       "description": "Returns true if bool1 and bool2 are different, false  otherwise.",
       "kind": "symbol",
-      "module": "logic",
+      "module": "global",
       "name": "xor",
       "signature": "bool1 bool2 ==> bool3"
     },

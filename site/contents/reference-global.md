@@ -410,8 +410,6 @@ Joins the elements of {{q}} using separator {{sl}}, producing {{s}}.#}
 > 
 > Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
 
-{#alias||lambdabind||lambda-bind#}
-
 {#op||lambda-bind||{{q}} {{sl}}||{{none}}||
 Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. #}
 
