@@ -12,7 +12,6 @@ sigils size :total-sigils
 'dict    load
 'dstore  load
 'fs      load
-'io      load
 'global    load
 'math    load
 'stack   load

@@ -38,7 +38,13 @@
   ("./test" absolute-path? not) test.assert
 
   ("c:/windows" windows-path "c:\\windows" ==)  test.assert
-  
+
+  ("TEST" "test.txt" fwrite
+  "test.txt" fread "TEST" ==) test.assert
+
+  (" - TEST" "test.txt" fappend
+  "test.txt" fread "TEST - TEST" ==) test.assert
+
   test.report
   stack.clear
   "test.txt" rm

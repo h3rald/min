@@ -70,9 +70,6 @@ Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class
 > > 
 > > causes the `CTRL+L` key to clear the screen. #}
 
-{#op||newline||{{none}}||{{none}}||
-Prints a new line to STDOUT.#}
-
 {#op||notice||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDOUT, if logging level is set to [notice](class:kwd) (default) or lower.#}
 

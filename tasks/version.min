@@ -52,7 +52,7 @@ nimble-cfg fread :nimble-data
     false :valid-semver
     (valid-semver not)
     (
-      "New version" ask @new-version
+      "New version" io.ask @new-version
       new-version semver? @valid-semver
     ) while
     new-version update-yaml-config

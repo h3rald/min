@@ -159,4 +159,32 @@ proc fs_module*(i: In) =
     let vals = i.expect("'sym")
     i.push vals[0].getString.isAbsolute.newVal
 
+  def.symbol("fread") do (i: In):
+    let vals = i.expect("str")
+    let file = vals[0].strVal
+    var contents = ""
+    if MINCOMPILED:
+      var compiledFile = strutils.replace(strutils.replace(file, "\\", "/"),
+          "./", "")
+      if COMPILEDASSETS.hasKey(compiledFile):
+        contents = COMPILEDASSETS[compiledFile]
+    if contents == "":
+      contents = file.readFile
+    i.push newVal(contents)
+
+  def.symbol("fwrite") do (i: In):
+    let vals = i.expect("str", "str")
+    let a = vals[0]
+    let b = vals[1]
+    a.strVal.writeFile(b.strVal)
+
+  def.symbol("fappend") do (i: In):
+    let vals = i.expect("str", "str")
+    let a = vals[0]
+    let b = vals[1]
+    var f: File
+    discard f.open(a.strVal, fmAppend)
+    f.write(b.strVal)
+    f.close()
+
   def.finalize("fs")
