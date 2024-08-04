@@ -39,10 +39,10 @@
 
   ("3 4 +" eval 7 ==) test.assert
 
-  ("2 2 +" "tests/testload.min" fwrite 'testload load 4 ==) test.assert
+  ("2 2 +" "tests/testload.min" fs.write 'testload load 4 ==) test.assert
   "tests/testload.min" rm
 
-  ("2 :two 3 :three" "tests/testrequire.min" fwrite 'testrequire require :tm tm.two tm.three + 5 ==) test.assert
+  ("2 :two 3 :three" "tests/testrequire.min" fs.write 'testrequire require :tm tm.two tm.three + 5 ==) test.assert
   "tests/testrequire.min" rm
 
   (2 quote (2) ==) test.assert

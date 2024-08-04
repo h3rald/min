@@ -4,9 +4,9 @@
 "min.nimble" :nimble-cfg
 "site/settings.json" :json-site-cfg
 
-yaml-cfg fread from-yaml :config
+yaml-cfg fs.read from-yaml :config
 config "version" dget :old-version
-nimble-cfg fread :nimble-data
+nimble-cfg fs.read :nimble-data
 
 
 (
@@ -14,7 +14,7 @@ nimble-cfg fread :nimble-data
   ('sym :new-version ==>)
   (
     config new-version "version" dset @config
-    config to-yaml yaml-cfg fwrite
+    config to-yaml yaml-cfg fs.write
   )  
 ) ::
 ;; Sets the version in the min.yml file to new-version.
@@ -23,9 +23,9 @@ nimble-cfg fread :nimble-data
   symbol update-site-config
   ('sym :new-version ==>)
   (
-    json-site-cfg fread from-json :site-config
+    json-site-cfg fs.read from-json :site-config
     site-config new-version "version" dset @site-config
-    site-config to-json json-site-cfg fwrite
+    site-config to-json json-site-cfg fs.write
   )
 ) ::
 ;; Updates the version of the web site to new-version.
@@ -37,7 +37,7 @@ nimble-cfg fread :nimble-data
     "(version\\s+=\\s*)([^\\s]+)(\\s*)" :version-regexp
     nimble-data version-regexp 
       (stack.dup 1 get :start 3 get :end "$#\"$#\"$#" (start new-version end) =%) replace-apply @nimble-data
-    nimble-data nimble-cfg fwrite
+    nimble-data nimble-cfg fs.write
   )
 ) ::
 ;; Updates the version in the nimble file to new-version.

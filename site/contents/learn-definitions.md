@@ -9,8 +9,8 @@ Being a concatenative language, min does not really need named parameters or var
 
      dup dup 
      "\.zip$" match?
-     swap fsize 1000000 > and 
-     swap mtime now 3600 - >
+     swap fs.size 1000000 > and 
+     swap fs.mtime now 3600 - >
 
 This program takes a single string corresponding to a file path and returns true if it's a .zip file bigger than 1MB that was modified in the last hour. Sure, it is remarkable that no variables are needed for such a program, but it is not very readable: because no variables are used, it is often necessary to make copies of elements and push them to the end of the stack -- that's what the {#link-operator||stack||dup#} and {#link-operator||stack||swap#} are used for.
 
@@ -20,8 +20,8 @@ Consider the following program:
 
      :filepath
      filepath "\.zip$" match?
-     filepath fsize 1000000 >
-     filepath mtime now 3600 - >
+     filepath fs.size 1000000 >
+     filepath fs.mtime now 3600 - >
      and and
 
 In this case, the `filepath` symbol is defined and then used on the following three lines, each of which defines a condition to be evaluated. The last line contains just two {#link-operator||global||and#} symbols necessary to compare the three conditions.

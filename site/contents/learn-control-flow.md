@@ -72,12 +72,12 @@ For example, consider the following program:
      . ls 
      (
        (
-         (fsize) 
+         (fs.size) 
          (pop 0)
        ) try
      ) map 
      1 (+) reduce
 
-This program calculates the size in bytes of all files included in the current directory. Because the {#link-operator||fs||fsize#} symbol throws an error if the argument provided is not a file (for example, if it is a directory), the `try` symbol is used to remove the error from the stack and push `0` on the stack instead.
+This program calculates the size in bytes of all files included in the current directory. Because the {#link-operator||fs||size#} symbol throws an error if the argument provided is not a file (for example, if it is a directory), the `try` symbol is used to remove the error from the stack and push `0` on the stack instead.
 
 {#link-learn||shell||Shell#}

@@ -3,27 +3,27 @@
 
 "sys" test.describe
 
-  ("dir1" mkdir "dir1" dir?) test.assert
+  ("dir1" mkdir "dir1" fs.dir?) test.assert
 
-  ("dir1" "dir2" mv "dir2" dir?) test.assert
+  ("dir1" "dir2" mv "dir2" fs.dir?) test.assert
 
-  ("dir1" dir? false ==) test.assert
+  ("dir1" fs.dir? false ==) test.assert
 
-  ("dir2" "dir1" cp "dir1" dir?) test.assert
+  ("dir2" "dir1" cp "dir1" fs.dir?) test.assert
 
-  ("..." "dir1/test.txt" fwrite "dir1/test.txt" file?) test.assert
+  ("..." "dir1/test.txt" fs.write "dir1/test.txt" fs.file?) test.assert
 
-  ("dir1/test.txt" "dir2" mv "dir2/test.txt" file?)  test.assert
+  ("dir1/test.txt" "dir2" mv "dir2/test.txt" fs.file?)  test.assert
 
-  ("dir1/test.txt" file? false ==) test.assert
+  ("dir1/test.txt" fs.file? false ==) test.assert
 
-  ("dir2/test.txt" "dir1" cp "dir1/test.txt" file?)  test.assert
+  ("dir2/test.txt" "dir1" cp "dir1/test.txt" fs.file?)  test.assert
 
-  ('dir1 ls 'filename map ("test.txt") ==) test.assert
+  ('dir1 ls 'fs.filename map ("test.txt") ==) test.assert
 
-  ('dir2 ls 'dirname map ("dir2") ==) test.assert
+  ('dir2 ls 'fs.dirname map ("dir2") ==) test.assert
 
-  ('dir1 rmdir 'dir2 rmdir 'dir1 dir? 'dir2 dir? or false ==) test.assert  
+  ('dir1 rmdir 'dir2 rmdir 'dir1 fs.dir? 'dir2 fs.dir? or false ==) test.assert  
 
   ("systest" mkdir pwd ls (pwd "systest") => "/" join in?) test.assert
 
@@ -42,19 +42,19 @@
 
   (cpu length 0 >) test.assert
 
-  ("TEST" "test.txt" fwrite "test.txt" file?) test.assert
+  ("TEST" "test.txt" fs.write "test.txt" fs.file?) test.assert
 
-  ("test.txt" "test2.txt" cp "test2.txt" file?) test.assert
+  ("test.txt" "test2.txt" cp "test2.txt" fs.file?) test.assert
 
-  ("test.txt" "test1.txt" mv "test1.txt" file?) test.assert
+  ("test.txt" "test1.txt" mv "test1.txt" fs.file?) test.assert
 
   ("test2.txt" rm "test1.txt" rm pwd ls (pwd "test1.txt") => "/" join in? :t1 pwd ls "test2" in? t1 and false ==) test.assert
 
   ("systest" cd 
-   "TEST" "test.txt" fwrite
-   "TEST1" "test1.txt" fwrite
-   "TEST2" "test2.txt" fwrite
-   "TEST3" "test3.txt" fwrite
+   "TEST" "test.txt" fs.write
+   "TEST1" "test1.txt" fs.write
+   "TEST2" "test2.txt" fs.write
+   "TEST3" "test3.txt" fs.write
    pwd ls "test.zip" zip pwd ls (pwd "test.zip") => "/" join in?) test.assert
 
    ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) test.assert

@@ -19,6 +19,12 @@
 - **io** module: renamed **fappend** to **fs.append**
 - **io** module: moved **print** to the **global** module.
 - **io** module: removed **newline** (use `"" puts!` instead).
+- The **fs** module is no longer imported.
+- **fs** module: renamed **fperms** to **fs.permissions**
+- **fs** module: renamed **fsize** to **fs.size**
+- **fs** module: renamed **fstats** to **fs.stats**
+- **fs** module: renamed **ftype** to **fs.type**
+
 
 
 ### New Features

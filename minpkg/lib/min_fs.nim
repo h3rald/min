@@ -36,12 +36,12 @@ proc fs_module*(i: In) =
     let s = vals[0]
     i.push s.getString.isHidden.newVal
 
-  def.symbol("fsize") do (i: In):
+  def.symbol("size") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.getFileSize.newVal
 
-  def.symbol("fstats") do (i: In):
+  def.symbol("stats") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     let fi = s.getString.getFileInfo
@@ -58,12 +58,12 @@ proc fs_module*(i: In) =
     i.dset(info, "mtime", fi.lastWriteTime.toUnix.newVal)
     i.push info
 
-  def.symbol("ftype") do (i: In):
+  def.symbol("type") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.getFileInfo.kind.filetype.newVal
 
-  def.symbol("fperms") do (i: In):
+  def.symbol("permissions") do (i: In):
     let vals = i.expect("'sym")
     let s = vals[0]
     i.push s.getString.getFilePermissions.unixPermissions.newVal
@@ -159,7 +159,7 @@ proc fs_module*(i: In) =
     let vals = i.expect("'sym")
     i.push vals[0].getString.isAbsolute.newVal
 
-  def.symbol("fread") do (i: In):
+  def.symbol("read") do (i: In):
     let vals = i.expect("str")
     let file = vals[0].strVal
     var contents = ""
@@ -172,13 +172,13 @@ proc fs_module*(i: In) =
       contents = file.readFile
     i.push newVal(contents)
 
-  def.symbol("fwrite") do (i: In):
+  def.symbol("write") do (i: In):
     let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]
     a.strVal.writeFile(b.strVal)
 
-  def.symbol("fappend") do (i: In):
+  def.symbol("append") do (i: In):
     let vals = i.expect("str", "str")
     let a = vals[0]
     let b = vals[1]

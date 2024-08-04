@@ -1,7 +1,6 @@
 ; Imports
 'dict      import
 'time      import
-'fs        import
 'sys       import
 'dstore    import
 'crypto    import
