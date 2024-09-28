@@ -9,13 +9,13 @@ import
 proc time_module*(i: In) =
   let def = i.define()
 
-  def.symbol("timestamp") do (i: In):
+  def.symbol("stamp") do (i: In):
     i.push getTime().toUnix().newVal
 
   def.symbol("now") do (i: In):
     i.push epochTime().newVal
 
-  def.symbol("timeinfo") do (i: In):
+  def.symbol("info") do (i: In):
     let vals = i.expect("num")
     let t = vals[0]
     var time: Time
@@ -64,7 +64,7 @@ proc time_module*(i: In) =
       time = t.floatVal.int64.fromUnix
     i.push time.utc.format("yyyy-MM-dd'T'HH:mm:ss'Z'").newVal
 
-  def.symbol("tformat") do (i: In):
+  def.symbol("format") do (i: In):
     let vals = i.expect("str", "num")
     let s = vals[0]
     let t = vals[1]

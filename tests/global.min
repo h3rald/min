@@ -127,7 +127,7 @@
     ) case
   ) test.assert
 
-  (time scope-symbols ("datetime" "now" "tformat" "timeinfo" "timestamp" "to-timestamp") ==) test.assert
+  (time scope-symbols ("datetime" "format" "info" "now" "stamp" "to-timestamp") ==) test.assert
 
   (global scope-sigils "$" in?) test.assert
 

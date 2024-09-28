@@ -24,6 +24,10 @@
 - **fs** module: renamed **fsize** to **fs.size**
 - **fs** module: renamed **fstats** to **fs.stats**
 - **fs** module: renamed **ftype** to **fs.type**
+- The **time** module is no longer imported.
+- **time** module: renamed **tformat** to **time.format**
+- **time** module: renamed **timeinfo** to **time.info**
+- **time** module: renamed **timestamp** to **time.stamp**
 
 
 
