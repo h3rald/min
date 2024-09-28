@@ -5,7 +5,7 @@
 "site/settings.json" :json-site-cfg
 
 yaml-cfg fs.read from-yaml :config
-config "version" dget :old-version
+config "version" dict.get :old-version
 nimble-cfg fs.read :nimble-data
 
 
@@ -13,7 +13,7 @@ nimble-cfg fs.read :nimble-data
   symbol update-yaml-config
   ('sym :new-version ==>)
   (
-    config new-version "version" dset @config
+    config new-version "version" dict.set @config
     config to-yaml yaml-cfg fs.write
   )  
 ) ::
@@ -24,7 +24,7 @@ nimble-cfg fs.read :nimble-data
   ('sym :new-version ==>)
   (
     json-site-cfg fs.read from-json :site-config
-    site-config new-version "version" dset @site-config
+    site-config new-version "version" dict.set @site-config
     site-config to-json json-site-cfg fs.write
   )
 ) ::

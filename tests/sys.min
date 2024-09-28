@@ -30,7 +30,7 @@
   ("systest" cd pwd "systest" match?) test.assert
   parent-dir cd
 
-  ("./min -v" run 'output dget "\\." match?) test.assert
+  ("./min -v" run 'output dict.get "\\." match?) test.assert
 
   ("PATH" env?) test.assert
 
@@ -63,7 +63,7 @@
 
   ("systest" rmdir pwd ls (pwd "systest") => "/" join in? false ==) test.assert
 
-  ([ls] "ls" run "output" dget ==) test.assert
+  ([ls] "ls" run "output" dict.get ==) test.assert
 
   test.report
   stack.clear

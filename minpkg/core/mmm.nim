@@ -318,7 +318,7 @@ proc generateRunScript*(MMM: var MinModuleManager, id: string): string =
             raiseError "Unable to install module $#@$#." % [name, version]
     let script = """
 '$1 require :$1
-($1 'main dhas?)
+($1 'main dict.has?)
   (*$1/main)
   ("Managed module \"$1\" does not expose a 'main' symbol." error)
 if

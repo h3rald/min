@@ -69,7 +69,7 @@
   (
    (
     (stack.pop) 
-    ('error dget) 
+    ('error dict.get) 
     ("finally")
     ) try stack.get ("MinEmptyStackError" "finally") ==) test.assert 
 
@@ -87,7 +87,7 @@
   (
    (
     ({"TestError" :error "Test Message" :message} raise)
-    ("error" dget)
+    ("error" dict.get)
     ) try "TestError" ==) test.assert
 
   (
@@ -170,8 +170,8 @@
 
   (
     {1 :a 2 :b 3 :c} (
-      (stack.dup "a" dget  succ succ "a" dset)
-      (stack.dup "b" dget  succ "b" dset)
+      (stack.dup "a" dict.get  succ succ "a" dict.set)
+      (stack.dup "b" dict.get  succ "b" dict.set)
     ) tap
     {3 :a 3 :b 3 :c} ==
   ) test.assert
@@ -179,8 +179,8 @@
   (
     {} :data
     data (
-      1 "a" dset
-      2 "b" dset
+      1 "a" dict.set
+      2 "b" dict.set
     ) tap
     {1 :a 2 :b} ==
   ) test.assert
@@ -293,7 +293,7 @@
    (str :in ==> dict :out)
    (
     {}
-      in "test" dset
+      in "test" dict.set
     @out
    )
   ) ::
@@ -735,7 +735,7 @@
 
   ((1 2 3 4) 2 get 3 ==) test.assert
 
-  ((a b c) 1 get-raw "type" dget "sym" ==) test.assert
+  ((a b c) 1 get-raw "type" dict.get "sym" ==) test.assert
 
   ((1 2 3 4) 222 2 set (1 2 222 4) ==) test.assert
 

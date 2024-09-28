@@ -13,9 +13,9 @@
 
   (1464951736 time.info time.to-timestamp 1464951736 ==) test.assert
 
-  (1464951736 time.info 'second dget 16 ==) test.assert
+  (1464951736 time.info 'second dict.get 16 ==) test.assert
 
-  (1464951736 time.info 'timezone dget integer?) test.assert
+  (1464951736 time.info 'timezone dict.get integer?) test.assert
 
   test.report
   stack.clear

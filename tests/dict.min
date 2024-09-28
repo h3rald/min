@@ -7,47 +7,47 @@
 
   ({1 :a 2 :b 3 :c} dictionary?) test.assert
 
-  ({1 :a 2 :b 3 :c} 'b dget 2 ==) test.assert
+  ({1 :a 2 :b 3 :c} 'b dict.get 2 ==) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dset 7 "d" dset :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) test.assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 5 'b dict.set 7 "d" dict.set :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 newdict != and) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 ddup 5 'b dset 7 "d" dset :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) test.assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 dict.dup 5 'b dict.set 7 "d" dict.set :newdict newdict {1 :a 5 :b 3 :c 7 :d} ==  dict1 {1 :a 2 :b 3 :c} == and) test.assert
 
-  ({1 :a 2 :b 3 :c} :dict1 dict1 'b ddel {1 :a 3 :c} ==) test.assert
+  ({1 :a 2 :b 3 :c} :dict1 dict1 'b dict.del {1 :a 3 :c} ==) test.assert
 
-  ({1 :a 2 :b 3 :c} dkeys ("a" "b" "c") ==) test.assert
+  ({1 :a 2 :b 3 :c} dict.keys ("a" "b" "c") ==) test.assert
 
-  ({1 :a 2 :b 3 :c} dvalues (1 2 3) ==) test.assert
+  ({1 :a 2 :b 3 :c} dict.values (1 2 3) ==) test.assert
 
-  (global dtype "module" ==) test.assert
+  (global dict.type "module" ==) test.assert
   
-  ({} dtype "" ==) test.assert 
+  ({} dict.type "" ==) test.assert 
 
-  ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dpick {2 :b 3 :c} ==) test.assert
+  ({1 :a 2 :b 3 :c 4 :d} ("b" "c") dict.pick {2 :b 3 :c} ==) test.assert
 
-  (2 2 {+ :plus} "plus" dget 4 ==) test.assert
+  (2 2 {+ :plus} "plus" dict.get 4 ==) test.assert
 
-  (2 {(2 3 +) :sum} "sum" dget -> + 7 ==) test.assert
+  (2 {(2 3 +) :sum} "sum" dict.get -> + 7 ==) test.assert
 
-  ({a :test} "test" dget-raw "str" dget "a" ==) test.assert
+  ({a :test} "test" dict.get-raw "str" dict.get "a" ==) test.assert
 
-  ({} 'aaa 'test dset-sym {aaa :test} ==) test.assert
+  ({} 'aaa 'test dict.set-sym {aaa :test} ==) test.assert
 
   (
     {} :archives
     ({"a" :a 2 :b} {"aa" :a 4 :b} {"aaa" :a 6 :b})
     (
       :article
-      article "a" dget :code
+      article "a" dict.get :code
       {}
-      code "code" dset
+      code "code" dict.set
       :archive
-      archives archive code dset @archives 
+      archives archive code dict.set @archives 
     ) foreach
     archives {{"a" :code} :a {"aa" :code} :aa {"aaa" :code} :aaa} ==) test.assert
 
   (
-    {1 :a 2 :b 3 :c} dpairs ((1 "a") (2 "b") (3 "c")) ==
+    {1 :a 2 :b 3 :c} dict.pairs ((1 "a") (2 "b") (3 "c")) ==
   ) test.assert
 
   test.report

@@ -9,8 +9,8 @@
     "dstore.json" dsread :ds
     ds "tests"
     {}
-      1 "test1" dset
-      2 "test2" dset
+      1 "test1" dict.set
+      2 "test2" dict.set
     dspost dswrite
     "tests" (stack.pop true) dsquery size 1 ==
   ) test.assert
@@ -19,16 +19,16 @@
     "dstore.json" dsread :ds
     ds "tests/aaa"
     {}
-      1 "test1" dset
-      3 "test3" dset
+      1 "test1" dict.set
+      3 "test3" dict.set
     dsput dswrite
-    "tests" ("test1" dget 1 ==) dsquery size 2 ==
+    "tests" ("test1" dict.get 1 ==) dsquery size 2 ==
   ) test.assert
   
   (
     "dstore.json" dsread :ds
     ds "tests/aaa" dsdelete
-    "tests" ("id" dget "aaa" ==) dsquery size 0 ==
+    "tests" ("id" dict.get "aaa" ==) dsquery size 0 ==
   ) test.assert
   
   "dstore.json" rm

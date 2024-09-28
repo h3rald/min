@@ -12,7 +12,7 @@
 
   ("test.txt" fs.hidden? false ==) test.assert
 
-  ("test.txt" fs.stats 'type dget "file" ==) test.assert
+  ("test.txt" fs.stats 'type dict.get "file" ==) test.assert
 
   ("tests" fs.dir?) test.assert
 

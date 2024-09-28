@@ -28,6 +28,19 @@
 - **time** module: renamed **tformat** to **time.format**
 - **time** module: renamed **timeinfo** to **time.info**
 - **time** module: renamed **timestamp** to **time.stamp**
+- The **dict** module is no longer imported.
+- **dict** moduule: renamed **dhas?** to **dict.has?**
+- **dict** moduule: renamed **dget** to **dict.get**
+- **dict** moduule: renamed **dget-raw** to **dict.get-raw**
+- **dict** moduule: renamed **dset** to **dict.set**
+- **dict** moduule: renamed **dset-sym** to **dict.set-sym**
+- **dict** moduule: renamed **ddel** to **dict.del**
+- **dict** moduule: renamed **dkeys** to **dict.keys**
+- **dict** moduule: renamed **dvalues** to **dict.values**
+- **dict** moduule: renamed **dpairs** to **dict.pairs**
+- **dict** moduule: renamed **ddup** to **dict.dup**
+- **dict** moduule: renamed **dpick** to **dict.pick**
+- **dict** moduule: renamed **dtype** to **dict.type**
 
 
 

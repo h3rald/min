@@ -4,29 +4,29 @@
 
 "xml" test.describe
 
-  ("test" xentity "text" dget "test" ==) test.assert
+  ("test" xentity "text" dict.get "test" ==) test.assert
 
-  ("test" xcomment "text" dget "test" ==) test.assert
+  ("test" xcomment "text" dict.get "test" ==) test.assert
 
-  ("test" xtext "text" dget "test" ==) test.assert
+  ("test" xtext "text" dict.get "test" ==) test.assert
 
-  ("test" xcdata "text" dget "test" ==) test.assert
+  ("test" xcdata "text" dict.get "test" ==) test.assert
 
-  ("test" xelement "tag" dget "test" ==) test.assert
+  ("test" xelement "tag" dict.get "test" ==) test.assert
 
   (
    "test" xelement :xnode
-   xnode {"a" :attr1} "attributes" dset @xnode
+   xnode {"a" :attr1} "attributes" dict.set @xnode
    "a1" xelement :child
    "text..." xtext :text
-   xnode (child text) => "children" dset @xnode
+   xnode (child text) => "children" dict.set @xnode
    xnode to-xml 
    "<test attr1=\"a\"><a1 />text...</test>" == ) test.assert
 
    (
     "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
     xnode "li.test" xquery 
-    "children" dget first "text" dget "yes" ==
+    "children" dict.get first "text" dict.get "yes" ==
    ) test.assert
 
    (
