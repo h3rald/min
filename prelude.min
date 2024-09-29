@@ -1,5 +1,4 @@
 ; Imports
-'net       import
 'http      import
 'xml       import
 ; Unseal prompt symbol

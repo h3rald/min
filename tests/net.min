@@ -3,25 +3,25 @@
 
 "net" test.describe
 
-  {} socket :srv1
-  {} socket :srv2
-  {} socket :cli1
-  {} socket :cli2
+  {} net.socket :srv1
+  {} net.socket :srv2
+  {} net.socket :cli1
+  {} net.socket :cli2
 
   
-  {} socket "postman-echo.com" 80 connect @cli1
+  {} net.socket "postman-echo.com" 80 net.connect @cli1
   "min v$1" (version) => % :user-agent
 
   "GET /get HTTP/1.1\r\nHost: postman-echo.com\r\nUser-Agent: $1\r\n\r\n" (user-agent) => % :req
 
   "" :response
-  cli1 req send 
+  cli1 req net.send 
 
-  cli1 recv-line :line
+  cli1 net.recv-line :line
   (response line) => "\n" join @response 
   (line "HTTP/1.1 200 OK" == not) 
   (
-    cli1 recv-line @line
+    cli1 net.recv-line @line
     (response line) => "\n" join puts @response 
   ) 
   while
@@ -33,7 +33,7 @@
 
   test.report
   stack.clear
-  srv1 close
-  srv2 close
-  cli1 close
-  cli2 close
+  srv1 net.close
+  srv2 net.close
+  cli1 net.close
+  cli2 net.close

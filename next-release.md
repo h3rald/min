@@ -54,7 +54,8 @@
 - **store** mdule: renamed **dsread** to **store.read**
 - The **crypto** module is no longer imported. 
 - The **math** module is no longer imported. 
-- **math** mdule: renamed **r2g** to **math.r2d**
+- **math** module: renamed **r2g** to **math.r2d**
+- The **net** module is no longer imported. 
 
 
 
