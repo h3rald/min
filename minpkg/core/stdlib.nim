@@ -25,7 +25,6 @@ import
   min_crypto,
   min_math]
 
-const PRELUDE* = "../../prelude.min".slurp.strip
 var customPrelude* {.threadvar.}: string
 customPrelude = ""
 
@@ -49,9 +48,7 @@ proc stdLib*(i: In) =
   i.math_module
   i.http_module
   i.xml_module
-  if customPrelude == "":
-    i.eval PRELUDE, "<prelude>"
-  else:
+  if customPrelude != "":
     try:
       i.eval customPrelude.readFile, customPrelude
     except CatchableError:

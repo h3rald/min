@@ -6,7 +6,7 @@ description   = "A small but practical concatenative programming language and sh
 license       = "MIT"
 bin           = @["min"]
 installExt    = @["nim", "c", "h", "a"]
-installFiles  = @["min.yml", "min.nim", "prelude.min", "help.json"]
+installFiles  = @["min.yml", "min.nim", "help.json"]
 skipFiles     = @["mintool.min"]
 installDirs   = @["minpkg"]
 
