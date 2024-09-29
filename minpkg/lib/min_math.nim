@@ -111,7 +111,7 @@ proc math_module*(i: In) =
     let vals = i.expect("num")
     i.push vals[0].getFloat.degToRad.newVal
 
-  def.symbol("r2g") do (i: In):
+  def.symbol("r2d") do (i: In):
     let vals = i.expect("num")
     i.push vals[0].getFloat.radToDeg.newVal
 

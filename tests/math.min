@@ -3,33 +3,33 @@
 
 "math" test.describe
 
-  (0 d2r sin 0 ==) test.assert
+  (0 math.d2r math.sin 0 ==) test.assert
 
-  (30 d2r sin 0.5 ==) test.assert
+  (30 math.d2r math.sin 0.5 ==) test.assert
 
-  (45 d2r sin 2 sqrt 2 / ==) test.assert
+  (45 math.d2r math.sin 2 math.sqrt 2 / ==) test.assert
 
-  (60 d2r sin 3 sqrt 2 / ==) test.assert
+  (60 math.d2r math.sin 3 math.sqrt 2 / ==) test.assert
 
-  (90 d2r sin 1 ==) test.assert
+  (90 math.d2r math.sin 1 ==) test.assert
 
-  (15 d2r sin 75 d2r cos ==) test.assert
+  (15 math.d2r math.sin 75 math.d2r math.cos ==) test.assert
 
-  (15 cos 2 pow 15 sin 2 pow + 1 ==) test.assert
+  (15 math.cos 2 math.pow 15 math.sin 2 math.pow + 1 ==) test.assert
 
-  (pi 4 / tan 1 ==) test.assert
+  (math.pi 4 / math.tan 1 ==) test.assert
 
-  (e 3 pow ln 3 ==) test.assert
+  (math.e 3 math.pow math.ln 3 ==) test.assert
 
-  (pi floor 3 ==) test.assert
+  (math.pi math.floor 3 ==) test.assert
 
-  (pi 2 round 3.14 ==) test.assert
+  (math.pi 2 math.round 3.14 ==) test.assert
 
-  (pi ceil 4 ==) test.assert
+  (math.pi math.ceil 4 ==) test.assert
 
-  (pi trunc 3 ==) test.assert
+  (math.pi math.trunc 3 ==) test.assert
   
-  (-2.87 abs 2.87 ==) test.assert
+  (-2.87 math.abs 2.87 ==) test.assert
 
   test.report
   stack.clear

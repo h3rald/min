@@ -52,6 +52,9 @@
 - **store** mdule: renamed **dsquery** to **store.query**
 - **store** mdule: renamed **dswrite** to **store.write**
 - **store** mdule: renamed **dsread** to **store.read**
+- The **crypto** module is no longer imported. 
+- The **math** module is no longer imported. 
+- **math** mdule: renamed **r2g** to **math.r2d**
 
 
 
