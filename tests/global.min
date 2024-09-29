@@ -40,10 +40,10 @@
   ("3 4 +" eval 7 ==) test.assert
 
   ("2 2 +" "tests/testload.min" fs.write 'testload load 4 ==) test.assert
-  "tests/testload.min" rm
+  "tests/testload.min" sys.rm
 
   ("2 :two 3 :three" "tests/testrequire.min" fs.write 'testrequire require :tm tm.two tm.three + 5 ==) test.assert
-  "tests/testrequire.min" rm
+  "tests/testrequire.min" sys.rm
 
   (2 quote (2) ==) test.assert
 
@@ -73,7 +73,7 @@
     ("finally")
     ) try stack.get ("MinEmptyStackError" "finally") ==) test.assert 
 
-  ("aaaa" :cd cd "aaaa" ==) test.assert ;;It is possible to shadow sealed symbols in child scopes
+  ('sys.cd ^cd "aaaa" :cd cd "aaaa" ==) test.assert ;;It is possible to shadow sealed symbols in child scopes
 
   (((2 :a1 'a1 seal-symbol 3 :a1) ("failed")) try "failed" ==) test.assert
 
@@ -266,7 +266,7 @@
   (
     typeclass natural
     (int :n ==> bool :out)
-    (((n integer?) (n 0 >)) "&" run @out)
+    (((n integer?) (n 0 >)) "&" sys.run @out)
   ) ::
   ("typeclass:natural" defined-symbol?) test.assert
   (
@@ -688,7 +688,7 @@
 
   ((1 3 "test") ", " join "1, 3, test" ==) test.assert
 
-  ("PWD: $pwd" ("pwd" pwd) =% ("PWD: " pwd) => "" join ==) test.assert 
+  ("PWD: $pwd" ("pwd" sys.pwd) =% ("PWD: " sys.pwd) => "" join ==) test.assert 
 
   ("1.2.3" from-semver {1 :major 2 :minor 3 :patch} ==) test.assert
 

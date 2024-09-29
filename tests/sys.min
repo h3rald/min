@@ -3,68 +3,68 @@
 
 "sys" test.describe
 
-  ("dir1" mkdir "dir1" fs.dir?) test.assert
+  ("dir1" sys.mkdir "dir1" fs.dir?) test.assert
 
-  ("dir1" "dir2" mv "dir2" fs.dir?) test.assert
+  ("dir1" "dir2" sys.mv "dir2" fs.dir?) test.assert
 
   ("dir1" fs.dir? false ==) test.assert
 
-  ("dir2" "dir1" cp "dir1" fs.dir?) test.assert
+  ("dir2" "dir1" sys.cp "dir1" fs.dir?) test.assert
 
   ("..." "dir1/test.txt" fs.write "dir1/test.txt" fs.file?) test.assert
 
-  ("dir1/test.txt" "dir2" mv "dir2/test.txt" fs.file?)  test.assert
+  ("dir1/test.txt" "dir2" sys.mv "dir2/test.txt" fs.file?)  test.assert
 
   ("dir1/test.txt" fs.file? false ==) test.assert
 
-  ("dir2/test.txt" "dir1" cp "dir1/test.txt" fs.file?)  test.assert
+  ("dir2/test.txt" "dir1" sys.cp "dir1/test.txt" fs.file?)  test.assert
 
-  ('dir1 ls 'fs.filename map ("test.txt") ==) test.assert
+  ('dir1 sys.ls 'fs.filename map ("test.txt") ==) test.assert
 
-  ('dir2 ls 'fs.dirname map ("dir2") ==) test.assert
+  ('dir2 sys.ls 'fs.dirname map ("dir2") ==) test.assert
 
-  ('dir1 rmdir 'dir2 rmdir 'dir1 fs.dir? 'dir2 fs.dir? or false ==) test.assert  
+  ('dir1 sys.rmdir 'dir2 sys.rmdir 'dir1 fs.dir? 'dir2 fs.dir? or false ==) test.assert  
 
-  ("systest" mkdir pwd ls (pwd "systest") => "/" join in?) test.assert
+  ("systest" sys.mkdir sys.pwd sys.ls (sys.pwd "systest") => "/" join in?) test.assert
 
-  ("systest" cd pwd "systest" match?) test.assert
-  parent-dir cd
+  ("systest" sys.cd sys.pwd "systest" match?) test.assert
+  sys.parent-dir sys.cd
 
-  ("./min -v" run 'output dict.get "\\." match?) test.assert
+  ("./min -v" sys.run 'output dict.get "\\." match?) test.assert
 
-  ("PATH" env?) test.assert
+  ("PATH" sys.env?) test.assert
 
   ($PATH length 0 >) test.assert
 
   ("TEST" "AAA" put-env $AAA "TEST" ==) test.assert
 
-  (os length 0 >) test.assert
+  (sys.os length 0 >) test.assert
 
-  (cpu length 0 >) test.assert
+  (sys.cpu length 0 >) test.assert
 
   ("TEST" "test.txt" fs.write "test.txt" fs.file?) test.assert
 
-  ("test.txt" "test2.txt" cp "test2.txt" fs.file?) test.assert
+  ("test.txt" "test2.txt" sys.cp "test2.txt" fs.file?) test.assert
 
-  ("test.txt" "test1.txt" mv "test1.txt" fs.file?) test.assert
+  ("test.txt" "test1.txt" sys.mv "test1.txt" fs.file?) test.assert
 
-  ("test2.txt" rm "test1.txt" rm pwd ls (pwd "test1.txt") => "/" join in? :t1 pwd ls "test2" in? t1 and false ==) test.assert
+  ("test2.txt" sys.rm "test1.txt" sys.rm sys.pwd sys.ls (sys.pwd "test1.txt") => "/" join in? :t1 sys.pwd sys.ls "test2" in? t1 and false ==) test.assert
 
-  ("systest" cd 
+  ("systest" sys.cd 
    "TEST" "test.txt" fs.write
    "TEST1" "test1.txt" fs.write
    "TEST2" "test2.txt" fs.write
    "TEST3" "test3.txt" fs.write
-   pwd ls "test.zip" zip pwd ls (pwd "test.zip") => "/" join in?) test.assert
+   sys.pwd sys.ls "test.zip" sys.zip sys.pwd sys.ls (sys.pwd "test.zip") => "/" join in?) test.assert
 
-   ("test.zip" "extracted" unzip "extracted" ls "extracted/test1.txt" in?) test.assert
+   ("test.zip" "extracted" sys.unzip "extracted" sys.ls "extracted/test1.txt" in?) test.assert
 
-  parent-dir cd
+  sys.parent-dir sys.cd
 
-  ("systest" rmdir pwd ls (pwd "systest") => "/" join in? false ==) test.assert
+  ("systest" sys.rmdir sys.pwd sys.ls (sys.pwd "systest") => "/" join in? false ==) test.assert
 
-  ([ls] "ls" run "output" dict.get ==) test.assert
+  ([ls] "ls" sys.run "output" dict.get ==) test.assert
 
   test.report
   stack.clear
-  "systest" rmdir
+  "systest" sys.rmdir

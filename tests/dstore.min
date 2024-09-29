@@ -31,7 +31,7 @@
     "tests" ("id" dict.get "aaa" ==) dsquery size 0 ==
   ) test.assert
   
-  "dstore.json" rm
+  "dstore.json" sys.rm
 
   test.report
   stack.clear

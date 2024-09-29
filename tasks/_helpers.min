@@ -1,1 +1,1 @@
-"min.yml" fs.read from-yaml :config".env.yml" fs.read from-yaml :env(    symbol required    ('sym :prog ==>)    (        (prog which "" ==) ("$# is not available" (prog) =% io.error 1 exit) when    )) ::
+"min.yml" fs.read from-yaml :config".env.yml" fs.read from-yaml :env(    symbol required    ('sym :prog ==>)    (        (prog sys.which "" ==) ("$# is not available" (prog) =% io.error 1 exit) when    )) ::

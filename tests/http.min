@@ -9,7 +9,7 @@
   ("$1/get" (url) => % get-content from-json "headers" dict.get "user-agent" dict.get  "min http-module/$1" (version) => % ==) test.assert
 
   ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fs.read from-json "args" dict.get "test" dict.get "Hello!" ==) test.assert
-  "tests/test1.json" rm
+  "tests/test1.json" sys.rm
 
   (
     {} (

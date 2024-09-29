@@ -26,13 +26,13 @@
 
   ("/home/h3rald" fs.absolute-path?) test.assert
 
-  ("tests/sys.min" fs.expand-filename fs.unix-path pwd "/tests/sys.min" suffix fs.unix-path ==) test.assert
+  ("tests/sys.min" fs.expand-filename fs.unix-path sys.pwd "/tests/sys.min" suffix fs.unix-path ==) test.assert
 
   ("./../tests" fs.normalized-path fs.unix-path "../tests" ==) test.assert
 
-  ((pwd "tests/global.min") => fs.join-path pwd fs.relative-path fs.unix-path "tests/global.min" ==) test.assert
+  ((sys.pwd "tests/global.min") => fs.join-path sys.pwd fs.relative-path fs.unix-path "tests/global.min" ==) test.assert
 
-  ("tests/global.min" fs.absolute-path fs.unix-path (pwd "tests/global.min") => fs.join-path fs.unix-path ==) test.assert
+  ("tests/global.min" fs.absolute-path fs.unix-path (sys.pwd "tests/global.min") => fs.join-path fs.unix-path ==) test.assert
 
   ("./test" fs.absolute-path? not) test.assert
 
@@ -46,4 +46,4 @@
 
   test.report
   stack.clear
-  "test.txt" rm
+  "test.txt" sys.rm
