@@ -8,7 +8,7 @@ import
   ../core/interpreter,
   ../core/utils
 
-proc dstore_module*(i: In) =
+proc store_module*(i: In) =
   let def = i.define()
 
   def.symbol("init") do (i: In):
@@ -138,4 +138,4 @@ proc dstore_module*(i: In) =
     i.ddel(cll, id)
     i.push ds
 
-  def.finalize("dstore")
+  def.finalize("store")

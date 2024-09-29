@@ -14,7 +14,7 @@ min includes a small but powerful standard library organized into the following 
 : Defines operators for quotations, like map, filter, reduce, etc.
 {#link-module||dict#}
 : Defines operators for dictionaries, like dget, ddup, dset, etc.
-{#link-module||dstore#}
+{#link-module||store#}
 : Provides support for simple, persistent, in-memory JSON stores.
 {#link-module||io#}
 : Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
@@ -134,7 +134,7 @@ The following notation is used in the signature of all min operators:
        ;rawval
       }
 {{dstore}}
-: A datastore dictionary that must be created through the {#link-operator||dstore||dsinit#} or {#link-operator||dstore||dsread#} operator:
+: A datastore dictionary that must be created through the {#link-operator||store||init#} or {#link-operator||store||read#} operator:
 
       {
        {} :data

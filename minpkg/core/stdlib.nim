@@ -17,7 +17,7 @@ import
   min_time,
   min_sys,
   min_io,
-  min_dstore,
+  min_store,
   min_fs,
   min_xml,
   min_http,
@@ -42,7 +42,7 @@ proc stdLib*(i: In) =
   i.time_module
   i.sys_module
   i.fs_module
-  i.dstore_module
+  i.store_module
   i.io_module
   i.crypto_module
   i.net_module

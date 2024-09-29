@@ -1,0 +1,37 @@
+'min-test require :test
+;;;
+
+"store" test.describe
+
+  ("store.json" store.init type "dict:datastore" ==) test.assert
+  
+  (
+    "store.json" store.read :ds
+    ds "tests"
+    {}
+      1 "test1" dict.set
+      2 "test2" dict.set
+    store.post store.write
+    "tests" (stack.pop true) store.query size 1 ==
+  ) test.assert
+  
+  (
+    "store.json" store.read :ds
+    ds "tests/aaa"
+    {}
+      1 "test1" dict.set
+      3 "test3" dict.set
+    store.put store.write
+    "tests" ("test1" dict.get 1 ==) store.query size 2 ==
+  ) test.assert
+  
+  (
+    "store.json" store.read :ds
+    ds "tests/aaa" store.delete
+    "tests" ("id" dict.get "aaa" ==) store.query size 0 ==
+  ) test.assert
+  
+  "store.json" sys.rm
+
+  test.report
+  stack.clear

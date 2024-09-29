@@ -10,7 +10,7 @@ sigils size :total-sigils
 "=" 70 repeat puts!
 'crypto  load
 'dict    load
-'dstore  load
+'store  load
 'fs      load
 'global    load
 'math    load

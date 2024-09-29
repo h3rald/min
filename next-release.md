@@ -42,16 +42,16 @@
 - **dict** module: renamed **dpick** to **dict.pick**
 - **dict** module: renamed **dtype** to **dict.type**
 - The **sys** module is no longer imported. 
-- The **dstore** module is no longer imported. 
-- **dstore** mdule: renamed **dsinit** to **dstore.init**
-- **dstore** mdule: renamed **dsget** to **dstore.get**
-- **dstore** mdule: renamed **dshas?** to **dstore.has?**
-- **dstore** mdule: renamed **dsput** to **dstore.put**
-- **dstore** mdule: renamed **dspost** to **dstore.post**
-- **dstore** mdule: renamed **dsdelete** to **dstore.delete**
-- **dstore** mdule: renamed **dsquery** to **dstore.query**
-- **dstore** mdule: renamed **dswrite** to **dstore.write**
-- **dstore** mdule: renamed **dsread** to **dstore.read**
+- The **dstore**  module has been renamed to **store**, and is no longer imported. 
+- **store** mdule: renamed **dsinit** to **store.init**
+- **store** mdule: renamed **dsget** to **store.get**
+- **store** mdule: renamed **dshas?** to **store.has?**
+- **store** mdule: renamed **dsput** to **store.put**
+- **store** mdule: renamed **dspost** to **store.post**
+- **store** mdule: renamed **dsdelete** to **store.delete**
+- **store** mdule: renamed **dsquery** to **store.query**
+- **store** mdule: renamed **dswrite** to **store.write**
+- **store** mdule: renamed **dsread** to **store.read**
 
 
 
