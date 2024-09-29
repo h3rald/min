@@ -1,10 +1,10 @@
 :root {
-  --primary-foreground:#d1e5d4;
-  --primary-background:#262625;
+  --primary-foreground: #d1e5d4;
+  --primary-background: #262625;
   --secondary-background: #474745;
-  --primary-accent:#57c589;
-  --secondary-accent:#2B4737;
-  --secondary-foreground:#D4CC90;
+  --primary-accent: #57c589;
+  --secondary-accent: #2B4737;
+  --secondary-foreground: #D4CC90;
   --normal-text-weight: 300;
   --bold-text-weight: 400;
 }
@@ -13,18 +13,19 @@ body {
   background-color: var(--primary-background);
   color: var(--primary-foreground);
   font-weight: var(--normal-text-weight);
-	font-feature-settings: "kern";
-	font-kerning: normal;
+  font-feature-settings: "kern";
+  font-kerning: normal;
   font-variant-ligatures: common-ligatures;
 }
-html, 
-button, 
-input, 
-select, 
+
+html,
+button,
+input,
+select,
 textarea,
-.pure-g [class *= "pure-u"] {
+.pure-g [class *="pure-u"] {
   font-family: 'Source Sans Pro', sans-serif;
-} 
+}
 
 .donate-content-area {
   margin: 5px;
@@ -35,15 +36,18 @@ textarea,
   height: 120px;
 }
 
-.donate-content-area h3, .donate-content-area code {
-  color: var(--primary-background);  
+.donate-content-area h3,
+.donate-content-area code {
+  color: var(--primary-background);
 }
 
-tr td, th {
+tr td,
+th {
   border: 1px solid var(--secondary-background);
 }
 
-td, th {
+td,
+th {
   padding: 5px;
 }
 
@@ -51,13 +55,22 @@ th {
   background: var(--secondary-accent);
 }
 
-a, a:visited {
+a,
+a:visited,
+a .min-code span,
+a:visited .min-code span {
   text-decoration: none;
   color: var(--primary-accent);
 }
 
+a .min-code {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
 header .luxbar-menu i {
-  vertical-align: text-bottom;  
+  vertical-align: text-bottom;
   line-height: 18px;
 }
 
@@ -66,47 +79,54 @@ header .luxbar-menu i {
   color: var(--primary-foreground);
 }
 
-.luxbar-menu-light a, .luxbar-menu-light a:visited {
+.luxbar-menu-light a,
+.luxbar-menu-light a:visited {
   color: var(--primary-foreground);
 }
 
-.luxbar-menu-light .active, .luxbar-menu-light .luxbar-item:hover,
-.luxbar-menu-light .active a, .luxbar-menu-light .luxbar-item:hover a {
+.luxbar-menu-light .active,
+.luxbar-menu-light .luxbar-item:hover,
+.luxbar-menu-light .active a,
+.luxbar-menu-light .luxbar-item:hover a {
   background: var(--primary-background);
   color: var(--primary-accent);
 }
 
 
-.luxbar-menu-light .luxbar-hamburger span, 
-.luxbar-menu-light .luxbar-hamburger span::before, 
+.luxbar-menu-light .luxbar-hamburger span,
+.luxbar-menu-light .luxbar-hamburger span::before,
 .luxbar-menu-light .luxbar-hamburger span::after {
   background-color: var(--primary-foreground);
 }
 
 
-.pure-button-primary, .pure-button-selected, a.pure-button-primary, a.pure-button-selected {
+.pure-button-primary,
+.pure-button-selected,
+a.pure-button-primary,
+a.pure-button-selected {
   background: var(--primary-accent);
   color: var(--primary-background);
 }
 
 
-.pure-g > section {
-  box-sizing: border-box;  
+.pure-g>section {
+  box-sizing: border-box;
 }
 
 article {
-  margin-top: 40px; 
+  margin-top: 40px;
 }
 
 :target:before {
-  content:"";
-  display:block;
-  height:60px; 
-  margin:-60px 0 0; 
+  content: "";
+  display: block;
+  height: 60px;
+  margin: -60px 0 0;
 }
 
-article, section {
-  padding: 1em;    
+article,
+section {
+  padding: 1em;
 }
 
 .centered {
@@ -114,7 +134,9 @@ article, section {
   margin: auto;
 }
 
-b, strong, dt {
+b,
+strong,
+dt {
   font-weight: var(--bold-text-weight);
 }
 
@@ -122,16 +144,39 @@ dt {
   margin-top: 1em;
 }
 
-code, pre, .kwd, .cmd, .file, .dir, kbd, .kbd, .ext, .min-terminal, .min-code, .min-codeblock{
-  font-family: 'Source Code Pro',  monospace;
+code,
+pre,
+.kwd,
+.cmd,
+.file,
+.dir,
+kbd,
+.kbd,
+.ext,
+.min-terminal,
+.min-code,
+.min-codeblock {
+  font-family: 'Source Code Pro', monospace;
   font-size: 90%;
 }
 
-.kwd, .kwd, .cmd, .file, .dir, .ext, kbd, .kbd {
-  font-weight: var(--bold-text-weight);  
+.kwd,
+.kwd,
+.cmd,
+.file,
+.dir,
+.ext,
+kbd,
+.kbd {
+  font-weight: var(--bold-text-weight);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: var(--normal-text-weight);
   color: var(--secondary-foreground);
 }
@@ -149,15 +194,15 @@ h3 {
 }
 
 .pitch {
-  font-size: 1.2em;  
+  font-size: 1.2em;
 }
 
 .operator {
-  margin-left: 2em;  
+  margin-left: 2em;
 }
 
 dl {
-  margin-left: 1em;  
+  margin-left: 1em;
 }
 
 .min-terminal {
@@ -167,7 +212,7 @@ dl {
 }
 
 .min-terminal p {
-  margin: 0.5em 0;  
+  margin: 0.5em 0;
 }
 
 .min-terminal p:first-child {
@@ -179,7 +224,7 @@ dl {
 }
 
 .min-terminal .prompt {
-  color: var(--secondary-foreground);  
+  color: var(--secondary-foreground);
 }
 
 .note p:first-child:before {
@@ -189,6 +234,7 @@ dl {
   font-size: 100%;
   content: "\e717" " ";
 }
+
 .tip p:first-child:before {
   font-family: "themify";
   font-style: normal;
@@ -196,6 +242,7 @@ dl {
   font-size: 100%;
   content: "\e64d" " ";
 }
+
 .warning p:first-child:before {
   font-family: "themify";
   font-style: normal;
@@ -203,7 +250,12 @@ dl {
   font-size: 100%;
   content: "\e6c5" " ";
 }
-.sidebar, .note, .tip, .warning, pre {
+
+.sidebar,
+.note,
+.tip,
+.warning,
+pre {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
@@ -227,6 +279,7 @@ dl {
 .warning p:first-child {
   font-weight: var(--bold-text-weight);
 }
+
 .sidebar p:first-child:before {
   font-family: "themify";
   font-style: normal;
@@ -234,7 +287,11 @@ dl {
   font-size: 100%;
   content: "\e717" " ";
 }
-.tip p, .warning p, .note p, .sidebar p {
+
+.tip p,
+.warning p,
+.note p,
+.sidebar p {
   margin: 0 auto;
   line-height: 1.7em;
 }
@@ -242,6 +299,7 @@ dl {
 .sigil {
   color: var(--primary-foreground);
 }
+
 .sigil:before {
   color: var(--primary-foreground);
   background-color: var(--secondary-accent);
@@ -347,7 +405,7 @@ footer {
   margin: 0.5rem 0;
 }
 
-.mmm-module h3{
+.mmm-module h3 {
   margin: 0;
 }
 
