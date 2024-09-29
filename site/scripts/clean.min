@@ -1,8 +1,8 @@
 ;Deletes all temporary and output files.
 'hastysite import
 
-"Cleaning temporary folder..." notice!
+"Cleaning temporary folder..." io.notice!
 clean-temp
-"Cleaning output folder..." notice!
+"Cleaning output folder..." io.notice!
 clean-output
-"All done." notice!
+"All done." io.notice!

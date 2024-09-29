@@ -1,10 +1,10 @@
 ;Builds a site by processing contents and assets.
 'hastysite import
 
-"Preprocessing..." notice!
+"Preprocessing..." io.notice!
 preprocess
-"Processing rules.." notice!
+"Processing rules.." io.notice!
 process-rules
-"Postprocessing..." notice!
+"Postprocessing..." io.notice!
 postprocess
-"All done." notice!
+"All done." io.notice!

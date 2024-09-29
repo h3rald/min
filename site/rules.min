@@ -11,19 +11,19 @@
   symbol set-destination
   (dict :meta ==> dict :result)
   (
-    meta "id" dget :id
-    meta "ext" dget :ext
+    meta "id" dict.get :id
+    meta "ext" dict.get :ext
     (
       ((id "home" ==) (
         meta (
-          ("index" "id" dset)
-          (".html" "ext" dset)
+          ("index" "id" dict.set)
+          (".html" "ext" dict.set)
         ) tap
       ))
       ((ext ".md" ==) (
         meta (
-          (".html" "ext" dset)
-          ("$1/index" (id) => % "id" dset)
+          (".html" "ext" dict.set)
+          ("$1/index" (id) => % "id" dict.set)
         ) tap
       ))
     ) case
@@ -40,7 +40,7 @@
       (
         0 get :entity
         (("&lt;" "&gt;" "&amp;" "&apos;" "&quot;") entity in? not)
-          (entity xentity xentity2utf8 @entity)
+          (entity xml.entity xml.entity2utf8 @entity)
         when
         entity 
       ) replace-apply @result
@@ -56,24 +56,24 @@
     "" :contents
     meta (
       (input-fread @contents meta)
-      (settings "title" dget "site" dset)
-      (settings "version" dget "version" dset)
+      (settings "title" dict.get "site" dict.set)
+      (settings "version" dict.get "version" dict.set)
       (
         :temp contents temp markdown 
         highlight-codeblocks highlight-codes @contents temp
       )
-      (contents "contents" dset)
+      (contents "contents" dict.set)
       (
         ; Save post content (plain HTML fragment, no template)
         :temp
-        (temp "content-type" dget "post" ==)
+        (temp "content-type" dict.get "post" ==)
           ; Need to save html fragment separately because contents is overwritten.
-          (temp dup "contents" dget convert-html-entities "fragment" dset posts append @posts)
+          (temp stack.dup "contents" dict.get convert-html-entities "fragment" dict.set posts append @posts)
         when
         temp
       )
       (:temp tpl temp mustache @page temp)
-      (page "contents" dset)
+      (page "contents" dict.set)
     ) tap @result
   )
 ) ::
@@ -82,7 +82,7 @@
   symbol process-md-content
   (dict :meta ==> dict :result)
   (
-    meta "content-type" dget :ct
+    meta "content-type" dict.get :ct
     meta ct process-md-with-template
     @result
   )
@@ -92,8 +92,8 @@
   symbol process-content
   (dict :meta ==> dict :result)
   (
-    meta "ext" dget :ext
-    meta "id" dget :id
+    meta "ext" dict.get :ext
+    meta "id" dict.get :id
     meta
     (
       ((".md" ext ==) (process-md-content))
@@ -110,7 +110,7 @@
     meta (
       (input-fread @contents meta)
       (:temp contents preprocess-css @contents temp)
-      (contents "contents" dset)
+      (contents "contents" dict.set)
     ) tap
     output-fwrite
   )
@@ -120,13 +120,13 @@
   symbol process-mmm-json
   (dict :data ==>)
   (
-    timestamp :ts
+    time.stamp :ts
     data input-fread from-json :contents
     ; Save modules
-    contents "modules" dget @modules
+    contents "modules" dict.get @modules
     ; Update timestamp
-    contents ts "updated" dset @contents
-    data contents to-json "contents" dset
+    contents ts "updated" dict.set @contents
+    data contents to-json "contents" dict.set
     output-fwrite
     ; Add timesyamp file
     {
@@ -135,7 +135,7 @@
       ".timestamp"    :ext
       "asset"         :type
     } 
-    ts string "contents" dset
+    ts string "contents" dict.set
     output-fwrite
   ) 
 ) ::
@@ -144,102 +144,102 @@
   symbol download-latest-min-exes
   (==>)
   (
-    "Downloading latest min executables..." notice!
-    settings "version" dget :version
+    "Downloading latest min executables..." io.notice!
+    settings "version" dict.get :version
     ("windows" "macosx" "linux")
     (
       :opsys
       "https://github.com/h3rald/min/releases/download/v$1/min_v$1_$2_x64.zip" (version opsys) =% :remote
       "min_$#.zip" (opsys) =% :local
       "wget $# -O $#" (remote local) =% :cmd
-      cmd system 
+      cmd sys.system 
       "assets/downloads/$#/" (opsys) =% :dir
-      "assets/downloads/" mkdir
+      "assets/downloads/" sys.mkdir
       "unzip $# -o -d $#" (local dir) =% @cmd
       cmd system!
-      local rm
+      local sys.rm
     ) foreach
   )
 ) ::
 
 ;Main
 
-((('wget "" !=) ('zip which "" !=)) &&)
+((('wget "" !=) ('zip sys.which "" !=)) &&)
   (download-latest-min-exes)
 when
 
-"Processing contents..." notice!
+"Processing contents..." io.notice!
 
 contents (
   (dict) expect -> :meta
   (
-    ((meta "id" dget "^_" match?) ()) ;Ignore files starting with underscore.
+    ((meta "id" dict.get "^_" match?) ()) ;Ignore files starting with underscore.
     ((true) (meta process-content set-destination output-fwrite)) 
   ) case
 ) foreach
 
-"Processing assets..." notice!
+"Processing assets..." io.notice!
 assets (
   (dict) expect -> :meta
   (
-    ((meta "ext" dget ".css" ==) (meta process-css-asset))
-    ((meta "path" dget "mmm.json" ==) (meta process-mmm-json))
+    ((meta "ext" dict.get ".css" ==) (meta process-css-asset))
+    ((meta "path" dict.get "mmm.json" ==) (meta process-mmm-json))
     ((true) (meta output-cp))
   ) case
 ) foreach
 
-"Generating mmm index..." notice!
+"Generating mmm index..." io.notice!
 ; Process deps of each module -> name@version
 modules (
   :module
-  module "deps" dget dkeys (
+  module "deps" dict.get dict.keys (
     :name
-    module "deps" dget name dget :version
+    module "deps" dict.get name dict.get :version
     "$#@$#" (name version) =%
   ) map ", " join :dependencies
   (dependencies "" ==)
     ("n/a" @dependencies)
   when
-  module dependencies "dependencies" dset
+  module dependencies "dependencies" dict.set
 ) map @modules
 
 {}
-  "mmm/index"         "id" dset
-  "mmm.html"          "path" dset
-  ".html"             "ext" dset
-  "mmm"               "title" dset
-  "min language"      "site" dset
-  "page"              "content-type" dset
-  modules             "modules" dset 
-dup
-"mmm" swap mustache "contents" dset output-fwrite
+  "mmm/index"         "id" dict.set
+  "mmm.html"          "path" dict.set
+  ".html"             "ext" dict.set
+  "mmm"               "title" dict.set
+  "min language"      "site" dict.set
+  "page"              "content-type" dict.set
+  modules             "modules" dict.set 
+stack.dup
+"mmm" stack.swap mustache "contents" dict.set output-fwrite
 
-"Generating news page..." notice!
+"Generating news page..." io.notice!
 ; Get news
 posts 
-  (:a :b a "date" dget  b "date" dget >) 
+  (:a :b a "date" dict.get  b "date" dict.get >) 
 sort @posts
 
 {}
-  "news/index"     "id" dset
-  "news.html"      "path" dset
-  ".html"          "ext" dset
-  "News"           "title" dset
-  "min language"   "site" dset
-  "page"           "content-type" dset
-  posts            "posts" dset 
-dup
-"news" swap mustache "contents" dset output-fwrite
+  "news/index"     "id" dict.set
+  "news.html"      "path" dict.set
+  ".html"          "ext" dict.set
+  "News"           "title" dict.set
+  "min language"   "site" dict.set
+  "page"           "content-type" dict.set
+  posts            "posts" dict.set 
+stack.dup
+"news" stack.swap mustache "contents" dict.set output-fwrite
 
 {}
-  "rss"                       "id" dset
-  "rss.xml"                   "path" dset
-  ".xml"                      "ext" dset
-  "min programming language"  "title" dset
-  "min language"              "site" dset
-  "rss"                       "content-type" dset
-  posts                       "posts" dset 
-dup
-"rss" swap mustache "contents" dset output-fwrite
+  "rss"                       "id" dict.set
+  "rss.xml"                   "path" dict.set
+  ".xml"                      "ext" dict.set
+  "min programming language"  "title" dict.set
+  "min language"              "site" dict.set
+  "rss"                       "content-type" dict.set
+  posts                       "posts" dict.set 
+stack.dup
+"rss" stack.swap mustache "contents" dict.set output-fwrite
 
 
