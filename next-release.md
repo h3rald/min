@@ -68,10 +68,10 @@
 - **xml** module: renamed **xquery** to **xml.query**
 - **xml** module: renamed **xqueryall** to **xml.query-all**
 
-
-
 ### New Features
 
 ### Fixes and Improvements
+
+* Upgraded OpenSSL to v3.3.2.
 
 
