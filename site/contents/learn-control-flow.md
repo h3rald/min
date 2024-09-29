@@ -12,10 +12,10 @@ The {#link-module||global#} provide some symbols that can be used for the most c
 
 The following symbols provide ways to implement common conditional statements:
 
-* {#link-operator||global||case#}
-* {#link-operator||global||if#}
-* {#link-operator||global||unless#}
-* {#link-operator||global||when#}
+* {#link-global-operator||case#}
+* {#link-global-operator||if#}
+* {#link-global-operator||unless#}
+* {#link-global-operator||when#}
 
 For example, consider the following program:
 
@@ -38,9 +38,9 @@ This program defines a symbol `display-file-info` that takes a file name and out
 
 The following symbols provide ways to implement common loops:
 
-* {#link-operator||global||foreach#}
-* {#link-operator||global||times#}
-* {#link-operator||global||while#}
+* {#link-global-operator||foreach#}
+* {#link-global-operator||times#}
+* {#link-global-operator||while#}
 
 
 For example, consider the following program:
@@ -57,15 +57,15 @@ For example, consider the following program:
        f
      ) ^factorial
 
-This program defines a symbol `factorial` that calculates the factorial of an integer iteratively using the symbol {#link-operator||global||while#}.
+This program defines a symbol `factorial` that calculates the factorial of an integer iteratively using the symbol {#link-global-operator||while#}.
 
 ## Error handling
 
 The following symbols provide ways to manage errors in min:
 
-* {#link-operator||global||format-error#}
-* {#link-operator||global||raise#}
-* {#link-operator||global||try#}
+* {#link-global-operator||format-error#}
+* {#link-global-operator||raise#}
+* {#link-global-operator||try#}
 
 For example, consider the following program:
 

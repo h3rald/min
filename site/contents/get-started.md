@@ -72,11 +72,11 @@ If this flag is not specified:
 
 If the **-d:nopcre** is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||global#}:
 
-* {#link-operator||global||search#}
-* {#link-operator||global||match?#}
-* {#link-operator||global||search-all#}
-* {#link-operator||global||replace#}
-* {#link-operator||global||replace-apply#}
+* {#link-global-operator||search#}
+* {#link-global-operator||match?#}
+* {#link-global-operator||search-all#}
+* {#link-global-operator||replace#}
+* {#link-global-operator||replace-apply#}
 
 ## Building a docker image
 
@@ -158,7 +158,7 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 > 
 > [$](class:prompt) min compile myfile.min -n:&quot;-d:release --threadAnalysis:off --mm:refc&quot;
 
-Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-operator||global||load#} or a {#link-operator||global||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
+Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-global-operator||load#} or a {#link-global-operator||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
 
 For example, the following command executed in the root folder of the min project will compile [run.min](class:file) along with all [.min](class:ext) files included in the [tasks](class:dir)  folder and its subfolders:
 
@@ -175,7 +175,7 @@ Similarly, you can also bundle additional files in the executable by specifying 
 
 ## Getting help on a min symbol
 
-min comes with a built-in `help` command that can be used to print information on a specific symbol. Essentially, this is equivalent to use the {#link-operator||global||help#} symbol within the min REPL.
+min comes with a built-in `help` command that can be used to print information on a specific symbol. Essentially, this is equivalent to use the {#link-global-operator||help#} symbol within the min REPL.
 
 > %min-terminal%
 > 

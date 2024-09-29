@@ -30,7 +30,7 @@ The main, root-level scope in min can be accessed using the {#link-module||globa
 
 ## Accessing the current scope
 
-You can access the current scope using the {#link-operator||global||scope#} operator, which pushes a module on the stack that references the current scope.
+You can access the current scope using the {#link-global-operator||scope#} operator, which pushes a module on the stack that references the current scope.
 
 Consider the following program:
 
@@ -40,13 +40,13 @@ In this case:
 
 1. A new variable called `innerscope` is defined on the global scope.
 2. A quotation is dequoted, but its scope is retrieved using the `scope` operator and bound to `innerscope`.
-3. After the quotation is dequoted, myscope is accessed and its symbols (`test` in this case) are pushed on the stack using the {#link-operator||global||scope-symbols#} operator.
+3. After the quotation is dequoted, myscope is accessed and its symbols (`test` in this case) are pushed on the stack using the {#link-global-operator||scope-symbols#} operator.
 
 Note that scopes can only be accessed if they are bound to a dictionary, hence the `global` and `scope` operators push a module on the stack, and a module is nothing but a typed dictionary.
 
 ## Dequoting a quotation within the context of a specific scope
 
-The {#link-operator||global||with#} operator can be used to dequote a quotation within a specific scope instead of the current one.
+The {#link-global-operator||with#} operator can be used to dequote a quotation within a specific scope instead of the current one.
 
 Consider the following program, which leaves `2` on the stack:
 
@@ -56,6 +56,6 @@ In this case, when `with` is pushed on the stack, it will dequote `(4 2 minus)`.
 
      4 2 (-)
 
-At this point, the {#link-operator||global||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
+At this point, the {#link-global-operator||dequote#} operator is pushed on the stack and the subtraction is executed leaving `2` on the stack.
 
 {#link-learn||control-flow||Control Flow#}

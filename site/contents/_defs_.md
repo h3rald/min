@@ -100,7 +100,9 @@
 
 {# link-module => [`$1` Module](/reference-$1/) #}
 
-{# link-operator => [`$2`](/reference-$1#op-$2) #}
+{# link-operator => [$1.$2`](/reference-$1#op-$2) #}
+
+{# link-global-operator => [`$1`](/reference-global#op-$1) #}
 
 {# link-learn => &rarr; Continue to [*$2*](/learn-$1) #}
 
