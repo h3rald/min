@@ -1,5 +1,4 @@
 ; Imports
-'http      import
 'xml       import
 ; Unseal prompt symbol
 'prompt    unseal-symbol

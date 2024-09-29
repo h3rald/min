@@ -6,9 +6,9 @@
   "postman-echo.com"        :host
   "https://$1" (host) => %   :url
 
-  ("$1/get" (url) => % get-content from-json "headers" dict.get "user-agent" dict.get  "min http-module/$1" (version) => % ==) test.assert
+  ("$1/get" (url) => % http.get-content from-json "headers" dict.get "user-agent" dict.get  "min http-module/$1" (version) => % ==) test.assert
 
-  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file download file fs.read from-json "args" dict.get "test" dict.get "Hello!" ==) test.assert
+  ("$1/get?test=Hello!" (url) => % "tests/test1.json" :file file http.download file fs.read from-json "args" dict.get "test" dict.get "Hello!" ==) test.assert
   "tests/test1.json" sys.rm
 
   (
@@ -16,7 +16,7 @@
       ("$1/get" (url) => % "url" dict.set) 
       ("GET" "method" dict.set)
       ({"it-it" :Accept-Language} "headers" dict.set)
-      (request)
+      (http.request)
     ) tap "body" dict.get from-json "headers" dict.get "accept-language" dict.get "it-it" ==
   ) test.assert
 
@@ -25,7 +25,7 @@
       ("$1/put" (url) => % "url" dict.set) 
       ("PUT" "method" dict.set)
       ({} to-json "body" dict.set)
-      (request)
+      (http.request)
     ) tap "body" dict.get from-json "data" dict.get {} ==
   ) test.assert
 
@@ -34,7 +34,7 @@
       ("$1/post" (url) => % "url" dict.set) 
       ("POST" "method" dict.set)
       ({"post" :test} to-json "body" dict.set)
-      (request)
+      (http.request)
     ) tap "headers" dict.get "content-type" dict.get "^application/json" match?
   ) test.assert
 
@@ -43,7 +43,7 @@
       ("$1/patch" (url) => % "url" dict.set) 
       ("PATCH" "method" dict.set)
       ({} to-json "body" dict.set)
-      (request)
+      (http.request)
     ) tap "body" dict.get from-json "data" dict.get {} ==
   ) test.assert
 
@@ -52,7 +52,7 @@
     {} (
       ("$1/delete" (url) => % "url" dict.set) 
       ("DELETE" "method" dict.set)
-      (request)
+      (http.request)
     ) tap "body" dict.get from-json "url" dict.get "https?:\\/\\/$1/delete" (host) => % match?
   ) test.assert
 

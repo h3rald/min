@@ -56,6 +56,7 @@
 - The **math** module is no longer imported. 
 - **math** module: renamed **r2g** to **math.r2d**
 - The **net** module is no longer imported. 
+- The **http** module is no longer imported. 
 
 
 
