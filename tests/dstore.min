@@ -3,32 +3,32 @@
 
 "dstore" test.describe
 
-  ("dstore.json" dsinit type "dict:datastore" ==) test.assert
+  ("dstore.json" dstore.init type "dict:datastore" ==) test.assert
   
   (
-    "dstore.json" dsread :ds
+    "dstore.json" dstore.read :ds
     ds "tests"
     {}
       1 "test1" dict.set
       2 "test2" dict.set
-    dspost dswrite
-    "tests" (stack.pop true) dsquery size 1 ==
+    dstore.post dstore.write
+    "tests" (stack.pop true) dstore.query size 1 ==
   ) test.assert
   
   (
-    "dstore.json" dsread :ds
+    "dstore.json" dstore.read :ds
     ds "tests/aaa"
     {}
       1 "test1" dict.set
       3 "test3" dict.set
-    dsput dswrite
-    "tests" ("test1" dict.get 1 ==) dsquery size 2 ==
+    dstore.put dstore.write
+    "tests" ("test1" dict.get 1 ==) dstore.query size 2 ==
   ) test.assert
   
   (
-    "dstore.json" dsread :ds
-    ds "tests/aaa" dsdelete
-    "tests" ("id" dict.get "aaa" ==) dsquery size 0 ==
+    "dstore.json" dstore.read :ds
+    ds "tests/aaa" dstore.delete
+    "tests" ("id" dict.get "aaa" ==) dstore.query size 0 ==
   ) test.assert
   
   "dstore.json" sys.rm

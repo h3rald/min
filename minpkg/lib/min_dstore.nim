@@ -11,7 +11,7 @@ import
 proc dstore_module*(i: In) =
   let def = i.define()
 
-  def.symbol("dsinit") do (i: In):
+  def.symbol("init") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString
     p.writeFile("{}")
@@ -21,7 +21,7 @@ proc dstore_module*(i: In) =
     d.objType = "datastore"
     i.push d
 
-  def.symbol("dsread") do (i: In):
+  def.symbol("read") do (i: In):
     let vals = i.expect("'sym")
     let p = vals[0].getString
     var j = p.readFile.parseJson
@@ -31,7 +31,7 @@ proc dstore_module*(i: In) =
     d.objType = "datastore"
     i.push d
 
-  def.symbol("dswrite") do (i: In):
+  def.symbol("write") do (i: In):
     let vals = i.expect("dict:datastore")
     let ds = vals[0]
     let p = i.dget(ds, "path".newVal).getString
@@ -39,7 +39,7 @@ proc dstore_module*(i: In) =
     p.writeFile(data.pretty)
     i.push ds
 
-  def.symbol("dshas?") do (i: In):
+  def.symbol("has?") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
     let ds = vals[1]
@@ -56,7 +56,7 @@ proc dstore_module*(i: In) =
       else:
         i.push false.newVal
 
-  def.symbol("dsget") do (i: In):
+  def.symbol("get") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
     let ds = vals[1]
@@ -69,7 +69,7 @@ proc dstore_module*(i: In) =
     let cll = i.dget(data, collection)
     i.push i.dget(cll, id.newVal)
 
-  def.symbol("dsquery") do (i: In):
+  def.symbol("query") do (i: In):
     let vals = i.expect("quot", "'sym", "dict:datastore")
     var filter = vals[0]
     let collection = vals[1]
@@ -91,7 +91,7 @@ proc dstore_module*(i: In) =
         discard
     i.push res.newVal
 
-  def.symbol("dspost") do (i: In):
+  def.symbol("post") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
     var d = vals[0]
     let collection = vals[1]
@@ -105,7 +105,7 @@ proc dstore_module*(i: In) =
     i.dset(cll, id, d)
     i.push ds
 
-  def.symbol("dsput") do (i: In):
+  def.symbol("put") do (i: In):
     let vals = i.expect("dict", "'sym", "dict:datastore")
     var d = vals[0]
     let s = vals[1].getString
@@ -122,7 +122,7 @@ proc dstore_module*(i: In) =
     i.dset(cll, id, d)
     i.push ds
 
-  def.symbol("dsdelete") do (i: In):
+  def.symbol("delete") do (i: In):
     let vals = i.expect("'sym", "dict:datastore")
     let s = vals[0].getString
     let ds = vals[1]

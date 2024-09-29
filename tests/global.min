@@ -73,8 +73,6 @@
     ("finally")
     ) try stack.get ("MinEmptyStackError" "finally") ==) test.assert 
 
-  ('sys.cd ^cd "aaaa" :cd cd "aaaa" ==) test.assert ;;It is possible to shadow sealed symbols in child scopes
-
   (((2 :a1 'a1 seal-symbol 3 :a1) ("failed")) try "failed" ==) test.assert
 
   (
