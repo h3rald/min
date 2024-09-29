@@ -179,7 +179,7 @@ min comes with a built-in `help` command that can be used to print information o
 
 > %min-terminal%
 > 
-> [$](class:prompt) min help dup
+> [$](class:prompt) min help stack.dup
 
 ## Syntax highlighting
 
