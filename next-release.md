@@ -43,20 +43,30 @@
 - **dict** module: renamed **dtype** to **dict.type**
 - The **sys** module is no longer imported. 
 - The **dstore**  module has been renamed to **store**, and is no longer imported. 
-- **store** mdule: renamed **dsinit** to **store.init**
-- **store** mdule: renamed **dsget** to **store.get**
-- **store** mdule: renamed **dshas?** to **store.has?**
-- **store** mdule: renamed **dsput** to **store.put**
-- **store** mdule: renamed **dspost** to **store.post**
-- **store** mdule: renamed **dsdelete** to **store.delete**
-- **store** mdule: renamed **dsquery** to **store.query**
-- **store** mdule: renamed **dswrite** to **store.write**
-- **store** mdule: renamed **dsread** to **store.read**
+- **store** module: renamed **dsinit** to **store.init**
+- **store** module: renamed **dsget** to **store.get**
+- **store** module: renamed **dshas?** to **store.has?**
+- **store** module: renamed **dsput** to **store.put**
+- **store** module: renamed **dspost** to **store.post**
+- **store** module: renamed **dsdelete** to **store.delete**
+- **store** module: renamed **dsquery** to **store.query**
+- **store** module: renamed **dswrite** to **store.write**
+- **store** module: renamed **dsread** to **store.read**
 - The **crypto** module is no longer imported. 
 - The **math** module is no longer imported. 
 - **math** module: renamed **r2g** to **math.r2d**
 - The **net** module is no longer imported. 
 - The **http** module is no longer imported. 
+- The **xml** module is no longer imported. 
+- **xml** module: renamed **xcomment** to **xml.comment**
+- **xml** module: renamed **xentity** to **xml.entity**
+- **xml** module: renamed **xtext** to **xml.text**
+- **xml** module: renamed **xentity2utf8** to **xml.entity2utf8**
+- **xml** module: renamed **xcdata** to **xml.cdata**
+- **xml** module: renamed **xescape** to **xml.escape**
+- **xml** module: renamed **xelement** to **xml.element**
+- **xml** module: renamed **xquery** to **xml.query**
+- **xml** module: renamed **xqueryall** to **xml.query-all**
 
 
 

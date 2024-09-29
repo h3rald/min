@@ -103,34 +103,34 @@ proc xml_module*(i: In) =
             let msg = getCurrentExceptionMsg()
             raiseInvalid(msg)
 
-    def.symbol("xcomment") do (i: In):
+    def.symbol("comment") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newComment(vals[0].getString))
 
-    def.symbol("xcdata") do (i: In):
+    def.symbol("cdata") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newCData(vals[0].getString))
 
-    def.symbol("xtext") do (i: In):
+    def.symbol("text") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newText(vals[0].getString))
 
-    def.symbol("xentity") do (i: In):
+    def.symbol("entity") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newEntity(vals[0].getString))
 
-    def.symbol("xentity2utf8") do (i: In):
+    def.symbol("entity2utf8") do (i: In):
         let vals = i.expect("dict:xml-entity")
         var entity = i.dget(vals[0], "text").getString
         # Strip & and ;
         entity = entity[1..entity.len-2]
         i.push entity.entityToUtf8.newVal
 
-    def.symbol("xescape") do (i: In):
+    def.symbol("escape") do (i: In):
         let vals = i.expect("'sym")
         i.push vals[0].getString.escape.newVal
 
-    def.symbol("xelement") do (i: In):
+    def.symbol("element") do (i: In):
         let vals = i.expect("'sym")
         i.push i.newXDict(newElement(vals[0].getString))
 
@@ -140,14 +140,14 @@ proc xml_module*(i: In) =
         let xml = i.newXml(xdict)
         i.push ($xml).newVal
 
-    def.symbol("xquery") do (i: In):
+    def.symbol("query") do (i: In):
         let vals = i.expect("'sym", "dict:xml-element")
         let xdict = vals[1]
         let query = vals[0].getString
         let root = i.newXml(xdict)
         i.push i.newXDict(root.querySelector(query))
 
-    def.symbol("xqueryall") do (i: In):
+    def.symbol("query-all") do (i: In):
         let vals = i.expect("'sym", "dict:xml-element")
         let xdict = vals[1]
         let query = vals[0].getString

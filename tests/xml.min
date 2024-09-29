@@ -4,48 +4,48 @@
 
 "xml" test.describe
 
-  ("test" xentity "text" dict.get "test" ==) test.assert
+  ("test" xml.entity "text" dict.get "test" ==) test.assert
 
-  ("test" xcomment "text" dict.get "test" ==) test.assert
+  ("test" xml.comment "text" dict.get "test" ==) test.assert
 
-  ("test" xtext "text" dict.get "test" ==) test.assert
+  ("test" xml.text "text" dict.get "test" ==) test.assert
 
-  ("test" xcdata "text" dict.get "test" ==) test.assert
+  ("test" xml.cdata "text" dict.get "test" ==) test.assert
 
-  ("test" xelement "tag" dict.get "test" ==) test.assert
+  ("test" xml.element "tag" dict.get "test" ==) test.assert
 
   (
-   "test" xelement :xnode
+   "test" xml.element :xnode
    xnode {"a" :attr1} "attributes" dict.set @xnode
-   "a1" xelement :child
-   "text..." xtext :text
+   "a1" xml.element :child
+   "text..." xml.text :text
    xnode (child text) => "children" dict.set @xnode
-   xnode to-xml 
+   xnode xml.to-xml 
    "<test attr1=\"a\"><a1 />text...</test>" == ) test.assert
 
    (
-    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
-    xnode "li.test" xquery 
+    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" xml.from-xml :xnode
+    xnode "li.test" xml.query 
     "children" dict.get first "text" dict.get "yes" ==
    ) test.assert
 
    (
-    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" from-xml :xnode
-    xnode "li.test" xqueryall 
+    "<ul><li class='test'>yes</li><li class='test'>...</li><li>no</li></ul>" xml.from-xml :xnode
+    xnode "li.test" xml.query-all 
     size 2 ==
    ) test.assert
 
    (
-    "<b>this is a test</b><img src='test.jpg'><i>&copy</i>" from-html :xnode
-    xnode to-xml "<document>\n  <b>this is a test</b>\n  <img src=\"test.jpg\" />\n  <i>&amp;copy</i>\n</document>" ==
+    "<b>this is a test</b><img src='test.jpg'><i>&copy</i>" xml.from-html :xnode
+    xnode xml.to-xml "<document>\n  <b>this is a test</b>\n  <img src=\"test.jpg\" />\n  <i>&amp;copy</i>\n</document>" ==
    ) test.assert
 
    (
-    "&gt;" xentity xentity2utf8 ">" ==
+    "&gt;" xml.entity xml.entity2utf8 ">" ==
    ) test.assert
 
    (
-    "This is a <i>test</i>" xescape "This is a &lt;i&gt;test&lt;/i&gt;" ==
+    "This is a <i>test</i>" xml.escape "This is a &lt;i&gt;test&lt;/i&gt;" ==
    ) test.assert
 
   test.report
