@@ -43,7 +43,7 @@ title: "Welcome to the min programming language"
     <h2>Examples</h2>
     <p>The following example shows how to find recursively all files in the current folder that were modified in the last hour:</p>
     <pre>
-      <code>. sys.ls-r 
+      <code>sys.pwd sys.ls-r 
 (fs.mtime time.now 3600 - >) 
 seq.filter</code>
     </pre>
