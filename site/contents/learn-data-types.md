@@ -56,9 +56,4 @@ The {#link-module||global#} provides predicate operators to check if an element 
 
 Additionally, the {#link-module||global#} provides operators to convert values from a data type to another (e.g. {#link-global-operator||integer#}, {#link-global-operator||string#}, and so on).
 
-> %note%
-> Note
-> 
-> Most of the operators defined in the {#link-module||num#} are able to operate on both integers and floats.
-
 {#link-learn||operators||Operators#}

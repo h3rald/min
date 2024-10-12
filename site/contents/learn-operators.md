@@ -14,7 +14,7 @@ There are two types of operators: _symbols_ and _sigils_.
 
 ## Symbols
 
-_Symbols_ are the most common type of operator. A min symbol is a single word that is either provided by one of the predefined min {#link-page||reference||modules#} like `dup` or `pwd` or defined by the user. User-defined symbols must:
+_Symbols_ are the most common type of operator. A min symbol is a single word that is either provided by one of the predefined min {#link-page||reference||modules#} like `stack.dup` or `sys.pwd` or defined by the user. User-defined symbols must:
 
 * Start with a letter or an underscore (\_).
 * Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * _ -`
@@ -42,7 +42,7 @@ Also, symbol operator definitions can be annotated with documentation comments (
 
 Sometimes you just want to bind a piece of code to a symbol to reuse it later, typically something simple and easy-to-read. In these cases, you can use the {#link-global-operator||lambda#} operator (or the `^` sigil). For example, the previous `square` operator definition could be rewritten simply as the following.
 
-     (dup *) ^square
+     (stack.dup *) ^square
      
 Note that this feels like using {#link-global-operator||define#}, but the main difference between {#link-global-operator||lambda#} and {#link-global-operator||define#} is that `lambda` only works on quotations doesn't auto-quote them, so that they are immediately evaluated when the corresponding symbol is pushed on the stack.
 
@@ -63,38 +63,22 @@ Besides symbols, you can also define sigils. min provides a set of predefined _s
 
 A sigil can be prepended to a double-quoted string or a single word (with no spaces) which will be treated as a string instead of using the corresponding symbol. 
 
-For example, the following executes the command `ls -al` and pushes the command return code on the stack:
-
-     !"ls -al"
-
 Currently min provides the following sigils:
 
 '
 : Alias for {#link-global-operator||quote#}.
 \:
 : Alias for {#link-global-operator||define#}. 
+?
+: Alias for {#link-global-operator||help#}.
+~
+: Alias for {#link-global-operator||lambda-bind#}. 
+$
+: Alias for {#link-global-operator|||get-env#}. 
 @
 : Alias for {#link-global-operator||bind#}. 
 ^
 : Alias for {#link-global-operator||lambda#}. 
-~
-: Alias for {#link-global-operator||lambda-bind#}. 
->
-: Alias for {#link-global-operator||save-symbol#}. 
-<
-: Alias for {#link-global-operator||load-symbol#}.  
-/
-: Alias for {#link-operator||dict||dget#}. 
-%
-: Alias for {#link-operator||dict||dset#}. 
-?
-: Alias for {#link-global-operator||help#}.
-!
-: Alias for {#link-operator||sys||system#}.
-&
-: Alias for {#link-operator||sys||run#}.
-$
-: Alias for {#link-operator||sys||get-env#}. 
 
 Besides system sigils, you can also create your own sigils. Unlike system sigils however, user defined sigils:
 
@@ -136,7 +120,7 @@ When defining symbols and sigils with the {#link-global-operator||operator#} ope
      (
        symbol square
        (num :n ==> num :result)
-       (n dup * @result)
+       (n stack.dup * @result)
      ) operator
 
 In this case for example the `square` symbol expects a number on the stack, which will be captured to the symbol `n` and it will place a number on the stack which needs to be bound in the operator body to the symbol `result`.
@@ -190,7 +174,7 @@ You can also specify a lambda to be captured to an output value, like this:
        symbol square
        (==> quot ^o)
        (
-         (dup *) ~o
+         (stack.dup *) ~o
        )
      ) ::
      

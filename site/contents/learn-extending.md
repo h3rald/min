@@ -4,11 +4,11 @@ title: "Learn: Extending min"
 -----
 {@ _defs_.md || 0 @}
 
-min provides a fairly complete standard library with many useful modules. However, you may feel the need to extend min in order to perform more specialized tasks.
+{{m}} provides a fairly complete standard library with many useful modules. However, you may feel the need to extend min in order to perform more specialized tasks.
 
 In such situations, you basically have the following options:
 
-* Implementing new min modules using min itself
+* Implementing new {{m}} modules using {{m}} itself
 * Specifying your custom prelude program
 * Embedding min in your [Nim](https://nim-lang.org) program
 
@@ -19,9 +19,9 @@ When you just want to create more high-level min operator using functionalities 
 To create a new module, simply create a file containing your operator definitions implemented using either the {#link-global-operator||operator#} operator or the {#link-global-operator||lambda#} operator
 
 ```
-(dup *)       ^pow2
-(dup dup * *) ^pow3
-(dup * dup *) ^pow4
+(stack.dup *)       ^pow2
+(stack.dup stack.dup * *) ^pow3
+(stack.dup * stack.dup *) ^pow4
 
 ```
 
@@ -33,27 +33,9 @@ Save your code to a file (e.g. *quickpows.min*) and you can use it in other Nim 
 2 qp.pow3 qp.pow2 puts ;prints 64
 ```
 
-## Specifying your custom prelude program
+## Specifying a _prelude_ program
 
-By default, when min is started it loads the following *prelude.min* program:
-
-```
-; Imports
-'io        import
-'sys       import
-'stack     import
-'dict      import
-'time      import
-'fs        import
-'crypto    import
-'math      import
-'net       import
-'http      import
-; Unseal prompt symbol
-'prompt    unseal-symbol
-```
-
-Essentially, this causes min to import *all* the modules and unseals the {#link-global-operator||prompt#} symbol so that it can be customized. If you want, you can provide your own prelude file to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
+If you want, you can execute the {{m}} executable with the `-p` option to specify a _prelude_ program that will be executed when {{m}} is started. This can be useful to specify your custom behaviors, selectively import modules, and define your own symbols, like this:
 
 > %min-terminal%
 > [$](class:prompt) min -i -p:myfile.min

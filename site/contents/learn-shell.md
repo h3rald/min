@@ -29,8 +29,8 @@ Context                                                        | Result
 ---------------------------------------------------------------|--------------
 ...a string                                                    | Auto-completes the current word using file and directory names.
 ...a word starting with `$`                                    | Auto-completes the current word using environment variable names.
-...a word starting with `'`, `@`, `#`, `>`, `<`, `(`, `?`      | Auto-completes the current word using symbol names.
-...a word starting with `*` and optionally containing `/`s     | Auto-completes the current word using dictionaries and their symbol (nested invocation)
+...a word starting with `'`, `@`, `(`, `?`      | Auto-completes the current word using symbol names.
+...a word ending with `.`     | If the current word is a valid dictionary or module, auto-completes any symbol defined in the dictionary or module.
 
 Additionally, the following common shortcuts are also available:
 

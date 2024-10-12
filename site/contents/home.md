@@ -45,7 +45,7 @@ title: "Welcome to the min programming language"
     <pre>
       <code>. sys.ls-r 
 (fs.mtime time.now 3600 - >) 
-filter</code>
+seq.filter</code>
     </pre>
     <p>The following example shows how to calculate the factorial of 5 using the <code>linrec</code> combinator:</p>
     <pre>

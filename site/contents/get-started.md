@@ -110,7 +110,7 @@ You can type min code and press [ENTER](class:kbd) to evaluate it immediately:
 The result of each operation will be placed on top of the stack, and it will be available to subsequent operation
 
 > %min-terminal%
-> [[/Users/h3rald/test]$](class:prompt) dup *
+> [[/Users/h3rald/test]$](class:prompt) stack.dup *
 >  16
 > [[/Users/h3rald/test]$](class:prompt)
 
@@ -125,7 +125,7 @@ To exit min shell, press [CTRL+C](class:kbd) or type [0 exit](class:cmd) and pre
 
 To execute a min script, you can:
 
-* Run `min eval "... program..."` to execute a program inline.
+* Run `min eval "...program..."` to execute a program inline.
 * Run `min myfile.min` to execute a program contained in a file.
 * Run `min run <mmm>` to execute the `main` symbol of the specified {#link-page||learn-mmm||min managed module#}. If the managed module is not installed globally, it will be downloaded and installed automatically.
 
