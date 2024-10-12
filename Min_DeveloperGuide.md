@@ -121,21 +121,9 @@
 
 {@ site/contents/reference-fs.md || 1 @}
 
-### `logic` Module
-
-{@ site/contents/reference-logic.md || 1 @}
-
-### `str` Module
-
-{@ site/contents/reference-str.md || 1 @}
-
 ### `sys` Module
 
 {@ site/contents/reference-sys.md || 1 @}
-
-### `num` Module
-
-{@ site/contents/reference-num.md || 1 @}
 
 ### `time` Module
 
