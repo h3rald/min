@@ -14,7 +14,7 @@ Empties the stack.#}
 > > 
 > > The following program leaves 2 on the stack:
 > > 
-> > `(1 2 3) ((sum) (size)) cleave /`#}
+> > `(1 2 3) ((sum) (size)) stack.cleave /`#}
 
 {#op||cons||{{a1}} ({{a0p}})||({{a1}} {{a0p}})||
 Prepends {{a1}} to the quotation on top of the stack.#}
@@ -38,7 +38,7 @@ Does nothing.#}
 > > 
 > > The following program leaves `5 3` on the stack:
 > > 
-> > `2 3 '+ keep` #}
+> > `2 3 '+ stack.keep` #}
 
 {#op||nip||{{a1}} {{a2}}||{{a2}}||
 Removes the second element from the stack.#}
@@ -71,7 +71,7 @@ Saves the {{q1}}, dequotes {{q2}}, and restores {{q1}}.#}
 > > 
 > > The following program leaves `(1 4)` on the stack:
 > > 
-> > `(1 2) (3 4) ((0 get) (1 get)) spread` #}
+> > `(1 2) (3 4) ((0 get) (1 get)) stack.spread` #}
 
 {#op||swap||{{a1}} {{a2}}||{{a2}} {{a1}}||
 Swaps the first two elements on the stack. #}

@@ -24,7 +24,7 @@ Returns the value of key {{sl}} from dictionary {{d}}, wrapped in a {{rawval}}. 
 > >  
 > > The following program returns {{t}}:
 > > 
-> >     {true :a1 "aaa" :a2 false :a3} 'a2 dhas?
+> >     {true :a1 "aaa" :a2 false :a3} 'a2 dict.has?
  #}
 
 {#op||keys||{{d}}||({{s}}{{0p}})||
@@ -38,7 +38,7 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 > >  
 > > The following program returns `{4 :a 7 :d}`:
 > > 
-> >     {5 :q 4 :a 6 :c 7 :d "d" :a} ("a" "d") dpick
+> >     {5 :q 4 :a 6 :c 7 :d "d" :a} ("a" "d") dict.pick
  #}
 
 {#op||pairs||{{d}}||({{a0p}})||
@@ -48,7 +48,7 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 > > Example
 > >
 > > A The following program returns `((1 "a") (2 "b"))`:
-> >     {1 :a 2 :b} dpairs
+> >     {1 :a 2 :b} dict.pairs
 #}
 
 {#op||set||{{d}} {{any}} {{sl}}||{{d}}||

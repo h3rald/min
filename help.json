@@ -533,7 +533,7 @@
       "signature": "dict 'sym ==> dict:rawval"
     },
     "dict.has?": {
-      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\n \n \n Example\n  \n The following program returns true:\n \n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dhas?",
+      "description": "Returns true if dictionary dict contains the key 'sym, false  otherwise.\n \n \n Example\n  \n The following program returns true:\n \n     {true :a1 \"aaa\" :a2 false :a3} 'a2 dict.has?",
       "kind": "symbol",
       "module": "dict",
       "name": "has?",
@@ -547,14 +547,14 @@
       "signature": "dict ==> (str*)"
     },
     "dict.pairs": {
-      "description": "Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary dict. \n \n \n Example\n\n A The following program returns ((1 \"a\") (2 \"b\")):\n     {1 :a 2 :b} dpairs",
+      "description": "Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary dict. \n \n \n Example\n\n A The following program returns ((1 \"a\") (2 \"b\")):\n     {1 :a 2 :b} dict.pairs",
       "kind": "symbol",
       "module": "dict",
       "name": "pairs",
       "signature": "dict ==> (a*)"
     },
     "dict.pick": {
-      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\n \n \n Example\n  \n The following program returns {4 :a 7 :d}:\n \n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dpick",
+      "description": "Returns a new dictionary dict2 containing the elements of dict1 whose keys are included in quot.\n \n \n Example\n  \n The following program returns {4 :a 7 :d}:\n \n     {5 :q 4 :a 6 :c 7 :d \"d\" :a} (\"a\" \"d\") dict.pick",
       "kind": "symbol",
       "module": "dict",
       "name": "pick",
@@ -601,62 +601,6 @@
       "module": "global",
       "name": "div",
       "signature": "int1 int2 ==> int3"
-    },
-    "dstore.dsdelete": {
-      "description": "Removes an item from the datastore dict:datastore. The item is uniquely identified by 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/). Puts the reference to the modified datastore back on tbe stack.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsdelete",
-      "signature": "dict:datastore 'sym ==> dict:datastore"
-    },
-    "dstore.dsget": {
-      "description": "Retrieves item dict from datastore dict:datastore. dict is retrieved by specifying 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/).",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsget",
-      "signature": "dict:datastore 'sym ==> dict"
-    },
-    "dstore.dsinit": {
-      "description": "Initializes a bew datastore by creating the 'sym JSON file. Puts the datastore instance on the stack.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsinit",
-      "signature": "'sym ==> dict:datastore"
-    },
-    "dstore.dspost": {
-      "description": "Adds the dictionary dict to the datastore dict:datastore inside collection 'sym, generating and adding a unique **id** field to dict. If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dspost",
-      "signature": "dict:datastore 'sym dict ==> dict:datastore"
-    },
-    "dstore.dsput": {
-      "description": "Adds the dictionary dict to the datastore dict:datastore. 'sym contains the collection where dict will be placed and the id of dict, separated by a forward slash (/). If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsput",
-      "signature": "dict:datastore 'sym dict ==> dict:datastore"
-    },
-    "dstore.dsquery": {
-      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" ('author dget \"h3rald\" ==) dsquery",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsquery",
-      "signature": "dict:datastore 'sym quot ==> (dict*)"
-    },
-    "dstore.dsread": {
-      "description": "Reads the previously-created datastore from the file 'sym and puts the resulting datastore instance on the stack.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dsread",
-      "signature": "'sym ==> dict:datastore"
-    },
-    "dstore.dswrite": {
-      "description": "Writes the contents of the datastore dict:datastore to the filesystem.",
-      "kind": "symbol",
-      "module": "dstore",
-      "name": "dswrite",
-      "signature": "dict:datastore ==> dict:datastore"
     },
     "escape": {
       "description": "Returns a copy of 'sym with quotes and backslashes escaped with a backslash.",
@@ -988,14 +932,14 @@
       "signature": "str1 ==> str2"
     },
     "http.request": {
-      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\n\n \n Example\n \n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" 'method dget\n       \"http://httpbin.org/ip\" 'url dset\n     request",
+      "description": "Performs an HTTP request. Note that dict is can be a standard (untyped) dictionary but its fields will be validated like if it was a dict:http-request.\n\n \n Example\n \n The following code constructs dict and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip:\n \n     {}\n       \"GET\" 'method dict.get\n       \"http://httpbin.org/ip\" 'url dict.set\n     request",
       "kind": "symbol",
       "module": "http",
       "name": "request",
       "signature": "dict ==> dict:http-response"
     },
     "http.start-server": {
-      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body 'body dset\n       dup puts!\n     )\n     ; The request handler is ready, give it the name handler\n     :handler\n     \n     ; Create the parameter dictionary for the server\n     {}\n     handler 'handler dset\n     5555 'port dset\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
+      "description": "Starts an HTTP server based on the configuration provided in dict.\n \n dict is a dictionary containing the following keys:\n \n address\n : The address to bind the server to (default: **127.0.0.1**).\n port\n : The port to bind the server to.\n handler\n : A quotation with the following signature, used to handle all incoming requests: [dict:http-request &rArr; dict:http-response](class:kwd)\n \n \n Example\n \n The following program starts a very simple HTTP server that can display the current timestamp or date and time in ISO 8601 format:\n \n     ; Define the request handler\n     (\n       ; Assume there is a request on the stack, take it off and give it the name req\n       :req\n       ; Let's see what we got (print req to standard out)\n       \"THE REQUEST:\" puts! req puts!\n       ; The request is a dictionary, we retrieve the value for the key url, and give it the name url\n       req /url :url\n       \"THE URL is '$1'.\" url quote ))\n       ) case\n       :body\n       ; Prepare the response\n       {} body 'body dict.set\n       stack.dup puts!\n     )\n     ; The request handler is ready, give it the name handler\n     :handler\n     \n     ; Create the parameter dictionary for the server\n     {}\n     handler 'handler dict.set\n     5555 'port dict.set\n     \n     ; Start server\n     \"Server started on port 5555.\" puts!\n     \"Press Ctrl+C to stop.\" puts!\n     start-server",
       "kind": "symbol",
       "module": "http",
       "name": "start-server",
@@ -1065,7 +1009,7 @@
       "signature": "a ==> bool"
     },
     "interpolate": {
-      "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (. (. ls 'file? filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
+      "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (sys.pwd (sys.pwd sys.ls 'fs.file? seq.filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
       "kind": "symbol",
       "module": "global",
       "name": "interpolate",
@@ -1170,7 +1114,7 @@
       "signature": "a ==> a"
     },
     "io.mapkey": {
-      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l mapkey \n \n causes the CTRL+L key to clear the screen.",
+      "description": "Maps the named key/key combination 'sym to the quotation quot, so that quot is executed when key 'sym is pressed. \n\n \n Notes\n\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\n * The quotation will be executed by a copy of the min interpreter created when the mapping was defined. In other words, quotations executed by key bindings will not affect the current stack.\n \n \n Example\n \n The following program:\n \n     (clear) 'ctrl+l io.mapkey \n \n causes the CTRL+L key to clear the screen.",
       "kind": "symbol",
       "module": "io",
       "name": "mapkey",
@@ -1513,14 +1457,14 @@
       "signature": "dict:socket ==> "
     },
     "net.connect": {
-      "description": "Connects socket dict:socket to address str and port int.\n \n \n Example\n \n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\n \n     {} socket \"localhost\" 7777 connect :cli\n     \n     args 1 get :msg\n     \n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  send\n     \n     \"Done.\" puts!\n     \n     cli close",
+      "description": "Connects socket dict:socket to address str and port int.\n \n \n Example\n \n The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.\n \n     {} net.socket \"localhost\" 7777 net.connect :cli\n     \n     args 1 get :msg\n     \n     \"Sending message \\\"$1\\\" to localhost:7777...\" (msg) =  net.send\n     \n     \"Done.\" puts!\n     \n     cli net.close",
       "kind": "symbol",
       "module": "net",
       "name": "connect",
       "signature": "dict:socket str int ==> dict:socket"
     },
     "net.listen": {
-      "description": "Makes socket dict:socket1 listen to the specified address and port. dict can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.\n \n address\n : The address to listen to (default: **0.0.0.0**).\n port\n : The port to listen to (default: **80**).\n \n \n Example\n \n The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string exit:\n \n     {} socket {\"127.0.0.1\" :address 7777 :port} listen :srv\n     \n     \"Server listening on localhost:7777\" puts!\n     \n     {} socket :cli\n     \"\" :line\n     (line \"exit\" !=)\n     (\n       srv cli accept #cli\n       cli recv-line @line\n       \"Received: $1\" (line) = % puts!\n     ) while\n     \n     \"Exiting...\" puts!\n     \n     srv close",
+      "description": "Makes socket dict:socket1 listen to the specified address and port. dict can be empty or contain any of the following properties, used to specify the address and port to listen to respectively.\n \n address\n : The address to listen to (default: **0.0.0.0**).\n port\n : The port to listen to (default: **80**).\n \n \n Example\n \n The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string exit:\n \n     {} net.socket {\"127.0.0.1\" :address 7777 :port} net.listen :srv\n     \n     \"Server listening on localhost:7777\" puts!\n     \n     {} net.socket :cli\n     \"\" :line\n     (line \"exit\" !=)\n     (\n       srv cli net.accept #cli\n       cli net.recv-line @line\n       \"Received: $1\" (line) = % puts!\n     ) while\n     \n     \"Exiting...\" puts!\n     \n     srv net.close",
       "kind": "symbol",
       "module": "net",
       "name": "listen",
@@ -1534,7 +1478,7 @@
       "signature": "dict:socket int ==> str"
     },
     "net.recv-line": {
-      "description": "Waits to receive a line of data from dict:socket and returns the resulting data str. \"\" is returned if dict:socket is disconnected.\n \n \n Example\n \n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\n \n \n     {} socket \"httpbin.org\" 80 connect :cli\n    \n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" send\n   \n     cli recv-line puts :line\n     (line \"\\}\" match not) \n     (\n       cli recv-line puts @line\n     ) while",
+      "description": "Waits to receive a line of data from dict:socket and returns the resulting data str. \"\" is returned if dict:socket is disconnected.\n \n \n Example\n \n The following code shows how to make a simple GET request to <http://httpbin.org/uuid to receive a random UUID and display its response:\n \n \n     {} net.socket \"httpbin.org\" 80 net.connect :cli\n    \n     cli \"GET /uuid HTTP/1.1\\r\\nHost: httpbin.org\\r\\n\\r\\n\" net.send\n   \n     cli net.recv-line puts :line\n     (line \"\\}\" match not) \n     (\n       cli net.recv-line puts @line\n     ) while",
       "kind": "symbol",
       "module": "net",
       "name": "recv-line",
@@ -1660,18 +1604,11 @@
       "signature": "quot ==> int"
     },
     "prompt": {
-      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\n \n     (\"[$1]$$ \" (.) = %)\n \n Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.",
+      "description": "This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:\n \n     (\"[$1]$$ \" (sys.pwd) = sidebar%\n Example\n \n Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:\n 'my-local-symbol global publish",
       "kind": "symbol",
       "module": "global",
       "name": "prompt",
       "signature": " ==> str"
-    },
-    "publish": {
-      "description": "Publishes symbol 'sym to the scope of dict.\n \n \n Example\n \n Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:\n 'my-local-symbol global publish",
-      "kind": "symbol",
-      "module": "global",
-      "name": "publish",
-      "signature": "'sym dict ==> "
     },
     "put-env": {
       "description": "Sets environment variable 'sym2 to 'sym1.",
@@ -1946,7 +1883,7 @@
       "signature": "quot1 quot2 ==> quot3"
     },
     "seq.difference": {
-      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
+      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.difference",
       "kind": "symbol",
       "module": "seq",
       "name": "difference",
@@ -1960,14 +1897,14 @@
       "signature": "quot1 int ==> quot2"
     },
     "seq.filter": {
-      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (dup 20 < swap even? and) filter",
+      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (stackdup 20 < stack.swap even? and) seq.filter",
       "kind": "symbol",
       "module": "seq",
       "name": "filter",
       "signature": "quot1 quot2 ==> quot3"
     },
     "seq.find": {
-      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) find",
+      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) seq.find",
       "kind": "symbol",
       "module": "seq",
       "name": "find",
@@ -1981,7 +1918,7 @@
       "signature": "quot ==> a"
     },
     "seq.flatten": {
-      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     flatten",
+      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     seq.flatten",
       "kind": "symbol",
       "module": "seq",
       "name": "flatten",
@@ -1995,7 +1932,7 @@
       "signature": "quot int ==> a"
     },
     "seq.harvest": {
-      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     harvest",
+      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     seq.harvest",
       "kind": "symbol",
       "module": "seq",
       "name": "harvest",
@@ -2016,7 +1953,7 @@
       "signature": "quot1 a int ==> quot2"
     },
     "seq.intersection": {
-      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
+      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.intersection",
       "kind": "symbol",
       "module": "seq",
       "name": "intersection",
@@ -2037,7 +1974,7 @@
       "signature": "quot1 quot2 ==> quot3"
     },
     "seq.map-reduce": {
-      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (dup *) (+) map-reduce",
+      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (stack.dup *) (+) seq.map-reduce",
       "kind": "symbol",
       "module": "seq",
       "name": "map-reduce",
@@ -2051,7 +1988,7 @@
       "signature": "quot1 quot2 ==> bool"
     },
     "seq.partition": {
-      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) partition",
+      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) seq.partition",
       "kind": "symbol",
       "module": "seq",
       "name": "partition",
@@ -2079,7 +2016,7 @@
       "signature": "quot int ==> dict:rawval"
     },
     "seq.reduce": {
-      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
+      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) seq.reduce",
       "kind": "symbol",
       "module": "seq",
       "name": "reduce",
@@ -2142,21 +2079,21 @@
       "signature": "quot ==> int"
     },
     "seq.slice": {
-      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 slice",
+      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 seq.slice",
       "kind": "symbol",
       "module": "seq",
       "name": "slice",
       "signature": "quot1 int1 int2 ==> quot2"
     },
     "seq.sort": {
-      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' sort",
+      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' seq.sort",
       "kind": "symbol",
       "module": "seq",
       "name": "sort",
       "signature": "quot1 quot2 ==> quot3"
     },
     "seq.symmetric-difference": {
-      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
+      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.symmetric-difference",
       "kind": "symbol",
       "module": "seq",
       "name": "symmetric-difference",
@@ -2170,7 +2107,7 @@
       "signature": "quot1 int ==> quot2"
     },
     "seq.union": {
-      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
+      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.union",
       "kind": "symbol",
       "module": "seq",
       "name": "union",
@@ -2219,7 +2156,7 @@
       "signature": "a ==> "
     },
     "stack.cleave": {
-      "description": "Applies each quotation contained in the first element to the second element a1.\n \n Example\n \n The following program leaves 2 on the stack:\n \n (1 2 3) ((sum) (size)) cleave /",
+      "description": "Applies each quotation contained in the first element to the second element a1.\n \n Example\n \n The following program leaves 2 on the stack:\n \n (1 2 3) ((sum) (size)) stack.cleave /",
       "kind": "symbol",
       "module": "stack",
       "name": "cleave",
@@ -2261,7 +2198,7 @@
       "signature": " ==> "
     },
     "stack.keep": {
-      "description": "Removes the first element from the stack, dequotes it, and restores the second element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ keep",
+      "description": "Removes the first element from the stack, dequotes it, and restores the second element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ stack.keep",
       "kind": "symbol",
       "module": "stack",
       "name": "keep",
@@ -2324,7 +2261,7 @@
       "signature": "quot1 quot2 ==> a* quot1"
     },
     "stack.spread": {
-      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves (1 4) on the stack:\n \n (1 2) (3 4) ((0 get) (1 get)) spread",
+      "description": "Applies each quotation contained in the first element to each subsequent corresponding element.\n \n Example\n \n The following program leaves (1 4) on the stack:\n \n (1 2) (3 4) ((0 get) (1 get)) stack.spread",
       "kind": "symbol",
       "module": "stack",
       "name": "spread",
@@ -2343,6 +2280,62 @@
       "module": "stack",
       "name": "swons",
       "signature": "(a*) a1 ==> (a1 a*)"
+    },
+    "store.delete": {
+      "description": "Removes an item from the datastore dict:datastore. The item is uniquely identified by 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/). Puts the reference to the modified datastore back on tbe stack.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "delete",
+      "signature": "dict:datastore 'sym ==> dict:datastore"
+    },
+    "store.get": {
+      "description": "Retrieves item dict from datastore dict:datastore. dict is retrieved by specifying 'sym, which contains the collection containing the item and the item id, separated by a forward slash (/).",
+      "kind": "symbol",
+      "module": "store",
+      "name": "get",
+      "signature": "dict:datastore 'sym ==> dict"
+    },
+    "store.init": {
+      "description": "Initializes a bew datastore by creating the 'sym JSON file. Puts the datastore instance on the stack.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "init",
+      "signature": "'sym ==> dict:datastore"
+    },
+    "store.post": {
+      "description": "Adds the dictionary dict to the datastore dict:datastore inside collection 'sym, generating and adding a unique **id** field to dict. If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "post",
+      "signature": "dict:datastore 'sym dict ==> dict:datastore"
+    },
+    "store.put": {
+      "description": "Adds the dictionary dict to the datastore dict:datastore. 'sym contains the collection where dict will be placed and the id of dict, separated by a forward slash (/). If the collection 'sym does not exist it is created. Puts the reference to the modified datastore back on tbe stack.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "put",
+      "signature": "dict:datastore 'sym dict ==> dict:datastore"
+    },
+    "store.query": {
+      "description": "Retrieves a quotation of dictionaries from the collection 'sym of datastore dict:datastore obtained by applying quot as a filter to each item of the collection, picking only the elements that match the filter.\n\n \n Example\n\n Assuming that **ds** is a datastore, the following program retrieves all elements of teh collection **posts** whose author field is set to \"h3rald\":\n\n      ds \"posts\" ('author dget \"h3rald\" ==) dquery",
+      "kind": "symbol",
+      "module": "store",
+      "name": "query",
+      "signature": "dict:datastore 'sym quot ==> (dict*)"
+    },
+    "store.read": {
+      "description": "Reads the previously-created datastore from the file 'sym and puts the resulting datastore instance on the stack.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "read",
+      "signature": "'sym ==> dict:datastore"
+    },
+    "store.write": {
+      "description": "Writes the contents of the datastore dict:datastore to the filesystem.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "write",
+      "signature": "dict:datastore ==> dict:datastore"
     },
     "string": {
       "description": "Converts a to its string representation.",
@@ -2422,7 +2415,7 @@
       "signature": "'sym ==> "
     },
     "sys.chmod": {
-      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n \"/tmp/test.txt 755 chmod\"",
+      "description": "Sets the permissions of file or directory 'sym to int. int is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.\n \n \n Example\n \n The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:\n \n \"/tmp/test.txt 755 sys.chmod\"",
       "kind": "symbol",
       "module": "sys",
       "name": "chmod",
@@ -2569,7 +2562,7 @@
       "signature": "quot 'sym ==> "
     },
     "tap": {
-      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (dup 'a dget succ succ 'a dset)\n       (dup 'b dget succ 'b dset)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
+      "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (stack.dup 'a dict.get succ succ 'a dict.set)\n       (stack.dup 'b dict.get succ 'b dict.set)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
       "kind": "symbol",
       "module": "global",
       "name": "tap",
@@ -2688,7 +2681,7 @@
       "signature": "str ==> quot"
     },
     "try": {
-      "description": "Evaluates a quotation as a try/catch/finally block. \n \n The must contain the following elements:\n \n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\n \n \n Example\n \n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\n \n       (\n         (pop)\n         (format-error puts)\n         (0)\n       ) try",
+      "description": "Evaluates a quotation as a try/catch/finally block. \n \n The must contain the following elements:\n \n 1. A quotation quot1 containing the code to be evaluated (_try_ block).\n 1. _(optional)_ A quotation quot2 containing the code to execute in case of error (_catch_ block).\n 1. _(optional)_ A quotation quot3 containing the code to execute after the code has been evaluated, whether an error occurred or not (_finally_ block).\n \n \n Example\n \n The following program executed on an empty stack prints the message \"Insufficient items on the stack\" and pushes 0 on the stack:\n \n       (\n         (stack.pop)\n         (format-error puts)\n         (0)\n       ) try",
       "kind": "symbol",
       "module": "global",
       "name": "try",
@@ -2777,6 +2770,48 @@
       "module": "io",
       "name": "write"
     },
+    "xml.cdata": {
+      "description": "Returns a dict:xml-cdata representing an XML CDATA section.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "cdata",
+      "signature": "'sym ==> dict:xml-cdata"
+    },
+    "xml.comment": {
+      "description": "Returns a dict:xml-comment representing an XML comment.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "comment",
+      "signature": "'sym ==> dict:xml-comment"
+    },
+    "xml.element": {
+      "description": "Returns a dict:xml-element representing an XML element (it will be an empty element with no attributes or children).",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "element",
+      "signature": "'sym ==> dict:xml-element"
+    },
+    "xml.entity": {
+      "description": "Returns a dict:xml-entity representing an XML entity.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "entity",
+      "signature": "'sym ==> dict:xml-entity"
+    },
+    "xml.entity2utf8": {
+      "description": "Returns the UTF-8 symbol corresponding to the specified XML entity. \n \n \n Example\n \n The following program prints p to the screen:\n \n      \"&gt;\" xml.entity xml.entity2utf8 puts!",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "entity2utf8",
+      "signature": "dict:xml-entity ==> str"
+    },
+    "xml.escape": {
+      "description": "Converts any <, `, &, ', and \"` present in 'sym into the corresponding XML entities.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "escape",
+      "signature": "'sym ==> str"
+    },
     "xml.from-html": {
       "description": "Returns an xml-node representing an HTML string (wrapped in a <document tag unless a valid HTML document is provided as input).",
       "kind": "symbol",
@@ -2791,75 +2826,33 @@
       "name": "from-xml",
       "signature": "'sym ==> xml-node"
     },
+    "xml.query": {
+      "description": "Returns an dict:xml-element representing the first element matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     xml.from-xml \".test\" xml.query\n Returns the following:\n\n     {\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "query",
+      "signature": "dict:xml-element 'sym ==> dict:xml-element"
+    },
+    "xml.queryall": {
+      "description": "Returns a list of dict:xml-element dictionaries representing all the elements matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     xml.from-xml \".test\" xml.queryall\n Returns the following:\n\n     ({\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }\n     {\n       {\"test\" :class} :attributes \n       ({\"third\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     })",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "queryall",
+      "signature": "dict:xml-element 'sym ==> dict:xml-element"
+    },
+    "xml.text": {
+      "description": "Returns a dict:xml-text representing an XML text node.",
+      "kind": "symbol",
+      "module": "xml",
+      "name": "text",
+      "signature": "'sym ==> dict:xml-text"
+    },
     "xml.to-xml": {
       "description": "Returns a str representing an XML node.",
       "kind": "symbol",
       "module": "xml",
       "name": "to-xml",
       "signature": "xml-node ==> str"
-    },
-    "xml.xcdata": {
-      "description": "Returns a dict:xml-cdata representing an XML CDATA section.",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xcdata",
-      "signature": "'sym ==> dict:xml-cdata"
-    },
-    "xml.xcomment": {
-      "description": "Returns a dict:xml-comment representing an XML comment.",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xcomment",
-      "signature": "'sym ==> dict:xml-comment"
-    },
-    "xml.xelement": {
-      "description": "Returns a dict:xml-element representing an XML element (it will be an empty element with no attributes or children).",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xelement",
-      "signature": "'sym ==> dict:xml-element"
-    },
-    "xml.xentity": {
-      "description": "Returns a dict:xml-entity representing an XML entity.",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xentity",
-      "signature": "'sym ==> dict:xml-entity"
-    },
-    "xml.xentity2utf8": {
-      "description": "Returns the UTF-8 symbol corresponding to the specified XML entity. \n \n \n Example\n \n The following program prints p to the screen:\n \n      \"&gt;\" xentity xentity2utf8 puts",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xentity2utf8",
-      "signature": "dict:xml-entity ==> str"
-    },
-    "xml.xescape": {
-      "description": "Converts any <, `, &, ', and \"` present in 'sym into the corresponding XML entities.",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xescape",
-      "signature": "'sym ==> str"
-    },
-    "xml.xquery": {
-      "description": "Returns an dict:xml-element representing the first element matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     from-xml \".test\" xquery\n Returns the following:\n\n     {\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xquery",
-      "signature": "dict:xml-element 'sym ==> dict:xml-element"
-    },
-    "xml.xqueryall": {
-      "description": "Returns a list of dict:xml-element dictionaries representing all the elements matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     from-xml \".test\" xqueryall\n Returns the following:\n\n     ({\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }\n     {\n       {\"test\" :class} :attributes \n       ({\"third\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     })",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xqueryall",
-      "signature": "dict:xml-element 'sym ==> dict:xml-element"
-    },
-    "xml.xtext": {
-      "description": "Returns a dict:xml-text representing an XML text node.",
-      "kind": "symbol",
-      "module": "xml",
-      "name": "xtext",
-      "signature": "'sym ==> dict:xml-text"
     },
     "xor": {
       "description": "Returns true if bool1 and bool2 are different, false  otherwise.",

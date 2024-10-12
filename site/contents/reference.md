@@ -7,31 +7,32 @@ title: "Reference"
 min includes a small but powerful standard library organized into the following _modules_:
 
 {#link-module||global#}
-: Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc.
-{#link-module||stack#}
-: Defines combinators and stack-shufflers like dip, dup, swap, cons, etc.
-{#link-module||seq#}
-: Defines operators for quotations, like map, filter, reduce, etc.
-{#link-module||dict#}
-: Defines operators for dictionaries, like dget, ddup, dset, etc.
-{#link-module||store#}
-: Provides support for simple, persistent, in-memory JSON stores.
-{#link-module||io#}
-: Provides operators for reading and writing files as well as printing to STDOUT and reading from STDIN.
-{#link-module||fs#}
-: Provides operators for accessing file information and properties. 
-{#link-module||sys#}
-: Provides operators to use as basic shell commands, access environment variables, and execute external commands.
-{#link-module||time#}
-: Provides a few basic operators to manage dates, times, and timestamps.
+: Defines the basic language constructs, such as control flow, type conversions, symbol definition and binding, exception handling,  etc. This module is automatically imported (no need to prepend `global.` . to reference its symbols).
+
 {#link-module||crypto#}
 : Provides operators to compute hashes (MD4, MD5, SHA1, SHA224, SHA256, SHA384, sha512), base64 encoding/decoding, and AES encryption/decryption.
+{#link-module||dict#}
+: Defines operators for dictionaries, like `dict.get`, `dict.dup`, `dict.set`, etc.
+{#link-module||fs#}
+: Provides operators for reading and writing files, and accessing file information and properties. 
+{#link-module||http#}
+: Provides operators to perform HTTP requests, download files and create basic HTTP servers.
+{#link-module||io#}
+: Provides operators for writing to STDOUT, reading from STDIN, capturing key presses, etc.
 {#link-module||math#}
 : Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
 {#link-module||net#}
 : Provides basic supports for sockets (some features are not supported on Windows systems).
-{#link-module||http#}
-: Provides operators to perform HTTP requests, download files and create basic HTTP servers.
+{#link-module||seq#}
+: Defines operators for quotations, like `seq.map`, `seq.filter`, `seq.reduce`, etc.
+{#link-module||stack#}
+: Defines combinators and stack-shufflers like `stack.pop`, `stack.dup`, `stack.swap`, `stack.cons`, etc.
+{#link-module||store#}
+: Provides support for simple, persistent, in-memory JSON stores.
+{#link-module||sys#}
+: Provides operators to use as basic shell commands, access environment variables, and execute external commands.
+{#link-module||time#}
+: Provides a few basic operators to manage dates, times, and timestamps.
 {#link-module||xml#}
 : Provides operators for parsing, creating and querying XML/HTML code using CSS selectors.
 

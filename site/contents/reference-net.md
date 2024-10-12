@@ -18,17 +18,17 @@ Closes a previously-opened socket. #}
 > > 
 > > The following code shows how to send a message to a server running on localhost:7777. The message is passed as the first argument to the program.
 > > 
-> >     {} socket "localhost" 7777 connect :cli
+> >     {} net.socket "localhost" 7777 net.connect :cli
 > >     
 > >     args 1 get :msg
 > >     
 > >     "Sending message \"$1\" to localhost:7777..." (msg) => % puts!
 > >     
-> >     cli "$1\n" (msg) => % send
+> >     cli "$1\n" (msg) => % net.send
 > >     
 > >     "Done." puts!
 > >     
-> >     cli close
+> >     cli net.close
  #}
 
 {#op||listen||{{d}} {{sock1}}||{{sock2}}||
@@ -44,22 +44,22 @@ Closes a previously-opened socket. #}
 > > 
 > > The following code shows how to create a simple server that listens on port 7777, prints data received from clients, and exits when it receives the string `exit`:
 > > 
-> >     {} socket {"127.0.0.1" :address 7777 :port} listen :srv
+> >     {} net.socket {"127.0.0.1" :address 7777 :port} net.listen :srv
 > >     
 > >     "Server listening on localhost:7777" puts!
 > >     
-> >     {} socket :cli
+> >     {} net.socket :cli
 > >     "" :line
 > >     (line "exit" !=)
 > >     (
-> >       srv cli accept #cli
-> >       cli recv-line @line
+> >       srv cli net.accept #cli
+> >       cli net.recv-line @line
 > >       "Received: $1" (line) => % puts!
 > >     ) while
 > >     
 > >     "Exiting..." puts!
 > >     
-> >     srv close
+> >     srv net.close
  #}
 
 {#op||recv||{{sock}} {{i}}||{{s}}||
@@ -74,14 +74,14 @@ Waits to receive {{i}} characters from {{sock}} and returns the resulting data {
 > > The following code shows how to make a simple GET request to <http://httpbin.org/uuid> to receive a random UUID and display its response:
 > > 
 > > 
-> >     {} socket "httpbin.org" 80 connect :cli
+> >     {} net.socket "httpbin.org" 80 net.connect :cli
 > >    
-> >     cli "GET /uuid HTTP/1.1\r\nHost: httpbin.org\r\n\r\n" send
+> >     cli "GET /uuid HTTP/1.1\r\nHost: httpbin.org\r\n\r\n" net.send
 > >   
-> >     cli recv-line puts :line
+> >     cli net.recv-line puts :line
 > >     (line "\}" match not) 
 > >     (
-> >       cli recv-line puts @line
+> >       cli net.recv-line puts @line
 > >     ) while
  #}
 

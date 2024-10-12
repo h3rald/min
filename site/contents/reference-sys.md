@@ -15,7 +15,7 @@ Returns {{t}} if the program is being run with administrative privileges. #}
 > > 
 > > The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:
 > > 
-> > `"/tmp/test.txt 755 chmod"`#}
+> > `"/tmp/test.txt 755 sys.chmod"`#}
 
 {#op||cd||{{sl}}||{{none}}||
 Change the current directory to {{sl}}. #}

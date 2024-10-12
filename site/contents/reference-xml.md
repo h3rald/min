@@ -29,22 +29,22 @@ Returns an {{xnode}} representing an HTML string (wrapped in a `<document>` tag 
 {#op||to-xml||{{xnode}}||{{s}}||
 Returns a {{s}} representing an XML node. #}
 
-{#op||xcdata||{{sl}}||{{xcdata}}||
+{#op||cdata||{{sl}}||{{xcdata}}||
 Returns a {{xcdata}} representing an XML CDATA section. #}
 
-{#op||xcomment||{{sl}}||{{xcomment}}||
+{#op||comment||{{sl}}||{{xcomment}}||
 Returns a {{xcomment}} representing an XML comment. #}
 
-{#op||xelement||{{sl}}||{{xelement}}||
+{#op||element||{{sl}}||{{xelement}}||
 Returns a {{xelement}} representing an XML element (it will be an empty element with no attributes or children). #}
 
-{#op||xentity||{{sl}}||{{xentity}}||
+{#op||entity||{{sl}}||{{xentity}}||
 Returns a {{xentity}} representing an XML entity. #}
 
-{#op||xescape||{{sl}}||{{s}}||
+{#op||escape||{{sl}}||{{s}}||
 Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the corresponding XML entities. #}
 
-{#op||xentity2utf8||{{xentity}}||{{s}}||
+{#op||entity2utf8||{{xentity}}||{{s}}||
 > Returns the UTF-8 symbol corresponding to the specified XML entity. 
 > 
 > > %sidebar%
@@ -52,10 +52,10 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > > 
 > > The following program prints `p` to the screen:
 > > 
-> >      "&gt;" xentity xentity2utf8 puts 
+> >      "&gt;" xml.entity xml.entity2utf8 puts! 
  #}
 
-{#op||xquery||{{xelement}} {{sl}}||{{xelement}}||
+{#op||query||{{xelement}} {{sl}}||{{xelement}}||
 > Returns an {{xelement}} representing the first element matching CSS the selector {{sl}}.
 > 
 > > %sidebar%
@@ -68,7 +68,7 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > >        <li class='other'>second</li>
 > >        <li class='test'>third</li>
 > >     </ul>" 
-> >     from-xml ".test" xquery
+> >     xml.from-xml ".test" xml.query
 > > Returns the following:
 > >
 > >     {
@@ -79,7 +79,7 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > >     }
  #}
 
-{#op||xqueryall||{{xelement}} {{sl}}||{{xelement}}||
+{#op||queryall||{{xelement}} {{sl}}||{{xelement}}||
 > Returns a list of {{xelement}} dictionaries representing all the elements matching CSS the selector {{sl}}.
 > 
 > > %sidebar%
@@ -92,7 +92,7 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > >        <li class='other'>second</li>
 > >        <li class='test'>third</li>
 > >     </ul>" 
-> >     from-xml ".test" xqueryall
+> >     xml.from-xml ".test" xml.queryall
 > > Returns the following:
 > >
 > >     ({
@@ -109,5 +109,5 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > >     })
  #}
 
-{#op||xtext||{{sl}}||{{xtext}}||
+{#op||text||{{sl}}||{{xtext}}||
 Returns a {{xtext}} representing an XML text node. #}

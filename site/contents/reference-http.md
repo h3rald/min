@@ -19,8 +19,8 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > > The following code constructs {{d}} and passes it to the **request** operator to perform an HTTP GET request to <http://httpbin.org/ip>:
 > > 
 > >     {}
-> >       "GET" 'method dget
-> >       "http://httpbin.org/ip" 'url dset
+> >       "GET" 'method dict.get
+> >       "http://httpbin.org/ip" 'url dict.set
 > >     request
  #}
 
@@ -52,8 +52,8 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       "THE URL is '$1'." url quote % puts!
 > >       ; Constuct response body
 > >       (
-> >         (("/datetime" url ==) (timestamp datetime))
-> >         (("/timestamp" url ==) (timestamp string))
+> >         (("/datetime" url ==) (time.stamp time.datetime))
+> >         (("/timestamp" url ==) (time.stamp string))
 > >         (("/shutdown" url ==) ("Stopping server..." puts! stop-server))
 > >         (("/" url ==) (
 > >           ; this is a bit short, but works with Chrome, IE, Edge, Safari
@@ -63,16 +63,16 @@ Retrieves the contents of URL {{s1}} as {{s2}}.#}
 > >       ) case
 > >       :body
 > >       ; Prepare the response
-> >       {} body 'body dset
-> >       dup puts!
+> >       {} body 'body dict.set
+> >       stack.dup puts!
 > >     )
 > >     ; The request handler is ready, give it the name handler
 > >     :handler
 > >     
 > >     ; Create the parameter dictionary for the server
 > >     {}
-> >     handler 'handler dset
-> >     5555 'port dset
+> >     handler 'handler dict.set
+> >     5555 'port dict.set
 > >     
 > >     ; Start server
 > >     "Server started on port 5555." puts!

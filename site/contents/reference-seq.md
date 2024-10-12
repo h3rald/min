@@ -27,7 +27,7 @@ Concatenates {{q1}} with {{q2}}. #}
 > > 
 > > The following program leaves `(2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) difference #}
+> >     (1 2 "test") ("test" "a" true 1) seq.difference #}
 
 {#op||drop||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the remaining elements after the first _n_ values of the input quotation {{q1}}, or an empty quotation if {{i}} is greater than the length of {{q1}}. #}
@@ -41,7 +41,7 @@ Returns a quotation {{q2}} containing the remaining elements after the first _n_
 > > The following program leaves `(2 6 8 12)` on the stack:
 > > 
 > >     (1 37 34 2 6 8 12 21) 
-> >     (dup 20 < swap even? and) filter #}
+> >     (stackdup 20 < stack.swap even? and) seq.filter #}
 
 {#op||find||{{q1}} {{q2}}||{{i}}||
 > Returns the index of the first element within {{q1}} that satisfies predicate {{q2}}, or -1 if no element satisfies it.
@@ -52,7 +52,7 @@ Returns a quotation {{q2}} containing the remaining elements after the first _n_
 > > The following program leaves `3` on the stack:
 > > 
 > >     (1 2 4 8 16) 
-> >     (5 >) find #}
+> >     (5 >) seq.find #}
 
 {#op||first||{{q}}||{{any}}||
 Returns the first element of {{q}}. #}
@@ -66,7 +66,7 @@ Returns the first element of {{q}}. #}
 > > The following program leaves `(1 2 3 4 5 6 7 8)` on the stack:
 > > 
 > >     (1 (2 3 4) 5 (6 7) 8) 
-> >     flatten #}
+> >     seq.flatten #}
 
 {#op||harvest||{{q1}}||{{q2}}||
 > Creates a new quotation {{q2}} containing all elements of {{q1}} except for empty quotations.
@@ -77,7 +77,7 @@ Returns the first element of {{q}}. #}
 > > The following program leaves `(1 2 3)` on the stack:
 > > 
 > >     (1 () () () 2 () 3) 
-> >     harvest #}
+> >     seq.harvest #}
 
 {#op||in?||{{q}} {{any}}||{{b}}||
 Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
@@ -93,7 +93,7 @@ Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and retu
 > > 
 > > The following program leaves `(1 "test")` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) intersection #}
+> >     (1 2 "test") ("test" "a" true 1) seq.intersection #}
 
 {#op||last||{{q}}||{{any}}||
 Returns the last element of {{q}}. #}
@@ -110,7 +110,7 @@ Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{
 > > The following program leaves `35` on the stack:
 > > 
 > >     (1 3 5) 
-> >     (dup *) (+) map-reduce #}
+> >     (stack.dup *) (+) seq.map-reduce #}
 
 {#op||partition||{{q1}} {{q2}}||{{q3}} {{q4}}||
 > Partitions {{q1}} into two quotations: {{q3}} contains all elements of {{q1}} that satisfy predicate {{q2}}, {{q4}} all the others.
@@ -121,7 +121,7 @@ Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{
 > > The following program leaves `(1 3 5) (2 4 6)` on the stack:
 > > 
 > >     (1 2 3 4 5 6) 
-> >     (odd?) partition #}
+> >     (odd?) seq.partition #}
 
 {#op||one?||{{q1}} {{q2}}||{{b}}||
 Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if only one element of {{q1}} satisfies predicate {{q2}}, {{f}} otherwise. #}
@@ -144,7 +144,7 @@ Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
 > > The following program leaves `120` on the stack:
 > > 
 > >     (1 2 3 4 5) 
-> >     1 (*) reduce #}
+> >     1 (*) seq.reduce #}
 
 {#op||reject||{{q1}} {{q2}}||{{q3}}||
 Returns a new quotatios {{q3}} including all elements of {{q1}} that do not satisfy predicate {{q2}} (i.e. the opposite of `filter`)#}
@@ -179,7 +179,7 @@ Returns the length of {{q}}.#}
 > > The following program leaves `(3 4 5)` on the stack:
 > > 
 > >     (1 2 3 4 5 6) 
-> >     2 4 slice #}
+> >     2 4 seq.slice #}
 
 {#op||sort||{{q1}} {{q2}}||{{q3}}||
 > Sorts all elements of {{q1}} according to predicate {{q2}}. 
@@ -189,7 +189,7 @@ Returns the length of {{q}}.#}
 > > 
 > > The following program leaves `(1 3 5 7 9 13 16)` on the stack:
 > > 
-> >     (1 9 5 13 16 3 7) '> sort #}
+> >     (1 9 5 13 16 3 7) '> seq.sort #}
 
 {#op||symmetric-difference||{{q1}} {{q2}}||{{q3}}||
 > Calculates the symmetric difference {{q3}} of {{q1}} and {{q2}}.
@@ -199,7 +199,7 @@ Returns the length of {{q}}.#}
 > > 
 > > The following program leaves `(true "a" 2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) symmetric-difference #}
+> >     (1 2 "test") ("test" "a" true 1) seq.symmetric-difference #}
 
 {#op||take||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}, or {{q1}} itself if {{i}} is greater than the length of {{q1}}. #}
@@ -212,4 +212,4 @@ Returns a quotation {{q2}} containing the first _n_ values of the input quotatio
 > > 
 > > The following program leaves `(true 1 "test" "a" 2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) union #}
+> >     (1 2 "test") ("test" "a" true 1) seq.union #}

@@ -97,42 +97,25 @@
 
 {@ site/contents/reference-global.md || 1 @}
 
-### `stack` Module
+### `crypto` Module
 
-{@ site/contents/reference-stack.md || 1 @}
-
-### `seq` Module
-
-{@ site/contents/reference-seq.md || 1 @}
+{@ site/contents/reference-crypto.md || 1 @}
 
 ### `dict` Module
 
 {@ site/contents/reference-dict.md || 1 @}
 
-### `dstore` Module
-
-{@ site/contents/reference-dstore.md || 1 @}
-
-### `io` Module
-
-{@ site/contents/reference-io.md || 1 @}
-
 ### `fs` Module
 
 {@ site/contents/reference-fs.md || 1 @}
 
-### `sys` Module
+### `http` Module
 
-{@ site/contents/reference-sys.md || 1 @}
+{@ site/contents/reference-http.md || 1 @}
 
-### `time` Module
+### `io` Module
 
-{@ site/contents/reference-time.md || 1 @}
-
-### `crypto` Module
-
-{@ site/contents/reference-crypto.md || 1 @}
-
+{@ site/contents/reference-io.md || 1 @}
 
 ### `math` Module
 
@@ -142,9 +125,25 @@
 
 {@ site/contents/reference-net.md || 1 @}
 
-### `http` Module
+### `seq` Module
 
-{@ site/contents/reference-http.md || 1 @}
+{@ site/contents/reference-seq.md || 1 @}
+
+### `stack` Module
+
+{@ site/contents/reference-stack.md || 1 @}
+
+### `store` Module
+
+{@ site/contents/reference-store.md || 1 @}
+
+### `sys` Module
+
+{@ site/contents/reference-sys.md || 1 @}
+
+### `time` Module
+
+{@ site/contents/reference-time.md || 1 @}
 
 ### `xml` Module
 
@@ -183,7 +182,9 @@
 
 {# link-module => [$1 Module](#<code>$1</code>-Module) #}
 
-{# link-operator => [$2](#min-operator-id-$2) #}
+{# link-operator => [$1.$2](#min-operator-id-$2) #}
+
+{# link-global-operator => [$1](#min-operator-id-$1) #}
 
 {# link-learn => #}
 

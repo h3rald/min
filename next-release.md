@@ -67,6 +67,7 @@
 - **xml** module: renamed **xelement** to **xml.element**
 - **xml** module: renamed **xquery** to **xml.query**
 - **xml** module: renamed **xqueryall** to **xml.query-all**
+- The **prompt** symbol is no longer unsealed.
 
 ### New Features
 

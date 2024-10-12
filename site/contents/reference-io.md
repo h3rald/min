@@ -66,7 +66,7 @@ Prints {{any}} and a new line to STDOUT, if logging level is set to [info](class
 > > 
 > > The following program:
 > > 
-> >     (clear) 'ctrl+l mapkey 
+> >     (clear) 'ctrl+l io.mapkey 
 > > 
 > > causes the `CTRL+L` key to clear the screen. #}
 

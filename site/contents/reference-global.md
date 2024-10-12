@@ -396,7 +396,7 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 > >  
 > > The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):
 > > 
-> > `"Directory '$1' includes $2 files." (. (. ls 'file? filter size)) apply interpolate`
+> > `"Directory '$1' includes $2 files." (sys.pwd (sys.pwd sys.ls 'fs.file? seq.filter size)) apply interpolate`
 > > 
 > > produces:
 > > 
@@ -563,9 +563,7 @@ Prepends {{sl2}} to {{sl1}}.#}
 {#op||prompt||{{none}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
->     ("[$1]$$ " (.) => %)
-> 
-> Unlike other predefined symbols, this symbol is _unsealed_, which means it can be modified.#}
+>     ("[$1]$$ " (sys.pwd) => %)
 
 {#op||publish||{{sl}} {{d}}||{{none}}||
 > Publishes symbol {{sl}} to the scope of {{d}}.
@@ -826,8 +824,8 @@ Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherw
 > > The following program:
 > > 
 > >     {1 :a 2 :b 3 :c} (
-> >       (dup 'a dget succ succ 'a dset)
-> >       (dup 'b dget succ 'b dset)
+> >       (stack.dup 'a dict.get succ succ 'a dict.set)
+> >       (stack.dup 'b dict.get succ 'b dict.set)
 > >     ) tap
 > > 
 > > Returns `{3 :a 3 :b 3 :c}`.#}
@@ -881,7 +879,7 @@ Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/
 > > The following program executed on an empty stack prints the message "Insufficient items on the stack" and pushes 0 on the stack:
 > > 
 > >       (
-> >         (pop)
+> >         (stack.pop)
 > >         (format-error puts)
 > >         (0)
 > >       ) try #}
