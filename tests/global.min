@@ -799,7 +799,7 @@
 
   ((1 2 "test") ("test" "a" true 1) intersection (1 "test") ==) test.assert
 
-  ((1 2 "test") ("test" "a" true 1) union (true 1 "test" "a" 2) ==) test.assert
+  ((1 2 "test") ("test" "a" true 1) union (1 true "a" "test" 2) ==) test.assert
 
   ((1 2 "test") ("test" "a" true 1) difference (2) ==) test.assert
 
