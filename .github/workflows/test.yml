@@ -87,14 +87,23 @@ jobs:
               run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size
               if: matrix.os == 'macos-13'
 
-            # UPX compress (*nix) 
+            # UPX compress (linux) 
             - name: UPX
               uses: svenstaro/upx-action@v2
               with:
                 files: |
                   min
                 args: --best --force
-              if: matrix.os == 'macos-13' || matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'ubuntu-latest'
+            
+            # UPX compress (macosx) 
+            - name: UPX
+              uses: svenstaro/upx-action@v2
+              with:
+                files: |
+                  min
+                args: --best --force-macos
+              if: matrix.os == 'macos-13'
 
             # UPX compress (Windows) 
             - name: UPX
