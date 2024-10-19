@@ -13,7 +13,7 @@ jobs:
             matrix:
                 os:
                     - ubuntu-latest
-                    - macos-latest
+                    - macos-13
                     - windows-latest
 
         env:
@@ -30,7 +30,7 @@ jobs:
             # Detects OS and provide Nim-friendly OS identifiers
             - name: Detect current OS
               id: os
-              run:  echo "os=${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-latest' && 'macosx' || matrix.os == 'windows-latest' && 'windows'}}" >> $GITHUB_OUTPUT
+              run:  echo "os=${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-13' && 'macosx' || matrix.os == 'windows-latest' && 'windows'}}" >> $GITHUB_OUTPUT
 
             # Checks out the repository
             - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
             # Sets path (Linux, macOS)
             - name: Update $PATH
               run: echo "$HOME/.nimble/bin" >> $GITHUB_PATH
-              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'macos-13' || matrix.os == 'ubuntu-latest'
 
             # Sets path (Windows)
             - name: Update %PATH%
@@ -85,7 +85,7 @@ jobs:
             # Build for macOS
             - name: Build (macOS)
               run: nimble build -y -d:release -d:ssl -d:useOpenSsl3 --opt:size
-              if: matrix.os == 'macos-latest'
+              if: matrix.os == 'macos-13'
 
             # UPX compress (*nix) 
             - name: UPX
@@ -94,7 +94,7 @@ jobs:
                 files: |
                   min
                 args: --best --force
-              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'macos-13' || matrix.os == 'ubuntu-latest'
 
             # UPX compress (Windows) 
             - name: UPX
@@ -120,7 +120,7 @@ jobs:
             # Test (*nix)
             - name: Test
               run: ./min tests/all.min
-              if: matrix.os == 'macos-latest' || matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'macos-13' || matrix.os == 'ubuntu-latest'
 
             # Test (Windows)
             - name: Test
