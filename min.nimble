@@ -13,7 +13,7 @@ installDirs   = @["minpkg"]
 # Dependencies
 
 requires "nim >= 2.2.0 & < 3.0.0"
-requires "checksums"
+requires "checksums >= 0.2.1"
 requires "zippy >= 0.5.6 & < 0.6.0" 
 requires "nimquery >= 2.0.1 & < 3.0.0" 
 requires "minline >= 0.1.2 & < 0.2.0"
