@@ -87,14 +87,14 @@ jobs:
               run: nimble build -v -y -d:release --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
               if: matrix.os == 'windows-latest'
 
-            # UPX compress (*nix) 
+            # UPX compress (Linux) 
             - name: UPX
               uses: svenstaro/upx-action@v2
               with:
                 files: |
                   min
                 args: --best --force
-              if: matrix.os == 'macos-13' || matrix.os == 'ubuntu-latest'
+              if: matrix.os == 'ubuntu-latest'
 
             # UPX compress (Windows) 
             - name: UPX
