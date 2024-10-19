@@ -1,1 +1,138 @@
-#!/usr/bin/env minsystemsystemsystem"_helpers" require :helpers 'helpers import(  symbol cz  ('sym :stage 'sym :variant 'sym :target-os ==>)  (    true :pack-result    (stage "^(release-nopack|dev)$" match?)      (false @pack-result)    when    "-d:release" :d-stage    (stage "dev" ==)      ("-d:dev" @d-stage)    when    " " :d-variant    "min" :o-variant    (variant length 0 >) (      "-d:$# " (variant) =% @d-variant      "$#min" (variant) =% @o-variant    ) when    "nim" required    "Building $# - $# (x64)" (o-variant target-os) =% io.notice!    "" :musl    "musl-gcc" sys.which :musl-gcc    (musl-gcc length 0 >)      ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)    when    "nim c $# -d:ssl -d:useOpenSsl3 $# --opt:size --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts sys.system stack.pop    (pack-result)      (        {}          target-os "os" dict.set          config "version" dict.get "version" dict.set          o-variant "exe" dict.set        pack      )    when  )) ::;; Builds and packs a min executable.#|| Tasks ||#(  symbol guide  (==>)  (    "hastyscribe" required    "Building - guide" io.notice!    "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% sys.system    "cp Min_DeveloperGuide.htm site/output/guide.dev.html" sys.system  )) ::;; Builds the developer guide.(  symbol site  (==>)  (    "hastysite" required     "Building - site" io.notice!    "cd site && hastysite build && cd .." sys.system  )) ::;; Builds the min site.(  symbol pack  (dict :vdata ==>)  (    vdata "exe" dict.get :exe    (vdata "os" dict.get "windows" ==) ("$#.exe" (exe) =% @exe) when    "$exe:_v$version:_$os:_x64.zip" :fn    fn vdata dict.pairs % ":" "" replace @fn    "Compressing: $#" (fn) =% io.notice!    (exe) => fn sys.zip  )) ::;; Compresses a min executable.(  symbol vim  (==>)  (    config "version" dict.get :min-version    "tasks/data/min.vim" fs.read :template    time.stamp "dd MMM YYYY" time.format :date    min-symbols ("||" !=) filter " " join :symbols    "min.vim" :out-file    "Building - min.vim" io.notice!    template ("date" date "version" min-version "symbols" symbols) =% out-file fs.write   )) ::;; Generates the min.vim file.(  symbol docs  (==>)  (    guide    site  )) ::;; Generate the min development guide and site.(  symbol dev  (==>)  ("dev" "" sys.os cz)) ::;; Builds min (dev version) on the current OS.(  symbol default  (==>)  ("release-nopack" "" sys.os cz)) ::;; Builds min on the current OS.(  symbol linux  (==>)  ("" "" "linux" cz)) ::;; Builds min for Linux.(  symbol macosx  (==>)  ("" "" "macosx" cz)) ::;; Builds min for macOS.(  symbol windows  (==>)  ("" "" "windows" cz)) ::;; Builds min for Windows.
+#!/usr/bin/env minsystemsystemsystem
+
+"_helpers" require :helpers 'helpers import
+
+(
+  symbol cz
+  ('sym :stage 'sym :variant 'sym :target-os ==>)
+  (
+    true :pack-result
+    (stage "^(release-nopack|dev)$" match?)
+      (false @pack-result)
+    when
+    "-d:release" :d-stage
+    (stage "dev" ==)
+      ("-d:dev" @d-stage)
+    when
+    " " :d-variant
+    "min" :o-variant
+    (variant length 0 >) (
+      "-d:$# " (variant) =% @d-variant
+      "$#min" (variant) =% @o-variant
+    ) when
+    "nim" required
+    "Building $# - $# (x64)" (o-variant target-os) =% io.notice!
+    "" :musl
+    "musl-gcc" sys.which :musl-gcc
+    (musl-gcc length 0 >)
+      ("--gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc" @musl)
+    when
+    "nim c $# -d:ssl -d:useOpenSsl3 $# --opt:size --cpu:amd64 --os:$# $#-o:$# min" (d-stage musl target-os d-variant o-variant) =% puts sys.system stack.pop
+    (pack-result)
+      (
+        {}
+          target-os "os" dict.set
+          config "version" dict.get "version" dict.set
+          o-variant "exe" dict.set
+        pack
+      )
+    when
+  )
+) ::
+;; Builds and packs a min executable.
+
+#|| Tasks ||#
+
+(
+  symbol guide
+  (==>)
+  (
+    "hastyscribe" required
+    "Building - guide" io.notice!
+    "hastyscribe Min_DeveloperGuide.md --field/version=$#" (version) =% sys.system
+    "cp Min_DeveloperGuide.htm site/output/guide.dev.html" sys.system
+  )
+) ::
+;; Builds the developer guide.
+
+(
+  symbol site
+  (==>)
+  (
+    "hastysite" required 
+    "Building - site" io.notice!
+    "cd site && hastysite build && cd .." sys.system
+  )
+) ::
+;; Builds the min site.
+
+(
+  symbol pack
+  (dict :vdata ==>)
+  (
+    vdata "exe" dict.get :exe
+    (vdata "os" dict.get "windows" ==) ("$#.exe" (exe) =% @exe) when
+    "$exe:_v$version:_$os:_x64.zip" :fn
+    fn vdata dict.pairs % ":" "" replace @fn
+    "Compressing: $#" (fn) =% io.notice!
+    (exe) => fn sys.zip
+  )
+) ::
+;; Compresses a min executable.
+
+(
+  symbol vim
+  (==>)
+  (
+    config "version" dict.get :min-version
+    "tasks/data/min.vim" fs.read :template
+    time.stamp "dd MMM YYYY" time.format :date
+    min-symbols ("||" !=) filter " " join :symbols
+    "min.vim" :out-file
+    "Building - min.vim" io.notice!
+    template ("date" date "version" min-version "symbols" symbols) =% out-file fs.write 
+  )
+) ::
+;; Generates the min.vim file.
+
+(
+  symbol docs
+  (==>)
+  (
+    guide
+    site
+  )
+) ::
+;; Generate the min development guide and site.
+
+(
+  symbol dev
+  (==>)
+  ("dev" "" sys.os cz)
+) ::
+;; Builds min (dev version) on the current OS.
+(
+  symbol default
+  (==>)
+  ("release-nopack" "" sys.os cz)
+) ::
+;; Builds min on the current OS.
+(
+  symbol linux
+  (==>)
+  ("" "" "linux" cz)
+) ::
+;; Builds min for Linux.
+(
+  symbol macosx
+  (==>)
+  ("" "" "macosx" cz)
+) ::
+;; Builds min for macOS.
+(
+  symbol windows
+  (==>)
+  ("" "" "windows" cz)
+) ::
+;; Builds min for Windows.
+

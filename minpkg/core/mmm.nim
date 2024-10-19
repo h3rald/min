@@ -115,7 +115,8 @@ proc init*(MMM: var MinModuleManager) =
     notice "Created a mmm.json file in the current directory"
 
 proc uninstall*(MMM: var MinModuleManager, name, v: string, global = false) =
-    forbidLocalModulesInGlobalDir(MMM, "uninstall")
+    if not global:
+      forbidLocalModulesInGlobalDir(MMM, "uninstall")
     var dir: string
     var version = v
     var versionLabel = version
@@ -185,7 +186,8 @@ proc uninstall*(MMM: var MinModuleManager) =
         raiseError "Unable to uninstall local managed modules."
 
 proc install*(MMM: var MinModuleManager, name, v: string, global = false) =
-    forbidLocalModulesInGlobalDir(MMM, "install")
+    if not global:
+      forbidLocalModulesInGlobalDir(MMM, "install")
     var version = v
     var dir: string
     let pwd = getCurrentDir()
@@ -327,7 +329,8 @@ if
     return script
 
 proc update*(MMM: var MinModuleManager, name, v: string, global = false) =
-    forbidLocalModulesInGlobalDir(MMM, "update")
+    if not global:
+      forbidLocalModulesInGlobalDir(MMM, "update")
     var version = v
     var dir: string
     if version == "":
