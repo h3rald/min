@@ -48,8 +48,8 @@ proc crypto_module*(i: In) =
 
   when defined(ssl):
 
-    proc hash(s: string, kind: EVP_MD, size: int): string =
-      var hash = alloc[ptr cuint](size)
+    proc hash(s: string, kind: EVP_MD, size: Natural): string =
+      var hash = alloc(size)
       let ctx = EVP_MD_CTX_new()
       discard EVP_DigestInit_ex(ctx, kind, nil)
       discard EVP_DigestUpdate(ctx, s.cstring, s.len.cuint)
