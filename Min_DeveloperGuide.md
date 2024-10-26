@@ -125,10 +125,6 @@
 
 {@ site/contents/reference-net.md || 1 @}
 
-### `seq` Module
-
-{@ site/contents/reference-seq.md || 1 @}
-
 ### `stack` Module
 
 {@ site/contents/reference-stack.md || 1 @}

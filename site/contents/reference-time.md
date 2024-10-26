@@ -3,18 +3,6 @@ content-type: "page"
 title: "time Module"
 -----
 {@ _defs_.md || 0 @}
-
-{#op||now||{{none}}||{{flt}}||
-Returns the current time as Unix timestamp with microseconds. #}
-
-{#op||stamp||{{none}}||{{i}}||
-Returns the current time as Unix timestamp. #}
-  
-{#op||info||{{i}}||{{tinfo}}||
-Returns a timeinfo dictionary from timestamp {{i}}. #}
-  
-{#op||to-timestamp||{{tinfo}}||{{i}}||
-Converts the timeinfo dictionary {{tinfo}} to the corresponding Unix timestamp. #}
   
 {#op||datetime||{{i}}||{{s}}||
 Returns an ISO 8601 string representing the combined date and time in UTC of timestamp {{i}}. #}
@@ -26,3 +14,15 @@ Returns an ISO 8601 string representing the combined date and time in UTC of tim
 > > Tip
 > > 
 > > For information on special characters in the format string, see the [format](https://nim-lang.org/docs/times.html#format,TimeInfo,string) nim method. #}
+  
+{#op||info||{{i}}||{{tinfo}}||
+Returns a timeinfo dictionary from timestamp {{i}}. #}
+
+{#op||now||{{none}}||{{flt}}||
+Returns the current time as Unix timestamp with microseconds. #}
+
+{#op||stamp||{{none}}||{{i}}||
+Returns the current time as Unix timestamp. #}
+  
+{#op||to-timestamp||{{tinfo}}||{{i}}||
+Converts the timeinfo dictionary {{tinfo}} to the corresponding Unix timestamp. #}

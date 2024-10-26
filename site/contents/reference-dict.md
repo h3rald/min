@@ -4,11 +4,11 @@ title: "dict Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#op||dup||{{d1}}||{{d2}}||
-Returns a copy of {{d1}}. #}
-
 {#op||del||{{d}} {{sl}}||{{d}}||
 Removes {{sl}} from {{d1}} and returns {{d1}}. #}
+
+{#op||dup||{{d1}}||{{d2}}||
+Returns a copy of {{d1}}. #}
 
 {#op||get||{{d}} {{sl}}||{{any}}||
 Returns the value of key {{sl}} from dictionary {{d}}. #}

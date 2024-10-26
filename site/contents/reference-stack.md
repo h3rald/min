@@ -28,9 +28,6 @@ Duplicates the first element on the stack.#}
 {#op||get||{{none}}||({{a0p}})||
 Puts a quotation containing the contents of the stack on the stack.#}
 
-{#op||id||{{none}}||{{none}}||
-Does nothing.#}
-
 {#op||keep||{{a1}} {{q}}||{{a0p}} {{a1}}||
 > Removes the first element from the stack, dequotes it, and restores the second element.
 > > %sidebar%

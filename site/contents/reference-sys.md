@@ -7,6 +7,9 @@ title: "sys Module"
 {#op||admin?||{{none}}||{{b}}||
 Returns {{t}} if the program is being run with administrative privileges. #}
 
+{#op||cd||{{sl}}||{{none}}||
+Change the current directory to {{sl}}. #}
+
 {#op||chmod||{{sl}} {{i}}||{{none}}||
 > Sets the permissions of file or directory {{sl}} to {{i}}. {{i}} is a three-digit representation of user, group and other permissions. See the [Unix Permissions Calculator](http://permissions-calculator.org/) for examples and conversions.
 > 
@@ -16,9 +19,6 @@ Returns {{t}} if the program is being run with administrative privileges. #}
 > > The following program makes the file **/tmp/test.txt** readable, writable and executable by its owner, and readable and executable by users of the same group and all other users:
 > > 
 > > `"/tmp/test.txt 755 sys.chmod"`#}
-
-{#op||cd||{{sl}}||{{none}}||
-Change the current directory to {{sl}}. #}
 
 {#op||cp||{{sl1}} {{sl2}}||{{none}}||
 Copies the file or directory {{sl1}} to {{sl2}}. #}

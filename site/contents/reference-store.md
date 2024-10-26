@@ -12,6 +12,9 @@ Removes an item from the datastore {{dstore}}. The item is uniquely identified b
 Retrieves item {{d}} from datastore {{dstore}}. {{d}} is retrieved by specifying {{sl}}, which contains the collection containing the item and the item id, separated by a forward slash (/).
  #}
 
+{#op||has?||{{dstore}} {{sl}}||{{b}}||
+Returns {{t}} if {{dstore}} has a key called {{sl}} (which contains the collection containing the item and the item id), {{f}} otherwise.#}
+
 {#op||init||{{sl}}||{{dstore}}||
 Initializes a bew datastore by creating the {{sl}} JSON file. Puts the datastore instance on the stack. #}
 

@@ -4,6 +4,33 @@ title: "xml Module"
 -----
 {@ _defs_.md || 0 @}
 
+
+{#op||cdata||{{sl}}||{{xcdata}}||
+Returns a {{xcdata}} representing an XML CDATA section. #}
+
+{#op||comment||{{sl}}||{{xcomment}}||
+Returns a {{xcomment}} representing an XML comment. #}
+
+{#op||element||{{sl}}||{{xelement}}||
+Returns a {{xelement}} representing an XML element (it will be an empty element with no attributes or children). #}
+
+{#op||entity||{{sl}}||{{xentity}}||
+Returns a {{xentity}} representing an XML entity. #}
+
+{#op||entity2utf8||{{xentity}}||{{s}}||
+> Returns the UTF-8 symbol corresponding to the specified XML entity. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program prints `p` to the screen:
+> > 
+> >      "&gt;" xml.entity xml.entity2utf8 puts! 
+ #}
+
+ {#op||escape||{{sl}}||{{s}}||
+Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the corresponding XML entities. #}
+
 {#op||from-html||{{sl}}||{{xnode}}||
 Returns an {{xnode}} representing an HTML string (wrapped in a `<document>` tag unless a valid HTML document is provided as input).#}
 
@@ -24,35 +51,6 @@ Returns an {{xnode}} representing an HTML string (wrapped in a `<document>` tag 
 > >      "a" :tag
 > >      ;xml-element
 > >     }
- #}
-
-{#op||to-xml||{{xnode}}||{{s}}||
-Returns a {{s}} representing an XML node. #}
-
-{#op||cdata||{{sl}}||{{xcdata}}||
-Returns a {{xcdata}} representing an XML CDATA section. #}
-
-{#op||comment||{{sl}}||{{xcomment}}||
-Returns a {{xcomment}} representing an XML comment. #}
-
-{#op||element||{{sl}}||{{xelement}}||
-Returns a {{xelement}} representing an XML element (it will be an empty element with no attributes or children). #}
-
-{#op||entity||{{sl}}||{{xentity}}||
-Returns a {{xentity}} representing an XML entity. #}
-
-{#op||escape||{{sl}}||{{s}}||
-Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the corresponding XML entities. #}
-
-{#op||entity2utf8||{{xentity}}||{{s}}||
-> Returns the UTF-8 symbol corresponding to the specified XML entity. 
-> 
-> > %sidebar%
-> > Example
-> > 
-> > The following program prints `p` to the screen:
-> > 
-> >      "&gt;" xml.entity xml.entity2utf8 puts! 
  #}
 
 {#op||query||{{xelement}} {{sl}}||{{xelement}}||
@@ -79,7 +77,7 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 > >     }
  #}
 
-{#op||queryall||{{xelement}} {{sl}}||{{xelement}}||
+{#op||query-all||{{xelement}} {{sl}}||{{xelement}}||
 > Returns a list of {{xelement}} dictionaries representing all the elements matching CSS the selector {{sl}}.
 > 
 > > %sidebar%
@@ -111,3 +109,6 @@ Converts any `<`, `>`, `&`, `'`, and `"` present in {{sl}} into the correspondin
 
 {#op||text||{{sl}}||{{xtext}}||
 Returns a {{xtext}} representing an XML text node. #}
+
+{#op||to-xml||{{xnode}}||{{s}}||
+Returns a {{s}} representing an XML node. #}

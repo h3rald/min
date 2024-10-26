@@ -10,17 +10,20 @@ Returns the absolute path to {{sl}}. #}
 {#op||absolute-path?||{{sl}}||{{b}}||
 Returns {{t}} if {{sl}} is an absolute path. #}
 
+{#op||append||{{s1}} {{s2}}||{{none}}||
+Appends {{s1}} to the end of file {{s2}}. #} 
+
 {#op||atime||{{sl}}||{{flt}}||
 Returns a timestamp corresponding to the time that file/directory {{sl}} was last accessed.#}
 
 {#op||ctime||{{sl}}||{{flt}}||
 Returns a timestamp corresponding to the time that file/directory {{sl}} was created.#}
 
-{#op||dirname||{{sl}}||{{s}}||
-Returns the path of the directory containing path {{sl}}.#}
-
 {#op||dir?||{{sl}}||{{b}}||
 Returns {{t}} if the specified path {{sl}} exists and is a directory. #}
+
+{#op||dirname||{{sl}}||{{s}}||
+Returns the path of the directory containing path {{sl}}.#}
 
 {#op||exists?||{{sl}}||{{b}}||
 Returns {{t}} if the specified file or directory {{sl}} exists. #}
@@ -43,14 +46,17 @@ Returns {{t}} if file/directory {{sl}} is hidden, {{f}} otherwise.#}
 {#op||join-path||{{q}}||{{s}}||
 Joins the strings contained in {{q}} with `/`.#}
 
-{#op||normalized-path||{{sl}}||{{s}}||
-Returns the normalized path to {{sl}}. #}
-
 {#op||mtime||{{sl}}||{{flt}}||
 Returns a timestamp corresponding to the time that file/directory {{sl}} was last modified.#}
 
+{#op||normalized-path||{{sl}}||{{s}}||
+Returns the normalized path to {{sl}}. #}
+
 {#op||permissions||{{sl}}||{{i}}||
 Returns the Unix permissions (expressed as a three-digit number) of file/directory {{sl}}.#}
+
+{#op||read||{{s}}||{{s}}||
+Reads the file {{s}} and puts its contents on the top of the stack as a string.#}
 
 {#op||relative-path||{{sl1}} {{sl2}}||{{s}}||
 Returns the path of {{sl1}} relative to {{sl2}}. #}
@@ -93,3 +99,6 @@ Converts all backslashes in {{sl}} to slashes. #}
 
 {#op||windows-path||{{sl}}||{{s}}||
 Converts all slashes in {{sl}} to backslashes. #}
+
+{#op||write||{{s1}} {{s2}}||{{none}}||
+Writes {{s1}} to the file {{s2}}, erasing all its contents first. #}
