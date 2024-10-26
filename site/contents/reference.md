@@ -23,8 +23,6 @@ min includes a small but powerful standard library organized into the following 
 : Provides many mathematical operators and constants such as trigonometric functions, square root, logarithms, etc.
 {#link-module||net#}
 : Provides basic supports for sockets (some features are not supported on Windows systems).
-{#link-module||seq#}
-: Defines operators for quotations, like `seq.map`, `seq.filter`, `seq.reduce`, etc.
 {#link-module||stack#}
 : Defines combinators and stack-shufflers like `stack.pop`, `stack.dup`, `stack.swap`, `stack.cons`, etc.
 {#link-module||store#}
