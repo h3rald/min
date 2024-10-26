@@ -788,25 +788,6 @@ proc global_module*(i: In) =
     else:
       raiseInvalid("Unable to display source: '$1' is an operator." % str)
 
-  def.symbol("invoke") do (i: In):
-    let vals = i.expect("'sym")
-    let s = vals[0].getString
-    let parts = s.split("/")
-    if parts.len < 2:
-      raiseInvalid("Dictionary identifier not specified")
-    i.pushSym parts[0]
-    for p in 0..parts.len-2:
-      let vals = i.expect("dict")
-      let mdl = vals[0]
-      let symId = parts[p+1]
-      let origScope = i.scope
-      i.scope = mdl.scope
-      if not i.scope.parent.isNil:
-        i.scope.parent = origScope
-      let sym = i.scope.getSymbol(symId)
-      i.apply(sym)
-      i.scope = origScope
-
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
     let err = vals[0]
