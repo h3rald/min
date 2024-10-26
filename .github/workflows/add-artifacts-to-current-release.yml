@@ -14,7 +14,7 @@ jobs:
                 os:
                     - ubuntu-latest
                     - macos-13
-                    - windows-19
+                    - windows-2019
 
         env:
             CHOOSENIM_CHOOSE_VERSION: stable
@@ -30,7 +30,7 @@ jobs:
             # Detects OS and provide Nim-friendly OS identifiers
             - name: Detect current OS
               id: os
-              run:  echo "os=${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-13' && 'macosx' || matrix.os == 'windows-19' && 'windows'}}" >> $GITHUB_OUTPUT
+              run:  echo "os=${{matrix.os == 'ubuntu-latest' && 'linux' || matrix.os == 'macos-13' && 'macosx' || matrix.os == 'windows-2019' && 'windows'}}" >> $GITHUB_OUTPUT
 
             # Checks out the repository
             - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
             # Sets path (Windows)
             - name: Update %PATH%
               run: echo "${HOME}/.nimble/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-              if: matrix.os == 'windows-19'
+              if: matrix.os == 'windows-2019'
               
             # Installs libraries
             - name: install musl-gcc
@@ -51,7 +51,7 @@ jobs:
               if: matrix.os == 'ubuntu-latest'
 
             - name: Setup Msys2
-              if: matrix.os == 'windows-19'
+              if: matrix.os == 'windows-2019'
               uses: msys2/setup-msys2@v2
               with:
                 msystem: MINGW64
@@ -85,7 +85,7 @@ jobs:
             - name: Build (Windows)
               shell: msys2 {0}
               run: nimble build -v -y -d:release --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
-              if: matrix.os == 'windows-19'
+              if: matrix.os == 'windows-2019'
 
             # UPX compress (Linux) 
             - name: UPX
@@ -103,7 +103,7 @@ jobs:
                 files: |
                   min.exe
                 args: --best --force
-              if: matrix.os == 'windows-19'
+              if: matrix.os == 'windows-2019'
 
             # Retrieve ID and Name of the current (draft) release
             - name: "Get current release"
@@ -122,7 +122,7 @@ jobs:
             # Package the resulting Windows binary
             - name: Create artifact (Windows)
               run: Compress-Archive -Path min.exe -DestinationPath min_${{steps.current-release.outputs.tag_name}}_windows_x64.zip
-              if: matrix.os == 'windows-19'
+              if: matrix.os == 'windows-2019'
 
             # Upload artifacts to current draft release
             - name: "Upload to current release"
