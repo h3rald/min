@@ -75,8 +75,8 @@ For example, consider the following program:
          (fs.size) 
          (stack.pop 0)
        ) try
-     ) seq.map 
-     1 (+) seq.reduce
+     ) map 
+     1 (+) reduce
 
 This program calculates the size in bytes of all files included in the current directory. Because the {#link-operator||fs||size#} symbol throws an error if the argument provided is not a file (for example, if it is a directory), the `try` symbol is used to remove the error from the stack and push `0` on the stack instead.
 

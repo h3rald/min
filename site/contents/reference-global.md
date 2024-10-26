@@ -241,7 +241,7 @@ Returns {{t}} if {{any}} is a dictionary, {{f}} otherwise. #}
 > > 
 > > The following program leaves `(2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) seq.difference #}
+> >     (1 2 "test") ("test" "a" true 1) difference #}
 
 {#op||div||{{i1}} {{i2}}||{{i3}}||
 Divides {{i1}} by {{i2}} (integer division). #}
@@ -304,7 +304,7 @@ Raises an error if the stack is not empty.#}
 > > The following program leaves `(2 6 8 12)` on the stack:
 > > 
 > >     (1 37 34 2 6 8 12 21) 
-> >     (stackdup 20 < stack.swap even? and) seq.filter #}
+> >     (stackdup 20 < stack.swap even? and) filter #}
 
 {#op||find||{{q1}} {{q2}}||{{i}}||
 > Returns the index of the first element within {{q1}} that satisfies predicate {{q2}}, or -1 if no element satisfies it.
@@ -315,7 +315,7 @@ Raises an error if the stack is not empty.#}
 > > The following program leaves `3` on the stack:
 > > 
 > >     (1 2 4 8 16) 
-> >     (5 >) seq.find #}
+> >     (5 >) find #}
 
 {#op||first||{{q}}||{{any}}||
 Returns the first element of {{q}}. #}
@@ -329,7 +329,7 @@ Returns the first element of {{q}}. #}
 > > The following program leaves `(1 2 3 4 5 6 7 8)` on the stack:
 > > 
 > >     (1 (2 3 4) 5 (6 7) 8) 
-> >     seq.flatten #}
+> >     flatten #}
 
 {#op||float||{{any}}||{{flt}}||
 > Converts {{any}} to a float value based on the following rules:
@@ -407,7 +407,7 @@ Returns environment variable {{sl}}. #}
 > > The following program leaves `(1 2 3)` on the stack:
 > > 
 > >     (1 () () () 2 () 3) 
-> >     seq.harvest #}
+> >     harvest #}
 
 {#op||help||{{sl}}||{{none}}||
 Prints the help text for {{sl}}, if available. #}
@@ -477,7 +477,7 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 > >  
 > > The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):
 > > 
-> > `"Directory '$1' includes $2 files." (sys.pwd (sys.pwd sys.ls 'fs.file? seq.filter size)) apply interpolate`
+> > `"Directory '$1' includes $2 files." (sys.pwd (sys.pwd sys.ls 'fs.file? filter size)) apply interpolate`
 > > 
 > > produces:
 > > 
@@ -491,7 +491,7 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 > > 
 > > The following program leaves `(1 "test")` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) seq.intersection #}
+> >     (1 2 "test") ("test" "a" true 1) intersection #}
 
 {#op||join||{{q}} {{sl}}||{{s}}||
 Joins the elements of {{q}} using separator {{sl}}, producing {{s}}.#}
@@ -568,7 +568,7 @@ Returns a new quotation {{q3}} obtained by applying {{q2}} to each element of {{
 > > The following program leaves `35` on the stack:
 > > 
 > >     (1 3 5) 
-> >     (stack.dup *) (+) seq.map-reduce #}
+> >     (stack.dup *) (+) map-reduce #}
 
 {#op||match?||{{s1}} {{s2}}||{{b}}||
 > Returns {{t}} if {{s2}} matches {{s1}}, {{f}} otherwise.
@@ -669,7 +669,7 @@ Parses the url {{s}} into its components and stores them into {{url}}.#}
 > > The following program leaves `(1 3 5) (2 4 6)` on the stack:
 > > 
 > >     (1 2 3 4 5 6) 
-> >     (odd?) seq.partition #}
+> >     (odd?) partition #}
 
 {#op||pred||{{i1}}||{{i2}}||
 Returns the predecessor of {{i1}}.#}
@@ -770,7 +770,7 @@ Returns a list of all arguments and (non-parsed) options passed to the current p
 > > The following program leaves `120` on the stack:
 > > 
 > >     (1 2 3 4 5) 
-> >     1 (*) seq.reduce #}
+> >     1 (*) reduce #}
 
 {#op||reject||{{q1}} {{q2}}||{{q3}}||
 Returns a new quotatios {{q3}} including all elements of {{q1}} that do not satisfy predicate {{q2}} (i.e. the opposite of `filter`)#}
@@ -950,7 +950,7 @@ Returns the length of {{q}}.#}
 > > The following program leaves `(3 4 5)` on the stack:
 > > 
 > >     (1 2 3 4 5 6) 
-> >     2 4 seq.slice #}
+> >     2 4 slice #}
 
 {#op||sort||{{q1}} {{q2}}||{{q3}}||
 > Sorts all elements of {{q1}} according to predicate {{q2}}. 
@@ -960,7 +960,7 @@ Returns the length of {{q}}.#}
 > > 
 > > The following program leaves `(1 3 5 7 9 13 16)` on the stack:
 > > 
-> >     (1 9 5 13 16 3 7) '> seq.sort #}
+> >     (1 9 5 13 16 3 7) '> sort #}
 
 {#op||source||{{sl}}||{{q}}||
 Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
@@ -1006,7 +1006,7 @@ Returns a list of all symbols defined in the [global](class:kwd) scope.#}
 > > 
 > > The following program leaves `(true "a" 2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) seq.symmetric-difference #}
+> >     (1 2 "test") ("test" "a" true 1) symmetric-difference #}
 
 {#op||take||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}, or {{q1}} itself if {{i}} is greater than the length of {{q1}}. #}
@@ -1104,7 +1104,7 @@ Creates a type alias {{sl1}} for type expression {{sl2}}.#}
 > > 
 > > The following program leaves `(true 1 "test" "a" 2)` on the stack:
 > > 
-> >     (1 2 "test") ("test" "a" true 1) seq.union #}
+> >     (1 2 "test") ("test" "a" true 1) union #}
 
 {#op||unless||{{q1}} {{q2}}||{{a0p}}||
 If {{1}} evaluates to {{f}} then evaluates {{2}}.#}

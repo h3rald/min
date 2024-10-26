@@ -11,7 +11,7 @@ title: "Learn"
 If not, well, here's how a short min program looks like:
 
     ; This is a comment
-    (1 2 3 4 5) (stack.dup *) seq.map
+    (1 2 3 4 5) (stack.dup *) map
     #| This is a...
     ...multiline comment |#
 
@@ -23,7 +23,7 @@ Let's see how it works:
 
 1. First, a list containing the first five integers is pushed on the stack.
 2. Then, another list containing two symbols (`stack.dup` and `*`) is pushed on the stack. This constitutes a quoted program which, when executed duplicates the first element on the stack &mdash; this is done by `stack.dup`&mdash; and then multiplies &mdash; with `*`&mdash; the two elements together.
-3. Finally, the symbol `seq.map` is pushed on the stack. Map takes a list of elements and a quoted program and applies the program to each element.
+3. Finally, the symbol `map` is pushed on the stack. Map takes a list of elements and a quoted program and applies the program to each element.
 
 Note that:
 
