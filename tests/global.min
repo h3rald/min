@@ -221,6 +221,13 @@
     'x unseal-sigil 'x delete-sigil 
     'x defined-sigil? false ==
   ) test.assert
+
+  (
+    'from-json 'j define-sigil
+    j"{\"test\": true}"
+    'j delete-sigil
+    {true :test} ==
+  ) test.assert
   
   (
     {{100 :b} :a} :test test.a.b 100 ==

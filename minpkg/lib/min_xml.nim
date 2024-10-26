@@ -3,11 +3,11 @@ import
     std/[xmlparser,
     xmltree,
     parsexml,
-    htmlparser,
     strtabs,
     critbits]
 import
-    nimquery
+    pkg/htmlparser,
+    pkg/nimquery
 import
     ../core/parser,
     ../core/value,

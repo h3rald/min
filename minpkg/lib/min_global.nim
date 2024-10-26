@@ -579,6 +579,20 @@ proc global_module*(i: In) =
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
         sealed: false, quotation: true)
 
+  def.symbol("define-sigil") do (i: In):
+    let vals = i.expect("'sym", "quot")
+    let sym = vals[0]
+    var q1 = vals[1]
+    var symbol: string
+    symbol = sym.getString
+    if not symbol.contains re(USER_SYMBOL_REGEX):
+      raiseInvalid("Sigil identifier '$1' contains invalid characters." % symbol)
+    info "[define-sigil] $1 = $2" % [symbol, $q1]
+    if i.scope.sigils.hasKey(symbol) and i.scope.sigils[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed sigil '$1'" % [symbol])
+    i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false,
+        quotation: true)
+
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
