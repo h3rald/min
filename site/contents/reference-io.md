@@ -67,9 +67,6 @@ Prints {{any}} and a new line to STDOUT, if logging level is set to [notice](cla
 {#op||password||{{none}}||{{s}}||
 Reads a line from STDIN displaying \* for each typed character, and places it on top of the stack as a string.#}
 
-{#op||print||{{any}}||{{any}}||
-Prints {{any}} to STDOUT.#}
-
 {#op||putchr||{{s}}||{{any}}||
 Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
 

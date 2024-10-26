@@ -4,52 +4,23 @@ title: "global Module"
 -----
 {@ _defs_.md || 0 @}
 
-{#sig||&apos;||quotesym#}
-
-{#alias||&apos;||quotesym#}
-
-{#sig||:||define#}
-
-{#alias||:||define#}
-
-{#alias||::||operator#}
-
-{#sig||?||help#}
-
-{#alias||?||help#}
-
-{#sig||~||lambda-bind#}
-
-{#alias||~||lambda-bind#}
+{#op||!=||{{a1}} {{a2}}||{{b}}||
+Returns {{t}} if {{a1}} is not equal to {{a2}}, {{f}} otherwise. #}
 
 {#sig||$||get-env#}
 
 {#alias||$||get-env#}
 
-{#sig||@||bind#}
-
-{#alias||@||bind#}
-
-{#alias||->||dequote#}
-
-{#alias||&gt;&gt;||prefix-dequote#}
-
-{#alias||&gt;&lt;||infix-dequote#}
-
-{#alias||=&gt;||apply#}
-
-{#op||==&gt;||{{none}}||{{none}}||
-Symbol used to separate input and output values in operator signatures.#}
-
-{#alias||=-=||expect-empty-stack#}
-
 {#alias||%||interpolate#}
 
-{#alias||=%||apply-interpolate#}
+{#alias||&&||expect-all#}
 
-{#sig||^||lambda#}
+{#sig||&apos;||quotesym#}
 
-{#alias||^||lambda#}
+{#alias||&apos;||quotesym#}
+
+{#op||&ast;||{{n1}} {{n2}}||{{n3}}||
+Multiplies {{n1}} by {{n2}}. #}
 
 {#op||+||{{n1}} {{n2}}||{{n3}}||
 Sums {{n1}} and {{n2}}. #}
@@ -57,28 +28,19 @@ Sums {{n1}} and {{n2}}. #}
 {#op||-||{{n1}} {{n2}}||{{n3}}||
 Subtracts {{n2}} from {{n1}}. #}
 
+{#alias||->||dequote#}
+
 {#op||-inf||{{none}}||{{n}}||
 Returns negative infinity. #}
-
-{#op||&ast;||{{n1}} {{n2}}||{{n3}}||
-Multiplies {{n1}} by {{n2}}. #}
 
 {#op||/||{{n1}} {{n2}}||{{n3}}||
 Divides {{n1}} by {{n2}}. #}
 
-{#op||&gt;||{{a1}} {{a2}}||{{b}}||
-> Returns {{t}} if {{a1}} is greater than {{a2}}, {{f}} otherwise. 
-> > %note%
-> > Note
-> > 
-> > Only comparisons among two numbers or two strings are supported.#}
+{#sig||:||define#}
 
-{#op||&gt;=||{{a1}} {{a2}}||{{b}}||
-> Returns {{t}} if {{a1}} is greater than or equal to {{a2}}, {{f}} otherwise.
-> > %note%
-> > Note
-> > 
-> > Only comparisons among two numbers or two strings are supported.#}
+{#alias||:||define#}
+
+{#alias||::||operator#}
 
 {#op||&lt;||{{a1}} {{a2}}||{{b}}||
 > Returns {{t}} if {{a1}} is smaller than {{a2}}, {{f}} otherwise. 
@@ -94,15 +56,47 @@ Divides {{n1}} by {{n2}}. #}
 > > 
 > > Only comparisons among two numbers or two strings are supported.#}
 
+{#alias||=%||apply-interpolate#}
+
+{#alias||=-=||expect-empty-stack#}
+
 {#op||==||{{a1}} {{a2}}||{{b}}||
 Returns {{t}} if {{a1}} is equal to {{a2}}, {{f}} otherwise. #}
 
-{#op||!=||{{a1}} {{a2}}||{{b}}||
-Returns {{t}} if {{a1}} is not equal to {{a2}}, {{f}} otherwise. #}
+{#op||==&gt;||{{none}}||{{none}}||
+Symbol used to separate input and output values in operator signatures.#}
 
-{#alias||&vert;&vert;||expect-any#}
+{#alias||=&gt;||apply#}
 
-{#alias||&&||expect-all#}
+{#op||&gt;||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is greater than {{a2}}, {{f}} otherwise. 
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#alias||&gt;&lt;||infix-dequote#}
+
+{#op||&gt;=||{{a1}} {{a2}}||{{b}}||
+> Returns {{t}} if {{a1}} is greater than or equal to {{a2}}, {{f}} otherwise.
+> > %note%
+> > Note
+> > 
+> > Only comparisons among two numbers or two strings are supported.#}
+
+{#alias||&gt;&gt;||prefix-dequote#}
+
+{#sig||?||help#}
+
+{#alias||?||help#}
+
+{#sig||@||bind#}
+
+{#alias||@||bind#}
+
+{#sig||^||lambda#}
+
+{#alias||^||lambda#}
 
 {#op||all?||{{q1}} {{q2}}||{{b}}||
 Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if all elements of {{q1}} satisfy predicate {{q2}}, {{f}} otherwise. #}
@@ -161,7 +155,7 @@ Sets the bytes specified via their position in {{i1}} through {{q}} to 0. #}
 {#op||bitxor||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *xor* of integers {{i1}} and {{i2}}.#}
 
-{#op||bool||{{any}}||{{b}}||
+{#op||boolean||{{any}}||{{b}}||
 > Converts {{any}} to a boolean value based on the following rules:
 > 
 >  * If {{any}} is a boolean value, no conversion is performed.
@@ -175,9 +169,6 @@ Returns {{t}} if {{any}} is a boolean, {{f}} otherwise. #}
 
 {#op||capitalize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with the first character capitalized.#}
-
-{#op||chr||{{i}}||{{s}}||
-Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
 
 {#op||case||(({{q1}} {{q2}}){{0p}})||{{a0p}}||
 > This operator takes a quotation containing _n_ different conditional branches. 
@@ -198,11 +189,17 @@ Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII co
 > >        ((true) ("Exactly 3" put!))
 > >     ) case #}
 
+{#op||chr||{{i}}||{{s}}||
+Returns the single character {{s}} obtained by interpreting {{i}} as an ASCII code.#}
+
 {#op||compiled?||{{none}}||{{b}}||
 Returns {{t}} if the current program has been compiled.#}
 
 {#op||concat||{{q1}} {{q2}}||{{q3}}||
 Concatenates {{q1}} with {{q2}}. #}
+
+{#op||decode-url||{{sl}}||{{s}}||
+URL-decodes {{sl}}, deconding all URL-encoded characters.#}
 
 {#op||define||{{any}} {{sl}}||{{none}}||
 Defines a new symbol {{sl}}, containing the specified value.#}
@@ -251,6 +248,9 @@ Divides {{i1}} by {{i2}} (integer division). #}
 
 {#op||drop||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the remaining elements after the first _n_ values of the input quotation {{q1}}, or an empty quotation if {{i}} is greater than the length of {{q1}}. #}
+
+{#op||encode-url||{{sl}}||{{s}}||
+URL-encodes {{sl}}, encoding all special characters into URL-encoded characters.#}
 
 {#op||escape||{{sl}}||{{s}}||
 Returns a copy of {{sl}} with quotes and backslashes escaped with a backslash.#}
@@ -417,21 +417,9 @@ If {{q1}} evaluates to {{t}} then evaluates {{q2}}, otherwise evaluates {{q3}}.#
 
 {#op||import||{{sl}}||{{none}}||
 Imports the a previously-loaded module {{sl}}, defining all its symbols in the current scope. #}
+
 {#op||in?||{{q}} {{any}}||{{b}}||
 Returns {{t}} if {{any}} is contained in {{q}}, {{f}} otherwise.#}
-
-{#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
-Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
-
-{#op||intersection||{{q1}} {{q2}}||{{q3}}||
-> Calculates the intersection {{q3}} of {{q1}} and {{q2}}.
->
-> > %sidebar%
-> > Example
-> > 
-> > The following program leaves `(1 "test")` on the stack:
-> > 
-> >     (1 2 "test") ("test" "a" true 1) seq.intersection #}
 
 {#op||indent||{{sl}} {{i}}||{{s}}||
 Returns {{s}} containing {{sl}} indented with {{i}} spaces.#}
@@ -458,6 +446,9 @@ Returns infinity. #}
 > > 
 > >      (2 + 3 * 5) infix-dequote  
  #}
+
+{#op||insert||{{q1}} {{any}} {{i}}||{{q2}}||
+Inserts {{any}} as the value of the _n^th_ element {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}. #}
 
 {#op||integer||{{any}}||{{i}}||
 > Converts {{any}} to an integer value based on the following rules:
@@ -492,6 +483,16 @@ Returns {{t}} if {{any}} is an integer, {{f}} otherwise. #}
 > > 
 > > `"Directory '/Users/h3rald/Development/min' includes 19 files."`#}
  
+{#op||intersection||{{q1}} {{q2}}||{{q3}}||
+> Calculates the intersection {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(1 "test")` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) seq.intersection #}
+
 {#op||join||{{q}} {{sl}}||{{s}}||
 Joins the elements of {{q}} using separator {{sl}}, producing {{s}}.#}
 
@@ -670,8 +671,8 @@ Parses the url {{s}} into its components and stores them into {{url}}.#}
 > >     (1 2 3 4 5 6) 
 > >     (odd?) seq.partition #}
 
-{#op||prepend||{{any}} {{q}}||({{any}} {{a0p}})||
-Returns a new quotation containing the contents of {{q}} with {{any}} prepended. #}
+{#op||pred||{{i1}}||{{i2}}||
+Returns the predecessor of {{i1}}.#}
 
 {#op||prefix||{{sl1}} {{sl2}}||{{s}}||
 Prepends {{sl2}} to {{sl1}}.#}
@@ -687,6 +688,15 @@ Prepends {{sl2}} to {{sl1}}.#}
 > >     (* 8 4) prefix-dequote
  #}
 
+{#op||prepend||{{any}} {{q}}||({{any}} {{a0p}})||
+Returns a new quotation containing the contents of {{q}} with {{any}} prepended. #}
+
+{#op||print||{{any}}||{{any}}||
+Prints {{any}} to STDOUT.#}
+
+{#op||product||{{q}}||{{i}}||
+Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
+
 {#op||prompt||{{none}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
@@ -701,20 +711,11 @@ Prepends {{sl2}} to {{sl1}}.#}
 > Publish symbol [my-local-symbol](class:kwd) to [global](class:kwd) scope:
 > > `'my-local-symbol global publish` #}
 
-{#op||pred||{{i1}}||{{i2}}||
-Returns the predecessor of {{i1}}.#}
-
-{#op||product||{{q}}||{{i}}||
-Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
-
-{#op||puts||{{any}}||{{any}}||
-Prints {{any}} and a new line to STDOUT.#}
-
 {#op||put-env||{{sl1}} {{sl2}}||{{s}}||
 Sets environment variable {{sl2}} to {{sl1}}. #}
 
-{#op||quote-map||{{q1}}||{{q2}}||
-Returns a new quotation {{q2}} obtained by quoting each element of {{q1}}.#}
+{#op||puts||{{any}}||{{any}}||
+Prints {{any}} and a new line to STDOUT.#}
 
 {#op||quit||{{none}}||{{none}}||
 Exits the program or shell with 0 as return code. #}
@@ -722,17 +723,26 @@ Exits the program or shell with 0 as return code. #}
 {#op||quotation?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a quotation, {{f}} otherwise. #}
 
-{#op||quoted-symbol?||{{any}}||{{b}}||
-Returns {{t}} if {{any}} is a quoted symbol, {{f}} otherwise. #}
-
 {#op||quote||{{any}}||({{any}})||
 Wraps {{any}} in a quotation. #}
+
+{#op||quote-map||{{q1}}||{{q2}}||
+Returns a new quotation {{q2}} obtained by quoting each element of {{q1}}.#}
 
 {#op||quotecmd||{{s}}||({{sym}})||
 Creates a command with the value of {{s}} and wraps it in a quotation. #}
 
+{#op||quoted-symbol?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a quoted symbol, {{f}} otherwise. #}
+
 {#op||quotesym||{{s}}||({{sym}})||
 Creates a symbol with the value of {{s}} and wraps it in a quotation. #}
+
+{#op||raise||{{e}}||{{none}}||
+Raises the error specified via the dictionary {{e}}.#}
+
+{#op||raw-get||{{q}} {{i}}||{{rawval}}||
+Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
 
 {#op||random||{{i1}}||{{i2}}||
 > Returns a random number {{i2}} between 0 and {{i1}}-1. 
@@ -748,11 +758,8 @@ Initializes the random number generator using a seed based on the current timest
 {#op||range||{{q2}}||{{q2}}||
 Takes a quotation {{q1}} of two or three integers in the form of *start*, *end* and an optional *step* (1 if not specified) and generates the sequence and returns the resulting quotation of integers {{q2}}. #}
 
-{#op||raise||{{e}}||{{none}}||
-Raises the error specified via the dictionary {{e}}.#}
-
-{#op||raw-get||{{q}} {{i}}||{{rawval}}||
-Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
+{#op||raw-args||{{none}}||{{q}}||
+Returns a list of all arguments and (non-parsed) options passed to the current program.#}
 
 {#op||reduce||{{q1}} {{a1}} {{q2}}||{{a2}}||
 > Combines each successive element of {{q1}} using {{q2}}. On the first iteration, the first two inputs processed by {{q2}} are {{a1}} and the first element of {{q1}}.
@@ -770,15 +777,6 @@ Returns a new quotatios {{q3}} including all elements of {{q1}} that do not sati
 
 {#op||remove||{{q1}} {{i}}||{{q2}}||
 Returns the _n^th_ element of {{q1}} (zero-based), and returns the modified copy of the quotation {{q2}}.#}
-
-{#op||rest||{{q1}}||{{q2}}||
-Returns a new quotation {{q2}} containing all elements of {{q1}} quotation except for the first. #}
-
-{#op||reverse||{{q1}}||{{q2}}||
-Returns a new quotation {{q2}} containing all elements of {{q1}} in reverse order. #}
-
-{#op||raw-args||{{none}}||{{q}}||
-Returns a list of all arguments and (non-parsed) options passed to the current program.#}
 
 {#op||remove-symbol||{{sl}}||{{none}}||
 Removes the symbol {{sl}} from the [.min\_symbols](class:file) file. #}
@@ -835,13 +833,22 @@ This symbol will attempt to locate the specified module in this way. Given the f
 2. Check for a file named `index.min` in the `mmm/my-module/*/index.min` folder relative to the current file (locally-installed [managed-module](/learn-mmm)).
 3. Check for a file named `index.min` in the `$HOME/mmm/my-module/*/index.min` folder (globally-installed [managed-module](/learn-mmm)). If multiple versions of the same module are present, the first one will be loaded. #}
 
+{#op||rest||{{q1}}||{{q2}}||
+Returns a new quotation {{q2}} containing all elements of {{q1}} quotation except for the first. #}
+
 {#op||return||{{none}}||{{none}}||
 If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. 
 
 If used outside of the body quotation of an operator definition, it raises an exception.#}
 
+{#op||reverse||{{q1}}||{{q2}}||
+Returns a new quotation {{q2}} containing all elements of {{q1}} in reverse order. #}
+
 {#op||save-symbol||{{sl}}||{{none}}||
 Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
+
+{#op||saved-symbols||{{none}}||({{s0p}})||
+Returns a quotation containing all symbols saved in the [.min\_symbols](class:file) file. #}
 
 {#op||scope||{{none}}||{{d}}||
 > Returns a dictionary {{d}} holding a reference to the current scope.
@@ -855,9 +862,6 @@ Saves the contents of symbol {{sl}} to the [.min\_symbols](class:file) file. #}
 > > 
 > >     {} :myscope (2 :two scope @myscope) ->
  #}
-
-{#op||saved-symbols||{{none}}||({{s0p}})||
-Returns a quotation containing all symbols saved in the [.min\_symbols](class:file) file. #}
 
 {#op||scope-sigils||{{d}}||({{s0p}})||
 Returns a list of all sigils defined in dictionary {{d}}.#}
@@ -919,8 +923,20 @@ Sets the value of the _n^th_ element {{q1}} (zero-based) to {{any}}, and returns
 {#op||set-sym||{{q1}} {{sl}} {{i}}||{{q2}}||
 Sets the value of the _n^th_ element {{q1}} (zero-based) to {{sl}} (treating it as a symbol), and returns the modified copy of the quotation {{q2}}. #}
 
+{#op||shl||{{i1}} {{i2}}||{{i3}}||
+Computes the *shift left* operation of {{i1}} and {{i2}}.#}
+
 {#op||shorten||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}. #}
+
+{#op||shr||{{i1}} {{i2}}||{{i3}}||
+Computes the *shift right* operation of {{i1}} and {{i2}}.#}
+
+{#op||sigil-help||{{sl}}||{{help}}|{{null}}||
+Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
+
+{#op||sigils||{{none}}||({{s0p}})||
+Returns a list of all sigils defined in the [global](class:kwd) scope.#}
 
 {#op||size||{{q}}||{{i}}||
 Returns the length of {{q}}.#}
@@ -946,43 +962,20 @@ Returns the length of {{q}}.#}
 > > 
 > >     (1 9 5 13 16 3 7) '> seq.sort #}
 
-{#op||symmetric-difference||{{q1}} {{q2}}||{{q3}}||
-> Calculates the symmetric difference {{q3}} of {{q1}} and {{q2}}.
->
-> > %sidebar%
-> > Example
-> > 
-> > The following program leaves `(true "a" 2)` on the stack:
-> > 
-> >     (1 2 "test") ("test" "a" true 1) seq.symmetric-difference #}
+{#op||source||{{sl}}||{{q}}||
+Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
 
 {#op||split||{{sl1}} {{sl2}}||{{q}}||
 Splits {{sl1}} using separator {{sl2}} (a {{pcre}}) and returns the resulting strings within the quotation {{q}}. #}
 
-{#op||shl||{{i1}} {{i2}}||{{i3}}||
-Computes the *shift left* operation of {{i1}} and {{i2}}.#}
-
-{#op||shr||{{i1}} {{i2}}||{{i3}}||
-Computes the *shift right* operation of {{i1}} and {{i2}}.#}
-
-{#op||sigil-help||{{sl}}||{{help}}|{{null}}||
-Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
-
-{#op||sigils||{{none}}||({{s0p}})||
-Returns a list of all sigils defined in the [global](class:kwd) scope.#}
-
-{#op||source||{{sl}}||{{q}}||
-Display the source code of symbol {{sl}} (if it has been implemented a {{m}} quotation). #}
-
 {#op||string||{{any}}||{{s}}||
 Converts {{any}} to its string representation.#}
-
-{#op||stringlike?||{{any}}||{{b}}||
-Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
 
 {#op||string?||{{any}}||{{b}}||
 Returns {{t}} if {{any}} is a string, {{f}} otherwise. #}
 
+{#op||stringlike?||{{any}}||{{b}}||
+Returns {{t}} if {{any}} is a string or a quoted symbol, {{f}} otherwise. #}
 
 {#op||strip||{{sl}}||{{s}}||
 Returns {{s}}, which is set to {{sl}} with leading and trailing spaces removed.#} 
@@ -999,11 +992,21 @@ Appends {{sl2}} to {{sl1}}.#}
 {#op||sum||{{q}}||{{i}}||
 Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
 
+{#op||symbol-help||{{sl}}||{{help}}|{{null}}||
+Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherwise. #}
+
 {#op||symbols||{{none}}||({{s0p}})||
 Returns a list of all symbols defined in the [global](class:kwd) scope.#}
 
-{#op||symbol-help||{{sl}}||{{help}}|{{null}}||
-Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherwise. #}
+{#op||symmetric-difference||{{q1}} {{q2}}||{{q3}}||
+> Calculates the symmetric difference {{q3}} of {{q1}} and {{q2}}.
+>
+> > %sidebar%
+> > Example
+> > 
+> > The following program leaves `(true "a" 2)` on the stack:
+> > 
+> >     (1 2 "test") ("test" "a" true 1) seq.symmetric-difference #}
 
 {#op||take||{{q1}} {{i}}||{{q2}}||
 Returns a quotation {{q2}} containing the first _n_ values of the input quotation {{q1}}, or {{q1}} itself if {{i}} is greater than the length of {{q1}}. #}
@@ -1031,11 +1034,9 @@ Returns a quotation {{q2}} containing the first _n_ values of the input quotatio
 
 {#op||times||{{q}} {{i}}||{{a0p}}||
 Applies the quotation {{q}} {{i}} times.#}
+
 {#op||titleize||{{sl}}||{{s}}||
 Returns a copy of {{sl}} in which the first character of each word is capitalized.#}
-
-{#op||tokenize||{{s}}||{{q}}||
-Parses the min program {{s}} and returns a quotation {{q}} containing dictionaries with a `type` symbol and a `value` symbol for each token.#}
 
 {#op||to-bin||{{i}}||{{s}}||
 Converts {{i}} to its binary representation. #}
@@ -1063,6 +1064,9 @@ Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/
 > > 
 > > At present, only {{m}} dictionaries containing string values are supported.#}
 
+{#op||tokenize||{{s}}||{{q}}||
+Parses the min program {{s}} and returns a quotation {{q}} containing dictionaries with a `type` symbol and a `value` symbol for each token.#}
+
 {#op||try||({{q1}} {{q}}{{2}}{{01}} {{q}}{{3}}{{01}})||{{a0p}}||
 > Evaluates a quotation as a try/catch/finally block. 
 > 
@@ -1086,14 +1090,11 @@ Given a a dictionary {{d}} containing a **major**, **minor**, and **patch** key/
 {#op||type||{{any}}||{{s}}||
 Returns the data type of {{any}}. In cased of typed dictionaries, the type name is prefixed by `dict:`, e.g. `dict:module`, `dict:socket`, etc.#}
 
-{#op||typealias||{{sl1}} {{sl2}}||{{none}}||
-Creates a type alias {{sl1}} for type expression {{sl2}}.#}
-
 {#op||type?||{{any}} {{sl}}||{{b}}||
 Returns {{t}} if the data type of {{any}} satisfies the specified type expression {{sl}}, {{f}} otherwise. #}
 
-{#op||unless||{{q1}} {{q2}}||{{a0p}}||
-If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
+{#op||typealias||{{sl1}} {{sl2}}||{{none}}||
+Creates a type alias {{sl1}} for type expression {{sl2}}.#}
 
 {#op||union||{{q1}} {{q2}}||{{q3}}||
 > Calculates the union {{q3}} of {{q1}} and {{q2}}.
@@ -1105,11 +1106,14 @@ If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 > > 
 > >     (1 2 "test") ("test" "a" true 1) seq.union #}
 
-{#op||unseal-symbol||{{sl}}||{{none}}||
-Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
+{#op||unless||{{q1}} {{q2}}||{{a0p}}||
+If {{1}} evaluates to {{f}} then evaluates {{2}}.#}
 
 {#op||unseal-sigil||{{sl}}||{{none}}||
 Unseals sigil {{sl}}, so that it can be re-defined (system sigils cannot be unsealed). #}
+
+{#op||unseal-symbol||{{sl}}||{{none}}||
+Unseals the user-defined symbol {{sl}}, so that it can be re-assigned. #}
 
 {#op||uppercase||{{sl1}}||{{sl2}}||
 Returns a copy of {{sl}} converted to uppercase.#}
@@ -1137,3 +1141,9 @@ Pushes each item of {{q1}} on the stack using the scope of {{q2}} as scope. #}
 
 {#op||xor||{{b1}} {{b2}}||{{b3}}||
 Returns {{t}} if {{b1}} and {{b2}} are different, {{f}} otherwise.#}
+
+{#alias||&vert;&vert;||expect-any#}
+
+{#sig||~||lambda-bind#}
+
+{#alias||~||lambda-bind#}
