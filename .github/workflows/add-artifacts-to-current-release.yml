@@ -65,12 +65,10 @@ jobs:
                   mingw-w64-x86_64-toolchain
                   mingw-w64-x86_64-autotools
 
-            # Install the Nim compiler and dependencies
-            - name: Install Nim and deps
-              run: |
-                  curl https://nim-lang.org/choosenim/init.sh -sSf > init.sh
-                  sh init.sh -y
-
+            # Install the Nim
+            - name: Install Nim
+              uses: iffy/install-nim@v4.5.0
+            
             # Build for Linux
             - name: Build (Linux)
               run: nimble build -v -y -d:release --gcc.exe:musl-gcc --mm:refc --gcc.linkerexe:musl-gcc -d:ssl --opt:size min
