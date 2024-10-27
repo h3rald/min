@@ -719,13 +719,7 @@ proc global_module*(i: In) =
         foundDoc = true
         displayDoc(sym.doc)
         return
-      var mdl = ""
-      if s.contains('.'):
-        let parts = s.split(".")
-        mdl = parts[0]
-        s = parts[1]
-      if HELP["symbols"].hasKey(s) and (mdl == "" or mdl == HELP["symbols"][
-          s]["module"].getStr):
+      if HELP["symbols"].hasKey(s):
         foundDoc = true
         displayDoc HELP["symbols"][s]
     if i.scope.hasSigil(s):

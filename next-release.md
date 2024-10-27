@@ -5,4 +5,5 @@
 ### Fixes and Improvements
 
 * Implemented `define-sigil` (was documented but not actually implemented).
+* The `help` symbol now correctly displays help for namespaced symbols.
 
