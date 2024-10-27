@@ -119,7 +119,7 @@ proc pairs*(i: In, q: MinValue): MinValue =
   for key, value in q.dVal.pairs:
     if value.kind == minProcOp:
       raiseInvalid("Dictionary contains operators that cannot be accessed.")
-    var p = newSeq[MinValue](0) 
+    var p = newSeq[MinValue](0)
     p.add value.val
     p.add key.newVal
     r.add p.newVal
@@ -406,3 +406,40 @@ proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
   b = i.pop
   if not (a.isQuotation and b.isQuotation or a.isString and b.isString):
     raiseInvalid("Two quotations or two strings are required on the stack")
+
+const SYSTEM_SIGILS* = @[':', '\'', '?', '~', '@', '^']
+
+proc processSymbolValue*(v: string): JsonNode =
+  result = newJArray()
+  var sym = v
+  if SYSTEM_SIGILS.contains(v[0]):
+    sym = v[1..^1]
+    var sigil = newJObject()
+    sigil["subtype"] = %"tkSystemSigil"
+    sigil["value"] = %($v[0])
+    result.add sigil
+  var syms = sym.split('.')
+  var count = 0
+  for s in syms:
+    sym = s
+    var symbol = newJObject()
+    var subtype = "tkDict"
+    if syms.len == 1 or count >= syms.len-1:
+      subtype = "tkSymbol"
+    symbol["subtype"] = %subtype
+    symbol["value"] = %sym
+    result.add symbol
+    if count < syms.len-1:
+      var dot = newJObject()
+      dot["subtype"] = %"tkDot"
+      dot["value"] = %"."
+      result.add dot
+    count += 1
+  if sym.len > 0 and sym[^1] == '!':
+    # Shorten previous symbol
+    let lastVal = result[^1]["value"].getStr
+    result[^1]["value"] = %lastVal[0..^2]
+    var autopop = newJObject()
+    autopop["subtype"] = %"tkAutopop"
+    autopop["value"] = %"!"
+    result.add autopop

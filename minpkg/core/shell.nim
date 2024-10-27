@@ -7,6 +7,7 @@ import
     algorithm,
     streams,
     terminal,
+    json,
     os
   ]
 
@@ -110,12 +111,26 @@ proc p(s: string, color = fgWhite) =
   else:
     stdout.styledWrite(color, s)
 
+proc printSymbol(s: string) =
+  let pS = processSymbolValue(s)
+  if pS.len == 0:
+    p(s, fgCyan)
+  else:
+    for part in pS.items:
+      if part["subtype"].getStr == "tkDict":
+        p(part["value"].getStr, fgBlue)
+      elif ["tkDot", "tkAutopop", "tkSystemSigil"].contains part[
+          "subtype"].getStr:
+        p(part["value"].getStr, fgRed)
+      else:
+        p(part["value"].getStr, fgCyan)
+
 proc pv(item: MinValue) =
   case item.kind
   of minNull, minBool:
     p($item, fgGreen)
   of minSymbol:
-    p($item, fgCyan)
+    printSymbol($item)
   of minString:
     p($item, fgYellow)
   of minFloat, minInt:

@@ -1191,12 +1191,20 @@ proc global_module*(i: In) =
     var dict = newDict(i.scope)
     i.dset(dict, "type", newVal($t))
     i.dset(dict, "value", p.a.processTokenValue(t).newVal)
+    if t == tkSymbol:
+      let processedSymbol = processSymbolValue(p.a)
+      if processedSymbol.len > 0:
+        i.dset(dict, "processedSymbol", i.fromJson processedSymbol)
     q.add dict
     while t != tkEof:
       t = p.getToken()
       var dict = newDict(i.scope)
       i.dset(dict, "type", newVal($t))
       i.dset(dict, "value", p.a.processTokenValue(t).newVal)
+      if t == tkSymbol:
+        let processedSymbol = processSymbolValue(p.a)
+        if processedSymbol.len > 0:
+          i.dset(dict, "processedSymbol", i.fromJson processedSymbol)
       q.add dict
     i.push q.newVal
 

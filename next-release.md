@@ -6,4 +6,6 @@
 
 * Implemented `define-sigil` (was documented but not actually implemented).
 * The `help` symbol now correctly displays help for namespaced symbols.
+* Enhanced the `tokenizer` symbol to provide additional information for symbols.
+* Enhanced min shell highlighting to support dot notation, sigils, autopop.
 
