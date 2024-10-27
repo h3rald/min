@@ -416,7 +416,11 @@ proc global_module*(i: In) =
     else:
       if i.scope.sigils.hasKey(n) and i.scope.sigils[n].sealed:
         raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
+      if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
+        raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
       i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true, doc: doc)
+      # Define a symbol with the same name as the sigil
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)
 
   def.symbol("expect-empty-stack") do (i: In):
     let l = i.stack.len
@@ -590,8 +594,12 @@ proc global_module*(i: In) =
     info "[define-sigil] $1 = $2" % [symbol, $q1]
     if i.scope.sigils.hasKey(symbol) and i.scope.sigils[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed sigil '$1'" % [symbol])
+    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
+      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false,
         quotation: true)
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
+        sealed: false, quotation: true)
 
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
@@ -625,6 +633,7 @@ proc global_module*(i: In) =
     let res = i.scope.delSymbol(sym.getString)
     if not res:
       raiseUndefined("Attempting to delete undefined symbol: " & sym.getString)
+    discard i.scope.delSigil(sym.getString)
 
   def.symbol("delete-sigil") do (i: In):
     let vals = i.expect("'sym")
@@ -632,6 +641,7 @@ proc global_module*(i: In) =
     let res = i.scope.delSigil(sym.getString)
     if not res:
       raiseUndefined("Attempting to delete undefined sigil: " & sym.getString)
+    discard i.scope.delSymbol(sym.getString)
 
   def.symbol("scope") do (i: In):
     var dict = newDict(i.scope.parent)

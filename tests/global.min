@@ -228,6 +228,13 @@
     'j delete-sigil
     {true :test} ==
   ) test.assert
+
+  (
+    'from-json 'j define-sigil
+    "{\"test\": true}" j
+    'j delete-symbol
+    {true :test} ==
+  ) test.assert
   
   (
     {{100 :b} :a} :test test.a.b 100 ==
