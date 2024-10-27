@@ -371,6 +371,18 @@ footer {
   color: #cf111b;
 }
 
+.min-tkSystemSigil {
+  color: #fe7db1;
+}
+
+.min-tkAutopop {
+  color: #fb820a;
+}
+
+.min-tkDot {
+  color: #a97bff
+}
+
 .min-tkInt,
 .min-tkFloat {
   color: #f381f7;
@@ -384,8 +396,12 @@ footer {
   color: #c7830e;
 }
 
+.min-tkDict {
+  color: #8b99fc;
+}
+
 .min-tkSymbol {
-  color: #f5fcfd;
+  color: #7ddbfe;
 }
 
 .min-tkNull,

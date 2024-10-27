@@ -117,10 +117,10 @@ proc printSymbol(s: string) =
     p(s, fgCyan)
   else:
     for part in pS.items:
-      if part["subtype"].getStr == "tkDict":
+      if part["type"].getStr == "tkDict":
         p(part["value"].getStr, fgBlue)
       elif ["tkDot", "tkAutopop", "tkSystemSigil"].contains part[
-          "subtype"].getStr:
+          "type"].getStr:
         p(part["value"].getStr, fgRed)
       else:
         p(part["value"].getStr, fgCyan)

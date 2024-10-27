@@ -1192,9 +1192,9 @@ proc global_module*(i: In) =
     i.dset(dict, "type", newVal($t))
     i.dset(dict, "value", p.a.processTokenValue(t).newVal)
     if t == tkSymbol:
-      let processedSymbol = processSymbolValue(p.a)
-      if processedSymbol.len > 0:
-        i.dset(dict, "processedSymbol", i.fromJson processedSymbol)
+      let parsedValue = processSymbolValue(p.a)
+      if parsedValue.len > 0:
+        i.dset(dict, "parsedValue", i.fromJson parsedValue)
     q.add dict
     while t != tkEof:
       t = p.getToken()
@@ -1202,9 +1202,9 @@ proc global_module*(i: In) =
       i.dset(dict, "type", newVal($t))
       i.dset(dict, "value", p.a.processTokenValue(t).newVal)
       if t == tkSymbol:
-        let processedSymbol = processSymbolValue(p.a)
-        if processedSymbol.len > 0:
-          i.dset(dict, "processedSymbol", i.fromJson processedSymbol)
+        let parsedValue = processSymbolValue(p.a)
+        if parsedValue.len > 0:
+          i.dset(dict, "parsedValue", i.fromJson parsedValue)
       q.add dict
     i.push q.newVal
 

@@ -415,7 +415,7 @@ proc processSymbolValue*(v: string): JsonNode =
   if SYSTEM_SIGILS.contains(v[0]):
     sym = v[1..^1]
     var sigil = newJObject()
-    sigil["subtype"] = %"tkSystemSigil"
+    sigil["type"] = %"tkSystemSigil"
     sigil["value"] = %($v[0])
     result.add sigil
   var syms = sym.split('.')
@@ -423,15 +423,15 @@ proc processSymbolValue*(v: string): JsonNode =
   for s in syms:
     sym = s
     var symbol = newJObject()
-    var subtype = "tkDict"
+    var typ = "tkDict"
     if syms.len == 1 or count >= syms.len-1:
-      subtype = "tkSymbol"
-    symbol["subtype"] = %subtype
+      typ = "tkSymbol"
+    symbol["type"] = %typ
     symbol["value"] = %sym
     result.add symbol
     if count < syms.len-1:
       var dot = newJObject()
-      dot["subtype"] = %"tkDot"
+      dot["type"] = %"tkDot"
       dot["value"] = %"."
       result.add dot
     count += 1
@@ -440,6 +440,6 @@ proc processSymbolValue*(v: string): JsonNode =
     let lastVal = result[^1]["value"].getStr
     result[^1]["value"] = %lastVal[0..^2]
     var autopop = newJObject()
-    autopop["subtype"] = %"tkAutopop"
+    autopop["type"] = %"tkAutopop"
     autopop["value"] = %"!"
     result.add autopop
