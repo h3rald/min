@@ -1,6 +1,6 @@
 ### BREAKING CHANGES
 
-* Actually removed the `invoke` symbol that was supposed to be removed in v0.44.0 but didn't.
+* Actually removed the `invoke` symbol and `*` sigil that were supposed to be removed in v0.44.0 but didn't.
 * Removed Dockerfile and Notepad++ highlighter (no longer maintained).
 
 ### Fixes and Improvements

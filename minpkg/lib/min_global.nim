@@ -2451,9 +2451,6 @@ proc global_module*(i: In) =
   def.sigil("@") do (i: In):
     i.pushSym("bind")
 
-  def.sigil("*") do (i: In):
-    i.pushSym("invoke")
-
   def.sigil("^") do (i: In):
     i.pushSym("lambda")
 
