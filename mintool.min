@@ -24,10 +24,4 @@ taskspec 0 get :task
 
 task-file require :tasklist
 
-"tasklist/$#" (subtask) =% invoke
-
-; Load task module
-;task-file load
-
-; Execute task
-;"$#-tasks" (task) =% eval subtask ^
+"tasklist.$#" (subtask) =% ' ->

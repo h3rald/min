@@ -217,12 +217,33 @@
       "module": "global",
       "name": "^"
     },
+    "all?": {
+      "description": "Applies predicate quot2 to each element of quot1 and returns true if all elements of quot1 satisfy predicate quot2, false  otherwise.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "all?",
+      "signature": "quot1 quot2 ==> bool"
+    },
     "and": {
       "description": "Returns true if bool1 is equal to bool2, false  otherwise.",
       "kind": "symbol",
       "module": "global",
       "name": "and",
       "signature": "bool1 bool2 ==> bool3"
+    },
+    "any?": {
+      "description": "Applies predicate quot2 to each element of quot1 and returns true if at least one element of quot1 satisfies predicate quot2, false  otherwise.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "any?",
+      "signature": "quot1 quot2 ==> bool"
+    },
+    "append": {
+      "description": "Returns a new quotation containing the contents of quot with a appended.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "append",
+      "signature": "a quot ==> (a* a)"
     },
     "apply": {
       "description": "Returns a new quotation obtained by evaluating each element of quot in a separate stack.",
@@ -329,11 +350,11 @@
       "name": "bitxor",
       "signature": "int1 int2 ==> int3"
     },
-    "bool": {
+    "boolean": {
       "description": "Converts a to a boolean value based on the following rules:\n \n  * If a is a boolean value, no conversion is performed.\n  * If a is null, it is converted to false .\n  * If a is a numeric value, zero is converted to false , otherwise it is converted to true.\n  * If a is a quotation or a dictionary, the empty quotation or dictionary is converted to false , otherwise it is converted to true.\n  * If a is a string, the empty string, and \"false\" are converted to false , otherwise it is converted to true.",
       "kind": "symbol",
       "module": "global",
-      "name": "bool",
+      "name": "boolean",
       "signature": "a ==> bool"
     },
     "boolean?": {
@@ -370,6 +391,13 @@
       "module": "global",
       "name": "compiled?",
       "signature": " ==> bool"
+    },
+    "concat": {
+      "description": "Concatenates quot1 with quot2.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "concat",
+      "signature": "quot1 quot2 ==> quot3"
     },
     "crypto.aes": {
       "description": "Encrypts or decrypts 'sym1 using the Advanced Encryption Standard (AES) in CTR mode, using 'sym2 as password.",
@@ -439,6 +467,13 @@
       "kind": "symbol",
       "module": "crypto",
       "name": "sha512",
+      "signature": "'sym ==> str"
+    },
+    "decode-url": {
+      "description": "URL-decodes 'sym, deconding all URL-encoded characters.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "decode-url",
       "signature": "'sym ==> str"
     },
     "define": {
@@ -595,12 +630,33 @@
       "name": "dictionary?",
       "signature": "a ==> bool"
     },
+    "difference": {
+      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) difference",
+      "kind": "symbol",
+      "module": "global",
+      "name": "difference",
+      "signature": "quot1 quot2 ==> quot3"
+    },
     "div": {
       "description": "Divides int1 by int2 (integer division).",
       "kind": "symbol",
       "module": "global",
       "name": "div",
       "signature": "int1 int2 ==> int3"
+    },
+    "drop": {
+      "description": "Returns a quotation quot2 containing the remaining elements after the first _n_ values of the input quotation quot1, or an empty quotation if int is greater than the length of quot1.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "drop",
+      "signature": "quot1 int ==> quot2"
+    },
+    "encode-url": {
+      "description": "URL-encodes 'sym, encoding all special characters into URL-encoded characters.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "encode-url",
+      "signature": "'sym ==> str"
     },
     "escape": {
       "description": "Returns a copy of 'sym with quotes and backslashes escaped with a backslash.",
@@ -657,6 +713,34 @@
       "module": "global",
       "name": "expect-empty-stack",
       "signature": " ==> "
+    },
+    "filter": {
+      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (stackdup 20 < stack.swap even? and) filter",
+      "kind": "symbol",
+      "module": "global",
+      "name": "filter",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "find": {
+      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) find",
+      "kind": "symbol",
+      "module": "global",
+      "name": "find",
+      "signature": "quot1 quot2 ==> int"
+    },
+    "first": {
+      "description": "Returns the first element of quot.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "first",
+      "signature": "quot ==> a"
+    },
+    "flatten": {
+      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     flatten",
+      "kind": "symbol",
+      "module": "global",
+      "name": "flatten",
+      "signature": "quot1 ==> quot2"
     },
     "float": {
       "description": "Converts a to a float value based on the following rules:\n \n   * If a is true, it is converted to 1.0.\n   * If a is false , it is converted to 0.0.\n   * If a is null, it is converted to 0.0.\n   * If a is a integer, it is converted to float value.\n   * If a is a float, no conversion is performed.\n   * If a is a string, it is parsed as a float value.",
@@ -748,6 +832,13 @@
       "module": "fs",
       "name": "absolute-path?",
       "signature": "'sym ==> bool"
+    },
+    "fs.append": {
+      "description": "Appends str1 to the end of file str2.",
+      "kind": "symbol",
+      "module": "fs",
+      "name": "append",
+      "signature": "str1 str2 ==> "
     },
     "fs.atime": {
       "description": "Returns a timestamp corresponding to the time that file/directory 'sym was last accessed.",
@@ -847,6 +938,13 @@
       "name": "permissions",
       "signature": "'sym ==> int"
     },
+    "fs.read": {
+      "description": "Reads the file str and puts its contents on the top of the stack as a string.",
+      "kind": "symbol",
+      "module": "fs",
+      "name": "read",
+      "signature": "str ==> str"
+    },
     "fs.relative-path": {
       "description": "Returns the path of 'sym1 relative to 'sym2.",
       "kind": "symbol",
@@ -896,6 +994,20 @@
       "name": "windows-path",
       "signature": "'sym ==> str"
     },
+    "fs.write": {
+      "description": "Writes str1 to the file str2, erasing all its contents first.",
+      "kind": "symbol",
+      "module": "fs",
+      "name": "write",
+      "signature": "str1 str2 ==> "
+    },
+    "get": {
+      "description": "Returns the _n^th_ element of quot (zero-based).",
+      "kind": "symbol",
+      "module": "global",
+      "name": "get",
+      "signature": "quot int ==> a"
+    },
     "get-env": {
       "description": "Returns environment variable 'sym.",
       "kind": "symbol",
@@ -909,6 +1021,13 @@
       "module": "global",
       "name": "gets",
       "signature": " ==> str"
+    },
+    "harvest": {
+      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     harvest",
+      "kind": "symbol",
+      "module": "global",
+      "name": "harvest",
+      "signature": "quot1 ==> quot2"
     },
     "help": {
       "description": "Prints the help text for 'sym, if available.",
@@ -966,6 +1085,13 @@
       "name": "import",
       "signature": "'sym ==> "
     },
+    "in?": {
+      "description": "Returns true if a is contained in quot, false  otherwise.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "in?",
+      "signature": "quot a ==> bool"
+    },
     "indent": {
       "description": "Returns str containing 'sym indented with int spaces.",
       "kind": "symbol",
@@ -994,6 +1120,13 @@
       "name": "infix-dequote",
       "signature": "quot ==> a"
     },
+    "insert": {
+      "description": "Inserts a as the value of the _n^th_ element quot1 (zero-based), and returns the modified copy of the quotation quot2.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "insert",
+      "signature": "quot1 a int ==> quot2"
+    },
     "integer": {
       "description": "Converts a to an integer value based on the following rules:\n \n   * If a is true, it is converted to 1.\n   * If a is false , it is converted to 0.\n   * If a is null, it is converted to 0.\n   * If a is an integer, no conversion is performed.\n   * If a is a float, it is converted to an integer value by truncating its decimal part.\n   * If a is a string, it is parsed as an integer value.",
       "kind": "symbol",
@@ -1009,11 +1142,18 @@
       "signature": "a ==> bool"
     },
     "interpolate": {
-      "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (sys.pwd (sys.pwd sys.ls 'fs.file? seq.filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
+      "description": "Substitutes the placeholders included in str with the values in quot.\n \n Notes\n \n * If quot contains symbols or quotations, they are not interpreted. To do so, call apply before interpolating or use apply-interpolate instead.\n * You can use the $# placeholder to indicate the next placeholder that has not been already referenced in the string.\n * You can use named placeholders like $pwd, but in this case quot must contain a quotation containing both the placeholder names (odd items) and the values (even items).\n \n \n Example\n  \n The following code (executed in a directory called '/Users/h3rald/Development/min' containing 19 files):\n \n \"Directory '$1' includes $2 files.\" (sys.pwd (sys.pwd sys.ls 'fs.file? filter size)) apply interpolate\n \n produces:\n \n \"Directory '/Users/h3rald/Development/min' includes 19 files.\"",
       "kind": "symbol",
       "module": "global",
       "name": "interpolate",
       "signature": "str quot ==> str"
+    },
+    "intersection": {
+      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) intersection",
+      "kind": "symbol",
+      "module": "global",
+      "name": "intersection",
+      "signature": "quot1 quot2 ==> quot3"
     },
     "io.ask": {
       "description": "Prints str1 (prompt), reads a line from STDIN and places it on top of the stack as a string.",
@@ -1071,33 +1211,12 @@
       "name": "error",
       "signature": "a ==> a"
     },
-    "io.fappend": {
-      "description": "Appends str1 to the end of file str2.",
-      "kind": "symbol",
-      "module": "io",
-      "name": "fappend",
-      "signature": "str1 str2 ==> "
-    },
     "io.fatal": {
       "description": "Prints a and a new line to STDERR, and exists the program with error code 100.",
       "kind": "symbol",
       "module": "io",
       "name": "fatal",
       "signature": "a ==> a"
-    },
-    "io.fread": {
-      "description": "Reads the file str and puts its contents on the top of the stack as a string.",
-      "kind": "symbol",
-      "module": "io",
-      "name": "fread",
-      "signature": "str ==> str"
-    },
-    "io.fwrite": {
-      "description": "Writes str1 to the file str2, erasing all its contents first.",
-      "kind": "symbol",
-      "module": "io",
-      "name": "fwrite",
-      "signature": "str1 str2 ==> "
     },
     "io.getchr": {
       "description": "Reads single character from STDIN without waiting for ENTER key and places its ASCII code on top of the stack.",
@@ -1134,26 +1253,12 @@
       "name": "password",
       "signature": " ==> str"
     },
-    "io.print": {
-      "description": "Prints a to STDOUT.",
-      "kind": "symbol",
-      "module": "io",
-      "name": "print",
-      "signature": "a ==> a"
-    },
     "io.putchr": {
       "description": "Prints str to STDOUT without printing a new line (str must contain only one character).",
       "kind": "symbol",
       "module": "io",
       "name": "putchr",
       "signature": "str ==> a"
-    },
-    "io.type": {
-      "description": "Puts the data type of a on the stack. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
-      "kind": "symbol",
-      "module": "io",
-      "name": "type",
-      "signature": "a ==> str"
     },
     "io.unmapkey": {
       "description": "Unmaps a previously-mapped key or key-combination 'sym, restoring the default mapping if available.\n\n \n Notes\n\n * At present, only the key names and sequences defined in the [minline](https://h3rald.com/minline/minline.html) library are supported.\n * At present, all the default mappings of min are those provided by the [minline](https://h3rald.com/minline/minline.html) library.",
@@ -1189,6 +1294,13 @@
       "module": "global",
       "name": "lambda-bind",
       "signature": "quot 'sym ==> "
+    },
+    "last": {
+      "description": "Returns the last element of quot.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "last",
+      "signature": "quot ==> a"
     },
     "length": {
       "description": "Returns the length of 'sym.",
@@ -1245,6 +1357,20 @@
       "module": "global",
       "name": "lowercase",
       "signature": "'sym ==> str"
+    },
+    "map": {
+      "description": "Returns a new quotation quot3 obtained by applying quot2 to each element of quot1.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "map",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "map-reduce": {
+      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (stack.dup *) (+) map-reduce",
+      "kind": "symbol",
+      "module": "global",
+      "name": "map-reduce",
+      "signature": "quot1 quot2 quot3 ==> int"
     },
     "match?": {
       "description": "Returns true if str2 matches str1, false  otherwise.\n \n Tip\n \n str2 is a Perl-compatible regular expression",
@@ -1526,6 +1652,13 @@
       "name": "odd?",
       "signature": "int ==> bool"
     },
+    "one?": {
+      "description": "Applies predicate quot2 to each element of quot1 and returns true if only one element of quot1 satisfies predicate quot2, false  otherwise.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "one?",
+      "signature": "quot1 quot2 ==> bool"
+    },
     "operator": {
       "description": "Provides a way to define a new operator (symbol, sigil, or typeclass) on the current scope performing additional checks (compared to define and define-sigil), and automatically mapping inputs and outputs.\n \n quot is a quotation containing:\n \n * A symbol identifying the type of operator to define (symbol, sigil, or typeclass).\n * A symbol identifying the name of the operator.\n * A quotation defining the signature of the operator, containing input and output values identified by their type and a capturing symbol, separated by the == symbol.\n * A quotation identifying the body of the operator.\n\n The main additional features offered by this way of defining operators are the following:\n\n * If in development mode (-d or --dev flag specified at run time), both input and output values are checked against a type (like when using the expect operator *and* automatically captured in a symbol that can be referenced in the operator body quotation.\n * The full signature of the operator is declared, making the resulting code easier to understand at quick glance.\n * An exception is automatically raised if the operator body pollutes the stack by adding or removing elements from the stack (besides adding the declared output values).\n * It is possible to use the return symbol within the body quotation to immediately stop the evaluation of the body quotation and automatically push the output values on the stack.\n \n \n Example\n \n The following program defines a pow operator that calculates the power of a number providing its base and exponent, and handling some NaN results using the return symbol:\n\n      (\n        symbol pow\n        (num :base int :exp == num :result)\n        ( \n          (base 0 == exp 0 == and)\n            (nan @result return)\n          when\n          (base 1 == exp inf == and)\n            (nan @result return)\n          when\n          (base inf == exp 0 == and)\n            (nan @result return)\n          when\n          exp 1 - :n\n          base  (dup) n times (*) n times @result\n        )\n      ) ::",
       "kind": "symbol",
@@ -1575,6 +1708,13 @@
       "name": "parse-url",
       "signature": "str ==> dict:url"
     },
+    "partition": {
+      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) partition",
+      "kind": "symbol",
+      "module": "global",
+      "name": "partition",
+      "signature": "quot1 quot2 ==> quot3 quot4"
+    },
     "pred": {
       "description": "Returns the predecessor of int1.",
       "kind": "symbol",
@@ -1595,6 +1735,20 @@
       "module": "global",
       "name": "prefix-dequote",
       "signature": "quot ==> a"
+    },
+    "prepend": {
+      "description": "Returns a new quotation containing the contents of quot with a prepended.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "prepend",
+      "signature": "a quot ==> (a a*)"
+    },
+    "print": {
+      "description": "Prints a to STDOUT.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "print",
+      "signature": "a ==> a"
     },
     "product": {
       "description": "Returns the product of all items of quot. quot is a quotation of integers.",
@@ -1644,6 +1798,13 @@
       "module": "global",
       "name": "quote",
       "signature": "a ==> (a)"
+    },
+    "quote-map": {
+      "description": "Returns a new quotation quot2 obtained by quoting each element of quot1.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "quote-map",
+      "signature": "quot1 ==> quot2"
     },
     "quotecmd": {
       "description": "Creates a command with the value of str and wraps it in a quotation.",
@@ -1701,11 +1862,39 @@
       "name": "raw-args",
       "signature": " ==> quot"
     },
+    "raw-get": {
+      "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "raw-get",
+      "signature": "quot int ==> dict:rawval"
+    },
     "read": {
       "description": "See fread",
       "kind": "symbol",
       "module": "io",
       "name": "read"
+    },
+    "reduce": {
+      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
+      "kind": "symbol",
+      "module": "global",
+      "name": "reduce",
+      "signature": "quot1 a1 quot2 ==> a2"
+    },
+    "reject": {
+      "description": "Returns a new quotatios quot3 including all elements of quot1 that do not satisfy predicate quot2 (i.e. the opposite of filter)",
+      "kind": "symbol",
+      "module": "global",
+      "name": "reject",
+      "signature": "quot1 quot2 ==> quot3"
+    },
+    "remove": {
+      "description": "Returns the _n^th_ element of quot1 (zero-based), and returns the modified copy of the quotation quot2.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "remove",
+      "signature": "quot1 int ==> quot2"
     },
     "remove-symbol": {
       "description": "Removes the symbol 'sym from the [.min\\_symbols](class:file) file.",
@@ -1742,12 +1931,26 @@
       "name": "require",
       "signature": "'sym ==> dict"
     },
+    "rest": {
+      "description": "Returns a new quotation quot2 containing all elements of quot1 quotation except for the first.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "rest",
+      "signature": "quot1 ==> quot2"
+    },
     "return": {
       "description": "If used within the body quotation of an operator definition, causes the interpreter to stop pushing further body elements on the stack and start pushing tbe operator output values on the stack. \n\nIf used outside of the body quotation of an operator definition, it raises an exception.",
       "kind": "symbol",
       "module": "global",
       "name": "return",
       "signature": " ==> "
+    },
+    "reverse": {
+      "description": "Returns a new quotation quot2 containing all elements of quot1 in reverse order.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "reverse",
+      "signature": "quot1 ==> quot2"
     },
     "save-symbol": {
       "description": "Saves the contents of symbol 'sym to the [.min\\_symbols](class:file) file.",
@@ -1854,264 +2057,19 @@
       "name": "semver?",
       "signature": "str ==> bool"
     },
-    "seq.all?": {
-      "description": "Applies predicate quot2 to each element of quot1 and returns true if all elements of quot1 satisfy predicate quot2, false  otherwise.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "all?",
-      "signature": "quot1 quot2 ==> bool"
-    },
-    "seq.any?": {
-      "description": "Applies predicate quot2 to each element of quot1 and returns true if at least one element of quot1 satisfies predicate quot2, false  otherwise.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "any?",
-      "signature": "quot1 quot2 ==> bool"
-    },
-    "seq.append": {
-      "description": "Returns a new quotation containing the contents of quot with a appended.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "append",
-      "signature": "a quot ==> (a* a)"
-    },
-    "seq.concat": {
-      "description": "Concatenates quot1 with quot2.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "concat",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.difference": {
-      "description": "Calculates the difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.difference",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "difference",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.drop": {
-      "description": "Returns a quotation quot2 containing the remaining elements after the first _n_ values of the input quotation quot1, or an empty quotation if int is greater than the length of quot1.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "drop",
-      "signature": "quot1 int ==> quot2"
-    },
-    "seq.filter": {
-      "description": "Returns a new quotation quot3 containing all elements of quot1 that satisfy predicate quot2.\n \n \n Example\n \n The following program leaves (2 6 8 12) on the stack:\n \n     (1 37 34 2 6 8 12 21) \n     (stackdup 20 < stack.swap even? and) seq.filter",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "filter",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.find": {
-      "description": "Returns the index of the first element within quot1 that satisfies predicate quot2, or -1 if no element satisfies it.\n \n \n Example\n \n The following program leaves 3 on the stack:\n \n     (1 2 4 8 16) \n     (5 ) seq.find",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "find",
-      "signature": "quot1 quot2 ==> int"
-    },
-    "seq.first": {
-      "description": "Returns the first element of quot.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "first",
-      "signature": "quot ==> a"
-    },
-    "seq.flatten": {
-      "description": "Flattens all quotations within quot1 and returns the resulting sequence quot2.\n \n \n Example\n \n The following program leaves (1 2 3 4 5 6 7 8) on the stack:\n \n     (1 (2 3 4) 5 (6 7) 8) \n     seq.flatten",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "flatten",
-      "signature": "quot1 ==> quot2"
-    },
-    "seq.get": {
-      "description": "Returns the _n^th_ element of quot (zero-based).",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "get",
-      "signature": "quot int ==> a"
-    },
-    "seq.harvest": {
-      "description": "Creates a new quotation quot2 containing all elements of quot1 except for empty quotations.\n \n \n Example\n \n The following program leaves (1 2 3) on the stack:\n \n     (1 () () () 2 () 3) \n     seq.harvest",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "harvest",
-      "signature": "quot1 ==> quot2"
-    },
-    "seq.in?": {
-      "description": "Returns true if a is contained in quot, false  otherwise.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "in?",
-      "signature": "quot a ==> bool"
-    },
-    "seq.insert": {
-      "description": "Inserts a as the value of the _n^th_ element quot1 (zero-based), and returns the modified copy of the quotation quot2.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "insert",
-      "signature": "quot1 a int ==> quot2"
-    },
-    "seq.intersection": {
-      "description": "Calculates the intersection quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (1 \"test\") on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.intersection",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "intersection",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.last": {
-      "description": "Returns the last element of quot.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "last",
-      "signature": "quot ==> a"
-    },
-    "seq.map": {
-      "description": "Returns a new quotation quot3 obtained by applying quot2 to each element of quot1.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "map",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.map-reduce": {
-      "description": "Applies quot2 (map) to each element of quot1 and then applies quot3 (reduce) to each successive element of quot1. quot1 must have at least one element.\n \n \n Example\n \n The following program leaves 35 on the stack:\n \n     (1 3 5) \n     (stack.dup *) (+) seq.map-reduce",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "map-reduce",
-      "signature": "quot1 quot2 quot3 ==> int"
-    },
-    "seq.one?": {
-      "description": "Applies predicate quot2 to each element of quot1 and returns true if only one element of quot1 satisfies predicate quot2, false  otherwise.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "one?",
-      "signature": "quot1 quot2 ==> bool"
-    },
-    "seq.partition": {
-      "description": "Partitions quot1 into two quotations: quot3 contains all elements of quot1 that satisfy predicate quot2, quot4 all the others.\n \n \n Example\n \n The following program leaves (1 3 5) (2 4 6) on the stack:\n \n     (1 2 3 4 5 6) \n     (odd?) seq.partition",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "partition",
-      "signature": "quot1 quot2 ==> quot3 quot4"
-    },
-    "seq.prepend": {
-      "description": "Returns a new quotation containing the contents of quot with a prepended.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "prepend",
-      "signature": "a quot ==> (a a*)"
-    },
-    "seq.quote-map": {
-      "description": "Returns a new quotation quot2 obtained by quoting each element of quot1.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "quote-map",
-      "signature": "quot1 ==> quot2"
-    },
-    "seq.raw-get": {
-      "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "raw-get",
-      "signature": "quot int ==> dict:rawval"
-    },
-    "seq.reduce": {
-      "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) seq.reduce",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "reduce",
-      "signature": "quot1 a1 quot2 ==> a2"
-    },
-    "seq.reject": {
-      "description": "Returns a new quotatios quot3 including all elements of quot1 that do not satisfy predicate quot2 (i.e. the opposite of filter)",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "reject",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.remove": {
-      "description": "Returns the _n^th_ element of quot1 (zero-based), and returns the modified copy of the quotation quot2.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "remove",
-      "signature": "quot1 int ==> quot2"
-    },
-    "seq.rest": {
-      "description": "Returns a new quotation quot2 containing all elements of quot1 quotation except for the first.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "rest",
-      "signature": "quot1 ==> quot2"
-    },
-    "seq.reverse": {
-      "description": "Returns a new quotation quot2 containing all elements of quot1 in reverse order.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "reverse",
-      "signature": "quot1 ==> quot2"
-    },
-    "seq.set": {
+    "set": {
       "description": "Sets the value of the _n^th_ element quot1 (zero-based) to a, and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
-      "module": "seq",
+      "module": "global",
       "name": "set",
       "signature": "quot1 a int ==> quot2"
     },
-    "seq.set-sym": {
+    "set-sym": {
       "description": "Sets the value of the _n^th_ element quot1 (zero-based) to 'sym (treating it as a symbol), and returns the modified copy of the quotation quot2.",
       "kind": "symbol",
-      "module": "seq",
+      "module": "global",
       "name": "set-sym",
       "signature": "quot1 'sym int ==> quot2"
-    },
-    "seq.shorten": {
-      "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "shorten",
-      "signature": "quot1 int ==> quot2"
-    },
-    "seq.size": {
-      "description": "Returns the length of quot.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "size",
-      "signature": "quot ==> int"
-    },
-    "seq.slice": {
-      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 seq.slice",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "slice",
-      "signature": "quot1 int1 int2 ==> quot2"
-    },
-    "seq.sort": {
-      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' seq.sort",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "sort",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.symmetric-difference": {
-      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.symmetric-difference",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "symmetric-difference",
-      "signature": "quot1 quot2 ==> quot3"
-    },
-    "seq.take": {
-      "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1, or quot1 itself if int is greater than the length of quot1.",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "take",
-      "signature": "quot1 int ==> quot2"
-    },
-    "seq.union": {
-      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) seq.union",
-      "kind": "symbol",
-      "module": "seq",
-      "name": "union",
-      "signature": "quot1 quot2 ==> quot3"
     },
     "shl": {
       "description": "Computes the *shift left* operation of int1 and int2.",
@@ -2119,6 +2077,13 @@
       "module": "global",
       "name": "shl",
       "signature": "int1 int2 ==> int3"
+    },
+    "shorten": {
+      "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "shorten",
+      "signature": "quot1 int ==> quot2"
     },
     "shr": {
       "description": "Computes the *shift right* operation of int1 and int2.",
@@ -2133,6 +2098,27 @@
       "module": "global",
       "name": "sigils",
       "signature": " ==> (str*)"
+    },
+    "size": {
+      "description": "Returns the length of quot.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "size",
+      "signature": "quot ==> int"
+    },
+    "slice": {
+      "description": "Creates a new quotation quot2 obtaining by selecting all elements of quot1 between indexes int1 and int2.\n \n \n Example\n \n The following program leaves (3 4 5) on the stack:\n \n     (1 2 3 4 5 6) \n     2 4 slice",
+      "kind": "symbol",
+      "module": "global",
+      "name": "slice",
+      "signature": "quot1 int1 int2 ==> quot2"
+    },
+    "sort": {
+      "description": "Sorts all elements of quot1 according to predicate quot2. \n \n \n Example\n \n The following program leaves (1 3 5 7 9 13 16) on the stack:\n \n     (1 9 5 13 16 3 7) ' sort",
+      "kind": "symbol",
+      "module": "global",
+      "name": "sort",
+      "signature": "quot1 quot2 ==> quot3"
     },
     "source": {
       "description": "Display the source code of symbol 'sym (if it has been implemented a min quotation).",
@@ -2189,13 +2175,6 @@
       "module": "stack",
       "name": "get",
       "signature": " ==> (a*)"
-    },
-    "stack.id": {
-      "description": "Does nothing.",
-      "kind": "symbol",
-      "module": "stack",
-      "name": "id",
-      "signature": " ==> "
     },
     "stack.keep": {
       "description": "Removes the first element from the stack, dequotes it, and restores the second element.\n \n Example\n \n The following program leaves 5 3 on the stack:\n \n 2 3 '+ stack.keep",
@@ -2294,6 +2273,13 @@
       "module": "store",
       "name": "get",
       "signature": "dict:datastore 'sym ==> dict"
+    },
+    "store.has?": {
+      "description": "Returns true if dict:datastore has a key called 'sym (which contains the collection containing the item and the item id), false  otherwise.",
+      "kind": "symbol",
+      "module": "store",
+      "name": "has?",
+      "signature": "dict:datastore 'sym ==> bool"
     },
     "store.init": {
       "description": "Initializes a bew datastore by creating the 'sym JSON file. Puts the datastore instance on the stack.",
@@ -2399,6 +2385,13 @@
       "module": "global",
       "name": "symbols",
       "signature": " ==> (str*)"
+    },
+    "symmetric-difference": {
+      "description": "Calculates the symmetric difference quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) symmetric-difference",
+      "kind": "symbol",
+      "module": "global",
+      "name": "symmetric-difference",
+      "signature": "quot1 quot2 ==> quot3"
     },
     "sys.admin?": {
       "description": "Returns true if the program is being run with administrative privileges.",
@@ -2561,6 +2554,13 @@
       "name": "zip",
       "signature": "quot 'sym ==> "
     },
+    "take": {
+      "description": "Returns a quotation quot2 containing the first _n_ values of the input quotation quot1, or quot1 itself if int is greater than the length of quot1.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "take",
+      "signature": "quot1 int ==> quot2"
+    },
     "tap": {
       "description": "Performs the following operations:\n \n 1. Removes a from the stack.\n 2. For each quotation defined in quot (which is a quotation of quotations each requiring one argument and returning one argument):\n    1. Pushes a back to the stack.\n    2. Dequotes the quotation and saves the result as a.\n 3. Push the resulting a back on the stack.\n \n \n Example\n \n The following program:\n \n     {1 :a 2 :b 3 :c} (\n       (stack.dup 'a dict.get succ succ 'a dict.set)\n       (stack.dup 'b dict.get succ 'b dict.set)\n     ) tap\n \n Returns {3 :a 3 :b 3 :c}.",
       "kind": "symbol",
@@ -2688,7 +2688,7 @@
       "signature": "(quot1 quot2? quot3?) ==> a*"
     },
     "type": {
-      "description": "Returns the type of a.",
+      "description": "Returns the data type of a. In cased of typed dictionaries, the type name is prefixed by dict:, e.g. dict:module, dict:socket, etc.",
       "kind": "symbol",
       "module": "global",
       "name": "type",
@@ -2707,6 +2707,13 @@
       "module": "global",
       "name": "typealias",
       "signature": "'sym1 'sym2 ==> "
+    },
+    "union": {
+      "description": "Calculates the union quot3 of quot1 and quot2.\n\n \n Example\n \n The following program leaves (true 1 \"test\" \"a\" 2) on the stack:\n \n     (1 2 \"test\") (\"test\" \"a\" true 1) union",
+      "kind": "symbol",
+      "module": "global",
+      "name": "union",
+      "signature": "quot1 quot2 ==> quot3"
     },
     "unless": {
       "description": "If 1 evaluates to false  then evaluates 2.",
@@ -2833,11 +2840,11 @@
       "name": "query",
       "signature": "dict:xml-element 'sym ==> dict:xml-element"
     },
-    "xml.queryall": {
+    "xml.query-all": {
       "description": "Returns a list of dict:xml-element dictionaries representing all the elements matching CSS the selector 'sym.\n \n \n Example\n  \n The following program:\n\n     \"<ul\n        <li class='test'first</li\n        <li class='other'second</li\n        <li class='test'third</li\n     </ul\" \n     xml.from-xml \".test\" xml.queryall\n Returns the following:\n\n     ({\n       {\"test\" :class} :attributes \n       ({\"first\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     }\n     {\n       {\"test\" :class} :attributes \n       ({\"third\" :text}) :children \n       \"li\" :tag \n       ;xml-element\n     })",
       "kind": "symbol",
       "module": "xml",
-      "name": "queryall",
+      "name": "query-all",
       "signature": "dict:xml-element 'sym ==> dict:xml-element"
     },
     "xml.text": {
