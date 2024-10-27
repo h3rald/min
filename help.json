@@ -1869,12 +1869,6 @@
       "name": "raw-get",
       "signature": "quot int ==> dict:rawval"
     },
-    "read": {
-      "description": "See fread",
-      "kind": "symbol",
-      "module": "io",
-      "name": "read"
-    },
     "reduce": {
       "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\n \n \n Example\n \n The following program leaves 120 on the stack:\n \n     (1 2 3 4 5) \n     1 (*) reduce",
       "kind": "symbol",
@@ -2770,12 +2764,6 @@
       "module": "global",
       "name": "with",
       "signature": "quot1 quot2 ==> a*"
-    },
-    "write": {
-      "description": "See fwrite",
-      "kind": "symbol",
-      "module": "io",
-      "name": "write"
     },
     "xml.cdata": {
       "description": "Returns a dict:xml-cdata representing an XML CDATA section.",
