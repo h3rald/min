@@ -3,6 +3,7 @@
 * Actually removed the `invoke` symbol and `*` sigil that were supposed to be removed in v0.44.0 but didn't.
 * Removed Dockerfile and Notepad++ highlighter (no longer maintained).
 * When defining or deleting a sigil, a symbol with the same name is now defined/deleted as well.
+* Removed obsolete aliases `io.read` and `io.write`.
 
 ### Fixes and Improvements
 

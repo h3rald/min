@@ -70,8 +70,6 @@ Reads a line from STDIN displaying \* for each typed character, and places it on
 {#op||putchr||{{s}}||{{any}}||
 Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one character).#}
 
-{#alias||read||fread#}
-
 {#op||unmapkey||{{sl}}||{{none}}||
 > Unmaps a previously-mapped key or key-combination {{sl}}, restoring the default mapping if available.
 >
@@ -84,5 +82,3 @@ Prints {{s}} to STDOUT without printing a new line ({{s}} must contain only one 
 
 {#op||warn||{{any}}||{{any}}||
 Prints {{any}} and a new line to STDERR, if logging level is set to [warn](class:kwd) or lower.#}
-
-{#alias||write||fwrite#}

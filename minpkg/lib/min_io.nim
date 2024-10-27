@@ -153,10 +153,4 @@ proc io_module*(i: In) =
     let choice = choose()
     i.dequote(q.qVal[choice-1].qVal[1])
 
-  def.symbol("write") do (i: In):
-    i.pushSym("fwrite")
-
-  def.symbol("read") do (i: In):
-    i.pushSym("fread")
-
   def.finalize("io")
