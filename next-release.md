@@ -8,7 +8,9 @@
 ### Fixes and Improvements
 
 * Implemented `define-sigil` (was documented but not actually implemented).
+* Reviewed documentation making sure that documented operators match with implementation.
 * The `help` symbol now correctly displays help for namespaced symbols.
 * Enhanced the `tokenizer` symbol to provide additional information for symbols.
-* Enhanced min shell highlighting to support dot notation, sigils, autopop.
+* Enhanced min shell highlighting to support dot notation, sigils, autopop, global symbols.
+* Enhanced Vim syntax file (`min.vim`) to support latest constructs.
 

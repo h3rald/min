@@ -380,12 +380,12 @@ footer {
 }
 
 .min-tkDot {
-  color: #a97bff
+  color: #c60d10
 }
 
 .min-tkInt,
 .min-tkFloat {
-  color: #f381f7;
+  color: #22f991;
 }
 
 .min-tkString {
@@ -402,6 +402,10 @@ footer {
 
 .min-tkSymbol {
   color: #7ddbfe;
+}
+
+.min-tkGlobalSymbol {
+  color: #ff9bf4;
 }
 
 .min-tkNull,

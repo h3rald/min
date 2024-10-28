@@ -198,6 +198,10 @@ Returns {{t}} if the current program has been compiled.#}
 {#op||concat||{{q1}} {{q2}}||{{q3}}||
 Concatenates {{q1}} with {{q2}}. #}
 
+{#op||constructor||{{none}}||{{none}}||
+Symbol used to define a constructor when using the operator symbol. 
+#}
+
 {#op||decode-url||{{sl}}||{{s}}||
 URL-decodes {{sl}}, deconding all URL-encoded characters.#}
 
@@ -606,7 +610,7 @@ Applies predicate {{q2}} to each element of {{q1}} and returns {{t}} if only one
 > 
 > {{q}} is a quotation containing:
 > 
-> * A symbol identifying the type of operator to define (`symbol`, `sigil`, or `typeclass`).
+> * A symbol identifying the type of operator to define (`symbol`, `sigil`, `constructor` or `typeclass`).
 > * A symbol identifying the name of the operator.
 > * A quotation defining the signature of the operator, containing input and output values identified by their type and a capturing symbol, separated by the `==>` symbol.
 > * A quotation identifying the body of the operator.
@@ -700,7 +704,7 @@ Returns the product of all items of {{q}}. {{q}} is a quotation of integers. #}
 {#op||prompt||{{none}}||{{s}}||
 > This symbol is used to configure the prompt of the min shell. By default, it is set to the following quotation:
 > 
->     ("[$1]$$ " (sys.pwd) => %)
+>     ("[$1]$$ " (sys.pwd) => %) #}
 
 {#op||publish||{{sl}} {{d}}||{{none}}||
 > Publishes symbol {{sl}} to the scope of {{d}}.
@@ -932,6 +936,10 @@ Returns a quotation {{q2}} containing the first _n_ values of the input quotatio
 {#op||shr||{{i1}} {{i2}}||{{i3}}||
 Computes the *shift right* operation of {{i1}} and {{i2}}.#}
 
+{#op||sigil||{{none}}||{{none}}||
+Symbol used to define a sigil when using the operator symbol. 
+#}
+
 {#op||sigil-help||{{sl}}||{{help}}|{{null}}||
 Returns the help dictionary for the sigil {{sl}}, if available, {{null}} otherwise. #}
 
@@ -991,6 +999,10 @@ Appends {{sl2}} to {{sl1}}.#}
 
 {#op||sum||{{q}}||{{i}}||
 Returns the sum of all items of {{q}}. {{q}} is a quotation of integers. #}
+
+{#op||symbol||{{none}}||{{none}}||
+Symbol used to define a symbol when using the operator symbol. 
+#}
 
 {#op||symbol-help||{{sl}}||{{help}}|{{null}}||
 Returns the help dictionary for the symbol {{sl}}, if available, {{null}} otherwise. #}
@@ -1095,6 +1107,10 @@ Returns {{t}} if the data type of {{any}} satisfies the specified type expressio
 
 {#op||typealias||{{sl1}} {{sl2}}||{{none}}||
 Creates a type alias {{sl1}} for type expression {{sl2}}.#}
+
+{#op||typeclass||{{none}}||{{none}}||
+Symbol used to define a typeclass when using the operator symbol. 
+#}
 
 {#op||union||{{q1}} {{q2}}||{{q3}}||
 > Calculates the union {{q3}} of {{q1}} and {{q2}}.

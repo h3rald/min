@@ -1202,7 +1202,7 @@ proc global_module*(i: In) =
     i.dset(dict, "type", newVal($t))
     i.dset(dict, "value", p.a.processTokenValue(t).newVal)
     if t == tkSymbol:
-      let parsedValue = processSymbolValue(p.a)
+      let parsedValue = i.processSymbolValue(p.a)
       if parsedValue.len > 0:
         i.dset(dict, "parsedValue", i.fromJson parsedValue)
     q.add dict
@@ -1212,7 +1212,7 @@ proc global_module*(i: In) =
       i.dset(dict, "type", newVal($t))
       i.dset(dict, "value", p.a.processTokenValue(t).newVal)
       if t == tkSymbol:
-        let parsedValue = processSymbolValue(p.a)
+        let parsedValue = i.processSymbolValue(p.a)
         if parsedValue.len > 0:
           i.dset(dict, "parsedValue", i.fromJson parsedValue)
       q.add dict
@@ -2509,6 +2509,18 @@ proc global_module*(i: In) =
     discard # used within operator defs
 
   def.symbol("return") do (i: In):
+    discard # used within operator defs
+
+  def.symbol("symbol") do (i: In):
+    discard # used within operator defs
+
+  def.symbol("sigil") do (i: In):
+    discard # used within operator defs
+
+  def.symbol("constructor") do (i: In):
+    discard # used within operator defs
+
+  def.symbol("typeclass") do (i: In):
     discard # used within operator defs
 
   def.symbol(">>") do (i: In):

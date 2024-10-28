@@ -111,34 +111,34 @@ proc p(s: string, color = fgWhite) =
   else:
     stdout.styledWrite(color, s)
 
-proc printSymbol(s: string) =
-  let pS = processSymbolValue(s)
+proc printSymbol(i: In, s: string) =
+  let pS = i.processSymbolValue(s)
   if pS.len == 0:
     p(s, fgCyan)
   else:
     for part in pS.items:
       if part["type"].getStr == "tkDict":
         p(part["value"].getStr, fgBlue)
+      elif part["type"].getStr == "tkGlobalSymbol":
+        p(part["value"].getStr, fgMagenta)
       elif ["tkDot", "tkAutopop", "tkSystemSigil"].contains part[
           "type"].getStr:
         p(part["value"].getStr, fgRed)
       else:
         p(part["value"].getStr, fgCyan)
 
-proc pv(item: MinValue) =
+proc pv(i:In, item: MinValue) =
   case item.kind
-  of minNull, minBool:
+  of minNull, minBool, minFloat, minInt:
     p($item, fgGreen)
   of minSymbol:
-    printSymbol($item)
+    i.printSymbol($item)
   of minString:
     p($item, fgYellow)
-  of minFloat, minInt:
-    p($item, fgMagenta)
   of minQuotation:
     p("( ", fgRed)
     for val in item.qVal:
-      pv(val); stdout.write(" ")
+      i.pv(val); stdout.write(" ")
     p(")", fgRed)
   of minCommand:
     p("[ ", fgRed)
@@ -152,7 +152,7 @@ proc pv(item: MinValue) =
         v = "<native>".newSym
       else:
         v = val.val.val
-      pv(v); p(" :" & $val.key & " ", fgCyan)
+      i.pv(v); p(" :" & $val.key & " ", fgCyan)
     p("}", fgRed)
 
 proc printResult(i: In, res: MinValue) =
@@ -163,7 +163,7 @@ proc printResult(i: In, res: MinValue) =
     if res.isQuotation and res.qVal.len > 1:
       p(" (\n", fgRed)
       for item in res.qVal:
-        p("   "); pv(item); stdout.write("\n")
+        p("   "); i.pv(item); stdout.write("\n")
       stdout.write(" ".repeat(n.len)); p(")\n", fgRed)
     elif res.isCommand:
       p(" [", fgRed); p(res.cmdVal, fgYellow); p("]\n")
@@ -175,14 +175,14 @@ proc printResult(i: In, res: MinValue) =
           v = "<native>".newSym
         else:
           v = item.val.val
-        p("   "); pv(v); p(" :" & $item.key & "\n", fgCyan)
+        p("   "); i.pv(v); p(" :" & $item.key & "\n", fgCyan)
       if res.objType == "":
         stdout.write " ".repeat(n.len); p("}\n", fgRed)
       else:
         stdout.write " ".repeat(n.len); p("  ;" & res.objType & "\n", fgBlue)
         stdout.write " ".repeat(n.len); p("}\n", fgRed)
     else:
-      stdout.write " "; pv(i.stack[i.stack.len - 1]); stdout.write("\n")
+      stdout.write " "; i.pv(i.stack[i.stack.len - 1]); stdout.write("\n")
 
 proc minSimpleRepl*(i: var MinInterpreter) =
   i.stdLib()

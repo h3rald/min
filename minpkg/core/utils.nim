@@ -409,10 +409,10 @@ proc reqTwoQuotationsOrStrings*(i: var MinInterpreter, a, b: var MinValue) =
 
 const SYSTEM_SIGILS* = @[':', '\'', '?', '~', '@', '^']
 
-proc processSymbolValue*(v: string): JsonNode =
+proc processSymbolValue*(i: In, v: string): JsonNode =
   result = newJArray()
   var sym = v
-  if SYSTEM_SIGILS.contains(v[0]):
+  if SYSTEM_SIGILS.contains(v[0]) and v != "::":
     sym = v[1..^1]
     var sigil = newJObject()
     sigil["type"] = %"tkSystemSigil"
@@ -426,6 +426,8 @@ proc processSymbolValue*(v: string): JsonNode =
     var typ = "tkDict"
     if syms.len == 1 or count >= syms.len-1:
       typ = "tkSymbol"
+      if i.scope.getSymbol("global").mdl.scope.symbols.hasKey(s):
+        typ = "tkGlobalSymbol"
     symbol["type"] = %typ
     symbol["value"] = %sym
     result.add symbol
