@@ -78,20 +78,6 @@ If the **-d:nopcre** is specified when compiling, min will be built _without_ PC
 * {#link-global-operator||replace#}
 * {#link-global-operator||replace-apply#}
 
-## Building a docker image
-
-[Yanis Zafirópulos](https://github.com/drkameleon) contributed a Dockerfile that you can use to create your own Docker image for min based on Alpine Linux.
-
-To build the image locally, execute the following command from the repository root directory:
-
-> %terminal%
-> docker build \-t mindocker .
-
-To run it, execute:
-
-> %terminal%
-> docker run \-it mindocker
-
 ## Running the min shell
 
 To start the min shell, run [min](class:cmd) with no arguments. You will be presented with a prompt displaying the path to the current directory:
@@ -186,4 +172,3 @@ min comes with a built-in `help` command that can be used to print information o
 * If you are using [Visual Studio Code](https://code.visualstudio.com/), you can install the official [min extension](https://marketplace.visualstudio.com/items?itemName=h3rald.vscode-min-lang) which provides syntax highlighting support, code folding, and auto-indentation.
 * If you are using [Vim](https://www.vim.org), a [min.vim](https://github.com/h3rald/min/blob/master/min.vim) syntax definition file is available in the min repo.
 * If you are using [Sublime Text 3](https://www.sublimetext.com/3), Rafael Carrasco created a min syntax definition file that is available [here](https://github.com/rscarrasco/min-sublime-syntax).
-* If you are using [Notepad++](https://notepad-plus-plus.org), a [Notepad++ language file](https://github.com/h3rald/min/blob/master/minNotepad++.xml) contributed by baykus871 is available in the repo.
