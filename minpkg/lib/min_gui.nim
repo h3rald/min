@@ -35,31 +35,31 @@ proc gui_module*(i: In) =
         var winRef = Window(raw: app.raw, targetFps: app.targetFps, lastFrameTime: app.lastFrameTime, fps: app.fps)
         var win = newDict(i.scope)
         win = i.dset(win, "title", title.newVal)
-        win = i.dset(win, "height", title.newVal)
-        win = i.dset(win, "width", title.newVal)
-        win = i.dset(win, "fps", title.newVal)
+        win = i.dset(win, "height", height.newVal)
+        win = i.dset(win, "width", width.newVal)
+        win = i.dset(win, "fps", fps.newVal)
         win.objType = "window"
         win.obj = winRef[].addr
         i.push win
 
     def.symbol("loop") do (i: In):
-        var vals = i.expect("dict:window", "quot")
-        while vals[0].toFenster.loop:
-            i.dequote vals[1]
+        var vals = i.expect("quot", "dict:window")
+        while vals[1].toFenster.loop:
+            i.dequote vals[0]
     
     def.symbol("close") do (i: In):
         var vals = i.expect("dict:window")
         vals[0].toFenster.close()
 
     def.symbol("pixel") do (i: In):
-        var vals = i.expect("dict:window", "quot")
-        i.reqQuotationOfIntegers(vals[1])
-        i.push vals[0].toFenster.pixel(vals[1].qVal[0].intVal, vals[1].qVal[0].intVal).int.newVal
+        var vals = i.expect("quot", "dict:window")
+        i.reqQuotationOfIntegers(vals[0])
+        i.push vals[1].toFenster.pixel(vals[0].qVal[0].intVal, vals[1].qVal[0].intVal).int.newVal
 
     def.symbol("draw") do (i: In):
-        var vals = i.expect("dict:window", "quot", "int")
+        var vals = i.expect("int", "quot", "dict:window")
         i.reqQuotationOfIntegers(vals[1])
-        vals[0].toFenster.pixel(vals[1].qVal[0].intVal, vals[1].qVal[0].intVal) = vals[2].intVal.uint32
+        vals[2].toFenster.pixel(vals[1].qVal[0].intVal, vals[1].qVal[1].intVal) = vals[0].intVal.uint32
 
     def.symbol("width") do (i: In):
         var vals = i.expect("dict:window")
@@ -88,8 +88,8 @@ proc gui_module*(i: In) =
         i.push mouse
     
     def.symbol("sleep") do (i: In):
-        var vals = i.expect("dict:window", "int")
-        vals[0].toFenster.sleep(vals[1].intVal)
+        var vals = i.expect("int", "dict:window")
+        vals[1].toFenster.sleep(vals[0].intVal)
 
     def.symbol("time") do (i: In):
         var vals = i.expect("dict:window")
