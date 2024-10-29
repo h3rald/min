@@ -1,16 +1,4 @@
-### BREAKING CHANGES
-
-* Actually removed the `invoke` symbol and `*` sigil that were supposed to be removed in v0.44.0 but didn't.
-* Removed Dockerfile and Notepad++ highlighter (no longer maintained).
-* When defining or deleting a sigil, a symbol with the same name is now defined/deleted as well.
-* Removed obsolete aliases `io.read` and `io.write`.
-
 ### Fixes and Improvements
 
-* Implemented `define-sigil` (was documented but not actually implemented).
-* Reviewed documentation making sure that documented operators match with implementation.
-* The `help` symbol now correctly displays help for namespaced symbols.
-* Enhanced the `tokenizer` symbol to provide additional information for symbols.
-* Enhanced min shell highlighting to support dot notation, sigils, autopop, global symbols.
-* Enhanced Vim syntax file to support latest constructs.
+* Implemented a simple `gui` module based on [Fenster](https://github.com/zserge/fenster) and [Fenstim](https://github.com/CardealRusso/fenstim).
 

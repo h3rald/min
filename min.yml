@@ -1,5 +1,5 @@
 author: Fabio Cevasco
 description: A small but practical concatenative programming language and shell.
-id: 182094059
+id: 182418196
 name: min
-version: 0.46.0
+version: 0.47.0
