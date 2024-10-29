@@ -59,7 +59,6 @@ proc gui_module*(i: In) =
 
     def.symbol("draw") do (i: In):
         var vals = i.expect("int", "quot", "dict:window")
-        i.reqQuotationOfIntegers(vals[1])
         vals[2].toFenster.pixel(vals[1].qVal[0].intVal, vals[1].qVal[1].intVal) = vals[0].intVal.uint32
 
     def.symbol("width") do (i: In):
