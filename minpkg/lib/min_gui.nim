@@ -44,7 +44,8 @@ proc gui_module*(i: In) =
 
     def.symbol("loop") do (i: In):
         var vals = i.expect("quot", "dict:window")
-        while vals[1].toFenster.loop:
+        var win = vals[1].toFenster
+        while win.loop:
             i.dequote vals[0]
     
     def.symbol("close") do (i: In):
