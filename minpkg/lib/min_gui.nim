@@ -8,10 +8,10 @@ import
     ../core/value,
     ../core/utils
 
-type Window = ref Fenster
+var WINDOWS*: seq[Fenster] = @[]
 
-proc toFenster(q: MinValue): var Fenster =
-  return cast[var Fenster](q.obj)
+proc window(i: In, v: MinValue): var Fenster = 
+    return WINDOWS[i.dget(v, "ref").intVal]
 
 proc gui_module*(i: In) =
     let def = i.define()
@@ -31,55 +31,61 @@ proc gui_module*(i: In) =
             width = i.dget(d, "width").intVal
         if d.dhas("fps"):
             fps = i.dget(d, "fps").intVal
-        var app = Fenster.init(title, width, height, fps)
-        var winRef = Window(raw: app.raw, targetFps: app.targetFps, lastFrameTime: app.lastFrameTime, fps: app.fps)
+        var window = Fenster.init(title, width, height, fps)
         var win = newDict(i.scope)
         win = i.dset(win, "title", title.newVal)
         win = i.dset(win, "height", height.newVal)
         win = i.dset(win, "width", width.newVal)
         win = i.dset(win, "fps", fps.newVal)
+        win = i.dset(win, "ref", WINDOWS.len.newVal)
         win.objType = "window"
-        win.obj = winRef[].addr
+        WINDOWS.add window
         i.push win
 
     def.symbol("loop") do (i: In):
         var vals = i.expect("quot", "dict:window")
-        var win = vals[1].toFenster
-        while win.loop:
-            i.dequote vals[0]
+        var q = vals[0]
+        while i.window(vals[1]).loop:
+            for v in q.qVal:
+                i.push v 
     
     def.symbol("close") do (i: In):
         var vals = i.expect("dict:window")
-        vals[0].toFenster.close()
+        i.window(vals[0]).close()
+        WINDOWS.delete(vals[0].intVal)
 
     def.symbol("pixel") do (i: In):
         var vals = i.expect("quot", "dict:window")
         i.reqQuotationOfIntegers(vals[0])
-        i.push vals[1].toFenster.pixel(vals[0].qVal[0].intVal, vals[1].qVal[0].intVal).int.newVal
+        i.push i.window(vals[1]).pixel(vals[0].qVal[0].intVal, vals[1].qVal[0].intVal).int.newVal
 
     def.symbol("draw") do (i: In):
         var vals = i.expect("int", "quot", "dict:window")
-        vals[2].toFenster.pixel(vals[1].qVal[0].intVal, vals[1].qVal[1].intVal) = vals[0].intVal.uint32
+        var f = i.window(vals[2])
+        let x = vals[1].qVal[0].intVal
+        let y = vals[1].qVal[1].intVal
+        let v = vals[0].intVal.uint32
+        f.pixel(x, y) = v
 
     def.symbol("width") do (i: In):
         var vals = i.expect("dict:window")
-        i.push vals[0].toFenster.width.newVal
+        i.push i.window(vals[0]).width.newVal
 
     def.symbol("height") do (i: In):
         var vals = i.expect("dict:window")
-        i.push vals[0].toFenster.height.newVal
+        i.push i.window(vals[0]).height.newVal
 
     def.symbol("keys") do (i: In):
         var vals = i.expect("dict:window")
-        i.push vals[0].toFenster.keys.mapIt(it.int.newVal).newVal
+        i.push i.window(vals[0]).keys.mapIt(it.int.newVal).newVal
 
     def.symbol("modkey") do (i: In):
         var vals = i.expect("dict:window")
-        i.push vals[0].toFenster.modkey.newVal
+        i.push i.window(vals[0]).modkey.newVal
 
     def.symbol("mouse") do (i: In):
         var vals = i.expect("dict:window")
-        var win = vals[0].toFenster
+        var win = i.window(vals[0])
         var mouse = newDict(i.scope)
         i.dset(mouse, "x", win.mouse.pos.x.newVal)
         i.dset(mouse, "y", win.mouse.pos.y.newVal)
@@ -89,14 +95,14 @@ proc gui_module*(i: In) =
     
     def.symbol("sleep") do (i: In):
         var vals = i.expect("int", "dict:window")
-        vals[1].toFenster.sleep(vals[0].intVal)
+        i.window(vals[1]).sleep(vals[0].intVal)
 
     def.symbol("time") do (i: In):
         var vals = i.expect("dict:window")
-        i.push vals[0].toFenster.time.newVal
+        i.push i.window(vals[0]).time.newVal
 
     def.symbol("clear") do (i: In):
         var vals = i.expect("dict:window")
-        vals[0].toFenster.clear()
+        i.window(vals[0]).clear()
 
     def.finalize("gui")
