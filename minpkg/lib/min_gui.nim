@@ -2,7 +2,7 @@ import std/sequtils
 
 import pkg/fenstim
 
-import 
+import
     ../core/parser,
     ../core/interpreter,
     ../core/value,
@@ -10,7 +10,7 @@ import
 
 var WINDOWS*: seq[Fenster] = @[]
 
-proc window(i: In, v: MinValue): var Fenster = 
+proc window(i: In, v: MinValue): var Fenster =
     return WINDOWS[i.dget(v, "ref").intVal]
 
 proc gui_module*(i: In) =
@@ -43,12 +43,9 @@ proc gui_module*(i: In) =
         i.push win
 
     def.symbol("loop") do (i: In):
-        var vals = i.expect("quot", "dict:window")
-        var q = vals[0]
-        while i.window(vals[1]).loop:
-            for v in q.qVal:
-                i.push v 
-    
+        var vals = i.expect("dict:window")
+        i.push i.window(vals[0]).loop.newVal
+
     def.symbol("close") do (i: In):
         var vals = i.expect("dict:window")
         i.window(vals[0]).close()
@@ -57,7 +54,8 @@ proc gui_module*(i: In) =
     def.symbol("pixel") do (i: In):
         var vals = i.expect("quot", "dict:window")
         i.reqQuotationOfIntegers(vals[0])
-        i.push i.window(vals[1]).pixel(vals[0].qVal[0].intVal, vals[1].qVal[0].intVal).int.newVal
+        i.push i.window(vals[1]).pixel(vals[0].qVal[0].intVal, vals[1].qVal[
+                0].intVal).int.newVal
 
     def.symbol("draw") do (i: In):
         var vals = i.expect("int", "quot", "dict:window")
@@ -87,12 +85,17 @@ proc gui_module*(i: In) =
         var vals = i.expect("dict:window")
         var win = i.window(vals[0])
         var mouse = newDict(i.scope)
+        # Double quote quotations
+        let click = @[win.mouse.mclick.mapIt(
+                it.int.newVal).newVal].newVal
+        let hold = @[win.mouse.mhold.mapIt(
+                it.int.newVal).newVal].newVal
         i.dset(mouse, "x", win.mouse.pos.x.newVal)
         i.dset(mouse, "y", win.mouse.pos.y.newVal)
-        i.dset(mouse, "click", win.mouse.mclick.mapIt(it.int.newVal).newVal)
-        i.dset(mouse, "hold", win.mouse.mhold.mapIt(it.int.newVal).newVal)
+        i.dset(mouse, "click", click)
+        i.dset(mouse, "hold", hold)
         i.push mouse
-    
+
     def.symbol("sleep") do (i: In):
         var vals = i.expect("int", "dict:window")
         i.window(vals[1]).sleep(vals[0].intVal)
