@@ -819,6 +819,25 @@
 
   ((1 2 "test") ("test" "a" true 1) symmetric-difference (true "a" 2) ==) test.assert
 
+  (
+    0 :x
+    0 :y
+    0 :t
+    (x 100 <)
+      (
+        0 @y
+        (y 200 <)
+          (
+            y succ @y
+            t succ @t
+          )
+        while
+        x succ @x
+      )
+    while
+    x y t + + 20300 ==
+  ) test.assert
+
   test.report
   ;; Tidy up
   stack.clear

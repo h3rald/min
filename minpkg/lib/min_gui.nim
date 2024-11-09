@@ -13,6 +13,11 @@ var WINDOWS*: seq[Fenster] = @[]
 proc window(i: In, v: MinValue): var Fenster =
     return WINDOWS[i.dget(v, "ref").intVal]
 
+proc close(i: In, v: MinValue) =
+    i.window(v).close()
+    let r = i.dget(v, "ref").intVal
+    WINDOWS.delete(r)
+
 proc gui_module*(i: In) =
     let def = i.define()
 
@@ -43,13 +48,13 @@ proc gui_module*(i: In) =
         i.push win
 
     def.symbol("loop") do (i: In):
-        var vals = i.expect("dict:window")
-        i.push i.window(vals[0]).loop.newVal
+        var vals = i.expect("quot", "dict:window")
+        while i.window(vals[1]).loop:
+            i.dequote vals[0]
 
     def.symbol("close") do (i: In):
         var vals = i.expect("dict:window")
-        i.window(vals[0]).close()
-        WINDOWS.delete(vals[0].intVal)
+        i.close(vals[0])
 
     def.symbol("pixel") do (i: In):
         var vals = i.expect("quot", "dict:window")
