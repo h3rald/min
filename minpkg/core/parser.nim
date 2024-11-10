@@ -801,6 +801,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   if push:
     op = indent&"i.push "
   result = newSeq[string](0)
+  echo p.token
   case p.token
   of tkNull:
     result = @[op&"MinValue(kind: minNull)"]
@@ -846,37 +847,30 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     var c = 0
     var valInitialized = false
     CVARCOUNT.inc
-    var scopevar = "scope" & $CVARCOUNT
-    CVARCOUNT.inc
-    var valvar = "val" & $CVARCOUNT
+    var dictvar = "dict" & $CVARCOUNT
+    result.add "var $# = newDict(i.scope)" % [dictvar]
     while p.token != tkBraceRi:
       c = c+1
-      var instructions = p.compileMinValue(i, false, indent)
       let v = p.parseMinValue(i)
       if v.isNil:
         continue
-      let vs = instructions.pop
-      result = result.concat(instructions)
       if val.isNil:
-        if not valInitialized:
-          result.add indent&"var "&valvar&": MinValue"
-          valInitialized = true
-        result.add indent&valvar&" = "&vs
+        val = v
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
-          result.add indent&scopevar&".setSymbol("&key[1 ..
-              key.len-1]&"), MinOperator(kind: minValOp, val: "&valvar&", sealed: false))"
+          let symkey = key[1 .. key.len-1]
+          result.add "i.dset($#, $#, #$#)" % [dictvar, symkey, $val]
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:
         raiseInvalid("Invalid dictionary key: " & $v)
+      echo ">> ", result
     eat(p, tkBraceRi)
     if c mod 2 != 0:
       raiseInvalid("Invalid dictionary")
-    result.add indent&"var "&scopevar&" = newScopeRef(nil)"
-    result.add op&"MinValue(kind: minDictionary, scope: "&scopevar&")"
+    result.add "i.push $#" % [dictvar]
   of tkSymbol:
     result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&")"]
     p.a = ""
