@@ -1,6 +1,6 @@
 import std/sequtils
 
-import pkg/fenstim
+import pkg/fenstim, fenstim_audio
 
 import
     ../core/parser,
@@ -9,14 +9,23 @@ import
     ../core/utils
 
 var WINDOWS*: seq[Fenster] = @[]
+var AUDIO*: seq[FensterAudio] = @[]
 
 proc window(i: In, v: MinValue): var Fenster =
     return WINDOWS[i.dget(v, "ref").intVal]
+
+proc audio(i: In, v: MinValue): var FensterAudio =
+    return AUDIO[i.dget(v, "ref").intVal]
 
 proc close(i: In, v: MinValue) =
     i.window(v).close()
     let r = i.dget(v, "ref").intVal
     WINDOWS.delete(r)
+
+proc stop(i: In, v: MinValue) =
+    i.audio(v).close()
+    let r = i.dget(v, "ref").intVal
+    AUDIO.delete(r)
 
 proc gui_module*(i: In) =
     let def = i.define()
@@ -111,5 +120,25 @@ proc gui_module*(i: In) =
     def.symbol("clear") do (i: In):
         var vals = i.expect("dict:window")
         i.window(vals[0]).clear()
+
+    def.symbol("audio") do (i: In):
+        var audio = FensterAudio.init()
+        var aud = newDict(i.scope)
+        aud = i.dset(aud, "ref", AUDIO.len.newVal)
+        aud.objType = "audio"
+        AUDIO.add audio
+        i.push aud
+
+    def.symbol("audio?") do (i: In):
+        var vals = i.expect("dict:audio")
+        i.push (i.audio(vals[0]).available).newVal
+
+    def.symbol("play") do (i: In):
+        var vals = i.expect("quot", "dict:audio")
+        i.audio(vals[1]).write(vals[0].qVal.mapIt(it.floatVal.float32))
+
+    def.symbol("stop") do (i: In):
+        var vals = i.expect("dict:audio")
+        i.stop(vals[0])
 
     def.finalize("gui")
