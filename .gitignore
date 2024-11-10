@@ -20,5 +20,5 @@ dynlibs/
 response.json
 mintool
 mintool.nim
-test*.min
+test*
 .DS_Store
