@@ -801,7 +801,6 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   if push:
     op = indent&"i.push "
   result = newSeq[string](0)
-  echo p.token
   case p.token
   of tkNull:
     result = @[op&"MinValue(kind: minNull)"]
@@ -845,28 +844,26 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     var val: MinValue
     discard getToken(p)
     var c = 0
-    var valInitialized = false
     CVARCOUNT.inc
     var dictvar = "dict" & $CVARCOUNT
     result.add "var $# = newDict(i.scope)" % [dictvar]
     while p.token != tkBraceRi:
-      c = c+1
       let v = p.parseMinValue(i)
       if v.isNil:
         continue
+      c = c+1
       if val.isNil:
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':':
           let symkey = key[1 .. key.len-1]
-          result.add "i.dset($#, $#, #$#)" % [dictvar, symkey, $val]
+          result.add "i.dset($#, \"$#\", $#.newVal)" % [dictvar, symkey, $val]
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:
         raiseInvalid("Invalid dictionary key: " & $v)
-      echo ">> ", result
     eat(p, tkBraceRi)
     if c mod 2 != 0:
       raiseInvalid("Invalid dictionary")
