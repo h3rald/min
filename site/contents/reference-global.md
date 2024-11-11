@@ -756,7 +756,7 @@ Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
 > > 
 > > You must call `randomize` to initialize the random number generator, otherwise the same sequence of numbers will be returned.#}
 
-{#op||randomize||{{none}}||{{null}||
+{#op||randomize||{{none}}||{{null}}||
 Initializes the random number generator using a seed based on the current timestamp. #}
 
 {#op||range||{{q2}}||{{q2}}||

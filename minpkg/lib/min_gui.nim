@@ -129,7 +129,7 @@ proc gui_module*(i: In) =
         AUDIO.add audio
         i.push aud
 
-    def.symbol("audio?") do (i: In):
+    def.symbol("samples") do (i: In):
         var vals = i.expect("dict:audio")
         i.push (i.audio(vals[0]).available).newVal
 

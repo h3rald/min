@@ -65,6 +65,8 @@
 {{xcdata => [dict:xml-cdata](class:kwd)}}
 {{xtext => [dict:xml-text](class:kwd)}}
 {{xnode => [xml-node](class:kwd)}}
+{{window => [dict:window](class:kwd)}}
+{{audio => [dict:audio](class:kwd)}}
 
 {{pcre => [Perl Compatible Regular Expression](https://www.pcre.org/)}}
 

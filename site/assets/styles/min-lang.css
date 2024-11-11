@@ -193,6 +193,11 @@ h3 {
   font-size: 1.2rem;
 }
 
+ul,
+ol {
+  margin-left: 1rem;
+}
+
 .pitch {
   font-size: 1.2em;
 }

@@ -15,6 +15,8 @@ min includes a small but powerful standard library organized into the following 
 : Defines operators for dictionaries, like `dict.get`, `dict.dup`, `dict.set`, etc.
 {#link-module||fs#}
 : Provides operators for reading and writing files, and accessing file information and properties. 
+{#link-module||gui#}
+: Provides operators for creating simple graphical user interfaces by drawing pixels, managing mouse clicks, key presses, and simple audio.
 {#link-module||http#}
 : Provides operators to perform HTTP requests, download files and create basic HTTP servers.
 {#link-module||io#}
@@ -208,6 +210,24 @@ The following notation is used in the signature of all min operators:
 : A typealias to identify all XML dictionary types.
 
       dict:xml-element||dict:xml-text||dict:xml-comment||dict:xml-entity||dict:xml-cdata
+{{window}}
+: A dictionary representing a GUI window.
+
+      {
+        "Audio Test" :title
+        60 :fps
+        320 :height
+        320 :width
+        0 :ref
+        ;window
+      }
+{{audio}}
+: A dictionary representing the system audio device.
+
+      {
+        0 :ref
+        ;audio
+      }
 
 ### Suffixes
 
