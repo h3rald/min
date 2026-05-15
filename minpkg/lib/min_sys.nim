@@ -42,7 +42,7 @@ proc sys_module*(i: In) =
     let vals = i.expect("'sym")
     let a = vals[0]
     var list = newSeq[MinValue](0)
-    for i in walkDirRec(a.getString):
+    for i in walkDirRec(a.getString, {pcFile, pcDir, pcLinkToDir, pcLinkToFile}, {pcDir, pcLinkToDir}):
       list.add newVal(i.unix)
     i.push list.newVal
 
