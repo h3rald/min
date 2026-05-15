@@ -1,8 +1,0 @@
-'min-test require :test
-;;;
-
-"logic" test.describe
-
- 
-  test.report
-  stack.clear
