@@ -23,7 +23,6 @@ import
   min_http,
   min_net,
   min_crypto,
-  min_gui,
   min_math]
 
 var customPrelude* {.threadvar.}: string
@@ -49,7 +48,6 @@ proc stdLib*(i: In) =
   i.math_module
   i.http_module
   i.xml_module
-  i.gui_module
   if customPrelude != "":
     try:
       i.eval customPrelude.readFile, customPrelude
