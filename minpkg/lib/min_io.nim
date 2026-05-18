@@ -7,9 +7,10 @@ import
 import
   minline
 import
+  ../core/env,
+  ../core/baseutils,
   ../core/parser,
   ../core/value,
-  ../core/env,
   ../core/interpreter,
   ../core/utils
 
@@ -73,7 +74,7 @@ proc io_module*(i: In) =
   def.symbol("fatal") do (i: In):
     let a = i.peek
     fatal $$a
-    quit(100)
+    terminate(100)
 
   def.symbol("column-print") do (i: In):
     let vals = i.expect("int", "quot")

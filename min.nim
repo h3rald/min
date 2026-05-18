@@ -2,13 +2,14 @@ import
   std/[streams,
   strutils,
   sequtils,
+  exitprocs,
   times,
   os,
   logging]
 import
   minpkg/core/[niftylogger,
-  baseutils,
   env,
+  baseutils,
   parser,
   value,
   interpreter,
@@ -39,6 +40,12 @@ var MMM*: MinModuleManager
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()
 
+proc showUnhandledExceptionMessage =
+  if not ERRORS_HANDLED:
+    logging.warn "Please re-run this program in development mode (specify -d) for debugging information on this error."
+
+addExitProc(showUnhandledExceptionMessage)
+
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
   i.open(s, i.filename)
@@ -47,7 +54,8 @@ proc interpret*(i: In, s: Stream) =
     i.interpret()
   except CatchableError:
     discard
-  i.close()
+  finally:
+    i.close()
 
 proc minFile*(fn: string, op = "interpret", main = true): seq[
     string] {.discardable.}
@@ -55,7 +63,7 @@ proc minFile*(fn: string, op = "interpret", main = true): seq[
 proc compile*(i: In, s: Stream, main = true): seq[string] =
   if "nim".findExe == "":
     logging.error "Nim compiler not found, unable to compile."
-    quit(7)
+    terminate(7)
   result = newSeq[string](0)
   i.open(s, i.filename)
   discard i.parser.getToken()
@@ -105,7 +113,7 @@ proc minFile*(fn: string, op = "interpret", main = true): seq[
     fileLines = fn.readFile().splitLines()
   except CatchableError:
     logging.fatal("Cannot read from file: " & fn)
-    quit(3)
+    terminate(3)
   if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
     contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
   else:
@@ -135,11 +143,11 @@ when isMainModule:
     try:
       MMM.setup()
       cmd()
-      quit(0)
+      terminate(0)
     except CatchableError:
       error getCurrentExceptionMsg()
       debug getCurrentException().getStackTrace()
-      quit(10)
+      terminate(10)
 
   let usage* = """  $exe v$version - a small but practical concatenative programming language
   (c) 2014-$year Fabio Cevasco
@@ -214,11 +222,11 @@ when isMainModule:
           of "help", "h":
             if file == "":
               echo usage
-              quit(0)
+              terminate(0)
           of "version", "v":
             if file == "":
               echo pkgVersion
-              quit(0)
+              terminate(0)
           of "interactive", "i":
             if file == "":
               REPL = true
@@ -237,38 +245,39 @@ when isMainModule:
         MINMODULES.add f
   elif REPL:
     minRepl()
-    quit(0)
+    terminate(0)
   if file != "":
     var fn = resolveFile(file)
     if fn == "":
       if file == "compile":
         if args.len < 2:
           logging.error "No file was specified."
-          quit(8)
+          terminate(8)
         fn = resolveFile(args[1])
         if fn == "":
           logging.error "File '$#' does not exist." % [args[1]]
-          quit(9)
+          terminate(9)
         minFile fn, "compile"
-        quit(0)
+        terminate(0)
       elif file == "eval":
         if args.len < 2:
           logging.error "No string to evaluate was specified."
-          quit(9)
+          terminate(9)
         minStr args[1]
-        quit(0)
+        terminate(0)
       elif file == "help":
         if args.len < 2:
           logging.error "No symbol to lookup was specified."
-          quit(9)
+          terminate(9)
         minStr("\"$#\" help" % [args[1]])
-        quit(0)
+        terminate(0)
       elif file == "init":
         executeMmmCmd(proc () = MMM.init())
+        terminate(0)
       elif file == "run":
         if args.len < 1:
           logging.error "No script was specified."
-          quit(8)
+          terminate(8)
         MMM.setup()
         var script: string
         try:
@@ -276,9 +285,9 @@ when isMainModule:
         except CatchableError:
           error getCurrentExceptionMsg()
           debug getCurrentException().getStackTrace()
-          quit(10)
+          terminate(10)
         minStr(script)
-        quit(0)
+        terminate(0)
       elif file == "install":
         if args.len < 2:
           executeMmmCmd(proc () = MMM.install())
@@ -315,15 +324,14 @@ when isMainModule:
           executeMmmCmd(proc () = MMM.list(MMM.localDir))
       else:
         logging.error "File not found: $#" % [file]
-        quit(1)
+        terminate(1)
     else:
       minFile fn, "interpret"
   elif SIMPLEREPL:
     minSimpleRepl()
-    quit(0)
   else:
     if isatty(stdin):
       minRepl()
-      quit(0)
     else:
       minStream newFileStream(stdin), "stdin", "interpret"
+  terminate(0)

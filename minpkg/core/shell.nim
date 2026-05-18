@@ -26,25 +26,15 @@ import
 
 var SIMPLEREPL* = false
 
-var SUCCESS* = false
-
-proc showUnhandledExceptionMessage =
-  if not SUCCESS:
-    stderr.writeLine "=> Please re-run this program in development mode (specify -d) for debugging information on this error."
-
-addExitProc(showUnhandledExceptionMessage)
-
 proc interpret*(i: In, s: string): MinValue =
-  SUCCESS = false
   i.open(newStringStream(s), i.filename)
   discard i.parser.getToken()
   try:
     result = i.interpret()
   except CatchableError:
     discard
-    i.close()
   finally: 
-    SUCCESS = true
+    i.close()
 
 proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
   let symbols = toSeq(i.scope.symbols.keys)

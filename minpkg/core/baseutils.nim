@@ -2,6 +2,8 @@ import
   std/[strutils,
   os,
   json]
+import
+  env
 
 proc reverse*[T](xs: openarray[T]): seq[T] =
   result = newSeq[T](xs.len)
@@ -29,3 +31,7 @@ proc escapeEx*(s: string, unquoted = false): string =
   if unquoted:
     return s.escapeJsonUnquoted
   return s.escapeJson
+
+proc terminate*(i: int) =
+  ERRORS_HANDLED = true
+  quit(i)

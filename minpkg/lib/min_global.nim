@@ -429,7 +429,7 @@ proc global_module*(i: In) =
 
   def.symbol("exit") do (i: In):
     let vals = i.expect("int")
-    quit(vals[0].intVal.int)
+    terminate(vals[0].intVal.int)
 
   def.symbol("print") do (i: In):
     let a = i.peek

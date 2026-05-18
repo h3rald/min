@@ -24,4 +24,5 @@ var DEV* {.threadvar.}: bool
 DEV = false
 var COLOR* {.threadvar.}: bool
 COLOR = true
-
+var ERRORS_HANDLED* {.threadvar.}: bool
+ERRORS_HANDLED = false
