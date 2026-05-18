@@ -13,14 +13,18 @@ import
   ../core/interpreter,
   ../core/utils
 
-when defined(ssl) and defined(amd64):
-
-  when defined(windows):
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lws2_32".}
-  elif defined(linux):
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
-  elif defined(macosx):
-    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+when defined(ssl):
+  when defined(amd64):
+    when defined(windows) :
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows/x64 -lssl -lcrypto -lws2_32".}
+    elif defined(linux):
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux/x64 -lssl -lcrypto".}
+    elif defined(macosx):
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
+    else:
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/unknown -lssl -lcrypto -Bdynamic".}
+  else:
+    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/unknown -lssl -lcrypto -Bdynamic".}
 
 var minUserAgent {.threadvar.}: string
 minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]

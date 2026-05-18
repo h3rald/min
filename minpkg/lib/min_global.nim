@@ -1731,12 +1731,17 @@ proc global_module*(i: In) =
 
   when not defined(nopcre):
 
-    when defined(windows) and defined(amd64):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows -lpcre".}
-    elif defined(linux) and defined(amd64):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux -lpcre".}
-    elif defined(macosx) and defined(amd64):
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/macosx -lpcre -Bdynamic".}
+    when defined(amd64):
+      when defined(windows):
+        {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/windows/x64 -lpcre".}
+      elif defined(linux):
+        {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/pcre/linux/x64 -lpcre".}
+      elif defined(macosx)  :
+        {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/macosx/x64 -lpcre -Bdynamic".}
+      else:
+        {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/unknown -lpcre -Bdynamic".}
+    else:
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/pcre/unknown -lpcre -Bdynamic".}
 
     def.symbol("search") do (i: In):
       let vals = i.expect("str", "str")

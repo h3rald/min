@@ -13,16 +13,23 @@ import
 
 {.compile: "../vendor/aes/libaes.c".}
 
-when defined(ssl):
+when defined(ssl):   
   import
     openssl
+  
+  when defined(amd64):
 
-  when defined(windows) and defined(amd64):
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
-  elif defined(linux) and defined(amd64):
-    {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux -lssl -lcrypto".}
-  elif defined(macosx) and defined(amd64):
-    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx -lssl -lcrypto -Bdynamic".}
+    when defined(windows):
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows/x64 -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
+    elif defined(linux):
+      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux/x64 -lssl -lcrypto".}
+    elif defined(macosx):
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
+    else:
+      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
+  else:
+    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
+      
 
   proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
   proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
