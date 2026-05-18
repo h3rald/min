@@ -846,7 +846,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     var c = 0
     CVARCOUNT.inc
     var dictvar = "dict" & $CVARCOUNT
-    result.add "var $# = newDict(i.scope)" % [dictvar]
+    result.add indent&"var $# = newDict(i.scope)" % [dictvar]
     while p.token != tkBraceRi:
       let v = p.parseMinValue(i)
       if v.isNil:
@@ -867,7 +867,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     eat(p, tkBraceRi)
     if c mod 2 != 0:
       raiseInvalid("Invalid dictionary")
-    result.add "i.push $#" % [dictvar]
+    result.add op&"$#" % [dictvar]
   of tkSymbol:
     result = @[op&"MinValue(kind: minSymbol, symVal: "&p.a.escapeEx&")"]
     p.a = ""
