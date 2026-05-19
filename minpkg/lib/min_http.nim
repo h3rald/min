@@ -2,9 +2,9 @@ import
   std/[httpclient,
   asynchttpserver,
   asyncdispatch,
-  macros, # Needed only for getProjectPath
   strutils,
   uri,
+  os,
   critbits]
 import
   ../core/parser,
@@ -16,15 +16,15 @@ import
 when defined(ssl):
   when defined(amd64):
     when defined(windows) :
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows/x64 -lssl -lcrypto -lws2_32".}
+      {.passL: "-static -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/windows/x64 -lssl -lcrypto -lws2_32".}
     elif defined(linux):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux/x64 -lssl -lcrypto".}
+      {.passL: "-static -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/linux/x64 -lssl -lcrypto".}
     elif defined(macosx):
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
+      {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
     else:
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/unknown -lssl -lcrypto -Bdynamic".}
+      {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/unknown -lssl -lcrypto -Bdynamic".}
   else:
-    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/unknown -lssl -lcrypto -Bdynamic".}
+    {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/unknown -lssl -lcrypto -Bdynamic".}
 
 var minUserAgent {.threadvar.}: string
 minUserAgent = "$1 http-module/$2" % [pkgName, pkgVersion]

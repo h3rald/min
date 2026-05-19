@@ -1,7 +1,7 @@
 import
   std/[base64,
   strutils,
-  macros, # Needed only for getProjectPath
+  os,
   times]
 import
   ../vendor/aes/aes
@@ -20,15 +20,15 @@ when defined(ssl):
   when defined(amd64):
 
     when defined(windows):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/windows/x64 -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
+      {.passL: "-static -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/windows/x64 -lssl -lcrypto -lgdi32 -ladvapi32 -luser32 -lws2_32 -lcrypt32".}
     elif defined(linux):
-      {.passL: "-static -L"&getProjectPath()&"/minpkg/vendor/openssl/linux/x64 -lssl -lcrypto".}
+      {.passL: "-static -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/linux/x64 -lssl -lcrypto".}
     elif defined(macosx):
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
+      {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/macosx/x64 -lssl -lcrypto -Bdynamic".}
     else:
-      {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
+      {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
   else:
-    {.passL: "-Bstatic -L"&getProjectPath()&"/minpkg/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
+    {.passL: "-Bstatic -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/unknown -lssl -lcrypto -Bdynamic".}
       
 
   proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
