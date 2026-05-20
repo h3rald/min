@@ -544,7 +544,6 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
-    var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
     if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
@@ -604,7 +603,6 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
-    var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
