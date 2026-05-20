@@ -11,8 +11,8 @@
   symbol set-destination
   (dict :meta ==> dict :result)
   (
-    meta "id" dict.get :id
-    meta "ext" dict.get :ext
+    meta.id :id
+    meta.ext :ext
     (
       ((id "home" ==) (
         meta (
@@ -56,8 +56,8 @@
     "" :contents
     meta (
       (input-fread @contents meta)
-      (settings "title" dict.get "site" dict.set)
-      (settings "version" dict.get "version" dict.set)
+      (settings.title "site" dict.set)
+      (settings.version "version" dict.set)
       (
         :temp contents temp markdown 
         highlight-codeblocks highlight-codes @contents temp
@@ -66,7 +66,7 @@
       (
         ; Save post content (plain HTML fragment, no template)
         :temp
-        (temp "content-type" dict.get "post" ==)
+        (temp.content-type "post" ==)
           ; Need to save html fragment separately because contents is overwritten.
           (temp stack.dup "contents" dict.get convert-html-entities "fragment" dict.set posts append @posts)
         when
@@ -82,7 +82,7 @@
   symbol process-md-content
   (dict :meta ==> dict :result)
   (
-    meta "content-type" dict.get :ct
+    meta.content-type :ct
     meta ct process-md-with-template
     @result
   )
@@ -92,8 +92,8 @@
   symbol process-content
   (dict :meta ==> dict :result)
   (
-    meta "ext" dict.get :ext
-    meta "id" dict.get :id
+    meta.ext :ext
+    meta.id :id
     meta
     (
       ((".md" ext ==) (process-md-content))
@@ -128,7 +128,7 @@
     contents ts "updated" dict.set @contents
     data contents to-json "contents" dict.set
     output-fwrite
-    ; Add timesyamp file
+    ; Add timestamp file
     {
       "mmm.timestamp" :path
       "mmm" :id

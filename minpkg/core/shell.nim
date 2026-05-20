@@ -191,6 +191,7 @@ proc minSimpleRepl*(i: var MinInterpreter) =
   i.open(s, "<repl>")
   var line: string
   while true:
+    ERRORS_HANDLED = true # Avoid printing error hint on CTRL+C
     i.push(i.newSym("prompt"))
     let vals = i.expect("str")
     let v = vals[0]
@@ -210,6 +211,7 @@ proc minRepl*(i: var MinInterpreter) =
   var line: string
   echo "$# shell v$#" % [pkgName, pkgVersion]
   while true:
+    ERRORS_HANDLED = true # Avoid printing error hint on CTRL+C
     let iref = i
     EDITOR.completionCallback = proc(ed: LineEditor): seq[string] =
       var completions = ed.getCompletions(iref)
