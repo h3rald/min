@@ -105,8 +105,7 @@ proc global_module*(i: In) =
     if not json.hasKey(sym):
       raiseUndefined("Symbol '$1' not found." % sym)
     let val = i.fromJson(json[sym])
-    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val,
-        quotation: true)
+    i.scope.symbols[sym] = MinOperator(kind: minValOp, val: val)
 
   def.symbol("saved-symbols") do (i: In):
     var q = newSeq[MinValue](0)
@@ -351,11 +350,11 @@ proc global_module*(i: In) =
           if iv.isQuotation:
             iv = @[iv].newVal
           i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp,
-              sealed: false, val: iv, quotation: inVals[k].isQuotation)
+              sealed: false, val: iv)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
           i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp,
-              sealed: false, val: @[newNull()].newVal, quotation: true)
+              sealed: false, val: @[newNull()].newVal)
         # Actually execute the body of the operator
         if DEV:
           var endSnapshot: seq[MinValue]
@@ -545,13 +544,14 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] # existing (auto-quoted)
     var symbol: string
+    var isQuot = q1.isQuotation
     q1 = @[q1].newVal
     symbol = sym.getString
     if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
     i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
-        sealed: false, quotation: q1.isQuotation), false, true)
+        sealed: false), false, true)
 
   def.symbol("typealias") do (i: In):
     let vals = i.expect("'sym", "'sym")
@@ -566,7 +566,7 @@ proc global_module*(i: In) =
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: s.newVal,
-        sealed: false, quotation: false)
+        sealed: false)
 
   def.symbol("lambda") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -580,7 +580,7 @@ proc global_module*(i: In) =
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false, quotation: true)
+        sealed: false)
 
   def.symbol("define-sigil") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -595,10 +595,9 @@ proc global_module*(i: In) =
       raiseUndefined("Attempting to redefine sealed sigil '$1'" % [symbol])
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false,
-        quotation: true)
+    i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
     i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false, quotation: true)
+        sealed: false)
 
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
@@ -609,8 +608,7 @@ proc global_module*(i: In) =
     q1 = @[q1].newVal
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
-    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
-        quotation: isQuot))
+    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
     if not res:
       raiseUndefined("Attempting to bind undefined symbol: " & symbol)
 
@@ -621,8 +619,7 @@ proc global_module*(i: In) =
     var symbol: string
     symbol = sym.getString
     info "[lambda-bind] $1 = $2" % [symbol, $q1]
-    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
-        quotation: true))
+    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
     if not res:
       raiseUndefined("Attempting to lambda-bind undefined symbol: " & symbol)
 

@@ -116,7 +116,6 @@ type
     of minProcOp:
       prc*: MinOperatorProc
     of minValOp:
-      quotation*: bool
       val*: MinValue
   MinStack* = seq[MinValue]
   In* = var MinInterpreter

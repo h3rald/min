@@ -80,7 +80,7 @@ proc xml_module*(i: In) =
     let def = i.define()
 
     i.scope.symbols["typealias:xml-node"] = MinOperator(kind: minValOp,
-            val: xmltypes.newVal, sealed: false, quotation: false)
+            val: xmltypes.newVal, sealed: false)
 
     def.symbol("from-xml") do (i: In):
         let vals = i.expect("str")
