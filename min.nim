@@ -49,6 +49,7 @@ addExitProc(showUnhandledExceptionMessage)
 proc interpret*(i: In, s: Stream) =
   i.stdLib()
   i.open(s, i.filename)
+  ERRORS_HANDLED = false
   discard i.parser.getToken()
   try:
     i.interpret()
@@ -56,6 +57,7 @@ proc interpret*(i: In, s: Stream) =
     discard
   finally:
     i.close()
+    ERRORS_HANDLED = true
 
 proc minFile*(fn: string, op = "interpret", main = true): seq[
     string] {.discardable.}

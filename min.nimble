@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.47.0"
+version       = "0.46.1"
 author        = "Fabio Cevasco"
 description   = "A small but practical concatenative programming language and shell."
 license       = "MIT"
