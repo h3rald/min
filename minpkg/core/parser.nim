@@ -252,8 +252,7 @@ proc errorMsgExpected*(my: MinParser, e: string): string =
 proc raiseParsing*(p: MinParser, msg: string) {.noinline, noreturn.} =
   raise MinParsingError(msg: errorMsgExpected(p, msg))
 
-proc raiseUndefined*(p: MinParser, msg: string) {.noinline, noreturn,
-    extern: "min_exported_symbol_$1_2".} =
+proc raiseUndefined*(p: MinParser, msg: string) {.noinline, noreturn.} =
   raise MinUndefinedError(msg: errorMsg(p, msg))
 
 proc parseNumber(my: var MinParser) =
@@ -929,8 +928,7 @@ proc isTypedDictionary*(q: MinValue, t: string): bool =
     return q.objType == t
   return false
 
-proc `==`*(a: MinValue, b: MinValue): bool {.inline,
-    extern: "min_exported_symbol_eqeq".} =
+proc `==`*(a: MinValue, b: MinValue): bool {.inline.} =
   if not (a.kind == b.kind or (a.isNumber and b.isNumber)):
     return false
   if a.kind == minSymbol and b.kind == minSymbol:

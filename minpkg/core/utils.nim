@@ -74,8 +74,7 @@ proc ddel*(i: In, p: var MinValue, s: MinValue): MinValue {.discardable.} =
   excl(p.scope.symbols, s.getString)
   return p
 
-proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable,
-    extern: "min_exported_symbol_$1_2".} =
+proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   excl(p.scope.symbols, s)
@@ -90,7 +89,7 @@ proc dset*(i: In, p: var MinValue, s: MinValue,
   return p
 
 proc dset*(i: In, p: var MinValue, s: string,
-    m: MinValue): MinValue {.discardable, extern: "min_exported_symbol_$1_2".} =
+    m: MinValue): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
