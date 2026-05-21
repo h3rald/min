@@ -347,8 +347,6 @@ proc global_module*(i: In) =
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
           var iv = inVals[k]
-          #if iv.isQuotation: #CLEANUP no longer autoquoting
-          #  iv = @[iv].newVal
           i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
@@ -374,8 +372,6 @@ proc global_module*(i: In) =
         # Validate output
         for k in 0..outVars.len-1:
           var x = i.scope.symbols[outVars[k]].val
-          #if rawOutVars[k][0] == ':': #CLEANUP no longer auto-quoting
-          #  x = x.qVal[0]
           if t == "constructor":
             x.objType = n
           if DEV:
@@ -786,8 +782,7 @@ proc global_module*(i: In) =
     let vals = i.expect("dict")
     let err = vals[0]
     if err.dhas("error".newVal) and err.dhas("message".newVal):
-      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(
-          err, "message").getString], err)
+      raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err)
     else:
       raiseInvalid("Invalid error dictionary")
 

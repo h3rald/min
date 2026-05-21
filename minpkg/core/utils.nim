@@ -47,9 +47,7 @@ proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   let val = q.dVal[s.getString]
   if val.kind == minProcOp:
     raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." % [s.getString])
-  if val.lambda:
-    return val.val
-  return @[val.val].newVal
+  return val.val
 
 proc dget*(i: In, q: MinValue, s: string): MinValue =
   if not q.isDictionary:
@@ -57,9 +55,7 @@ proc dget*(i: In, q: MinValue, s: string): MinValue =
   let val = q.dVal[s]
   if val.kind == minProcOp:
     raiseInvalid("Key $1 is set to an operator and it cannot be retrieved." % [s])
-  if val.lambda:
-    return val.val
-  return @[val.val].newVal
+  return val.val
 
 proc dhas*(q: MinValue, s: MinValue): bool =
   if not q.isDictionary:
@@ -87,8 +83,6 @@ proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue, lambda = false): Mi
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  #if not lambda: #CLEANUP no longer autoquoting
-  #  q = @[m].newVal
   p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false, lambda: lambda)
   return p
 
@@ -96,8 +90,6 @@ proc dset*(i: In, p: var MinValue, s: string, m: MinValue, lambda = false): MinV
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  #if not lambda:  #CLEANUP no longer autoquoting
-  #  q = @[m].newVal
   p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false, lambda: lambda)
   return p
 
