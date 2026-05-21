@@ -402,6 +402,9 @@ Reads a line from STDIN and places it on top of the stack as a string.#}
 {#op||get-env||{{sl}}||{{s}}||
 Returns environment variable {{sl}}. #}
 
+{#op||get-raw||{{q}} {{i}}||{{rawval}}||
+Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
+
 {#op||harvest||{{q1}}||{{q2}}||
 > Creates a new quotation {{q2}} containing all elements of {{q1}} except for empty quotations.
 > 
@@ -744,9 +747,6 @@ Creates a symbol with the value of {{s}} and wraps it in a quotation. #}
 
 {#op||raise||{{e}}||{{none}}||
 Raises the error specified via the dictionary {{e}}.#}
-
-{#op||raw-get||{{q}} {{i}}||{{rawval}}||
-Returns the _n^th_ element of {{q}} (zero-based) wrapped in a {{rawval}}.#}
 
 {#op||random||{{i1}}||{{i2}}||
 > Returns a random number {{i2}} between 0 and {{i1}}-1. 

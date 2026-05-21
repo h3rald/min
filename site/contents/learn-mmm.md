@@ -10,13 +10,13 @@ The min commands that make up this module management functionality is often refe
 
 ## How mmm works
 
-mmm borrows most of its design from Nim's [Nimble](https://github.com/nim-lang/nimble), but it is mcuh simpler. Here are the basics:
+mmm borrows most of its design from Nim's [Nimble](https://github.com/nim-lang/nimble), but it is much simpler. Here are the basics:
 
 - mmm is not a standalone program, it is built-in into the min executable
 - mmm has a central registry (a [single JSON file](https://min-lang.org/mmm.json) really, and distributed storage (managed modules are hosted in remote github repositorues).
 - managed modules can be installed both locally to a specific folder (another managed module) or globally, in the `$HOME/mmm` folder.
 - each managed module relies on an `mmm.json` for its metadata, including dependencies on other managed modules.
-- the version (git branch or tag) of a managed module must be always specified when installing or specifying a dependency. There is no concept of semantic versioning support, and that's deliberate: it makes things simpler and leas error prone.
+- the version (git branch or tag) of a managed module must be always specified when installing or specifying a dependency. There is no concept of semantic versioning support, and that's deliberate: it makes things simpler and less error prone.
 
 ### The registry
 
@@ -28,7 +28,7 @@ The registry contains the metadata of all public managed modules and it is queri
 
 ### Module lookup
 
-When requiring a module in your min file using the {{#link-global-operator||require}} symbol, min will attempt to lookup the module (for example **module1**) checking the following files (in order):
+When requiring a module in your min file using the {#link-global-operator||require#} symbol, min will attempt to lookup the module (for example **module1**) checking the following files (in order):
 
 - module1.min
 - mmm/module1/*/index.min

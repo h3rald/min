@@ -30,6 +30,21 @@ Returns the value of key {{sl}} from dictionary {{d}}, wrapped in a {{rawval}}. 
 {#op||keys||{{d}}||({{s}}{{0p}})||
 Returns a quotation containing all the keys of dictionary {{d}}. #}
 
+{#op||lambda||{{d}} {{q}} {{sl}}||{{d}}||
+> Sets the value of the {{sl}} of {{d1}}  to {{q}}, which will be treated as an operator, and returns the modified dictionary {{d}}. 
+> 
+> > %sidebar%
+> > Example
+> > 
+> > The following program:
+> >     
+> >     {} (dup *) 'square dict.lambda
+> >
+> > Returns the following dictionary:
+> >
+> >     {(dup *) ^square}
+ #}
+
 {#op||pick||{{d1}} {{q}}||{{d2}}||
 > Returns a new dictionary {{d2}} containing the elements of {{d1}} whose keys are included in {{q}}.
 > 
@@ -49,7 +64,7 @@ Returns a quotation containing all the keys of dictionary {{d}}. #}
 > >
 > > A The following program returns `((1 "a") (2 "b"))`:
 > >     {1 :a 2 :b} dict.pairs
-#}
+ #}
 
 {#op||set||{{d}} {{any}} {{sl}}||{{d}}||
 Sets the value of the {{sl}} of {{d1}}  to {{any}}, and returns the modified dictionary {{d}}. #}

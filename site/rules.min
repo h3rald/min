@@ -125,7 +125,7 @@
     ; Save modules
     contents.modules @modules
     ; Update timestamp
-    contents ts "updated" dict.set @contents
+    ts :contents.updated
     data contents to-json "contents" dict.set
     output-fwrite
     ; Add timestamp file

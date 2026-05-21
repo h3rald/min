@@ -122,6 +122,7 @@ min also supports running programs from standard input, so the following command
 > [$](class:prompt) cat myfile.min | min
 
 > %tip%
+> Tip
 > 
 > You can enable _development mode_ (runtime checks and validations) by specifying `-d` (`--dev`) when running a min program. If development mode is not enabled, min programs run faster.
 

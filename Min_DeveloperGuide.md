@@ -36,6 +36,7 @@
     font-weight: normal;
     font-family: "Source Code Pro", "Monaco", "DejaVu Sans Mono", "Courier New", monospace;
     font-size: 85%;
+    text-wrap: auto;
     color: #eee;
 }
 </style>
