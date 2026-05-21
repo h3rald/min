@@ -22,7 +22,7 @@ quotation (quot)
 command (cmd)
 : A command string wrapped in square brackets that will be immediately executed on the current shell and converted into the command standard output. Example: `[ls -a]`
 dictionary (dict)
-: A key/value table. Dictionaries are implemented as an immediately-dequoted quotation, are enclosed in curly braces, and are represented by their symbol definitions. Note that dictionary keys must start with `:`and be followed by a double-quoted string, or a single word (which can be written without double quotes). The {#link-module||dict#} provides some operators on dictionaries.
+: A key/value table. Dictionaries are implemented as an immediately-dequoted quotation, are enclosed in curly braces, and are represented by their symbol definitions. Note that dictionary keys must start with `:` or `^` and be followed by a double-quoted string, or a single word (which can be written without double quotes). The {#link-module||dict#} provides some operators on dictionaries.
 
   > %sidebar%
   > Example
@@ -34,6 +34,21 @@ dictionary (dict)
   >         "concatenative" :paradigm
   >         2017 :"first release year"
   >     }
+
+Theere are two types of dictionary keys:
+* _define keys_, which are prepended by `:`, which are used to store data, including quotations that will be interpreted as lists of values. 
+* _lambda keys_, which are prepended by `^`, which are used to store executable code. In this case, a quotation will be immediately executed when accessed.
+
+> %sidebar%
+> Example
+> 
+> The following program prints `16`:
+>
+>     ; First, define a dictionary with a value using a define key
+>     ; and an operation using a lambda key
+>     {4 :value (dup *) ^square} :test
+>     ; When accessing the quotation, it will be executed immediately
+>     test.value test.square puts 
 
 Additionally, dictionaries can also be typed to denote complex objects like sockets, errors, etc. For example, the following dictionary defines an error:
 

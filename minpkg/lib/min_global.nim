@@ -539,7 +539,6 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] 
     var symbol: string
-    #q1 = @[q1].newVal
     symbol = sym.getString
     if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
@@ -567,12 +566,10 @@ proc global_module*(i: In) =
     var q1 = vals[1]
     var symbol: string
     symbol = sym.getString
-    if not symbol.contains re(USER_SYMBOL_REGEX):
+    if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[lambda] $1 = $2" % [symbol, $q1]
-    if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
-      raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, lambda: true)
+    i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, sealed: false, lambda: true), false, true)
 
   def.symbol("define-sigil") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -595,7 +592,6 @@ proc global_module*(i: In) =
     let sym = vals[0]
     var q1 = vals[1] 
     var symbol: string
-    #q1 = @[q1].newVal
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
