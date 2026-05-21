@@ -209,7 +209,7 @@ proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
     else:
       op.prc(i)
   else:
-    if op.val.kind == minQuotation:
+    if op.val.kind == minQuotation and op.lambda:
       var newscope = newScopeRef(i.scope)
       i.withScope(newscope):
         for e in op.val.qVal:

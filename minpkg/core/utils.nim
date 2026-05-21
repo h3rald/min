@@ -16,19 +16,17 @@ proc define*(i: In): ref MinScope =
   scope.parent = i.scope
   return scope
 
-proc symbol*(scope: ref MinScope, sym: string,
-    p: MinOperatorProc) {.effectsOf: p.} =
-  scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
+proc symbol*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
+  scope.symbols[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true, lambda: true)
 
 proc symbol*(scope: ref MinScope, sym: string, v: MinValue) =
   scope.symbols[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
 
-proc sigil*(scope: ref MinScope, sym: string,
-    p: MinOperatorProc) {.effectsOf: p.} =
-  scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true)
+proc sigil*(scope: ref MinScope, sym: string, p: MinOperatorProc) {.effectsOf: p.} =
+  scope.sigils[sym] = MinOperator(prc: p, kind: minProcOp, sealed: true, lambda: true)
 
 proc sigil*(scope: ref MinScope, sym: string, v: MinValue) =
-  scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true)
+  scope.sigils[sym] = MinOperator(val: v, kind: minValOp, sealed: true, lambda: true)
 
 proc finalize*(scope: ref MinScope, name: string = "") =
   var mdl = newDict(scope)
@@ -46,17 +44,22 @@ proc finalize*(scope: ref MinScope, name: string = "") =
 proc dget*(i: In, q: MinValue, s: MinValue): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  if q.dVal[s.getString].kind == minProcOp:
-    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." %
-        [s.getString])
-  result = q.dVal[s.getString].val
+  let val = q.dVal[s.getString]
+  if val.kind == minProcOp:
+    raiseInvalid("Key '$1' is set to an operator and it cannot be retrieved." % [s.getString])
+  if val.lambda:
+    return val.val
+  return @[val.val].newVal
 
 proc dget*(i: In, q: MinValue, s: string): MinValue =
   if not q.isDictionary:
     raiseInvalid("Value is not a dictionary")
-  if q.dVal[s].kind == minProcOp:
+  let val = q.dVal[s]
+  if val.kind == minProcOp:
     raiseInvalid("Key $1 is set to an operator and it cannot be retrieved." % [s])
-  result = q.dVal[s].val
+  if val.lambda:
+    return val.val
+  return @[val.val].newVal
 
 proc dhas*(q: MinValue, s: MinValue): bool =
   if not q.isDictionary:
@@ -80,20 +83,22 @@ proc ddel*(i: In, p: var MinValue, s: string): MinValue {.discardable.} =
   excl(p.scope.symbols, s)
   return p
 
-proc dset*(i: In, p: var MinValue, s: MinValue,
-    m: MinValue): MinValue {.discardable.} =
+proc dset*(i: In, p: var MinValue, s: MinValue, m: MinValue, lambda = false): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false)
+  #if not lambda: #CLEANUP no longer autoquoting
+  #  q = @[m].newVal
+  p.scope.symbols[s.getString] = MinOperator(kind: minValOp, val: q, sealed: false, lambda: lambda)
   return p
 
-proc dset*(i: In, p: var MinValue, s: string,
-    m: MinValue): MinValue {.discardable.} =
+proc dset*(i: In, p: var MinValue, s: string, m: MinValue, lambda = false): MinValue {.discardable.} =
   if not p.isDictionary:
     raiseInvalid("Value is not a dictionary")
   var q = m
-  p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false)
+  #if not lambda:  #CLEANUP no longer autoquoting
+  #  q = @[m].newVal
+  p.scope.symbols[s] = MinOperator(kind: minValOp, val: q, sealed: false, lambda: lambda)
   return p
 
 proc keys*(i: In, q: MinValue): MinValue =

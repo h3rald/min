@@ -153,7 +153,10 @@ proc pv(i:In, item: MinValue) =
         v = "<native>".newSym
       else:
         v = val.val.val
-      i.pv(v); p(" :" & $val.key & " ", fgCyan)
+      var keyType = " :"
+      if val.val.lambda:
+        keyType = " ^"
+      i.pv(v); p(keyType & $val.key & " ", fgCyan)
     p("}", fgRed)
 
 proc printResult(i: In, res: MinValue) =
@@ -176,7 +179,10 @@ proc printResult(i: In, res: MinValue) =
           v = "<native>".newSym
         else:
           v = item.val.val
-        p("   "); i.pv(v); p(" :" & $item.key & "\n", fgCyan)
+        var keyType = " :"
+        if item.val.lambda:
+          keyType = " ^"
+        p("   "); i.pv(v); p(keyType & $item.key & "\n", fgCyan)
       if res.objType == "":
         stdout.write " ".repeat(n.len); p("}\n", fgRed)
       else:

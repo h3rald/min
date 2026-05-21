@@ -41,6 +41,13 @@ proc dict_module*(i: In) =
     var d = vals[2]
     i.push i.dset(d, k, m)
 
+  def.symbol("lambda") do (i: In):
+    let vals = i.expect("'sym", "quot", "dict")
+    let k = vals[0]
+    let m = vals[1]
+    var d = vals[2]
+    i.push i.dset(d, k, m, lambda = true)
+
   def.symbol("set-sym") do (i: In):
     let vals = i.expect("'sym", "'sym", "dict")
     let k = vals[0]

@@ -111,6 +111,7 @@ type
   MinOperator* = object
     sealed*: bool
     doc*: JsonNode
+    lambda*: bool # if true, stored quotation is meant to be executed
     mdl*: MinValue # Only set in case of modules
     case kind*: MinOperatorKind
     of minProcOp:
@@ -641,7 +642,10 @@ proc `$`*(a: MinValue): string {.inline.} =
         var k = $i.key
         if k.contains(" "):
           k = "\"$1\"" % k
-        d = d & v & " :" & k & " "
+        var keyType = " :"
+        if i.val.lambda:
+          keyType = " ^"
+        d = d & v & keyType & k & " "
       if a.objType != "":
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -690,7 +694,10 @@ proc `$$`*(a: MinValue): string {.inline.} =
         var k = $i.key
         if k.contains(" "):
           k = "\"$1\"" % k
-        d = d & v & " :" & k & " "
+        var keyType = " :"
+        if i.val.lambda:
+          keyType = " ^"
+        d = d & v & keyType & k & " "
       if a.objType != "":
         d = d & ";" & a.objType
       d = d.strip & "}"
@@ -763,12 +770,11 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
-        if key[0] == ':':
+        if key[0] == ':' or key[0] == '^':
           var offset = 0
           if key[1] == '"':
             offset = 1
-          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(
-              kind: minValOp, val: val, sealed: false)
+          scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false, lambda: key[0] == '^')
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -854,9 +860,10 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
-        if key[0] == ':':
+        if key[0] == ':' or key[0] == '^':
+          let isLambda = key[0] == '^'
           let symkey = key[1 .. key.len-1]
-          result.add "i.dset($#, \"$#\", $#.newVal)" % [dictvar, symkey, $val]
+          result.add "i.dset($#, \"$#\", $#.newVal, lambda: $#)" % [dictvar, symkey, $val, $isLambda]
           val = nil
         else:
           raiseInvalid("Invalid dictionary key: " & key)
@@ -972,6 +979,8 @@ proc `==`*(a: MinValue, b: MinValue): bool {.inline.} =
           let v2 = bVal[t.key]
           if v1.kind != v2.kind:
             return false
+          if v1.lambda != v2.lambda:
+            return false
           if v1.kind == minValOp:
             return v1.val == v2.val
         if a.objType == "" and b.objType == "":
@@ -1020,8 +1029,7 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
       return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
     return scope.parent.getSymbol(key)
 
-proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): MinOperator =
+proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator =
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
@@ -1035,8 +1043,7 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
     debug("Symbol '$1' is not a dictionary." % sym)
     return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
 
-proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): bool
+proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool
 
 proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
   if scope.symbols.hasKey(key):

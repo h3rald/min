@@ -347,14 +347,12 @@ proc global_module*(i: In) =
         # Inject variables for mapped inputs
         for k in 0..inVars.len-1:
           var iv = inVals[k]
-          if iv.isQuotation:
-            iv = @[iv].newVal
-          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp,
-              sealed: false, val: iv)
+          #if iv.isQuotation: #CLEANUP no longer autoquoting
+          #  iv = @[iv].newVal
+          i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
-          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp,
-              sealed: false, val: @[newNull()].newVal)
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: @[newNull()].newVal)
         # Actually execute the body of the operator
         if DEV:
           var endSnapshot: seq[MinValue]
@@ -376,8 +374,8 @@ proc global_module*(i: In) =
         # Validate output
         for k in 0..outVars.len-1:
           var x = i.scope.symbols[outVars[k]].val
-          if rawOutVars[k][0] == ':':
-            x = x.qVal[0]
+          #if rawOutVars[k][0] == ':': #CLEANUP no longer auto-quoting
+          #  x = x.qVal[0]
           if t == "constructor":
             x.objType = n
           if DEV:
@@ -399,6 +397,7 @@ proc global_module*(i: In) =
               raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" %
                   [outVars[k], tp, $x])
           # Push output on stack
+          debug "Operator - pushing: $#" % [outVars[k]]
           i.pushSym outVars[k]
       generics = origGenerics
     # Define symbol/sigil
@@ -416,9 +415,9 @@ proc global_module*(i: In) =
         raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
-      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true, doc: doc)
+      i.scope.sigils[n] = MinOperator(kind: minProcOp, prc: p, sealed: true, doc: doc, lambda: true)
       # Define a symbol with the same name as the sigil
-      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc, lambda: true)
 
   def.symbol("expect-empty-stack") do (i: In):
     let l = i.stack.len
@@ -542,15 +541,14 @@ proc global_module*(i: In) =
   def.symbol("define") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
-    var q1 = vals[1] # existing (auto-quoted)
+    var q1 = vals[1] 
     var symbol: string
-    q1 = @[q1].newVal
+    #q1 = @[q1].newVal
     symbol = sym.getString
     if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
       raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[define] $1 = $2" % [symbol, $q1]
-    i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1,
-        sealed: false), false, true)
+    i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, sealed: false), false, true)
 
   def.symbol("typealias") do (i: In):
     let vals = i.expect("'sym", "'sym")
@@ -578,8 +576,7 @@ proc global_module*(i: In) =
     info "[lambda] $1 = $2" % [symbol, $q1]
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false)
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, lambda: true)
 
   def.symbol("define-sigil") do (i: In):
     let vals = i.expect("'sym", "quot")
@@ -594,16 +591,15 @@ proc global_module*(i: In) =
       raiseUndefined("Attempting to redefine sealed sigil '$1'" % [symbol])
     if i.scope.symbols.hasKey(symbol) and i.scope.symbols[symbol].sealed:
       raiseUndefined("Attempting to redefine sealed symbol '$1'" % [symbol])
-    i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false)
-    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1,
-        sealed: false)
+    i.scope.sigils[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, lambda: true)
+    i.scope.symbols[symbol] = MinOperator(kind: minValOp, val: q1, sealed: false, lambda: true)
 
   def.symbol("bind") do (i: In):
     let vals = i.expect("'sym", "a")
     let sym = vals[0]
-    var q1 = vals[1] # existing (auto-quoted)
+    var q1 = vals[1] 
     var symbol: string
-    q1 = @[q1].newVal
+    #q1 = @[q1].newVal
     symbol = sym.getString
     info "[bind] $1 = $2" % [symbol, $q1]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
