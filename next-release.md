@@ -1,3 +1,9 @@
+### New Functionality
+
+* No longer auto-quoting values.
+* Introduced the concept of _lambda keys_ (`^`-prefixed) for dictionaries, for storing executable quotations.
+* Added `dict.lambda` symbol store operators in dictionaries.
+
 ### Fixes and Improvements
 
 * `sys.ls-r` now returns directories and symlinks as well.

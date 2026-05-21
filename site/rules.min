@@ -123,7 +123,7 @@
     time.stamp :ts
     data input-fread from-json :contents
     ; Save modules
-    contents "modules" dict.get @modules
+    contents.modules @modules
     ; Update timestamp
     contents ts "updated" dict.set @contents
     data contents to-json "contents" dict.set
@@ -145,7 +145,7 @@
   (==>)
   (
     "Downloading latest min executables..." io.notice!
-    settings "version" dict.get :version
+    settings.version :version
     ("windows" "macosx" "linux")
     (
       :opsys
@@ -173,7 +173,7 @@ when
 contents (
   (dict) expect -> :meta
   (
-    ((meta "id" dict.get "^_" match?) ()) ;Ignore files starting with underscore.
+    ((meta.id "^_" match?) ()) ;Ignore files starting with underscore.
     ((true) (meta process-content set-destination output-fwrite)) 
   ) case
 ) foreach
@@ -182,8 +182,8 @@ contents (
 assets (
   (dict) expect -> :meta
   (
-    ((meta "ext" dict.get ".css" ==) (meta process-css-asset))
-    ((meta "path" dict.get "mmm.json" ==) (meta process-mmm-json))
+    ((meta.ext ".css" ==) (meta process-css-asset))
+    ((meta.path "mmm.json" ==) (meta process-mmm-json))
     ((true) (meta output-cp))
   ) case
 ) foreach
@@ -192,9 +192,9 @@ assets (
 ; Process deps of each module -> name@version
 modules (
   :module
-  module "deps" dict.get dict.keys (
+  module.deps dict.keys (
     :name
-    module "deps" dict.get name dict.get :version
+    module.deps name dict.get :version
     "$#@$#" (name version) =%
   ) map ", " join :dependencies
   (dependencies "" ==)
@@ -202,43 +202,45 @@ modules (
   when
   module dependencies "dependencies" dict.set
 ) map @modules
-
-{}
-  "mmm/index"         "id" dict.set
-  "mmm.html"          "path" dict.set
-  ".html"             "ext" dict.set
-  "mmm"               "title" dict.set
-  "min language"      "site" dict.set
-  "page"              "content-type" dict.set
-  modules             "modules" dict.set 
+{
+  "mmm/index"         :id
+  "mmm.html"          :path
+  ".html"             :ext
+  "mmm"               :title
+  "min language"      :site
+  "page"              :content-type
+}
+modules "modules" dict.set
 stack.dup
 "mmm" stack.swap mustache "contents" dict.set output-fwrite
 
 "Generating news page..." io.notice!
 ; Get news
 posts 
-  (:a :b a "date" dict.get  b "date" dict.get >) 
+  (:a :b a.date b.date >) 
 sort @posts
 
-{}
-  "news/index"     "id" dict.set
-  "news.html"      "path" dict.set
-  ".html"          "ext" dict.set
-  "News"           "title" dict.set
-  "min language"   "site" dict.set
-  "page"           "content-type" dict.set
-  posts            "posts" dict.set 
+{
+  "news/index"     :id
+  "news.html"      :path
+  ".html"          :ext
+  "News"           :title
+  "min language"   :site
+  "page"           :content-type
+}
+posts            "posts" dict.set
 stack.dup
 "news" stack.swap mustache "contents" dict.set output-fwrite
 
-{}
-  "rss"                       "id" dict.set
-  "rss.xml"                   "path" dict.set
-  ".xml"                      "ext" dict.set
-  "min programming language"  "title" dict.set
-  "min language"              "site" dict.set
-  "rss"                       "content-type" dict.set
-  posts                       "posts" dict.set 
+{
+  "rss"                       :id
+  "rss.xml"                   :path
+  ".xml"                      :ext
+  "min programming language"  :title
+  "min language"              :site
+  "rss"                       :content-type
+}
+posts            "posts" dict.set
 stack.dup
 "rss" stack.swap mustache "contents" dict.set output-fwrite
 
