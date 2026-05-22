@@ -13,8 +13,8 @@ jobs:
             matrix:
                 os:
                     - ubuntu-latest
-                    - macos-13
-                    - windows-2019
+                    - macos-15-intel
+                    - windows-2022
 
         env:
             CHOOSENIM_CHOOSE_VERSION: stable
