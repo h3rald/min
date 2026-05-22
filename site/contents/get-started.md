@@ -4,40 +4,31 @@ title: "Get Started"
 -----
 {@ _defs_.md || 0 @}
 
-
-You can download one of the following pre-built min binaries:
-
-* {#release||{{$version}}||macosx||macOS||x64#}
-* {#release||{{$version}}||windows||Windows||x64#}
-* {#release||{{$version}}||linux||Linux||x64#}
-
-{#release -> [min v$1 for $3 ($4)](https://github.com/h3rald/min/releases/download/v$1/min\_v$1\_$2\_$4.zip) #}
-
 {{guide-download}}
 
-## Building from source
+## Installing min
 
-Alternatively, you can build min from source in one of the following ways:
+You can install min either by using [Nimble](https://github.com/nim-lang/nimble) or by cloning the [repository](https://github.com/h3rald/min) and building from source.
 
 ### Using nimble
 
-If you already installed [nim](https://nim-lang.org), you probably already have the [nimble](https://github.com/nim-lang/nimble) package manager installed.
+If you already installed [Nim](https://nim-lang.org), you probably already have the [Nimble](https://github.com/nim-lang/nimble) package manager installed.
 
 If that's the case, simply run **nimble install min**. 
 
-### Building from source for additional platforms
+### Building from source
 
-By default, min is released as a pre-built binary executable for Windows x64, macOS x64 and Linux x64. However, it should run without issues on any [platform supported by the Nim programming language](https://github.com/nim-lang/Nim/blob/devel/lib/system/platforms.nim).
+By default, min should run without issues on any [platform supported by the Nim programming language](https://github.com/nim-lang/Nim/blob/devel/lib/system/platforms.nim).
 
-To build on a different operating system and architecture from the default ones, you also need to get or build the following static libraries:
+To build min, you can clone the [git repository](https://github.com/h3rald/min) and also build the following static libraries first:
 
 * libssl (OpenSSL)
 * libcrypto (OpenSSL)
 * libpcre (PCRE)
 
-and also specify the following additional flag when compiling:
+When compiling, specify additional flags to specify where to get the static libraries from:
 
-`--passL:"-static -L<dir> -lpcre -lssl -lcrypto"`
+`nim c -d --passL:"-static -L<dir> -lpcre -lssl -lcrypto"`
 
 Where `<dir>` is the directory containing the `*.a` files for the static libraries listed above.
 
