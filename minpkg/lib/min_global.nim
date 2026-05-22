@@ -593,6 +593,8 @@ proc global_module*(i: In) =
     var q1 = vals[1] 
     var symbol: string
     symbol = sym.getString
+    if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
+      raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[bind] $1 = $2" % [symbol, $q1]
     let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
     if not res:
@@ -604,8 +606,10 @@ proc global_module*(i: In) =
     var q1 = vals[1]
     var symbol: string
     symbol = sym.getString
+    if not symbol.contains re(USER_PATH_SYMBOL_REGEX):
+      raiseInvalid("Symbol identifier '$1' contains invalid characters." % symbol)
     info "[lambda-bind] $1 = $2" % [symbol, $q1]
-    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1))
+    let res = i.scope.setSymbol(symbol, MinOperator(kind: minValOp, val: q1, lambda: true))
     if not res:
       raiseUndefined("Attempting to lambda-bind undefined symbol: " & symbol)
 

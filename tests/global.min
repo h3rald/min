@@ -838,6 +838,12 @@
     x y t + + 20300 ==
   ) test.assert
 
+  (
+    {2 :value (3 *) ^times3} :test1
+    test1.value test1.times3 @test1.value
+    test1.value 6 ==
+  ) test.assert
+
   test.report
   ;; Tidy up
   stack.clear
