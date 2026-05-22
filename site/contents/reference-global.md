@@ -129,7 +129,12 @@ Sets the numeric base used to represent integers. #}
 Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)). #}
 
 {#op||bind||{{any}} {{sl}}||{{none}}||
-Binds the specified value (auto-quoted) to an existing symbol {{sl}}.#}
+> Binds the specified value (auto-quoted) to an existing symbol {{sl}}.
+> 
+> > %tip%
+> > Tip
+> > 
+> > This symbol supports dot notation and can be used to define keys within dictionaries. #}
 
 {#op||bitand||{{i1}} {{i2}}||{{i3}}||
 Computes the bitwise *and* of integer {{i1}} and {{i2}}.#}
@@ -206,7 +211,12 @@ Symbol used to define a constructor when using the operator symbol.
 URL-decodes {{sl}}, deconding all URL-encoded characters.#}
 
 {#op||define||{{any}} {{sl}}||{{none}}||
-Defines a new symbol {{sl}}, containing the specified value.#}
+> Defines a new symbol {{sl}}, containing the specified value.
+> 
+> > %tip%
+> >Tip
+> >
+> > This symbol supports dot notation and can be used to define keys within dictionaries. #}
 
 {#op||define-sigil||{{any}} {{sl}}||{{none}}||
 Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
@@ -506,10 +516,20 @@ Joins the elements of {{q}} using separator {{sl}}, producing {{s}}.#}
 {#op||lambda||{{q}} {{sl}}||{{none}}||
 > Defines a new symbol {{sl}}, containing the specified quotation {{q}}. Unlike with `define`, in this case {{q}} will not be quoted, so its values will be pushed on the stack when the symbol {{sl}} is pushed on the stack.
 > 
-> Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.#}
+> Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.
+> 
+> > %tip%
+> > Tip
+> > 
+> > This symbol supports dot notation and can be used to define lambda keys within dictionaries. #}
 
 {#op||lambda-bind||{{q}} {{sl}}||{{none}}||
-Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. #}
+> Binds the specified quotation to an existing symbol {{sl}} which was previously-set via `lambda`. 
+> 
+> > %tip%
+> > Tip
+> >
+> > This symbol supports dot notation and can be used to bind lambda keys within dictionaries. #}
 
 {#op||last||{{q}}||{{any}}||
 Returns the last element of {{q}}. #}

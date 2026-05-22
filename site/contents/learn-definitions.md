@@ -77,5 +77,17 @@ If you want, you can {#link-global-operator||seal#} your own symbols so that the
 > 
 > The {#link-global-operator||unseal-symbol#} operator can be used to effectively un-seal a previously-sealed symbol. Use with caution!
 
+## Dot Notation
+
+The {#link-global-operator||define#}, {#link-global-operator||lambda#}, {#link-global-operator||bind#}, {#link-global-operator||lambda-bind#} operators and corresponding sigils suppot _dot notation_, i.e. can be used to define or bind values or lambdas _within dictionaries_, by specifying their path using dots.
+
+In other words, consider the following code which prints `24`:
+
+      {4 :value (stack.dup *) ^square} :example
+      (stack.dup stack.dup * *) ^example.cube
+      2 example.cube example.value example.square + :example.value
+      example.value puts!
+
+Here, we are defining a lambda key called `cube` within the `example` dictionary, using dot notation to access its keys and execute lambdas, and then resetting `example.value` to the result of the operation.
 
 {#link-learn||scopes||Scopes#}

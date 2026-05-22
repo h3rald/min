@@ -288,7 +288,7 @@
       "signature": " ==> \"dec\"|\"hex\"|\"oct\"|\"bin\""
     },
     "bind": {
-      "description": "Binds the specified value (auto-quoted) to an existing symbol 'sym.",
+      "description": "Binds the specified value (auto-quoted) to an existing symbol 'sym.\r\n \r\n \r\n Tip\r\n \r\n This symbol supports dot notation and can be used to define keys within dictionaries.",
       "kind": "symbol",
       "module": "global",
       "name": "bind",
@@ -484,7 +484,7 @@
       "signature": "'sym ==> str"
     },
     "define": {
-      "description": "Defines a new symbol 'sym, containing the specified value.",
+      "description": "Defines a new symbol 'sym, containing the specified value.\r\n \r\n \r\nTip\r\n\r\n This symbol supports dot notation and can be used to define keys within dictionaries.",
       "kind": "symbol",
       "module": "global",
       "name": "define",
@@ -587,6 +587,13 @@
       "module": "dict",
       "name": "keys",
       "signature": "dict ==> (str*)"
+    },
+    "dict.lambda": {
+      "description": "Sets the value of the 'sym of dict1  to quot, which will be treated as an operator, and returns the modified dictionary dict. \r\n \r\n \r\n Example\r\n \r\n The following program:\r\n     \r\n     {} (dup *) 'square dict.lambda\r\n\r\n Returns the following dictionary:\r\n\r\n     {(dup *) ^square}",
+      "kind": "symbol",
+      "module": "dict",
+      "name": "lambda",
+      "signature": "dict quot 'sym ==> dict"
     },
     "dict.pairs": {
       "description": "Returns a quotation containing a quotation for each value/key pair (value first, key second) of dictionary dict. \r\n \r\n \r\n Example\r\n\r\n A The following program returns ((1 \"a\") (2 \"b\")):\r\n     {1 :a 2 :b} dict.pairs",
@@ -1022,6 +1029,13 @@
       "name": "get-env",
       "signature": "'sym ==> str"
     },
+    "get-raw": {
+      "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
+      "kind": "symbol",
+      "module": "global",
+      "name": "get-raw",
+      "signature": "quot int ==> dict:rawval"
+    },
     "gets": {
       "description": "Reads a line from STDIN and places it on top of the stack as a string.",
       "kind": "symbol",
@@ -1289,14 +1303,14 @@
       "signature": "quot 'sym ==> str"
     },
     "lambda": {
-      "description": "Defines a new symbol 'sym, containing the specified quotation quot. Unlike with define, in this case quot will not be quoted, so its values will be pushed on the stack when the symbol 'sym is pushed on the stack.\r\n \r\n Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.",
+      "description": "Defines a new symbol 'sym, containing the specified quotation quot. Unlike with define, in this case quot will not be quoted, so its values will be pushed on the stack when the symbol 'sym is pushed on the stack.\r\n \r\n Essentially, this symbol allows you to define an operator without any validation of constraints and bind it to a symbol.\r\n \r\n \r\n Tip\r\n \r\n This symbol supports dot notation and can be used to define lambda keys within dictionaries.",
       "kind": "symbol",
       "module": "global",
       "name": "lambda",
       "signature": "quot 'sym ==> "
     },
     "lambda-bind": {
-      "description": "Binds the specified quotation to an existing symbol 'sym which was previously-set via lambda.",
+      "description": "Binds the specified quotation to an existing symbol 'sym which was previously-set via lambda. \r\n \r\n \r\n Tip\r\n\r\n This symbol supports dot notation and can be used to bind lambda keys within dictionaries.",
       "kind": "symbol",
       "module": "global",
       "name": "lambda-bind",
@@ -1860,7 +1874,7 @@
       "kind": "symbol",
       "module": "global",
       "name": "randomize",
-      "signature": " ==> {{null}"
+      "signature": " ==> null"
     },
     "range": {
       "description": "Takes a quotation quot1 of two or three integers in the form of *start*, *end* and an optional *step* (1 if not specified) and generates the sequence and returns the resulting quotation of integers quot2.",
@@ -1875,13 +1889,6 @@
       "module": "global",
       "name": "raw-args",
       "signature": " ==> quot"
-    },
-    "raw-get": {
-      "description": "Returns the _n^th_ element of quot (zero-based) wrapped in a dict:rawval.",
-      "kind": "symbol",
-      "module": "global",
-      "name": "raw-get",
-      "signature": "quot int ==> dict:rawval"
     },
     "reduce": {
       "description": "Combines each successive element of quot1 using quot2. On the first iteration, the first two inputs processed by quot2 are a1 and the first element of quot1.\r\n \r\n \r\n Example\r\n \r\n The following program leaves 120 on the stack:\r\n \r\n     (1 2 3 4 5) \r\n     1 (*) reduce",

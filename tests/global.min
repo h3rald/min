@@ -844,6 +844,13 @@
     test1.value 6 ==
   ) test.assert
 
+  (
+    {4 :value (stack.dup *) ^square} :example
+    (stack.dup stack.dup * *) ^example.cube
+    2 example.cube puts example.value example.square + puts :example.value
+    example.value 24 ==
+  ) test.assert
+
   test.report
   ;; Tidy up
   stack.clear

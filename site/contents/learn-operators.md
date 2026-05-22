@@ -19,7 +19,7 @@ _Symbols_ are the most common type of operator. A min symbol is a single word th
 * Start with a letter or an underscore (\_).
 * Contain zero or more letters, numbers and/or any of the following characters: `/ ! ? + * _ -`
 
-If a symbol contains a dot (`.`) then it is namespaced by its containing module or dictionary. For example, `fs.dirname` identifies the {#link-operator||fs||dirname#} operator defined in the {#link-module||fs#} module.
+If a symbol contains a dot (`.`) then it is namespaced by its containing module or dictionary. For example, `fs.dirname` identifies the {#link-operator||fs||dirname#} operator defined in the {#link-module||fs#} module. This is called _dot notation_.
 
 It is possible to define operator symbols using the {#link-global-operator||operator#} symbol. The following min program defines a new symbol called square that duplicates the first element on the stack and multiplies the two elements:
 
