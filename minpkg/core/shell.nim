@@ -130,7 +130,7 @@ proc printSymbol(i: In, s: string) =
 
 proc pv(i:In, item: MinValue) =
   case item.kind
-  of minNull, minBool, minFloat, minInt:
+  of minNull, minBool, minFloat, minInt, minUnknown:
     p($item, fgGreen)
   of minSymbol:
     i.printSymbol($item)

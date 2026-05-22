@@ -127,7 +127,7 @@ proc `%`*(i: In, a: MinValue): JsonNode =
   case a.kind:
     of minBool:
       return %a.boolVal
-    of minNull:
+    of minNull, minUnknown:
       return newJNull()
     of minSymbol:
       return %(";sym:$1" % [a.getstring])
@@ -251,11 +251,11 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
           if value.isTypedDictionary(split[1]):
             return true
         return false
-      elif not taSym.isNull:
+      elif not taSym.isUnknown:
         # Custom type alias
         let element = taSym.val.getString
         return i.validateValueType(element, value)
-      elif not i.scope.getSymbol(tc).isNull:
+      elif not i.scope.getSymbol(tc).isUnknown:
         # Custom type class
         var i2 = i.copy(i.filename)
         i2.withScope():
@@ -288,7 +288,7 @@ proc validType*(i: In, s: string): bool =
       "sym", "str", "a"]
   if ts.contains(s):
     return true
-  if not i.scope.getSymbol("typeclass:$#" % s).isNull:
+  if not i.scope.getSymbol("typeclass:$#" % s).isUnknown:
     return true
   for ta in s.split("|"):
     for to in ta.split("&"):
@@ -298,10 +298,10 @@ proc validType*(i: In, s: string): bool =
       if to[0] == '!':
         tt = to[1..to.len-1]
       if not ts.contains(tt) and not tt.startsWith("dict:") and
-          i.scope.getSymbol("typeclass:$#" % tt).isNull:
+          i.scope.getSymbol("typeclass:$#" % tt).isUnknown:
         let ta = "typealias:$#" % tt
         let taSym = i.scope.getSymbol(ta)
-        if not taSym.isNull:
+        if not taSym.isUnknown:
           return i.validType(taSym.val.getString)
         return false
   return true

@@ -21,7 +21,7 @@ proc typeName*(v: MinValue): string =
       return "str"
     of minSymbol:
       return "sym"
-    of minNull:
+    of minNull, minUnknown:
       return "null"
     of minBool:
       return "bool"

@@ -45,6 +45,7 @@ type
     minString,
     minSymbol,
     minNull,
+    minUnknown,
     minBool
   MinEventKind* = enum   ## enumeration of all events that may occur when parsing
     eMinError,           ## an error ocurred during parsing
@@ -83,6 +84,7 @@ type
     outerSym*: string
     docComment*: string
     case kind*: MinKind
+      of minUnknown: discard
       of minNull: discard
       of minInt: intVal*: BiggestInt
       of minFloat: floatVal*: BiggestFloat
@@ -605,7 +607,7 @@ proc eat(p: var MinParser, token: MinTokenKind) =
 
 proc `$`*(a: MinValue): string {.inline.} =
   case a.kind:
-    of minNull:
+    of minNull, minUnknown:
       return "null"
     of minBool:
       return $a.boolVal
@@ -655,7 +657,7 @@ proc `$`*(a: MinValue): string {.inline.} =
 
 proc `$$`*(a: MinValue): string {.inline.} =
   case a.kind:
-    of minNull:
+    of minNull, minUnknown:
       return "null"
     of minBool:
       return $a.boolVal
@@ -891,6 +893,9 @@ proc print*(a: MinValue) =
 
 # Predicates
 
+proc isUnknown*(s: MinValue): bool =
+  return s.kind == minUnknown
+
 proc isNull*(s: MinValue): bool =
   return s.kind == minNull
 
@@ -1016,6 +1021,9 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
 proc isNull*(op: MinOperator): bool =
   return op.kind == minValOp and op.val.kind == minNull
 
+proc isUnknown*(op: MinOperator): bool =
+  return op.kind == minValOp and op.val.kind == minUnknown
+
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   debug "getSymbol: $#" % [key]
   if scope.symbols.hasKey(key):
@@ -1026,7 +1034,7 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
   else:
     if scope.parent.isNil:
       debug("Unable to retrieve symbol '$1' (not found)." % key)
-      return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
+      return MinOperator(kind: minValOp, val: MinValue(kind: minUnknown))
     return scope.parent.getSymbol(key)
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator =

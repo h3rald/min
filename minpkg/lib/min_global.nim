@@ -350,7 +350,7 @@ proc global_module*(i: In) =
           i.scope.symbols[inVars[k]] = MinOperator(kind: minValOp, sealed: false, val: iv)
         # Inject variables for mapped outputs
         for k in 0..outVars.len-1:
-          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: @[newNull()].newVal)
+          i.scope.symbols[outVars[k]] = MinOperator(kind: minValOp, sealed: false, val: newNull())
         # Actually execute the body of the operator
         if DEV:
           var endSnapshot: seq[MinValue]
@@ -405,7 +405,7 @@ proc global_module*(i: In) =
     if ["symbol", "typeclass", "constructor"].contains(t):
       if i.scope.symbols.hasKey(n) and i.scope.symbols[n].sealed:
         raiseUndefined("Attempting to redefine sealed symbol '$1'" % [n])
-      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc)
+      i.scope.symbols[n] = MinOperator(kind: minProcOp, prc: p, sealed: false, doc: doc, lambda: true)
     else:
       if i.scope.sigils.hasKey(n) and i.scope.sigils[n].sealed:
         raiseUndefined("Attempting to redefine sealed sigil '$1'" % [n])
@@ -452,7 +452,7 @@ proc global_module*(i: In) =
 
   def.symbol("defined-symbol?") do (i: In):
     let vals = i.expect("'sym")
-    i.push((not i.scope.getSymbol(vals[0].getString).isNull).newVal)
+    i.push((not i.scope.getSymbol(vals[0].getString).isUnknown).newVal)
 
   def.symbol("defined-sigil?") do (i: In):
     let vals = i.expect("'sym")
@@ -656,7 +656,7 @@ proc global_module*(i: In) =
     let vals = i.expect("'sym")
     let s = vals[0].getString
     let sym = i.scope.getSymbol(s)
-    if not sym.isNull:
+    if not sym.isUnknown:
       if not sym.doc.isNil and sym.doc.kind == JObject:
         var doc = i.fromJson(sym.doc)
         doc.objType = "help"
@@ -709,7 +709,7 @@ proc global_module*(i: In) =
             echo "  " & l
       echo "==="
     let sym = i.scope.getSymbol(s)
-    if not sym.isNull:
+    if not sym.isUnknown:
       found = true
       if not sym.doc.isNil and sym.doc.kind == JObject:
         foundDoc = true
