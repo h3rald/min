@@ -129,7 +129,7 @@ Sets the numeric base used to represent integers. #}
 Returns the numeric base currently used to represent integers (default: [&quot;dec&quot;](class:kwd)). #}
 
 {#op||bind||{{any}} {{sl}}||{{none}}||
-> Binds the specified value (auto-quoted) to an existing symbol {{sl}}.
+> Binds the specified value to an existing symbol {{sl}}.
 > 
 > > %tip%
 > > Tip
@@ -219,7 +219,7 @@ URL-decodes {{sl}}, deconding all URL-encoded characters.#}
 > > This symbol supports dot notation and can be used to define keys within dictionaries. #}
 
 {#op||define-sigil||{{any}} {{sl}}||{{none}}||
-Defines a new sigil {{sl}}, containing the specified value (auto-quoted if not already a quotation).#}
+Defines a new sigil {{sl}}, containing the specified value.#}
 
 {#op||defined-symbol?||{{sl}}||{{b}}||
 Returns {{t}} if the symbol {{sl}} is defined, {{f}} otherwise.#}

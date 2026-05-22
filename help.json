@@ -288,7 +288,7 @@
       "signature": " ==> \"dec\"|\"hex\"|\"oct\"|\"bin\""
     },
     "bind": {
-      "description": "Binds the specified value (auto-quoted) to an existing symbol 'sym.\r\n \r\n \r\n Tip\r\n \r\n This symbol supports dot notation and can be used to define keys within dictionaries.",
+      "description": "Binds the specified value to an existing symbol 'sym.\r\n \r\n \r\n Tip\r\n \r\n This symbol supports dot notation and can be used to define keys within dictionaries.",
       "kind": "symbol",
       "module": "global",
       "name": "bind",
@@ -491,7 +491,7 @@
       "signature": "a 'sym ==> "
     },
     "define-sigil": {
-      "description": "Defines a new sigil 'sym, containing the specified value (auto-quoted if not already a quotation).",
+      "description": "Defines a new sigil 'sym, containing the specified value.",
       "kind": "symbol",
       "module": "global",
       "name": "define-sigil",
