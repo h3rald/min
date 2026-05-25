@@ -18,7 +18,7 @@
     "min" :o-variant
     (variant length 0 >) (
       "-d:$# " (variant) =% @d-variant
-      "$#min" (variant) =% @o-variant
+      "min" (variant) =% @o-variant
     ) when
     "nim" required
     "Building $# - $# (x64)" (o-variant target-os) =% io.notice!
@@ -113,6 +113,12 @@
 ;; Builds min (dev version) on the current OS.
 (
   symbol default
+  (==>)
+  ("release-nopack" "static" sys.os cz)
+) ::
+;; Builds min (dev version) on the current OS.
+(
+  symbol dynamic
   (==>)
   ("release-nopack" "" sys.os cz)
 ) ::

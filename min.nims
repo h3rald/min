@@ -27,7 +27,7 @@ when defined(windows):
 else:
   switch("dynlibOverride", "pcre")
 
-when defined(ssl):
+when defined(ssl) and defined(static):
   switch("define", "useOpenSsl3")
   when defined(windows):
     # TODO",  change once issue nim#15220 is resolved

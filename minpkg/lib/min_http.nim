@@ -13,7 +13,7 @@ import
   ../core/interpreter,
   ../core/utils
 
-when defined(ssl):
+when defined(ssl) and defined(static):
   when defined(amd64):
     when defined(windows) :
       {.passL: "-static -L"&currentSourcePath().parentDir.parentDir&"/vendor/openssl/windows/x64 -lssl -lcrypto -lws2_32".}

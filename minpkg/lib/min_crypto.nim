@@ -13,7 +13,7 @@ import
 
 {.compile: "../vendor/aes/libaes.c".}
 
-when defined(ssl):   
+when defined(ssl) and defined(static):   
   import
     openssl
   
@@ -53,7 +53,7 @@ proc crypto_module*(i: In) =
     let s = vals[0]
     i.push s.getString.decode.newVal
 
-  when defined(ssl):
+  when defined(ssl) and defined(static):
 
     proc hash(s: string, kind: EVP_MD, size: Natural): string =
       var hash = alloc(size)

@@ -1,6 +1,6 @@
 ### New Features
 
-tbd
+* By default, nimble builds are no longer statically linking other libraries.
 
 ### Fixes and Improvements
 
