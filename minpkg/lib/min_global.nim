@@ -1772,19 +1772,20 @@ proc global_module*(i: In) =
       let reg = re(vals[1].strVal)
       let s_find = vals[2].strVal
       var i2 = i.copy(i.filename)
-      let repFn = proc(match: RegexMatch): string {.closure, gcsafe.} =
-        var ss = newSeq[MinValue](0)
-        ss.add match.match.newVal
-        for s in match.captures:
-          if s.isNone:
-            ss.add "".newVal
-          else:
-            ss.add s.get.newVal
-        i2.push ss.newVal
-        i2.push q
-        i2.pushSym "dequote"
-        return i2.pop.getString
-      i.push s_find.replace(reg, repFn).newVal
+      {.cast(gcsafe).}:
+        let repFn = proc(match: RegexMatch): string {.closure, gcsafe.} =
+          var ss = newSeq[MinValue](0)
+          ss.add match.match.newVal
+          for s in match.captures:
+            if s.isNone:
+              ss.add "".newVal
+            else:
+              ss.add s.get.newVal
+          i2.push ss.newVal
+          i2.push q
+          i2.pushSym "dequote"
+          return i2.pop.getString
+        i.push s_find.replace(reg, repFn).newVal
 
     def.symbol("replace") do (i: In):
       let vals = i.expect("str", "str", "str")
