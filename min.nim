@@ -151,7 +151,8 @@ when isMainModule:
       debug getCurrentException().getStackTrace()
       terminate(10)
 
-  let usage* = """  $exe v$version - a small but practical concatenative programming language
+  let usage* = """  $exe v$version [$os $arch]
+  a small but practical concatenative programming language
   (c) 2014-$year Fabio Cevasco
   
   Usage:
@@ -190,6 +191,8 @@ when isMainModule:
     -v, —-version             Print the program version""" % [
       "exe", pkgName,
       "version", pkgVersion,
+      "os", hostOS,
+      "arch", hostCPU,
       "year", $(now().year)
   ]
 

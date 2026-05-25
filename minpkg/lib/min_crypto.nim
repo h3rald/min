@@ -1,7 +1,6 @@
 import
   std/[base64,
   strutils,
-  os,
   times]
 import
   ../vendor/aes/aes
@@ -10,6 +9,8 @@ import
   ../core/value,
   ../core/interpreter,
   ../core/utils
+when defined(static):
+  import os
 
 {.compile: "../vendor/aes/libaes.c".}
 

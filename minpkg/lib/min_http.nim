@@ -4,7 +4,6 @@ import
   asyncdispatch,
   strutils,
   uri,
-  os,
   critbits]
 import
   ../core/parser,
@@ -12,6 +11,9 @@ import
   ../core/value,
   ../core/interpreter,
   ../core/utils
+
+when defined(static):
+  import os
 
 when defined(ssl) and defined(static):
   when defined(amd64):
