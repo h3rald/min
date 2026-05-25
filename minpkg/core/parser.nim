@@ -762,6 +762,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   of tkBraceLe:
     var scope = newScopeRef(nil)
     var val: MinValue
+    var valSet = false
     discard getToken(p)
     var c = 0
     while p.token != tkBraceRi:
@@ -769,7 +770,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
       if v.isUnknown:
         continue
       c = c+1
-      if val.isUnknown:
+      if not valSet:
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
@@ -778,7 +779,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
           if key[1] == '"':
             offset = 1
           scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false, lambda: key[0] == '^')
-          val = MinValue(kind: minUnknown)
+          valSet = false
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:

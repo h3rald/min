@@ -194,7 +194,7 @@ proc copyDict*(i: In, val: MinValue): MinValue =
 
 proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
   if op.kind == minProcOp:
-    if not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
+    if op.mdl.isDictionary and not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
       # Capture closures at module level
       let origScope = i.scope
       let origParentScope = i.scope.parent
