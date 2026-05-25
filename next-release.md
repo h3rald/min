@@ -4,4 +4,4 @@
 
 ### Fixes and Improvements
 
-tbd
+* Ensure the relevant procs are gcsafe.
