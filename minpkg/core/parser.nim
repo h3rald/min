@@ -849,6 +849,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   of tkBraceLe:
     result = newSeq[string](0)
     var val: MinValue
+    var valSet = false
     discard getToken(p)
     var c = 0
     CVARCOUNT.inc
@@ -859,7 +860,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       if v.isUnknown:
         continue
       c = c+1
-      if val.isUnknown:
+      if not valSet:
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
@@ -867,7 +868,8 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
           let isLambda = key[0] == '^'
           let symkey = key[1 .. key.len-1]
           result.add "i.dset($#, \"$#\", $#.newVal, lambda: $#)" % [dictvar, symkey, $val, $isLambda]
-          val = MinValue(kind: minUnknown)
+          # Reset valSet so that is possible to process another value
+          valSet = false
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:
