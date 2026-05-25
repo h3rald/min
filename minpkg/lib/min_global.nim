@@ -780,7 +780,7 @@ proc global_module*(i: In) =
 
   def.symbol("raise") do (i: In):
     let vals = i.expect("dict")
-    let err = vals[0]
+    var err = vals[0]
     if err.dhas("error".newVal) and err.dhas("message".newVal):
       raiseRuntime("($1) $2" % [i.dget(err, "error".newVal).getString, i.dget(err, "message").getString], err)
     else:

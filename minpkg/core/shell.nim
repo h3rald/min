@@ -45,24 +45,24 @@ proc getCompletions*(ed: LineEditor, i: MinInterpreter): seq[string] =
     word = words[words.len-1]
   if word.contains("."):
     var op: MinOperator
-    var dict: MinValue
+    var dict: MinValue = MinValue(kind: minUnknown)
     var path = ""
     if ['?', '@', '\'', '~', '#'].contains(word[0]):
       path &= word[0]
       word = word[1..^1]
     let dicts = word.split(".")
     for d in dicts:
-      if dict.isNil:
+      if dict.isUnknown: # Not initialized yet
         if i.scope.symbols.hasKey(d):
           op = i.scope.symbols[d]
-          if op.kind == minProcOp and not op.mdl.isNil:
+          if op.kind == minProcOp and not op.mdl.isUnknown:
             dict = op.mdl
           elif op.kind == minValOp and op.val.kind == minDictionary:
             dict = op.val
         path &= d & "."
       elif dict.dVal.hasKey(d):
         op = dict.dVal[d]
-        if op.kind == minProcOp and not op.mdl.isNil:
+        if op.kind == minProcOp and not op.mdl.isUnknown:
           dict = op.mdl
         elif op.kind == minValOp and op.val.kind == minDictionary:
           dict = op.val
@@ -160,7 +160,7 @@ proc pv(i:In, item: MinValue) =
     p("}", fgRed)
 
 proc printResult(i: In, res: MinValue) =
-  if res.isNil:
+  if res.isUnknown:
     return
   if i.stack.len > 0:
     let n = $i.stack.len

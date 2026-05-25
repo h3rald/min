@@ -76,7 +76,7 @@ type
     kind*: MinEventKind
     err*: MinParserError
     filename*: string
-  MinValue* = ref MinValueObject
+  MinValue* = MinValueObject
   MinValueObject* {.acyclic, final.} = object
     line*: int
     column*: int
@@ -455,7 +455,7 @@ proc parseSymbol(my: var MinParser): MinTokenKind =
   my.bufpos = pos
 
 proc addDoc(my: var MinParser, docComment: string, reset = true) =
-  if my.doc and not my.currSym.isNil and my.currSym.kind == minSymbol:
+  if my.doc and my.currSym.kind == minSymbol:
     if reset:
       my.doc = false
     if my.currSym.docComment.len == 0 or my.currSym.docComment.len > 0 and
@@ -707,6 +707,8 @@ proc `$$`*(a: MinValue): string {.inline.} =
 
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.}
 
+proc isUnknown*(s: MinValue): bool {.gcsafe.}
+
 proc parseMinValue*(p: var MinParser, i: In): MinValue =
   case p.token
   of tkNull:
@@ -753,7 +755,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     discard getToken(p)
     while p.token != tkBracketRi:
       let v = p.parseMinValue(i)
-      if not v.isNil:
+      if not v.isUnknown:
         q.add v
     eat(p, tkBracketRi)
     result = MinValue(kind: minQuotation, qVal: q)
@@ -764,10 +766,10 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     var c = 0
     while p.token != tkBraceRi:
       let v = p.parseMinValue(i)
-      if v.isNil:
+      if v.isUnknown:
         continue
       c = c+1
-      if val.isNil:
+      if val.isUnknown:
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
@@ -776,7 +778,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
           if key[1] == '"':
             offset = 1
           scope.symbols[key[1+offset .. key.len-1-offset]] = MinOperator(kind: minValOp, val: val, sealed: false, lambda: key[0] == '^')
-          val = nil
+          val = MinValue(kind: minUnknown)
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:
@@ -793,12 +795,11 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     discard getToken(p)
   of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
     eat(p, p.token)
-    result = nil #p.parseMinValue(i)
-    #discard getToken(p)
+    result = MinValue(kind: minUnknown)
   else:
     let err = "Undefined or invalid value (" & $p.token & "): " & p.a
     raiseUndefined(p, err)
-  if not result.isNil:
+  if not result.isUnknown:
     result.filename = p.filename
 
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =
@@ -854,10 +855,10 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
     result.add indent&"var $# = newDict(i.scope)" % [dictvar]
     while p.token != tkBraceRi:
       let v = p.parseMinValue(i)
-      if v.isNil:
+      if v.isUnknown:
         continue
       c = c+1
-      if val.isNil:
+      if val.isUnknown:
         val = v
       elif v.kind == minSymbol:
         let key = v.symVal
@@ -865,7 +866,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
           let isLambda = key[0] == '^'
           let symkey = key[1 .. key.len-1]
           result.add "i.dset($#, \"$#\", $#.newVal, lambda: $#)" % [dictvar, symkey, $val, $isLambda]
-          val = nil
+          val = MinValue(kind: minUnknown)
         else:
           raiseInvalid("Invalid dictionary key: " & key)
       else:
@@ -881,8 +882,6 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
   of tkLineComment, tkBlockComment, tkLineDocComment, tkBlockDocComment, tkSpace:
     eat(p, p.token)
     result = @[""]
-    #discard getToken(p)
-    #result = p.compileMinValue(i, push, indent)
   else:
     raiseUndefined(p, "Undefined value: '"&p.a&"'")
 
@@ -1013,6 +1012,8 @@ proc getDictionary(d: MinOperator): MinValue =
     return d.val.qVal[0]
   elif d.kind == minValOp and d.val.kind == minDictionary:
     return d.val
+  else:
+    return MinValue(kind: minUnknown)
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator {.gcsafe.}
 
@@ -1040,7 +1041,7 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator 
   keys.delete(0)
   let d = scope.getSymbol(sym)
   let dict = d.getDictionary
-  if not dict.isNil:
+  if dict.isDictionary:
     if keys.len > 1:
       return dict.scope.getSymbolFromPath(keys)
     else:
@@ -1067,7 +1068,7 @@ proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool {.gcsaf
   keys.delete(0)
   let d = scope.getSymbol(sym)
   let dict = d.getDictionary
-  if not dict.isNil:
+  if dict.isDictionary:
     if keys.len > 1:
       return dict.scope.delSymbolFromPath(keys)
     else:
@@ -1108,7 +1109,7 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOpe
   let d = scope.getSymbol(sym)
   let dict = d.getDictionary
   debug "setSymbolFromPath: Found dictionary $# - keys: $#" % [sym, keys.join(".")]
-  if not dict.isNil:
+  if dict.isDictionary:
     if keys.len > 1:
       return dict.scope.setSymbolFromPath(keys, value, override, define)
     else:

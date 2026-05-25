@@ -46,7 +46,7 @@ proc copySym*(i: In, sym: MinValue): MinValue =
       line: sym.line, column: sym.column, outerSym: "",
       docComment: sym.docComment)
 
-proc raiseRuntime*(msg: string, data: MinValue) =
+proc raiseRuntime*(msg: string, data: var MinValue) =
   data.objType = "error"
   raise MinRuntimeError(msg: msg, data: data)
 
@@ -194,7 +194,7 @@ proc copyDict*(i: In, val: MinValue): MinValue =
 
 proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
   if op.kind == minProcOp:
-    if not op.mdl.isNil and not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
+    if not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
       # Capture closures at module level
       let origScope = i.scope
       let origParentScope = i.scope.parent
@@ -364,7 +364,7 @@ proc interpret*(i: In, parseOnly = false): MinValue {.discardable.} =
       i.stackcopy = i.stack
     handleErrors(i) do:
       val = i.parser.parseMinValue(i)
-      if not val.isNil:
+      if not val.isUnknown:
         if parseOnly:
           q.qVal.add val
         else:
@@ -420,7 +420,7 @@ proc eval*(i: In, s: string, name = "<eval>",
   i.stack = i2.stack
   i.scope = i2.scope
 
-proc load*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
+proc load*(i: In, s: string, parseOnly = false): MinValue {.discardable, gcsafe.} =
   var fileLines = newSeq[string](0)
   var contents = ""
   try:
