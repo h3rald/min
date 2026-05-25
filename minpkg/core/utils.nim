@@ -179,10 +179,10 @@ proc fromJson*(i: In, json: JsonNode): MinValue =
 
 # Validators
 
-proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool {.gcsafe.}
 
-proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
-    generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool =
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue, 
+  generics: var CritBitTree[string], vTypes: var seq[string], c: int): bool {.gcsafe.}=
   vTypes.add value.typeName
   let ors = element.split("|")
   for to in ors:
@@ -207,14 +207,13 @@ proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue,
       result = true
       break
 
-proc validateValueType*(i: var MinInterpreter, element: string,
-    value: MinValue): bool =
+proc validateValueType*(i: var MinInterpreter, element: string, value: MinValue): bool {.gcsafe.} =
   var g: CritBitTree[string]
   var s = newSeq[string](0)
   var c = 0
   return i.validateValueType(element, value, g, s, c)
 
-proc basicValidate*(i: In, value: MinValue, t: string): bool =
+proc basicValidate*(i: In, value: MinValue, t: string): bool {.gcsafe.} =
   case t:
     of "bool":
       return value.isBool
@@ -269,8 +268,7 @@ proc basicValidate*(i: In, value: MinValue, t: string): bool =
       else:
         raiseInvalid("Unknown type '$#'" % t)
 
-proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[
-    string]): bool =
+proc validate*(i: In, value: MinValue, t: string, generics: var CritBitTree[string]): bool {.gcsafe.}=
   if generics.hasKey(t):
     let ts = generics[t].split("|")
     for tp in ts:

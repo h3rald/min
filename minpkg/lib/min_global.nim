@@ -74,7 +74,7 @@ proc global_module*(i: In) =
   const HELPFILE = "../../help.json".slurp
   let HELP = HELPFILE.parseJson
 
-  def.symbol("from-json") do (i: In):
+  def.symbol("from-json") do (i: In) {.gcsafe.}:
     let vals = i.expect("str")
     let s = vals[0]
     i.push i.fromJson(s.getString.parseJson)
@@ -1772,7 +1772,7 @@ proc global_module*(i: In) =
       let reg = re(vals[1].strVal)
       let s_find = vals[2].strVal
       var i2 = i.copy(i.filename)
-      let repFn = proc(match: RegexMatch): string {.closure.} =
+      let repFn = proc(match: RegexMatch): string {.closure, gcsafe.} =
         var ss = newSeq[MinValue](0)
         ss.add match.match.newVal
         for s in match.captures:

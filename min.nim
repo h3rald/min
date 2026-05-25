@@ -33,9 +33,11 @@ export
   min_global,
   niftylogger
 
-var NIMOPTIONS* = ""
-var MINMODULES* = newSeq[string](0)
-var MMM*: MinModuleManager
+var NIMOPTIONS* {.threadvar.}: string 
+NIMOPTIONS = ""
+var MINMODULES* {.threadvar.}: seq[string] 
+MINMODULES = newSeq[string](0)
+var MMM* {.threadvar.}: MinModuleManager 
 
 if logging.getHandlers().len == 0:
   newNiftyLogger().addHandler()

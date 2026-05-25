@@ -152,7 +152,7 @@ proc open*(i: In, stream: Stream, filename: string) =
 proc close*(i: In) =
   i.parser.close();
 
-proc push*(i: In, val: MinValue)
+proc push*(i: In, val: MinValue) {.gcsafe}
 
 proc call*(i: In, q: var MinValue): MinValue =
   var i2 = newMinInterpreter("<call>")
@@ -192,7 +192,7 @@ proc copyDict*(i: In, val: MinValue): MinValue =
     v.obj = val.obj
   return v
 
-proc apply*(i: In, op: MinOperator, sym = "") {.effectsOf: op.} =
+proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
   if op.kind == minProcOp:
     if not op.mdl.isNil and not op.mdl.scope.isNil and not i.scope.hasParent op.mdl.scope:
       # Capture closures at module level
@@ -265,7 +265,7 @@ proc pushSym*(i: In, s: string) =
     outerSym: i.currSym.symVal,
     docComment: i.currSym.docComment)
 
-proc push*(i: In, val: MinValue) =
+proc push*(i: In, val: MinValue) {.gcsafe} =
   if val.kind == minSymbol:
     i.debug(val)
     if not i.evaluating:

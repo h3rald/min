@@ -2,7 +2,7 @@ import
   std/os,
   minline
 
-var HOME*: string
+var HOME* {.threadvar.}: string
 if defined(windows):
   HOME = getenv("USERPROFILE")
 if not defined(windows):

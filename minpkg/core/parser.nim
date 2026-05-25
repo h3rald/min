@@ -106,7 +106,7 @@ type
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]
     kind*: MinScopeKind
-  MinOperatorProc* = proc (i: In) {.closure.}
+  MinOperatorProc* = proc (i: In) {.gcsafe, closure.}
   MinOperatorKind* = enum
     minProcOp
     minValOp
@@ -705,8 +705,7 @@ proc `$$`*(a: MinValue): string {.inline.} =
       d = d.strip & "}"
       return d
 
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
-    override = false, define = false): bool {.discardable.}
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.}
 
 proc parseMinValue*(p: var MinParser, i: In): MinValue =
   case p.token
@@ -1015,8 +1014,7 @@ proc getDictionary(d: MinOperator): MinValue =
   elif d.kind == minValOp and d.val.kind == minDictionary:
     return d.val
 
-proc getSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): MinOperator
+proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator {.gcsafe.}
 
 proc isNull*(op: MinOperator): bool =
   return op.kind == minValOp and op.val.kind == minNull
@@ -1024,7 +1022,7 @@ proc isNull*(op: MinOperator): bool =
 proc isUnknown*(op: MinOperator): bool =
   return op.kind == minValOp and op.val.kind == minUnknown
 
-proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
+proc getSymbol*(scope: ref MinScope, key: string): MinOperator {.gcsafe} =
   debug "getSymbol: $#" % [key]
   if scope.symbols.hasKey(key):
     return scope.symbols[key]
@@ -1037,7 +1035,7 @@ proc getSymbol*(scope: ref MinScope, key: string): MinOperator =
       return MinOperator(kind: minValOp, val: MinValue(kind: minUnknown))
     return scope.parent.getSymbol(key)
 
-proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator =
+proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator {.gcsafe} =
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
@@ -1051,9 +1049,9 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator 
     debug("Symbol '$1' is not a dictionary." % sym)
     return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
 
-proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool
+proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool {.gcsafe.}
 
-proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
+proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable, gcsafe.} =
   if scope.symbols.hasKey(key):
     if scope.symbols[key].sealed:
       raiseInvalid("Symbol '$1' is sealed." % key)
@@ -1064,8 +1062,7 @@ proc delSymbol*(scope: ref MinScope, key: string): bool {.discardable.} =
     return delSymbolFromPath(scope, keys)
   return false
 
-proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string]): bool =
+proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool {.gcsafe.} =
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
@@ -1078,12 +1075,9 @@ proc delSymbolFromPath(scope: ref MinScope, keys: var seq[
   else:
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
-proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], value: MinOperator, override = false,
-        define = false): bool {.discardable.}
+proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.}
 
-proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
-    override = false, define = false): bool {.discardable.} =
+proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.} =
   result = false
   # check if a symbol already exists in current scope
   debug "setSymbol: $#" % [key]
@@ -1108,9 +1102,7 @@ proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator,
     else:
       debug "setSymbol: failure to set: $# = $#" % [key, $value]
 
-proc setSymbolFromPath(scope: ref MinScope, keys: var seq[
-    string], value: MinOperator, override = false,
-        define = false): bool {.discardable.} =
+proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.} =
   let sym = keys[0]
   keys.delete(0)
   let d = scope.getSymbol(sym)
@@ -1142,7 +1134,7 @@ proc hasSigil*(scope: ref MinScope, key: string): bool =
   else:
     return false
 
-proc delSigil*(scope: ref MinScope, key: string): bool {.discardable.} =
+proc delSigil*(scope: ref MinScope, key: string): bool {.discardable, gcsafe.} =
   if scope.sigils.hasKey(key):
     if scope.sigils[key].sealed:
       raiseInvalid("Sigil '$1' is sealed." % key)
