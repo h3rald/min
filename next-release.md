@@ -9,5 +9,6 @@
 * No longer performing a deep copy when dequoting.
 * Optimized the way debug information is stored to reduce memory usage.
 * Avoiding creating unnecessary scopes when possible (withScope macro already creates a scope).
+* Fixed `setSigil` incorrectly calling `setSymbol`.
 
 

@@ -1166,7 +1166,7 @@ proc setSigil*(scope: ref MinScope, key: string, value: MinOperator,
   else:
     # Go up the scope chain and attempt to find the sigil
     if not scope.parent.isNil:
-      result = scope.parent.setSymbol(key, value)
+      result = scope.parent.setSigil(key, value)
 
 proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
