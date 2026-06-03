@@ -133,7 +133,7 @@ If you want to pass any options to the Nim compiler (like `-d:release` for examp
 
 > %min-terminal%
 > 
-> [$](class:prompt) min compile myfile.min -n:&quot;-d:release --threadAnalysis:off --mm:orc:on&quot;
+> [$](class:prompt) min compile myfile.min -n:&quot;-d:release --threadAnalysis:off --mm:orc&quot;
 
 Additionally, you can also use `-m:<path>` (or `--module-path`) to specify one path containing [.min](class:ext) files which will be compiled as well (but not executed) along with the specified file. Whenever a {#link-global-operator||load#} or a {#link-global-operator||require#} symbol is used to load/require an external [.min](class:ext) file, it will attempt to retrieve its contents from the pre-loaded files first before searching the filesystem.
 
