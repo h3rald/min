@@ -98,60 +98,64 @@ proc io_module*(i: In) =
     putchr(ch[0].getString[0].cint)
 
   def.symbol("password") do (i: In):
-    var ed = initEditor()
-    i.push ed.password("Enter Password: ").newVal
+    {.cast(gcsafe).}:
+      var ed = initEditor()
+      i.push ed.password("Enter Password: ").newVal
 
   def.symbol("ask") do (i: In):
-    var ed = initEditor()
-    let vals = i.expect("str")
-    let s = vals[0]
-    i.push ed.readLine(s.getString & ": ").newVal
+    {.cast(gcsafe).}:
+      var ed = initEditor()
+      let vals = i.expect("str")
+      let s = vals[0]
+      i.push ed.readLine(s.getString & ": ").newVal
 
   def.symbol("confirm") do (i: In):
-    var ed = initEditor()
-    let vals = i.expect("str")
-    let s = vals[0]
-    proc confirm(): bool =
-      let answer = ed.readLine(s.getString & " [yes/no]: ")
-      if answer.contains(re"(?i)^y(es)?$"):
-        return true
-      elif answer.contains(re"(?i)^no?$"):
-        return false
-      else:
-        stdout.write "Invalid answer. Please enter 'yes' or 'no': "
-        stdout.flushFile()
-        return confirm()
-    i.push confirm().newVal
+    {.cast(gcsafe).}:
+      var ed = initEditor()
+      let vals = i.expect("str")
+      let s = vals[0]
+      proc confirm(): bool =
+        let answer = ed.readLine(s.getString & " [yes/no]: ")
+        if answer.contains(re"(?i)^y(es)?$"):
+          return true
+        elif answer.contains(re"(?i)^no?$"):
+          return false
+        else:
+          stdout.write "Invalid answer. Please enter 'yes' or 'no': "
+          stdout.flushFile()
+          return confirm()
+      i.push confirm().newVal
 
   def.symbol("choose") do (i: In):
-    var ed = initEditor()
-    let vals = i.expect("'sym", "quot")
-    let s = vals[0]
-    var q = vals[1]
-    if q.qVal.len <= 0:
-      raiseInvalid("No choices to display")
-    stdout.writeLine(s.getString)
-    stdout.flushFile()
-    proc choose(): int =
-      var c = 0
-      for item in q.qVal:
-        if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[
-            0].isString or not item.qVal[1].isQuotation:
-          raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
-        c.inc
-        echo "$1 - $2" % [$c, item.qVal[0].getString]
-      let answer = ed.readLine("Enter your choice ($1 - $2): " % ["1", $c])
-      var choice: int
-      try:
-        choice = answer.parseInt
-      except CatchableError:
-        choice = 0
-      if choice <= 0 or choice > c:
-        echo "Invalid choice."
-        return choose()
-      else:
-        return choice
-    let choice = choose()
-    i.dequote(q.qVal[choice-1].qVal[1])
+    {.cast(gcsafe).}:
+      var ed = initEditor()
+      let vals = i.expect("'sym", "quot")
+      let s = vals[0]
+      var q = vals[1]
+      if q.qVal.len <= 0:
+        raiseInvalid("No choices to display")
+      stdout.writeLine(s.getString)
+      stdout.flushFile()
+      proc choose(): int =
+        var c = 0
+        for item in q.qVal:
+          if not item.isQuotation or not item.qVal.len == 2 or not item.qVal[
+              0].isString or not item.qVal[1].isQuotation:
+            raiseInvalid("Each item of the quotation must be a quotation containing a string and a quotation")
+          c.inc
+          echo "$1 - $2" % [$c, item.qVal[0].getString]
+        let answer = ed.readLine("Enter your choice ($1 - $2): " % ["1", $c])
+        var choice: int
+        try:
+          choice = answer.parseInt
+        except CatchableError:
+          choice = 0
+        if choice <= 0 or choice > c:
+          echo "Invalid choice."
+          return choose()
+        else:
+          return choice
+      let choice = choose()
+      i.dequote(q.qVal[choice-1].qVal[1])
 
   def.finalize("io")

@@ -434,8 +434,9 @@ proc global_module*(i: In) =
     echo $$a
 
   def.symbol("gets") do (i: In):
-    var ed = initEditor()
-    i.push ed.readLine().newVal
+    {.cast(gcsafe).}:
+      var ed = initEditor()
+      i.push ed.readLine().newVal
 
   def.symbol("apply") do (i: In):
     let vals = i.expect("quot")
