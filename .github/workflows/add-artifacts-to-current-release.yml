@@ -71,18 +71,18 @@ jobs:
             
             # Build for Linux
             - name: Build (Linux)
-              run: nimble build -v -y -d:release --gcc.exe:musl-gcc --mm:refc --gcc.linkerexe:musl-gcc -d:ssl --opt:size min
+              run: nimble build -v -y -d:release --gcc.exe:musl-gcc --mm:orc --deepCopy:on --gcc.linkerexe:musl-gcc -d:ssl --opt:size min
               if: matrix.os == 'ubuntu-latest'
 
             # Build for macOS
             - name: Build (macOS)
-              run: nimble build -v -y -d:release -d:ssl --opt:size --mm:refc min
+              run: nimble build -v -y -d:release -d:ssl --opt:size --mm:orc --deepCopy:on min
               if: matrix.os == 'macos-13'
 
             # Build for Windows
             - name: Build (Windows)
               shell: msys2 {0}
-              run: nimble build -v -y -d:release --mm:refc --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
+              run: nimble build -v -y -d:release --mm:orc --deepCopy:on --opt:size -d:ssl --gcc.exe:x86_64-w64-mingw32-gcc --gcc.linkerexe:x86_64-w64-mingw32-gcc min
               if: matrix.os == 'windows-2019'
 
             # UPX compress (Linux) 
