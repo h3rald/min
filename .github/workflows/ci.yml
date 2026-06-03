@@ -48,4 +48,4 @@ jobs:
           args: --best --force
 
       - name: Test
-        run: ./min tests/all.min
+        run: cd tests && ../min install && ../min all.min
