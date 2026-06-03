@@ -202,10 +202,12 @@ proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
       i.scope = op.mdl.scope
       i.scope.parent = origScope
       i.scope.parent.parent = origParentScope 
-      op.prc(i)
-      i.scope = origScope
-      i.scope.parent = origParentScope
-      op.mdl.scope.parent = origMdlParentScope
+      try:
+        op.prc(i)
+      finally:
+        i.scope = origScope
+        i.scope.parent = origParentScope
+        op.mdl.scope.parent = origMdlParentScope
     else:
       op.prc(i)
   else:
