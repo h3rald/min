@@ -19,7 +19,7 @@
 
   ("test" crypto.encode crypto.decode "test" ==) test.assert
 
-  ("test" "test" crypto.aes "test" crypto.aes strip "test" ==) test.assert
+  ("test" "test" crypto.aes "test" crypto.aes "test" ==) test.assert
   
   test.report
   stack.clear

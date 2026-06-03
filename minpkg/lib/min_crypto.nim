@@ -3,8 +3,6 @@ import
   strutils,
   times]
 import
-  ../vendor/aes/aes
-import
   ../core/parser,
   ../core/value,
   ../core/interpreter,
@@ -12,12 +10,11 @@ import
 when defined(static):
   import os
 
-{.compile: "../vendor/aes/libaes.c".}
-
 when defined(ssl) and defined(static):   
   import
     openssl
-  
+
+
   when defined(amd64):
 
     when defined(windows):
@@ -35,6 +32,17 @@ when defined(ssl) and defined(static):
   proc MD4(d: cstring, n: culong, md: cstring = nil): cstring {.cdecl, importc.}
   proc EVP_MD_CTX_new*(): EVP_MD_CTX {.cdecl, importc: "EVP_MD_CTX_new".}
   proc EVP_MD_CTX_free*(ctx: EVP_MD_CTX) {.cdecl, importc: "EVP_MD_CTX_free".}
+  type EVP_CIPHER_CTX = SslPtr
+  type EVP_CIPHER = SslPtr
+  proc EVP_CIPHER_CTX_new(): EVP_CIPHER_CTX {.cdecl, importc: "EVP_CIPHER_CTX_new".}
+  proc EVP_CIPHER_CTX_free(ctx: EVP_CIPHER_CTX) {.cdecl, importc: "EVP_CIPHER_CTX_free".}
+  proc EVP_aes_256_ctr(): EVP_CIPHER {.cdecl, importc: "EVP_aes_256_ctr".}
+  proc EVP_EncryptInit_ex(ctx: EVP_CIPHER_CTX, cipher: EVP_CIPHER, engine: SslPtr,
+      key: ptr uint8, iv: ptr uint8): cint {.cdecl, importc: "EVP_EncryptInit_ex".}
+  proc EVP_EncryptUpdate(ctx: EVP_CIPHER_CTX, outBuf: ptr uint8, outLen: ptr cint,
+      inBuf: ptr uint8, inLen: cint): cint {.cdecl, importc: "EVP_EncryptUpdate".}
+  proc EVP_EncryptFinal_ex(ctx: EVP_CIPHER_CTX, outBuf: ptr uint8,
+      outLen: ptr cint): cint {.cdecl, importc: "EVP_EncryptFinal_ex".}
 else:
   import
     checksums/sha1,
@@ -112,14 +120,40 @@ proc crypto_module*(i: In) =
       let k = vals[0]
       let s = vals[1]
       var text = s.getString
-      var key = hash(k.getString, EVP_sha1(), 40)
-      var iv = hash((key & $getTime().toUnix), EVP_sha1(), 40)
-      var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
-      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[
-          0].addr));
-      var input = cast[ptr uint8](text[0].addr)
-      AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
-      i.push text.newVal
+      var key = hash(k.getString, EVP_sha256(), 64)
+      var iv = hash((key & $getTime().toUnix), EVP_sha256(), 64)
+      # AES-256-CTR requires 32-byte key and 16-byte IV
+      var keyBytes = newSeq[uint8](32)
+      for j in 0 ..< 32:
+        keyBytes[j] = cast[uint8](key[j])
+      var ivBytes = newSeq[uint8](16)
+      for j in 0 ..< 16:
+        ivBytes[j] = cast[uint8](iv[j])
+      let ctx = EVP_CIPHER_CTX_new()
+      if ctx.isNil:
+        raiseInvalid("Failed to create cipher context")
+      try:
+        if EVP_EncryptInit_ex(ctx, EVP_aes_256_ctr(), nil,
+            addr keyBytes[0], addr ivBytes[0]) != 1:
+          raiseInvalid("Failed to initialize AES-256-CTR")
+        var outBuf = newSeq[uint8](text.len + 16)
+        var outLen: cint = 0
+        var totalLen: cint = 0
+        if text.len > 0:
+          if EVP_EncryptUpdate(ctx, addr outBuf[0], addr outLen,
+              cast[ptr uint8](addr text[0]), text.len.cint) != 1:
+            raiseInvalid("Failed to encrypt data")
+          totalLen = outLen
+        var finalLen: cint = 0
+        if EVP_EncryptFinal_ex(ctx, addr outBuf[totalLen], addr finalLen) != 1:
+          raiseInvalid("Failed to finalize encryption")
+        totalLen += finalLen
+        var result = newString(totalLen)
+        if totalLen > 0:
+          copyMem(addr result[0], addr outBuf[0], totalLen)
+        i.push result.newVal
+      finally:
+        EVP_CIPHER_CTX_free(ctx)
 
   else:
 
@@ -132,19 +166,5 @@ proc crypto_module*(i: In) =
       let vals = i.expect("'sym")
       var s = vals[0].getString
       i.push newVal(toLowerAscii($secureHash(s)))
-
-    def.symbol("aes") do (i: In):
-      let vals = i.expect("'sym", "'sym")
-      let k = vals[0]
-      let s = vals[1]
-      var text = s.getString
-      var key = ($secureHash(k.getString)).toLowerAscii
-      var iv = ($secureHash((key & $getTime().toUnix))).toLowerAscii
-      var ctx = cast[ptr AES_ctx](alloc0(sizeof(AES_ctx)))
-      AES_init_ctx_iv(ctx, cast[ptr uint8](key[0].addr), cast[ptr uint8](iv[
-          0].addr));
-      var input = cast[ptr uint8](text[0].addr)
-      AES_CTR_xcrypt_buffer(ctx, input, text.len.uint32);
-      i.push text.newVal
 
   def.finalize("crypto")

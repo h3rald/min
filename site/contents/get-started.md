@@ -57,7 +57,6 @@ If this flag is not specified:
   * {#link-operator||crypto||sha1#} 
   * {#link-operator||crypto||encode#} 
   * {#link-operator||crypto||decode#} 
-  * {#link-operator||crypto||aes#} 
 
 #### -d:nopcre
 

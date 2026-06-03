@@ -1,3 +1,8 @@
+
+### BREAKING CHANGES
+
+* The symbol `aes` now requires min to be compiled with `-d:ssl`.
+
 ### New Features
 
 * By default, nimble builds are no longer statically linking other libraries.
@@ -13,5 +18,3 @@
 * Fixed `setSigil` incorrectly calling `setSymbol`.
 * Improved handling of hash bang.
 * No longer using (unoptimised) tail-recursion for symbol resolution, now doing iterative lookups.
-
-
