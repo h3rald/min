@@ -240,8 +240,7 @@ proc global_module*(i: In) =
     let tv = q.qVal[0]
     let t = tv.symVal
     let nv = q.qVal[1]
-    if not tv.isSymbol or (not ["symbol", "sigil", "typeclass",
-        "constructor"].contains(t)):
+    if not tv.isSymbol or (not ["symbol", "sigil", "typeclass", "constructor"].contains(t)):
       raiseInvalid("Incorrect operator type specified (it must be 'symbol', 'sigil', 'constructor', or 'typeclass' - found '$#')" % tv.symVal)
     if not nv.isSymbol:
       raiseInvalid("Operator name must be a symbol")
@@ -371,9 +370,10 @@ proc global_module*(i: In) =
             discard
         # Validate output
         for k in 0..outVars.len-1:
-          var x = i.scope.symbols[outVars[k]].val
+          # Convenience copy for validation
+          let x = i.scope.symbols[outVars[k]].val
           if t == "constructor":
-            x.objType = n
+            i.scope.symbols[outVars[k]].val.objType = n
           if DEV:
             let o = outExpects[k]
             var r = false;
@@ -390,8 +390,7 @@ proc global_module*(i: In) =
               if generics.hasKey(o):
                 tp = generics[o]
                 generics = origGenerics
-              raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" %
-                  [outVars[k], tp, $x])
+              raiseInvalid("Invalid value for output symbol '$#'. Expected $#, found $#" % [outVars[k], tp, $x])
           # Push output on stack
           debug "Operator - pushing: $#" % [outVars[k]]
           i.pushSym outVars[k]
