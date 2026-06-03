@@ -10,7 +10,6 @@ switch("amd64.linux.gcc.linkerexe", "x86_64-linux-musl-gcc")
 
 switch("opt", "size")
 switch("mm", "orc")
-switch("deepCopy", "on")
 switch("threadAnalysis", "off")
 
 when not defined(nossl):

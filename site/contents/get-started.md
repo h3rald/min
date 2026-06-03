@@ -20,35 +20,22 @@ If that's the case, simply run **nimble install min**.
 
 By default, min should run without issues on any [platform supported by the Nim programming language](https://github.com/nim-lang/Nim/blob/devel/lib/system/platforms.nim).
 
-To build min, you can clone the [git repository](https://github.com/h3rald/min) and also build the following static libraries first:
+To build min, you can clone the [git repository](https://github.com/h3rald/min) and compile it using Nim, like this:
 
-* libssl (OpenSSL)
-* libcrypto (OpenSSL)
-* libpcre (PCRE)
-
-When compiling, specify additional flags to specify where to get the static libraries from:
-
-`nim c -d --passL:"-static -L<dir> -lpcre -lssl -lcrypto"`
-
-Where `<dir>` is the directory containing the `*.a` files for the static libraries listed above.
-
-> %tip%
-> 
-> Alternatively, if you can also opt out from OpenSSL and PCRE support by:
->
-> * Specifying `-d:nossl`
-> * Specifying `-d:nopcre`
+```shell
+nim c -d:release
+```
 
 ### Additional build options
 
-#### -d:ssl
+#### -d:ssl / -d:nossl
 
-If the **-d:ssl** flag is specified when compiling, min will be built with SSL support, so it will be possible to:
+By default, this build option will be _on_ by default so that min is built with SSL support, so it will be possible to:
 
 * perform HTTPS requests with the {#link-module||http#}.
 * use all the cryptographic symbols defined in the {#link-module||crypto#}.
 
-If this flag is not specified:
+If this flag is not specified (by setting `-d:nossl`):
 
 * It will not be possible to perform HTTPS requests
 * Only the following symbols will be exposed by the {#link-module||crypto#}:
@@ -60,13 +47,23 @@ If this flag is not specified:
 
 #### -d:nopcre
 
-If the **-d:nopcre** is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||global#}:
+If `-d:nopcre` is specified when compiling, min will be built _without_ PCRE support, so it will not be possible to use regular expressions and the following symbols will _not_ be exposed by the {#link-module||global#}:
 
 * {#link-global-operator||search#}
 * {#link-global-operator||match?#}
 * {#link-global-operator||search-all#}
 * {#link-global-operator||replace#}
 * {#link-global-operator||replace-apply#}
+
+#### -d:static
+
+If `-d:static` is specified, min will attempt to statically link the following libraries:
+
+* libssl (OpenSSL)
+* libcrypto (OpenSSL)
+* libpcre (PCRE)
+
+Note that for this to work, the relevant `.a` file _must_ be placed in the appropriate `vendor/<library>/<os>/<arch>` subdirectory. For some architectures and operating systems, the correct files are versioned along with the source code &mdash; if your architecture is not listed, you need to place your libraries in a `vendor/<library>/unknown` subdirectory.
 
 ## Running the min shell
 

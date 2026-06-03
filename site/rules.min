@@ -140,33 +140,7 @@
   ) 
 ) ::
 
-(
-  symbol download-latest-min-exes
-  (==>)
-  (
-    "Downloading latest min executables..." io.notice!
-    settings.version :version
-    ("windows" "macosx" "linux")
-    (
-      :opsys
-      "https://github.com/h3rald/min/releases/download/v$1/min_v$1_$2_x64.zip" (version opsys) =% :remote
-      "min_$#.zip" (opsys) =% :local
-      "wget $# -O $#" (remote local) =% :cmd
-      cmd sys.system 
-      "assets/downloads/$#/" (opsys) =% :dir
-      "assets/downloads/" sys.mkdir
-      "unzip $# -o -d $#" (local dir) =% @cmd
-      cmd system!
-      local sys.rm
-    ) foreach
-  )
-) ::
-
 ;Main
-
-((('wget "" !=) ('zip sys.which "" !=)) &&)
-  (download-latest-min-exes)
-when
 
 "Processing contents..." io.notice!
 
