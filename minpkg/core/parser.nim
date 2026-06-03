@@ -772,6 +772,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
       c = c+1
       if not valSet:
         val = v
+        valSet = true
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':' or key[0] == '^':
@@ -862,6 +863,7 @@ proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[st
       c = c+1
       if not valSet:
         val = v
+        valSet = true
       elif v.kind == minSymbol:
         let key = v.symVal
         if key[0] == ':' or key[0] == '^':
