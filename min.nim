@@ -86,7 +86,7 @@ proc compile*(i: In, s: Stream, main = true): seq[string] =
       result.add "### $# (main)" % i.filename
       result = result.concat(i.compileFile(main))
       writeFile(nimFile, result.join("\n"))
-      let cmd = "nim c --threadAnalysis:off --mm:orc --deepCopy:on $#$#" % [NIMOPTIONS&" ", nimFile]
+      let cmd = "nim c --threadAnalysis:off --mm:orc:on $#$#" % [NIMOPTIONS&" ", nimFile]
       logging.notice("Calling Nim compiler:")
       logging.notice(cmd)
       discard execShellCmd(cmd)

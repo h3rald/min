@@ -328,7 +328,7 @@ proc global_module*(i: In) =
       c.inc()
     if not o:
       raiseInvalid("No output specified in signature")
-    origGenerics = deepCopy(generics)
+    origGenerics = generics
     # Process body
     var bv = q.qVal[3]
     if not bv.isQuotation:
@@ -355,7 +355,7 @@ proc global_module*(i: In) =
           var endSnapshot: seq[MinValue]
           var snapShot: seq[MinValue]
           try:
-            snapshot = deepCopy(i.stack)
+            snapshot = i.stack
             for v in bv.qVal: # execute directly in the existing scope (withScope)
               i.push v
             endSnapshot = i.stack

@@ -6,8 +6,12 @@ import
   ../core/value,
   ../core/interpreter,
   ../core/utils
+
 when defined(static):
   import os
+
+when defined(ssl):
+  import times
 
 when defined(ssl) and defined(static):   
   import

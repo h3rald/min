@@ -453,7 +453,7 @@ proc require*(i: In, s: string, parseOnly = false): MinValue {.discardable.} =
   else:
     contents = fileLines.join("\n")
   var i2 = i.copy(s)
-  let snapshot = deepCopy(i.stack)
+  let snapshot = i.stack
   i2.withScope:
     i2.open(newStringStream(contents), s)
     discard i2.parser.getToken()
