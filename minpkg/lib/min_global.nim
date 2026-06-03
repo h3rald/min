@@ -356,7 +356,8 @@ proc global_module*(i: In) =
           var snapShot: seq[MinValue]
           try:
             snapshot = deepCopy(i.stack)
-            i.dequote bv
+            for v in bv.qVal: # execute directly in the existing scope (withScope)
+              i.push v
             endSnapshot = i.stack
             let d = snapshot.diff(endSnapshot)
             if d.len > 0:
@@ -365,7 +366,8 @@ proc global_module*(i: In) =
             discard
         else:
           try:
-            i.dequote bv
+            for v in bv.qVal: # execute directly in the existing scope (withScope)
+              i.push v
           except MinReturnException:
             discard
         # Validate output

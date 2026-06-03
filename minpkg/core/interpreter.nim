@@ -212,8 +212,7 @@ proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
       op.prc(i)
   else:
     if op.val.kind == minQuotation and op.lambda:
-      var newscope = newScopeRef(i.scope)
-      i.withScope(newscope):
+      i.withScope():
         for e in op.val.qVal:
           if e.isSymbol and e.symVal == sym:
             raiseInvalid("Symbol '$#' evaluates to itself" % sym)

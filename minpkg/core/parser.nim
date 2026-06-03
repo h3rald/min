@@ -9,6 +9,7 @@ import
   json]
 
 import
+  env,
   baseutils
 
 import std/unicode except strip
@@ -167,6 +168,12 @@ proc dVal*(v: MinValue): CritBitTree[MinOperator] {.inline.} =
   if v.scope.isNil:
     return CritBitTree[MinOperator]()
   return v.scope.symbols
+
+proc internFile*(s: string): string =
+  if FILECACHE.hasKey(s):
+    return FILECACHE[s]
+  FILECACHE[s] = s
+  return s
 
 const
   errorMessages: array[MinParserError, string] = [
@@ -792,7 +799,7 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
     result = MinValue(kind: minDictionary, scope: scope)
   of tkSymbol:
     result = MinValue(kind: minSymbol, symVal: p.a, column: p.getColumn,
-        line: p.lineNumber, filename: p.filename)
+        line: p.lineNumber, filename: internFile(p.filename))
     p.a = ""
     p.currSym = result
     discard getToken(p)

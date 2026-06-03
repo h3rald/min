@@ -1,5 +1,6 @@
 import
   std/os,
+  std/critbits,
   minline
 
 var HOME* {.threadvar.}: string
@@ -26,3 +27,4 @@ var COLOR* {.threadvar.}: bool
 COLOR = true
 var ERRORS_HANDLED* {.threadvar.}: bool
 ERRORS_HANDLED = false
+var FILECACHE* {.threadvar.}: CritBitTree[string]
