@@ -1036,16 +1036,16 @@ proc isUnknown*(op: MinOperator): bool =
 
 proc getSymbol*(scope: ref MinScope, key: string): MinOperator {.gcsafe} =
   debug "getSymbol: $#" % [key]
-  if scope.symbols.hasKey(key):
-    return scope.symbols[key]
-  elif key.contains ".":
-    var keys = key.split(".")
-    return getSymbolFromPath(scope, keys)
-  else:
-    if scope.parent.isNil:
-      debug("Unable to retrieve symbol '$1' (not found)." % key)
-      return MinOperator(kind: minValOp, val: MinValue(kind: minUnknown))
-    return scope.parent.getSymbol(key)
+  var currScope = scope
+  while not currScope.isNil:
+    if currScope.symbols.hasKey(key):
+      return currScope.symbols[key]
+    elif key.contains ".":
+      var keys = key.split(".")
+      return getSymbolFromPath(currScope, keys)
+    currScope = currScope.parent
+  debug("Unable to retrieve symbol '$1' (not found)." % key)
+  return MinOperator(kind: minValOp, val: MinValue(kind: minUnknown))
 
 proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator {.gcsafe} =
   let sym = keys[0]
@@ -1091,28 +1091,26 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOpe
 
 proc setSymbol*(scope: ref MinScope, key: string, value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.} =
   result = false
-  # check if a symbol already exists in current scope
   debug "setSymbol: $#" % [key]
-  if not scope.isNil and scope.symbols.hasKey(key):
-    if not override and scope.symbols[key].sealed:
-      raiseInvalid("Symbol '$1' is sealed ." % key)
-    scope.symbols[key] = value
-    debug "setSymbol (existing): $# = $#" % [key, $value]
-    result = true
-  elif key.contains ".":
+  if key.contains ".":
     var keys = key.split(".")
     return setSymbolFromPath(scope, keys, value, override, define)
-  # define new symbol
-  elif not scope.isNil and define:
-    debug "setSymbol (new): $# = $#" % [key, $value]
-    scope.symbols[key] = value
-    result = true
-  else:
-    # Go up the scope chain and attempt to find the symbol
-    if not scope.parent.isNil:
-      result = scope.parent.setSymbol(key, value, override, define)
-    else:
-      debug "setSymbol: failure to set: $# = $#" % [key, $value]
+  var currScope = scope
+  while not currScope.isNil:
+    # check if a symbol already exists in current scope
+    if currScope.symbols.hasKey(key):
+      if not override and currScope.symbols[key].sealed:
+        raiseInvalid("Symbol '$1' is sealed ." % key)
+      currScope.symbols[key] = value
+      debug "setSymbol (existing): $# = $#" % [key, $value]
+      return true
+    # define new symbol in the original scope
+    if define:
+      debug "setSymbol (new): $# = $#" % [key, $value]
+      scope.symbols[key] = value
+      return true
+    currScope = currScope.parent
+  debug "setSymbol: failure to set: $# = $#" % [key, $value]
 
 proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOperator, override = false, define = false): bool {.discardable, gcsafe.} =
   let sym = keys[0]
@@ -1129,22 +1127,20 @@ proc setSymbolFromPath(scope: ref MinScope, keys: var seq[string], value: MinOpe
     raiseInvalid("Symbol '$1' is not a dictionary." % sym)
 
 proc getSigil*(scope: ref MinScope, key: string): MinOperator =
-  if scope.sigils.hasKey(key):
-    return scope.sigils[key]
-  elif not scope.parent.isNil:
-    return scope.parent.getSigil(key)
-  else:
-    raiseUndefined("Sigil '$1' not found." % key)
+  var currScope = scope
+  while not currScope.isNil:
+    if currScope.sigils.hasKey(key):
+      return currScope.sigils[key]
+    currScope = currScope.parent
+  raiseUndefined("Sigil '$1' not found." % key)
 
 proc hasSigil*(scope: ref MinScope, key: string): bool =
-  if scope.isNil:
-    return false
-  elif scope.sigils.hasKey(key):
-    return true
-  elif not scope.parent.isNil:
-    return scope.parent.hasSigil(key)
-  else:
-    return false
+  var currScope = scope
+  while not currScope.isNil:
+    if currScope.sigils.hasKey(key):
+      return true
+    currScope = currScope.parent
+  return false
 
 proc delSigil*(scope: ref MinScope, key: string): bool {.discardable, gcsafe.} =
   if scope.sigils.hasKey(key):
@@ -1157,16 +1153,15 @@ proc delSigil*(scope: ref MinScope, key: string): bool {.discardable, gcsafe.} =
 proc setSigil*(scope: ref MinScope, key: string, value: MinOperator,
     override = false): bool {.discardable.} =
   result = false
-  # check if a sigil already exists in current scope
-  if not scope.isNil and scope.sigils.hasKey(key):
-    if not override and scope.sigils[key].sealed:
-      raiseInvalid("Sigil '$1' is sealed." % key)
-    scope.sigils[key] = value
-    result = true
-  else:
-    # Go up the scope chain and attempt to find the sigil
-    if not scope.parent.isNil:
-      result = scope.parent.setSigil(key, value)
+  var currScope = scope
+  while not currScope.isNil:
+    # check if a sigil already exists in current scope
+    if currScope.sigils.hasKey(key):
+      if not override and currScope.sigils[key].sealed:
+        raiseInvalid("Sigil '$1' is sealed." % key)
+      currScope.sigils[key] = value
+      return true
+    currScope = currScope.parent
 
 proc previous*(scope: ref MinScope): ref MinScope =
   if scope.parent.isNil:
@@ -1175,8 +1170,9 @@ proc previous*(scope: ref MinScope): ref MinScope =
     return scope.parent
 
 proc hasParent*(scope: ref MinScope, parent: ref MinScope): bool =
-  if scope.parent.isNil:
-    return false
-  if scope.parent == parent:
-    return true
-  return scope.parent.hasParent parent
+  var currScope = scope.parent
+  while not currScope.isNil:
+    if currScope == parent:
+      return true
+    currScope = currScope.parent
+  return false

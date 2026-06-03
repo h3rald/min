@@ -12,5 +12,6 @@
 * Avoiding creating unnecessary scopes when possible (withScope macro already creates a scope).
 * Fixed `setSigil` incorrectly calling `setSymbol`.
 * Improved handling of hash bang.
+* No longer using (unoptimised) tail-recursion for symbol resolution, now doing iterative lookups.
 
 
