@@ -222,10 +222,8 @@ proc apply*(i: In, op: MinOperator, sym = "") {.gcsafe, effectsOf: op.} =
 proc dequote*(i: In, q: var MinValue) =
   if q.kind == minQuotation:
     i.withScope():
-      let qqval = deepCopy(q.qVal)
       for v in q.qVal:
         i.push v
-      q.qVal = qqval
   else:
     i.push(q)
 
