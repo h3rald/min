@@ -109,19 +109,16 @@ proc minStream(s: Stream, filename: string, op = "interpret", main = true): seq[
 proc minStr*(buffer: string) =
   minStream(newStringStream(buffer), "input")
 
-proc minFile*(fn: string, op = "interpret", main = true): seq[
-    string] {.discardable.} =
-  var fileLines = newSeq[string](0)
-  var contents = ""
+proc minFile*(fn: string, op = "interpret", main = true): seq[string] {.discardable.} =
+  var contents: string
   try:
-    fileLines = fn.readFile().splitLines()
+    contents = fn.readFile()
   except CatchableError:
     logging.fatal("Cannot read from file: " & fn)
     terminate(3)
-  if fileLines[0].len >= 2 and fileLines[0][0..1] == "#!":
-    contents = ";;\n" & fileLines[1..fileLines.len-1].join("\n")
-  else:
-    contents = fileLines.join("\n")
+  if contents.len >= 2 and contents[0] == '#' and contents[1] == '!':
+    contents[0] = ';'
+    contents[1] = ';'
   minStream(newStringStream(contents), fn, op, main)
 
 when isMainModule:
