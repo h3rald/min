@@ -1053,7 +1053,7 @@ proc getSymbolFromPath(scope: ref MinScope, keys: var seq[string]): MinOperator 
       return dict.scope.getSymbol(keys[0])
   else:
     debug("Symbol '$1' is not a dictionary." % sym)
-    return MinOperator(kind: minValOp, val: MinValue(kind: minNull))
+    return MinOperator(kind: minValOp, val: MinValue(kind: minUnknown))
 
 proc delSymbolFromPath(scope: ref MinScope, keys: var seq[string]): bool {.gcsafe.}
 
