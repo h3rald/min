@@ -1,7 +1,6 @@
 import
   std/[base64,
-  strutils,
-  times]
+  strutils]
 import
   ../core/parser,
   ../core/value,
