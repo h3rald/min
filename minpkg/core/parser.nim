@@ -78,11 +78,7 @@ type
     filename*: string
   MinValue* = MinValueObject
   MinValueObject* {.acyclic, final.} = object
-    line*: int
-    column*: int
     filename*: string
-    outerSym*: string
-    docComment*: string
     case kind*: MinKind
       of minUnknown: discard
       of minNull: discard
@@ -96,7 +92,12 @@ type
       of minQuotation:
         qVal*: seq[MinValue]
       of minString: strVal*: string
-      of minSymbol: symVal*: string
+      of minSymbol: 
+        symVal*: string
+        line*: int
+        column*: int
+        outerSym*: string
+        docComment*: string
       of minBool: boolVal*: bool
   MinScopeKind* = enum
     minNativeScope,
@@ -801,8 +802,6 @@ proc parseMinValue*(p: var MinParser, i: In): MinValue =
   else:
     let err = "Undefined or invalid value (" & $p.token & "): " & p.a
     raiseUndefined(p, err)
-  if not result.isUnknown:
-    result.filename = p.filename
 
 proc compileMinValue*(p: var MinParser, i: In, push = true, indent = ""): seq[string] =
   var op = indent
