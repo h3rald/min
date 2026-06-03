@@ -78,7 +78,7 @@ type
     err*: MinParserError
     filename*: string
   MinValue* = MinValueObject
-  MinValueObject* {.acyclic, final.} = object
+  MinValueObject* = object
     filename*: string
     case kind*: MinKind
       of minUnknown: discard
@@ -103,7 +103,7 @@ type
   MinScopeKind* = enum
     minNativeScope,
     minLangScope
-  MinScope* {.acyclic, shallow, final.} = object
+  MinScope* = object
     parent*: ref MinScope
     symbols*: CritBitTree[MinOperator]
     sigils*: CritBitTree[MinOperator]

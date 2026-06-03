@@ -1,6 +1,7 @@
 ### New Features
 
 * By default, nimble builds are no longer statically linking other libraries.
+* Removed acyclic pragmas and now successfully compiling with `--mm:orc` for better memory management.
 
 ### Fixes and Improvements
 
