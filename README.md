@@ -1,3 +1,4 @@
+**Important** This project was moved to [sourcehut](https://git.sr.ht/~h3rald/min) on 2026-06-16.
 
 <p align="center"><img align="center" width="350" src="https://min-lang.org/images/logo.svg"/></p>
 <p align="center">
